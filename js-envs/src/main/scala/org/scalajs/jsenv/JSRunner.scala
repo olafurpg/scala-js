@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.jsenv
 
 import org.scalajs.core.tools.logging.Logger

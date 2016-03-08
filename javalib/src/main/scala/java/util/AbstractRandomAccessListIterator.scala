@@ -1,12 +1,11 @@
 package java.util
 
-abstract private[util] class AbstractRandomAccessListIterator[E](private var i: Int,
-    start: Int, protected var end: Int) extends ListIterator[E] with SizeChangeEvent {
-
+abstract private [util] class AbstractRandomAccessListIterator[E](
+    private var i: Int, start: Int, protected var end: Int)
+    extends ListIterator[E] with SizeChangeEvent {
   private var last = -1
 
-  def hasNext(): Boolean =
-    i < end
+  def hasNext(): Boolean = i < end
 
   def next(): E = {
     last = i
@@ -14,8 +13,7 @@ abstract private[util] class AbstractRandomAccessListIterator[E](private var i: 
     get(last)
   }
 
-  def hasPrevious(): Boolean =
-    start < i
+  def hasPrevious(): Boolean = start < i
 
   def previous(): E = {
     i -= 1
@@ -57,7 +55,7 @@ abstract private[util] class AbstractRandomAccessListIterator[E](private var i: 
   protected def add(index: Int, e: E): Unit
 
   private def checkThatHasLast(): Unit = {
-    if (last == -1)
+    if (last == - 1)
       throw new IllegalStateException
   }
 }

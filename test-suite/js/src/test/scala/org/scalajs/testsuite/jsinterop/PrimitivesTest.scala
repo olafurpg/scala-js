@@ -11,9 +11,7 @@ import scala.scalajs.js
 import org.scalajs.jasminetest.JasmineTest
 
 object PrimitivesTest extends JasmineTest {
-
   describe("Interoperability for primitive types") {
-
     it("should convert Java boxed types to js.Any") {
       expect(new java.lang.Boolean(false)).toBe(false)
       expect(null: java.lang.Boolean).toBeNull
@@ -36,7 +34,5 @@ object PrimitivesTest extends JasmineTest {
       expect(new java.lang.Double(42.0)).toBe(42)
       expect(null: java.lang.Double).toBeNull
     }
-
   }
-
 }

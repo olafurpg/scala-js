@@ -15,54 +15,72 @@ import org.scalajs.jasminetest.JasmineTest
  * tests the implementation of the java standard library Date
  */
 object DateTest extends JasmineTest {
-
   describe("java.lang.Date") {
-
     it("should provide `compareTo`") {
+
       def compare(x: Date, y: Date): Int = {
         x.compareTo(y)
       }
 
-      expect(compare(new Date(97, 11, 5, 0, 0), new Date(98, 11, 5, 0, 0))).toBeLessThan(0)
-      expect(compare(new Date(98, 11, 5, 0, 0), new Date(97, 11, 5, 0, 0))).toBeGreaterThan(0)
-      expect(compare(new Date(97, 11, 5, 0, 0), new Date(97, 11, 5))).toEqual(0)
-      expect(compare(new Date(97, 11, 5, 0, 0), new Date(97, 11, 5, 0, 1))).toBeLessThan(0)
-      expect(compare(new Date(97, 11, 5), new Date(97, 11, 5, 0, 0))).toEqual(0)
+      expect(compare(new Date(97, 11, 5, 0, 0), new Date(98, 11, 5, 0, 0)))
+        .toBeLessThan(0)
+      expect(compare(new Date(98, 11, 5, 0, 0), new Date(97, 11, 5, 0, 0)))
+        .toBeGreaterThan(0)
+      expect(compare(new Date(97, 11, 5, 0, 0), new Date(97, 11, 5)))
+        .toEqual(0)
+      expect(compare(new Date(97, 11, 5, 0, 0), new Date(97, 11, 5, 0, 1)))
+        .toBeLessThan(0)
+      expect(compare(new Date(97, 11, 5), new Date(97, 11, 5, 0, 0)))
+        .toEqual(0)
     }
 
     it("should be a Comparable") {
+
       def compare(x: Any, y: Any): Int =
         x.asInstanceOf[Comparable[Any]].compareTo(y)
 
-      expect(compare(new Date(97, 11, 5, 0, 0), new Date(98, 11, 5, 0, 0))).toBeLessThan(0)
-      expect(compare(new Date(98, 11, 5, 0, 0), new Date(97, 11, 5, 0, 0))).toBeGreaterThan(0)
-      expect(compare(new Date(97, 11, 5, 0, 0), new Date(97, 11, 5))).toEqual(0)
-      expect(compare(new Date(97, 11, 5, 0, 0), new Date(97, 11, 5, 0, 1))).toBeLessThan(0)
-      expect(compare(new Date(97, 11, 5), new Date(97, 11, 5, 0, 0))).toEqual(0)
+      expect(compare(new Date(97, 11, 5, 0, 0), new Date(98, 11, 5, 0, 0)))
+        .toBeLessThan(0)
+      expect(compare(new Date(98, 11, 5, 0, 0), new Date(97, 11, 5, 0, 0)))
+        .toBeGreaterThan(0)
+      expect(compare(new Date(97, 11, 5, 0, 0), new Date(97, 11, 5)))
+        .toEqual(0)
+      expect(compare(new Date(97, 11, 5, 0, 0), new Date(97, 11, 5, 0, 1)))
+        .toBeLessThan(0)
+      expect(compare(new Date(97, 11, 5), new Date(97, 11, 5, 0, 0)))
+        .toEqual(0)
     }
 
     it("should parse strings") {
+
       def test(s: String, v: Date): Unit =
         expect(new Date(s).compareTo(v)).toEqual(0)
 
       test("Nov 5 1997 5:23:27 GMT", new Date(Date.UTC(97, 10, 5, 5, 23, 27)))
-      test("Nov 1 1997 GMT", new Date(Date.UTC(97,10,1, 0, 0, 0)))
-      test("Jan 1 1970 18:11:01 GMT", new Date(Date.UTC(70,0,1,18,11,1)))
+      test("Nov 1 1997 GMT", new Date(Date.UTC(97, 10, 1, 0, 0, 0)))
+      test("Jan 1 1970 18:11:01 GMT", new Date(Date.UTC(70, 0, 1, 18, 11, 1)))
     }
 
     it("should provide after") {
-      expect(new Date(97, 11, 5, 0, 0).after(new Date(98, 11, 5, 0, 0))).toBe(false)
-      expect(new Date(99, 11, 5, 0, 0).after(new Date(98, 11, 5, 0, 0))).toBe(true)
-      expect(new Date(99, 11, 5, 0, 0).after(new Date(99, 11, 5, 0, 0))).toBe(false)
+      expect(new Date(97, 11, 5, 0, 0).after(new Date(98, 11, 5, 0, 0)))
+        .toBe(false)
+      expect(new Date(99, 11, 5, 0, 0).after(new Date(98, 11, 5, 0, 0)))
+        .toBe(true)
+      expect(new Date(99, 11, 5, 0, 0).after(new Date(99, 11, 5, 0, 0)))
+        .toBe(false)
     }
 
     it("should provide before") {
-      expect(new Date(97, 11, 5, 0, 0).before(new Date(98, 11, 5, 0, 0))).toBe(true)
-      expect(new Date(99, 11, 5, 0, 0).before(new Date(98, 11, 5, 0, 0))).toBe(false)
-      expect(new Date(99, 11, 5, 0, 0).before(new Date(99, 11, 5, 0, 0))).toBe(false)
+      expect(new Date(97, 11, 5, 0, 0).before(new Date(98, 11, 5, 0, 0)))
+        .toBe(true)
+      expect(new Date(99, 11, 5, 0, 0).before(new Date(98, 11, 5, 0, 0)))
+        .toBe(false)
+      expect(new Date(99, 11, 5, 0, 0).before(new Date(99, 11, 5, 0, 0)))
+        .toBe(false)
     }
 
     it("should provide clone") {
+
       def testClone(date: Date): Boolean = {
         val cloned = date.clone()
         date == cloned
@@ -74,6 +92,7 @@ object DateTest extends JasmineTest {
     }
 
     it("should respond to getYear") {
+
       def testYear(year: Int): Unit = {
         val date = new Date()
         date.setYear(year)

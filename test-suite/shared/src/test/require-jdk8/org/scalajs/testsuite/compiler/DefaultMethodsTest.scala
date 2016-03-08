@@ -13,13 +13,13 @@ import org.junit.Assert._
 import java.{util => ju}
 
 class DefaultMethodsTest {
-
-  @Test def canOverrideDefaultMethod(): Unit = {
+  @Test
+  def canOverrideDefaultMethod(): Unit = {
     var counter = 0
 
     class SpecialIntComparator extends ju.Comparator[Int] {
-      def compare(o1: Int, o2: Int): Int =
-        o1.compareTo(o2)
+
+      def compare(o1: Int, o2: Int): Int = o1.compareTo(o2)
 
       override def reversed(): ju.Comparator[Int] = {
         counter += 1

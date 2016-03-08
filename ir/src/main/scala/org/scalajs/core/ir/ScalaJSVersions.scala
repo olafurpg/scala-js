@@ -1,7 +1,6 @@
 package org.scalajs.core.ir
 
 object ScalaJSVersions {
-
   /* DO NOT MAKE THESE 'final val's!
    * When referring to these "constants" from separate libraries, if it is a
    * 'final val', the value will be copied in the binaries of those libraries.
@@ -24,10 +23,9 @@ object ScalaJSVersions {
   val binaryEmitted: String = "0.6.6"
 
   /** Versions whose binary files we can support (used by deserializer) */
-  val binarySupported: Set[String] =
-    Set("0.6.0", "0.6.3", "0.6.4", "0.6.5", "0.6.6", binaryEmitted)
+  val binarySupported: Set[String] = Set(
+      "0.6.0", "0.6.3", "0.6.4", "0.6.5", "0.6.6", binaryEmitted)
 
   // Just to be extra safe
   assert(binarySupported contains binaryEmitted)
-
 }

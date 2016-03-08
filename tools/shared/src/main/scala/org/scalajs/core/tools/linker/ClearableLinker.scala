@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.tools.linker
 
 import org.scalajs.core.tools.logging.Logger
@@ -26,10 +25,9 @@ import org.scalajs.core.tools.linker.analyzer.SymbolRequirement
  */
 final class ClearableLinker(newLinker: () => GenLinker, batchMode: Boolean)
     extends GenLinker {
-
-  private[this] var _semantics: Semantics = _
-  private[this] var _esLevel: ESLevel = _
-  private[this] var _linker: GenLinker = _
+  private [ this] var _semantics: Semantics = _
+  private [ this] var _esLevel: ESLevel = _
+  private [ this] var _linker: GenLinker = _
 
   def semantics: Semantics = {
     ensureLinker()
@@ -42,20 +40,21 @@ final class ClearableLinker(newLinker: () => GenLinker, batchMode: Boolean)
   }
 
   def linkUnit(irFiles: Seq[VirtualScalaJSIRFile],
-      symbolRequirements: SymbolRequirement, logger: Logger): LinkingUnit = {
+               symbolRequirements: SymbolRequirement,
+               logger: Logger): LinkingUnit = {
     linkerOp(_.linkUnit(irFiles, symbolRequirements, logger))
   }
 
   def link(irFiles: Seq[VirtualScalaJSIRFile],
-      output: WritableVirtualJSFile, logger: Logger): Unit = {
+           output: WritableVirtualJSFile,
+           logger: Logger): Unit = {
     linkerOp(_.link(irFiles, output, logger))
   }
 
-  def clear(): Unit =
-    _linker = null
+  def clear(): Unit = _linker = null
 
   @inline
-  private[this] def linkerOp[T](op: GenLinker => T): T = {
+  private [ this] def linkerOp[T](op: GenLinker => T): T = {
     ensureLinker()
 
     try {
@@ -84,8 +83,7 @@ final class ClearableLinker(newLinker: () => GenLinker, batchMode: Boolean)
 
       if (_esLevel == null)
         _esLevel = candidate.esLevel
-      else
-        require(_esLevel == candidate.esLevel, "Linker changed ESLevel")
+      else require(_esLevel == candidate.esLevel, "Linker changed ESLevel")
 
       _linker = candidate
     }

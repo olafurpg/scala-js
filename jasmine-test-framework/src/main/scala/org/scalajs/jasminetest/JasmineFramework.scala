@@ -6,13 +6,12 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.jasminetest
 
 import sbt.testing._
 
 final class JasmineFramework extends Framework {
-  private[this] var hasRunner = false
+  private [ this] var hasRunner = false
 
   private object JasmineFingerprint extends SubclassFingerprint {
     val isModule: Boolean = true
@@ -24,23 +23,27 @@ final class JasmineFramework extends Framework {
 
   def fingerprints: Array[Fingerprint] = Array(JasmineFingerprint)
 
-  def runner(args: Array[String], remoteArgs: Array[String],
-      testClassLoader: ClassLoader): Runner = {
+  def runner(args: Array[String],
+             remoteArgs: Array[String],
+             testClassLoader: ClassLoader): Runner = {
     acquireRunner()
     new JasmineRunner(this, args, remoteArgs, testClassLoader)
   }
 
-  def slaveRunner(args: Array[String], remoteArgs: Array[String],
-      testClassLoader: ClassLoader, channel: String => Unit): Runner = {
+  def slaveRunner(args: Array[String],
+                  remoteArgs: Array[String],
+                  testClassLoader: ClassLoader,
+                  channel: String => Unit): Runner = {
     acquireRunner()
     new JasmineRunner(this, args, remoteArgs, testClassLoader)
   }
 
-  private[jasminetest] def runnerDone(): Unit = hasRunner = false
+  private [jasminetest] def runnerDone(): Unit = hasRunner = false
 
   private def acquireRunner(): Unit = {
     if (hasRunner)
-      throw new IllegalStateException("Jasmine doesn't support concurrent runs")
+      throw new IllegalStateException(
+          "Jasmine doesn't support concurrent runs")
     hasRunner = true
   }
 }

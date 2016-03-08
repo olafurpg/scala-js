@@ -7,8 +7,8 @@ trait DequeTest extends CollectionTest {
 }
 
 object DequeFactory {
-  def allFactories: Iterator[DequeFactory] =
-    ArrayDequeFactory.allFactories
+
+  def allFactories: Iterator[DequeFactory] = ArrayDequeFactory.allFactories
 }
 
 trait DequeFactory extends CollectionFactory {

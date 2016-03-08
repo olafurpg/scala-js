@@ -6,8 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
-
 package scala.scalajs.js
 
 /** Methods related to URIs, provided by ECMAScript 5.1. */
@@ -33,5 +31,4 @@ object URIUtils extends GlobalScope {
    *  @see [[decodeURIComponent]]
    */
   def encodeURIComponent(uriComponent: String): String = native
-
 }

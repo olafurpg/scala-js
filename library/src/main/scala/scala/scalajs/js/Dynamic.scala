@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 /**
  * All doc-comments marked as "MDN" are by Mozilla Contributors,
  * distributed under the Creative Commons Attribution-ShareAlike license from
@@ -28,7 +27,7 @@ import annotation.{JSBracketAccess, JSBracketCall}
 sealed trait Dynamic extends Any with scala.Dynamic {
   /** Calls a method of this object. */
   @JSBracketCall
-  def applyDynamic(name: String)(args: Any*): Dynamic = native
+  def applyDynamic(name: String)(args: Any *): Dynamic = native
 
   /** Reads a field of this object. */
   @JSBracketAccess
@@ -39,46 +38,66 @@ sealed trait Dynamic extends Any with scala.Dynamic {
   def updateDynamic(name: String)(value: Any): Unit = native
 
   /** Calls this object as a callable. */
-  def apply(args: Any*): Dynamic = native
+  def apply(args: Any *): Dynamic = native
 
   def unary_!(): Dynamic = native
 
   def unary_+(): Dynamic = native
+
   def unary_-(): Dynamic = native
+
   def unary_~(): Dynamic = native
 
   def +(that: Dynamic): Dynamic = native
+
   def -(that: Dynamic): Dynamic = native
+
   def *(that: Dynamic): Dynamic = native
+
   def /(that: Dynamic): Dynamic = native
+
   def %(that: Dynamic): Dynamic = native
+
   def <<(that: Dynamic): Dynamic = native
+
   def >>(that: Dynamic): Dynamic = native
+
   def >>>(that: Dynamic): Dynamic = native
+
   def &(that: Dynamic): Dynamic = native
+
   def |(that: Dynamic): Dynamic = native
+
   def ^(that: Dynamic): Dynamic = native
 
   def <(that: Dynamic): Dynamic = native
+
   def >(that: Dynamic): Dynamic = native
+
   def <=(that: Dynamic): Dynamic = native
+
   def >=(that: Dynamic): Dynamic = native
 
   def &&(that: Dynamic): Dynamic = native
+
   def ||(that: Dynamic): Dynamic = native
 
   // Work around the annoying implicits in Predef in Scala 2.10.
+
   def x: Dynamic = native
+
   def x_=(value: Any): Unit = native
 }
 
 /** Factory for dynamically typed JavaScript values. */
 object Dynamic {
   /** Dynamic view of the global scope. */
-  @inline def global: Dynamic = scala.scalajs.runtime.environmentInfo.global
+  @inline
+  def global: Dynamic = scala.scalajs.runtime.environmentInfo.global
 
   /** Instantiates a new object of a JavaScript class. */
-  def newInstance(clazz: Dynamic)(args: Any*): Object with Dynamic = sys.error("stub")
+  def newInstance(clazz: Dynamic)(args: Any *): Object with Dynamic =
+    sys.error("stub")
 
   /** Creates a new object with a literal syntax.
    *
@@ -87,12 +106,14 @@ object Dynamic {
    *  returns the JavaScript object
    *    {foo: 3, bar: "foobar"}
    */
-  object literal extends scala.Dynamic { // scalastyle:ignore
+  object literal extends scala.Dynamic {
+
+    // scalastyle:ignore
     /** literal creation like this:
      *  js.Dynamic.literal(name1 = "value", name2 = "value")
      */
     def applyDynamicNamed(name: String)(
-        fields: (String, Any)*): Object with Dynamic = sys.error("stub")
+        fields: (String, Any) *): Object with Dynamic = sys.error("stub")
 
     /** literal creation like this:
      *  js.Dynamic.literal("name1" -> "value", "name2" -> "value")
@@ -102,7 +123,6 @@ object Dynamic {
      *  be routed to the `def apply`, rather than def dynamic version.
      */
     def applyDynamic(name: String)(
-        fields: (String, Any)*): Object with Dynamic = sys.error("stub")
-
+        fields: (String, Any) *): Object with Dynamic = sys.error("stub")
   }
 }

@@ -1,6 +1,7 @@
 package java.nio.charset
 
-class CodingErrorAction private (name: String) {
+class CodingErrorAction private(name: String) {
+
   override def toString(): String = name
 }
 

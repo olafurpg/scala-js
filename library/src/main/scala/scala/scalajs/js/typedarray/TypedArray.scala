@@ -9,7 +9,6 @@ import scala.scalajs.js.annotation.JSBracketAccess
  */
 @js.native
 trait TypedArray[T, Repr] extends ArrayBufferView {
-
   /** The number of elements in this TypedArray */
   val length: Int = js.native
 
@@ -43,7 +42,6 @@ trait TypedArray[T, Repr] extends ArrayBufferView {
 
   /** Create a new TypedArray view of this TypedArray at given location */
   def subarray(begin: Int, end: Int = ???): Repr = js.native
-
 }
 
 /** <span class="badge badge-ecma6" style="float: right;">ECMAScript 6</span>

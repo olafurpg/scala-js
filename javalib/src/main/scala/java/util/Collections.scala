@@ -10,50 +10,49 @@ import scala.annotation.tailrec
 import scala.collection.JavaConversions._
 
 object Collections {
-
   final lazy val EMPTY_SET: Set[_] = {
-    unmodifiableSet(
-      new AbstractSet[Any] with Serializable {
-        override def size(): Int = 0
+    unmodifiableSet(new AbstractSet[Any] with Serializable {
 
-        override def iterator(): Iterator[Any] = emptyIterator[Any]
-      })
+      override def size(): Int = 0
+
+      override def iterator(): Iterator[Any] = emptyIterator[Any]
+    })
   }
 
   final lazy val EMPTY_LIST: List[_] = {
-    unmodifiableList(
-      new AbstractList[Any] with Serializable with RandomAccess {
-        override def get(index: Int): Any =
-          throw new IndexOutOfBoundsException(index.toString)
+    unmodifiableList(new AbstractList[Any]
+    with Serializable with RandomAccess {
 
-        override def size(): Int = 0
-      })
+      override def get(index: Int): Any =
+        throw new IndexOutOfBoundsException(index.toString)
+
+      override def size(): Int = 0
+    })
   }
 
   final lazy val EMPTY_MAP: Map[_, _] = {
-    unmodifiableMap[Any, Any](
-      new AbstractMap[Any, Any] with Serializable {
-        override def entrySet(): Set[Map.Entry[Any, Any]] =
-          EMPTY_SET.asInstanceOf[Set[Map.Entry[Any, Any]]]
-      })
+    unmodifiableMap[Any, Any](new AbstractMap[Any, Any] with Serializable {
+
+      override def entrySet(): Set[Map.Entry[Any, Any]] =
+        EMPTY_SET.asInstanceOf[Set[Map.Entry[Any, Any]]]
+    })
   }
 
-  private lazy val EMPTY_ITERATOR: Iterator[_] =
-    new EmptyIterator
+  private lazy val EMPTY_ITERATOR: Iterator[_] = new EmptyIterator
 
-  private lazy val EMPTY_LIST_ITERATOR: ListIterator[_] =
-    new EmptyListIterator
+  private lazy val EMPTY_LIST_ITERATOR: ListIterator[_] = new EmptyListIterator
 
   private lazy val EMPTY_ENUMERATION: Enumeration[_] = {
     new Enumeration[Any] {
+
       def hasMoreElements: Boolean = false
 
-      def nextElement(): Any =
-        throw new NoSuchElementException
+      def nextElement(): Any = throw new NoSuchElementException
     }
   }
 
   // Differs from original type definition, original: [T <: jl.Comparable[_ >: T]]
+
   def sort[T <: jl.Comparable[T]](list: List[T]): Unit =
     sort(list, naturalComparator[T])
 
@@ -61,7 +60,7 @@ object Collections {
     val sortedList = list.sorted(c)
     list match {
       case list: RandomAccess => copyImpl(sortedList.iterator, list)
-      case _                  => copyImpl(sortedList.iterator, list.listIterator)
+      case _ => copyImpl(sortedList.iterator, list.listIterator)
     }
   }
 
@@ -73,6 +72,7 @@ object Collections {
 
   @inline
   private def binarySearchImpl[E](list: List[E], compareToKey: E => Int): Int = {
+
     def notFound(insertionPoint: Int): Int = {
       -insertionPoint - 1
     }
@@ -91,24 +91,22 @@ object Collections {
     }
 
     list match {
-      case _: RandomAccess =>
-        binarySearch(0, list.size, list(_))
+      case _: RandomAccess => binarySearch(0, list.size, list(_))
 
       case _ =>
+
         def getFrom(iter: ListIterator[E])(index: Int): E = {
           val shift = index - iter.nextIndex
           if (shift > 0)
             (0 until shift).foreach(_ => iter.next())
-          else
-            (0 until -shift).foreach(_ => iter.previous())
+          else (0 until -shift).foreach(_ => iter.previous())
           iter.next()
         }
         binarySearch(0, list.size, getFrom(list.listIterator))
     }
   }
 
-  def reverse(list: List[_]): Unit =
-    reverseImpl(list)
+  def reverse(list: List[_]): Unit = reverseImpl(list)
 
   @inline
   def reverseImpl[T](list: List[T]): Unit = {
@@ -117,8 +115,8 @@ object Collections {
       case list: RandomAccess =>
         for (i <- 0 until size / 2) {
           val tmp = list(i)
-          list(i) = list(size - i - 1)
-          list(size - i - 1) = tmp
+          list (i) = list(size - i - 1)
+          list (size - i - 1) = tmp
         }
 
       case _ =>
@@ -132,11 +130,9 @@ object Collections {
     }
   }
 
-  def shuffle(list: List[_]): Unit =
-    shuffle(list, new Random)
+  def shuffle(list: List[_]): Unit = shuffle(list, new Random)
 
-  def shuffle(list: List[_], rnd: Random): Unit =
-    shuffleImpl(list, rnd)
+  def shuffle(list: List[_], rnd: Random): Unit = shuffleImpl(list, rnd)
 
   @inline
   def shuffleImpl[T](list: List[T], rnd: Random): Unit = {
@@ -144,20 +140,19 @@ object Collections {
     val shuffledList = scalaRnd.shuffle(list.toSeq)
     list match {
       case list: RandomAccess => copyImpl(shuffledList.iterator, list)
-      case _                  => copyImpl(shuffledList.iterator, list.listIterator)
+      case _ => copyImpl(shuffledList.iterator, list.listIterator)
     }
   }
 
-  def swap(list: List[_], i: Int, j: Int): Unit =
-    swapImpl(list, i, j)
+  def swap(list: List[_], i: Int, j: Int): Unit = swapImpl(list, i, j)
 
   @inline
   private def swapImpl[E](list: List[E], i: Int, j: Int): Unit = {
     list match {
       case list: RandomAccess =>
         val tmp = list(i)
-        list(i) = list(j)
-        list(j) = tmp
+        list (i) = list(j)
+        list (j) = tmp
 
       case _ =>
         val it1 = list.listIterator(i)
@@ -172,8 +167,7 @@ object Collections {
 
   def fill[T](list: List[_ >: T], obj: T): Unit = {
     list match {
-      case list: RandomAccess =>
-        (0 until list.size).foreach(list(_) = obj)
+      case list: RandomAccess => (0 until list.size).foreach(list (_) = obj)
 
       case _ =>
         val iter = list.listIterator
@@ -187,30 +181,31 @@ object Collections {
   def copy[T](dest: List[_ >: T], src: List[_ <: T]): Unit = {
     (dest, src) match {
       case (dest: RandomAccess, src: RandomAccess) => copyImpl(src, dest)
-      case (dest: RandomAccess, _)                 => copyImpl(src.iterator, dest)
-      case (_, src: RandomAccess)                  => copyImpl(src, dest.listIterator)
-      case (_, _)                                  => copyImpl(src.iterator, dest.listIterator)
+      case (dest: RandomAccess, _) => copyImpl(src.iterator, dest)
+      case (_, src: RandomAccess) => copyImpl(src, dest.listIterator)
+      case (_, _) => copyImpl(src.iterator, dest.listIterator)
     }
   }
 
   private def copyImpl[T](source: List[_ <: T] with RandomAccess,
-      dest: List[T] with RandomAccess): Unit = {
-    (0 until source.size).foreach(i => dest(i) = source.get(i))
+                          dest: List[T] with RandomAccess): Unit = {
+    (0 until source.size).foreach(i => dest (i) = source.get(i))
   }
 
-  private def copyImpl[T](source: Iterator[_ <: T], dest: List[T] with RandomAccess): Unit = {
+  private def copyImpl[T](
+      source: Iterator[_ <: T], dest: List[T] with RandomAccess): Unit = {
     val destEnd = dest.size()
     var i = 0
     while (source.hasNext) {
       if (i < destEnd)
         dest.set(i, source.next())
-      else
-        throw new IndexOutOfBoundsException
+      else throw new IndexOutOfBoundsException
       i += 1
     }
   }
 
-  private def copyImpl[T](source: List[_ <: T] with RandomAccess, dest: ListIterator[T]): Unit = {
+  private def copyImpl[T](
+      source: List[_ <: T] with RandomAccess, dest: ListIterator[T]): Unit = {
     for (i <- 0 until source.size) {
       if (dest.hasNext) {
         dest.next()
@@ -221,7 +216,8 @@ object Collections {
     }
   }
 
-  private def copyImpl[T](source: Iterator[_ <: T], dest: ListIterator[T]): Unit = {
+  private def copyImpl[T](
+      source: Iterator[_ <: T], dest: ListIterator[T]): Unit = {
     while (source.hasNext) {
       if (dest.hasNext) {
         dest.next()
@@ -233,6 +229,7 @@ object Collections {
   }
 
   // Differs from original type definition, original: [T <: jl.Comparable[_ >: T]]
+
   def min[T <: AnyRef with jl.Comparable[T]](coll: Collection[_ <: T]): T =
     min(coll, naturalComparator[T])
 
@@ -240,32 +237,40 @@ object Collections {
     coll.min(comp)
 
   // Differs from original type definition, original: [T <: jl.Comparable[_ >: T]]
+
   def max[T <: AnyRef with jl.Comparable[T]](coll: Collection[_ <: T]): T =
     max(coll, naturalComparator[T])
 
   def max[T](coll: Collection[_ <: T], comp: Comparator[_ >: T]): T =
     coll.max(comp)
 
-  def rotate(list: List[_], distance: Int): Unit =
-    rotateImpl(list, distance)
+  def rotate(list: List[_], distance: Int): Unit = rotateImpl(list, distance)
 
   private def rotateImpl[T](list: List[T], distance: Int): Unit = {
     val listSize = list.size
     if (listSize > 1 && distance % listSize != 0) {
+
       def exchangeRotation(): Unit = {
+
         def indexModulo(i: Int): Int = modulo(i, listSize)
 
         @tailrec
-        def rotateNext(cycleStartIndex: Int, count: Int, index: Int, value: T): Unit = {
+        def rotateNext(
+            cycleStartIndex: Int, count: Int, index: Int, value: T): Unit = {
           val nextValue = list(index)
           val newCount = count + 1
-          list(index) = value
+          list (index) = value
           if (index != cycleStartIndex) {
-            rotateNext(cycleStartIndex, newCount, indexModulo(index + distance), nextValue)
+            rotateNext(cycleStartIndex,
+                       newCount,
+                       indexModulo(index + distance),
+                       nextValue)
           } else if (newCount < listSize) {
             val nextCycleStart = cycleStartIndex + 1
-            rotateNext(nextCycleStart, newCount, indexModulo(nextCycleStart + distance),
-                list(nextCycleStart))
+            rotateNext(nextCycleStart,
+                       newCount,
+                       indexModulo(nextCycleStart + distance),
+                       list(nextCycleStart))
           }
         }
         rotateNext(0, 0, indexModulo(distance), list(0))
@@ -279,9 +284,10 @@ object Collections {
       }
 
       list match {
-        case _: RandomAccess    => exchangeRotation()
-        case _ if listSize < 16 => exchangeRotation() // TODO benchmark and set proper limit
-        case _                  => splitReverseRotation()
+        case _: RandomAccess => exchangeRotation()
+        case _ if listSize < 16 =>
+          exchangeRotation() // TODO benchmark and set proper limit
+        case _ => splitReverseRotation()
       }
     }
   }
@@ -292,7 +298,7 @@ object Collections {
         var modified = false
         for (i <- list.indices) {
           if (list(i) === oldVal) {
-            list(i) = newVal
+            list (i) = newVal
             modified = true
           }
         }
@@ -321,15 +327,17 @@ object Collections {
     indexOfSubListImpl(source, target, fromStart = false)
 
   @inline
-  private def indexOfSubListImpl(source: List[_], target: List[_],
-      fromStart: Boolean): Int = {
+  private def indexOfSubListImpl(
+      source: List[_], target: List[_], fromStart: Boolean): Int = {
     val targetSize = target.size
     if (targetSize == 0) {
       if (fromStart) 0
       else source.size
     } else {
       val indices = 0 to source.size - targetSize
-      val indicesInOrder = if (fromStart) indices else indices.reverse
+      val indicesInOrder =
+        if (fromStart) indices
+        else indices.reverse
       indicesInOrder.find { i =>
         source.subList(i, i + target.size).equals(target)
       }.getOrElse(-1)
@@ -349,8 +357,7 @@ object Collections {
     list match {
       case _: RandomAccess =>
         new ImmutableList[T](list.asInstanceOf[List[T]]) with RandomAccess
-      case _ =>
-        new ImmutableList[T](list.asInstanceOf[List[T]])
+      case _ => new ImmutableList[T](list.asInstanceOf[List[T]])
     }
   }
 
@@ -379,12 +386,13 @@ object Collections {
   }
 
   def synchronizedList[T](list: List[T]): List[T] = {
+
     class BasicSynchronizedList extends WrappedList[T] {
       override protected val inner: List[T] = list
     }
     list match {
       case _: RandomAccess => new BasicSynchronizedList with RandomAccess
-      case _               => new BasicSynchronizedList
+      case _ => new BasicSynchronizedList
     }
   }
 
@@ -412,15 +420,17 @@ object Collections {
   def checkedList[E](list: List[E], typ: Class[E]): List[E] = {
     list match {
       case _: RandomAccess => new CheckedList[E](list, typ) with RandomAccess
-      case _               => new CheckedList[E](list, typ)
+      case _ => new CheckedList[E](list, typ)
     }
   }
 
-  def checkedMap[K, V](m: Map[K, V], keyType: Class[K], valueType: Class[V]): Map[K, V] =
+  def checkedMap[K, V](
+      m: Map[K, V], keyType: Class[K], valueType: Class[V]): Map[K, V] =
     new CheckedMap[K, V, Map[K, V]](m, keyType, valueType)
 
-  def checkedSortedMap[K, V](m: SortedMap[K, V], keyType: Class[K], valueType: Class[V]): SortedMap[K, V] =
-    new CheckedSortedMap[K, V](m, keyType, valueType)
+  def checkedSortedMap[K, V](
+      m: SortedMap[K, V], keyType: Class[K], valueType: Class[V]): SortedMap[K,
+      V] = new CheckedSortedMap[K, V](m, keyType, valueType)
 
   def emptyIterator[T](): Iterator[T] =
     EMPTY_ITERATOR.asInstanceOf[Iterator[T]]
@@ -431,17 +441,15 @@ object Collections {
   def emptyEnumeration[T](): Enumeration[T] =
     EMPTY_ENUMERATION.asInstanceOf[Enumeration[T]]
 
-  def emptySet[T](): Set[T] =
-    EMPTY_SET.asInstanceOf[Set[T]]
+  def emptySet[T](): Set[T] = EMPTY_SET.asInstanceOf[Set[T]]
 
-  def emptyList[T](): List[T] =
-    EMPTY_LIST.asInstanceOf[List[T]]
+  def emptyList[T](): List[T] = EMPTY_LIST.asInstanceOf[List[T]]
 
-  def emptyMap[K, V](): Map[K, V] =
-    EMPTY_MAP.asInstanceOf[Map[K, V]]
+  def emptyMap[K, V](): Map[K, V] = EMPTY_MAP.asInstanceOf[Map[K, V]]
 
   def singleton[T](o: T): Set[T] = {
     unmodifiableSet(new AbstractSet[T] with Serializable {
+
       def size(): Int = 1
 
       def iterator(): Iterator[T] = {
@@ -457,8 +465,7 @@ object Collections {
             o
           }
 
-          def remove(): Unit =
-            throw new UnsupportedOperationException
+          def remove(): Unit = throw new UnsupportedOperationException
         }
       }
     })
@@ -466,6 +473,7 @@ object Collections {
 
   def singletonList[T](o: T): List[T] = {
     unmodifiableList(new AbstractList[T] with Serializable {
+
       def size(): Int = 1
 
       def get(index: Int): T =
@@ -476,6 +484,7 @@ object Collections {
 
   def singletonMap[K, V](key: K, value: V): Map[K, V] = {
     unmodifiableMap[K, V](new AbstractMap[K, V] with Serializable {
+
       def entrySet(): Set[Map.Entry[K, V]] =
         singleton(new AbstractMap.SimpleImmutableEntry(key, value))
     })
@@ -486,7 +495,9 @@ object Collections {
       throw new IllegalArgumentException
 
     unmodifiableList(new AbstractList[T] with Serializable with RandomAccess {
-      def size(): Int = n
+
+      def size(): Int =
+        n
 
       def get(index: Int): T = {
         if (index < 0 || index >= n)
@@ -498,12 +509,15 @@ object Collections {
 
   def reverseOrder[T](): Comparator[T] = {
     new Comparator[T] with Serializable {
-      def compare(o1: T, o2: T): Int = o2.asInstanceOf[Comparable[T]].compareTo(o1)
+
+      def compare(o1: T, o2: T): Int =
+        o2.asInstanceOf[Comparable[T]].compareTo(o1)
     }
   }
 
   def reverseOrder[T](cmp: Comparator[T]): Comparator[T] = {
     new Comparator[T] with Serializable {
+
       override def compare(o1: T, o2: T): Int = cmp.compare(o2, o1)
     }
   }
@@ -511,11 +525,10 @@ object Collections {
   def enumeration[T](c: Collection[T]): Enumeration[T] = {
     val it = c.iterator
     new Enumeration[T] {
-      override def hasMoreElements: Boolean =
-        it.hasNext
 
-      override def nextElement(): T =
-        it.next()
+      override def hasMoreElements: Boolean = it.hasNext
+
+      override def nextElement(): T = it.next()
     }
   }
 
@@ -525,14 +538,12 @@ object Collections {
     arrayList
   }
 
-  def frequency(c: Collection[_], o: AnyRef): Int =
-    c.count(_ === o)
+  def frequency(c: Collection[_], o: AnyRef): Int = c.count(_ === o)
 
   def disjoint(c1: Collection[_], c2: Collection[_]): Boolean = {
     if (c1.size < c2.size)
       !c1.exists(elem => c2.contains(elem))
-    else
-      !c2.exists(elem => c1.contains(elem))
+    else !c2.exists(elem => c1.contains(elem))
   }
 
   def addAll[T](c: Collection[_ >: T], elements: Array[AnyRef]): Boolean =
@@ -543,11 +554,9 @@ object Collections {
       throw new IllegalArgumentException
 
     new WrappedSet[E, Set[E]] {
-      override protected val inner: Set[E] =
-        map.keySet
+      override protected val inner: Set[E] = map.keySet
 
-      override def add(e: E): Boolean =
-        map.put(e, true) == null
+      override def add(e: E): Boolean = map.put(e, true) == null
 
       override def addAll(c: Collection[_ <: E]): Boolean =
         c.foldLeft(false)((prev, elem) => map.put(elem, true) == null || prev)
@@ -560,13 +569,16 @@ object Collections {
   @inline
   private def naturalComparator[T <: jl.Comparable[T]]: Comparator[T] = {
     new Comparator[T] with Serializable {
+
       final def compare(o1: T, o2: T): Int = o1.compareTo(o2)
     }
   }
 
   @inline
-  private implicit def comparatorToOrdering[E](cmp: Comparator[E]): Ordering[E] = {
+  private implicit def comparatorToOrdering[E](
+      cmp: Comparator[E]): Ordering[E] = {
     new Ordering[E] {
+
       final def compare(x: E, y: E): Int = cmp.compare(x, y)
     }
   }
@@ -574,231 +586,174 @@ object Collections {
   private trait WrappedEquals {
     protected def inner: AnyRef
 
-    override def equals(obj: Any): Boolean =
-      inner.equals(obj)
+    override def equals(obj: Any): Boolean = inner.equals(obj)
 
-    override def hashCode(): Int =
-      inner.hashCode
+    override def hashCode(): Int = inner.hashCode
   }
 
-  private trait WrappedCollection[E, Coll <: Collection[E]]
-      extends Collection[E] with Serializable {
-
+  private trait WrappedCollection[E,
+      Coll <: Collection[E]] extends Collection[E] with Serializable {
     protected def inner: Coll
 
-    def size(): Int =
-      inner.size
+    def size(): Int = inner.size
 
-    def isEmpty: Boolean =
-      inner.isEmpty
+    def isEmpty: Boolean = inner.isEmpty
 
-    def contains(o: Any): Boolean =
-      inner.contains(o)
+    def contains(o: Any): Boolean = inner.contains(o)
 
-    def iterator(): Iterator[E] =
-      inner.iterator
+    def iterator(): Iterator[E] = inner.iterator
 
-    def toArray: Array[AnyRef] =
-      inner.toArray()
+    def toArray: Array[AnyRef] = inner.toArray()
 
-    def toArray[T <: AnyRef](a: Array[T]): Array[T] =
-      inner.toArray[T](a)
+    def toArray[T <: AnyRef](a: Array[T]): Array[T] = inner.toArray[T](a)
 
-    def add(e: E): Boolean =
-      inner.add(e)
+    def add(e: E): Boolean = inner.add(e)
 
-    def remove(o: Any): Boolean =
-      inner.remove(o)
+    def remove(o: Any): Boolean = inner.remove(o)
 
-    def containsAll(c: Collection[_]): Boolean =
-      inner.containsAll(c)
+    def containsAll(c: Collection[_]): Boolean = inner.containsAll(c)
 
-    def addAll(c: Collection[_ <: E]): Boolean =
-      inner.addAll(c)
+    def addAll(c: Collection[_ <: E]): Boolean = inner.addAll(c)
 
-    def removeAll(c: Collection[_]): Boolean =
-      inner.removeAll(c)
+    def removeAll(c: Collection[_]): Boolean = inner.removeAll(c)
 
-    def retainAll(c: Collection[_]): Boolean =
-      inner.retainAll(c)
+    def retainAll(c: Collection[_]): Boolean = inner.retainAll(c)
 
-    def clear(): Unit =
-      inner.clear()
+    def clear(): Unit = inner.clear()
 
-    override def toString: String =
-      inner.toString
+    override def toString: String = inner.toString
   }
 
-  private trait WrappedSet[E, Coll <: Set[E]]
-      extends WrappedEquals with WrappedCollection[E, Coll] with Set[E]
+  private trait WrappedSet[E, Coll <: Set[E]] extends WrappedEquals
+      with WrappedCollection[E, Coll] with Set[E]
 
-  private trait WrappedSortedSet[E]
-      extends WrappedSet[E, SortedSet[E]] with SortedSet[E] {
+  private trait WrappedSortedSet[E] extends WrappedSet[E, SortedSet[E]]
+      with SortedSet[E] {
 
-    def comparator(): Comparator[_ >: E] =
-      inner.comparator()
+    def comparator(): Comparator[_ >: E] = inner.comparator()
 
     def subSet(fromElement: E, toElement: E): SortedSet[E] =
       inner.subSet(fromElement, toElement)
 
-    def tailSet(fromElement: E): SortedSet[E] =
-      inner.tailSet(fromElement)
+    def tailSet(fromElement: E): SortedSet[E] = inner.tailSet(fromElement)
 
-    def headSet(toElement: E): SortedSet[E] =
-      inner.headSet(toElement)
+    def headSet(toElement: E): SortedSet[E] = inner.headSet(toElement)
 
-    def first(): E =
-      inner.first
+    def first(): E = inner.first
 
-    def last(): E =
-      inner.last
+    def last(): E = inner.last
   }
 
-  private trait WrappedList[E]
-      extends WrappedEquals with WrappedCollection[E, List[E]] with List[E] {
+  private trait WrappedList[E] extends WrappedEquals
+      with WrappedCollection[E, List[E]] with List[E] {
 
     def addAll(index: Int, c: Collection[_ <: E]): Boolean =
       inner.addAll(index, c)
 
-    def get(index: Int): E =
-      inner.get(index)
+    def get(index: Int): E = inner.get(index)
 
-    def set(index: Int, element: E): E =
-      inner.set(index, element)
+    def set(index: Int, element: E): E = inner.set(index, element)
 
-    def add(index: Int, element: E): Unit =
-      inner.add(index, element)
+    def add(index: Int, element: E): Unit = inner.add(index, element)
 
-    def remove(index: Int): E =
-      inner.remove(index)
+    def remove(index: Int): E = inner.remove(index)
 
-    def indexOf(o: scala.Any): Int =
-      inner.indexOf(o)
+    def indexOf(o: scala.Any): Int = inner.indexOf(o)
 
-    def lastIndexOf(o: scala.Any): Int =
-      inner.lastIndexOf(o)
+    def lastIndexOf(o: scala.Any): Int = inner.lastIndexOf(o)
 
-    def listIterator(): ListIterator[E] =
-      inner.listIterator()
+    def listIterator(): ListIterator[E] = inner.listIterator()
 
-    def listIterator(index: Int): ListIterator[E] =
-      inner.listIterator(index)
+    def listIterator(index: Int): ListIterator[E] = inner.listIterator(index)
 
     def subList(fromIndex: Int, toIndex: Int): List[E] =
       inner.subList(fromIndex, toIndex)
   }
 
-  private trait WrappedMap[K, V, M <: Map[K, V]]
-      extends WrappedEquals with Map[K, V] {
-
+  private trait WrappedMap[K, V, M <: Map[K, V]] extends WrappedEquals
+      with Map[K, V] {
     protected def inner: M
 
-    def size(): Int =
-      inner.size()
+    def size(): Int = inner.size()
 
-    def isEmpty: Boolean =
-      inner.isEmpty
+    def isEmpty: Boolean = inner.isEmpty
 
-    def containsKey(key: scala.Any): Boolean =
-      inner.containsKey(key)
+    def containsKey(key: scala.Any): Boolean = inner.containsKey(key)
 
-    def containsValue(value: scala.Any): Boolean =
-      inner.containsValue(value)
+    def containsValue(value: scala.Any): Boolean = inner.containsValue(value)
 
-    def get(key: scala.Any): V =
-      inner.get(key)
+    def get(key: scala.Any): V = inner.get(key)
 
-    def put(key: K, value: V): V =
-      inner.put(key, value)
+    def put(key: K, value: V): V = inner.put(key, value)
 
-    def remove(key: scala.Any): V =
-      inner.remove(key)
+    def remove(key: scala.Any): V = inner.remove(key)
 
-    def putAll(m: Map[_ <: K, _ <: V]): Unit =
-      inner.putAll(m)
+    def putAll(m: Map[_ <: K, _ <: V]): Unit = inner.putAll(m)
 
-    def clear(): Unit =
-      inner.clear()
+    def clear(): Unit = inner.clear()
 
-    def keySet(): Set[K] =
-      inner.keySet
+    def keySet(): Set[K] = inner.keySet
 
-    def values(): Collection[V] =
-      inner.values
+    def values(): Collection[V] = inner.values
 
     def entrySet(): Set[Map.Entry[K, V]] =
       inner.entrySet.asInstanceOf[Set[Map.Entry[K, V]]]
 
-    override def toString(): String =
-      inner.toString
+    override def toString(): String = inner.toString
   }
 
-  private trait WrappedSortedMap[K, V]
-      extends WrappedMap[K, V, SortedMap[K, V]] with SortedMap[K, V] {
-    def comparator(): Comparator[_ >: K] =
-      inner.comparator
+  private trait WrappedSortedMap[K,
+      V] extends WrappedMap[K, V, SortedMap[K, V]] with SortedMap[K, V] {
+
+    def comparator(): Comparator[_ >: K] = inner.comparator
 
     def subMap(fromKey: K, toKey: K): SortedMap[K, V] =
       inner.subMap(fromKey, toKey)
 
-    def headMap(toKey: K): SortedMap[K, V] =
-      inner.headMap(toKey)
+    def headMap(toKey: K): SortedMap[K, V] = inner.headMap(toKey)
 
-    def tailMap(fromKey: K): SortedMap[K, V] =
-      inner.tailMap(fromKey)
+    def tailMap(fromKey: K): SortedMap[K, V] = inner.tailMap(fromKey)
 
-    def firstKey(): K =
-      inner.firstKey
+    def firstKey(): K = inner.firstKey
 
-    def lastKey(): K =
-      inner.lastKey
+    def lastKey(): K = inner.lastKey
   }
 
   private trait WrappedIterator[E, Iter <: Iterator[E]] extends Iterator[E] {
     protected def inner: Iter
 
-    def hasNext(): Boolean =
-      inner.hasNext
+    def hasNext(): Boolean = inner.hasNext
 
-    def next(): E =
-      inner.next()
+    def next(): E = inner.next()
 
-    def remove(): Unit =
-      inner.remove()
+    def remove(): Unit = inner.remove()
   }
 
-  private trait WrappedListIterator[E]
-      extends WrappedIterator[E, ListIterator[E]] with ListIterator[E] {
-    def hasPrevious(): Boolean =
-      inner.hasPrevious
+  private trait WrappedListIterator[E] extends WrappedIterator[
+          E, ListIterator[E]] with ListIterator[E] {
 
-    def previous(): E =
-      inner.previous()
+    def hasPrevious(): Boolean = inner.hasPrevious
 
-    def nextIndex(): Int =
-      inner.nextIndex
+    def previous(): E = inner.previous()
 
-    def previousIndex(): Int =
-      inner.previousIndex
+    def nextIndex(): Int = inner.nextIndex
 
-    def set(e: E): Unit =
-      inner.set(e)
+    def previousIndex(): Int = inner.previousIndex
 
-    def add(e: E): Unit =
-      inner.add(e)
+    def set(e: E): Unit = inner.set(e)
+
+    def add(e: E): Unit = inner.add(e)
   }
 
   private class ImmutableCollection[E, Coll <: Collection[E]](
       protected val inner: Coll) extends WrappedCollection[E, Coll] {
 
-    override def clear(): Unit =
-      throw new UnsupportedOperationException
+    override def clear(): Unit = throw new UnsupportedOperationException
 
     override def iterator(): Iterator[E] =
       new ImmutableIterator(inner.iterator)
 
-    override def add(e: E): Boolean =
-      throw new UnsupportedOperationException
+    override def add(e: E): Boolean = throw new UnsupportedOperationException
 
     override def remove(o: Any): Boolean =
       throw new UnsupportedOperationException
@@ -844,8 +799,8 @@ object Collections {
       unmodifiableList(super.subList(fromIndex, toIndex))
   }
 
-  private class ImmutableMap[K, V, M <: Map[K, V]](
-      protected val inner: M) extends WrappedMap[K, V, M] {
+  private class ImmutableMap[K, V, M <: Map[K, V]](protected val inner: M)
+      extends WrappedMap[K, V, M] {
 
     override def put(key: K, value: V): V =
       throw new UnsupportedOperationException
@@ -856,21 +811,19 @@ object Collections {
     override def putAll(m: Map[_ <: K, _ <: V]): Unit =
       throw new UnsupportedOperationException
 
-    override def clear(): Unit =
-      throw new UnsupportedOperationException
+    override def clear(): Unit = throw new UnsupportedOperationException
 
-    override def keySet(): Set[K] =
-      unmodifiableSet(super.keySet)
+    override def keySet(): Set[K] = unmodifiableSet(super.keySet)
 
-    override def values(): Collection[V] =
-      unmodifiableCollection(super.values)
+    override def values(): Collection[V] = unmodifiableCollection(super.values)
 
     override def entrySet(): Set[Map.Entry[K, V]] =
       unmodifiableSet(super.entrySet)
   }
 
   private class ImmutableSortedMap[K, V](inner: SortedMap[K, V])
-      extends ImmutableMap[K, V, SortedMap[K, V]](inner) with WrappedSortedMap[K, V] {
+      extends ImmutableMap[K, V, SortedMap[K, V]](inner)
+      with WrappedSortedMap[K, V] {
 
     override def subMap(fromKey: K, toKey: K): SortedMap[K, V] =
       unmodifiableSortedMap(super.subMap(fromKey, toKey))
@@ -882,14 +835,16 @@ object Collections {
       unmodifiableSortedMap(super.tailMap(fromKey))
   }
 
-  private class ImmutableIterator[E, Iter <: Iterator[E]](protected val inner: Iter)
-      extends WrappedIterator[E, Iter] {
+  private class ImmutableIterator[E, Iter <: Iterator[E]](
+      protected val inner: Iter) extends WrappedIterator[E, Iter] {
+
     override def remove(): Unit = throw new UnsupportedOperationException
   }
 
   private class ImmutableListIterator[E](innerIterator: ListIterator[E])
       extends ImmutableIterator[E, ListIterator[E]](innerIterator)
       with WrappedListIterator[E] {
+
     override def set(e: E): Unit = throw new UnsupportedOperationException
 
     override def add(e: E): Unit = throw new UnsupportedOperationException
@@ -912,15 +867,16 @@ object Collections {
       super.addAll(c)
     }
 
-    protected final def checkElem(elem: E) =
-      checkClass(elem, elemClazz)
+    protected final def checkElem(elem: E) = checkClass(elem, elemClazz)
   }
 
   private class CheckedSet[E, Coll <: Set[E]](inner: Coll, elemClazz: Class[E])
-      extends CheckedCollection[E, Coll](inner, elemClazz) with WrappedSet[E, Coll]
+      extends CheckedCollection[E, Coll](inner, elemClazz)
+      with WrappedSet[E, Coll]
 
   private class CheckedSortedSet[E](inner: SortedSet[E], elemClazz: Class[E])
-      extends CheckedSet[E, SortedSet[E]](inner, elemClazz) with WrappedSortedSet[E] {
+      extends CheckedSet[E, SortedSet[E]](inner, elemClazz)
+      with WrappedSortedSet[E] {
 
     override def subSet(fromElement: E, toElement: E): SortedSet[E] =
       checkedSortedSet(super.subSet(fromElement, toElement), this.elemClazz)
@@ -933,7 +889,8 @@ object Collections {
   }
 
   private class CheckedList[E](inner: List[E], elemClazz: Class[E])
-      extends CheckedCollection[E, List[E]](inner, elemClazz) with WrappedList[E] {
+      extends CheckedCollection[E, List[E]](inner, elemClazz)
+      with WrappedList[E] {
 
     override def addAll(index: Int, c: Collection[_ <: E]): Boolean = {
       c.foreach(checkElem)
@@ -953,14 +910,18 @@ object Collections {
     override def listIterator(): ListIterator[E] = listIterator(0)
 
     override def listIterator(index: Int): ListIterator[E] =
-      new CheckedListIterator[E](this.inner.listIterator(index), this.elemClazz)
+      new CheckedListIterator[E](
+          this.inner.listIterator(index), this.elemClazz)
 
     override def subList(fromIndex: Int, toIndex: Int): List[E] =
       checkedList(super.subList(fromIndex, toIndex), this.elemClazz)
   }
 
-  private class CheckedMap[K, V, M <: Map[K, V]](protected val inner: M, protected val keyClazz: Class[K],
-      protected val valueClazz: Class[V]) extends WrappedMap[K, V, M] {
+  private class CheckedMap[K, V, M <: Map[K, V]](
+      protected val inner: M,
+      protected val keyClazz: Class[K],
+      protected val valueClazz: Class[V])
+      extends WrappedMap[K, V, M] {
 
     override def put(key: K, value: V): V = {
       checkKeyAndValue(key, value)
@@ -968,39 +929,39 @@ object Collections {
     }
 
     override def putAll(m: Map[_ <: K, _ <: V]): Unit = {
-      m.entrySet().foreach(entry => checkKeyAndValue(entry.getKey, entry.getValue))
+      m.entrySet().foreach(entry =>
+        checkKeyAndValue(entry.getKey, entry.getValue))
       super.putAll(m)
     }
 
     override def entrySet(): Set[Map.Entry[K, V]] = {
       val innerSet = super.entrySet()
       new WrappedSet[Map.Entry[K, V], Set[Map.Entry[K, V]]] {
+
         protected def inner: Set[Map.Entry[K, V]] = innerSet
 
         override def iterator(): Iterator[Map.Entry[K, V]] = {
           val innerIterator = super.iterator()
           new WrappedIterator[Map.Entry[K, V], Iterator[Map.Entry[K, V]]] {
+
             protected def inner: Iterator[Map.Entry[K, V]] = innerIterator
 
             override def next(): Map.Entry[K, V] = {
               val nextEntry = super.next()
               new Map.Entry[K, V] {
-                def getKey(): K =
-                  nextEntry.getKey()
 
-                def getValue(): V =
-                  nextEntry.getValue()
+                def getKey(): K = nextEntry.getKey()
+
+                def getValue(): V = nextEntry.getValue()
 
                 def setValue(value: V): V = {
                   checkClass(value, valueClazz)
                   nextEntry.setValue(value)
                 }
 
-                override def equals(o: Any): Boolean =
-                  nextEntry.equals(o)
+                override def equals(o: Any): Boolean = nextEntry.equals(o)
 
-                override def hashCode(): Int =
-                  nextEntry.hashCode()
+                override def hashCode(): Int = nextEntry.hashCode()
               }
             }
           }
@@ -1029,8 +990,10 @@ object Collections {
       checkedSortedMap(super.tailMap(fromKey), keyClazz, valueClazz)
   }
 
-  private class CheckedListIterator[E](protected val inner: ListIterator[E],
-      protected val elemClazz: Class[E]) extends WrappedListIterator[E] {
+  private class CheckedListIterator[E](
+      protected val inner: ListIterator[E], protected val elemClazz: Class[E])
+      extends WrappedListIterator[E] {
+
     override def set(e: E): Unit = {
       checkElem(e)
       super.set(e)
@@ -1047,29 +1010,27 @@ object Collections {
   }
 
   private class EmptyIterator extends Iterator[Any] {
+
     def hasNext(): Boolean = false
 
-    def next(): Any =
-      throw new NoSuchElementException
+    def next(): Any = throw new NoSuchElementException
 
-    def remove(): Unit =
-      throw new IllegalStateException
+    def remove(): Unit = throw new IllegalStateException
   }
 
-  private class EmptyListIterator extends EmptyIterator with ListIterator[Any] {
+  private class EmptyListIterator
+      extends EmptyIterator with ListIterator[Any] {
+
     def hasPrevious(): Boolean = false
 
-    def previous(): Any =
-      throw new NoSuchElementException
+    def previous(): Any = throw new NoSuchElementException
 
     def nextIndex(): Int = 0
 
     def previousIndex(): Int = -1
 
-    def set(e: Any): Unit =
-      throw new IllegalStateException
+    def set(e: Any): Unit = throw new IllegalStateException
 
-    def add(e: Any): Unit =
-      throw new UnsupportedOperationException
+    def add(e: Any): Unit = throw new UnsupportedOperationException
   }
 }

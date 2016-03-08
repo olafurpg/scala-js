@@ -29,14 +29,14 @@ object ArrayBufferInputStreamTest extends JasmineTest {
     a.toJSArray
   }
 
-  when("typedarray").
-  describe("scala.scalajs.js.typedarray.ArrayBufferInputStream") {
-    byteArrayInputStreamLikeTests(seq => new ArrayBufferInputStream(
-        new Int8Array(seq).buffer))
+  when("typedarray")
+    .describe("scala.scalajs.js.typedarray.ArrayBufferInputStream") {
+    byteArrayInputStreamLikeTests(
+        seq => new ArrayBufferInputStream(new Int8Array(seq).buffer))
   }
 
-  when("typedarray").
-  describe("scala.scalajs.js.typedarray.ArrayBufferInputStream - with offset") {
+  when("typedarray").describe(
+      "scala.scalajs.js.typedarray.ArrayBufferInputStream - with offset") {
     byteArrayInputStreamLikeTests { seq =>
       val off = 100
       val data = new Int8Array(seq.size + off)
@@ -48,16 +48,15 @@ object ArrayBufferInputStreamTest extends JasmineTest {
 
   def byteArrayInputStreamLikeTests(mkStream: Seq[Int] => InputStream): Unit = {
     val length = 50
+
     def newStream = mkStream(1 to length)
 
     it("should provide `read()`") {
       val stream = newStream
 
-      for (i <- 1 to length)
-        expect(stream.read()).toBe(i)
+      for (i <- 1 to length) expect(stream.read()).toBe(i)
 
-      for (_ <- 1 to 5)
-        expect(stream.read()).toBe(-1)
+      for (_ <- 1 to 5) expect(stream.read()).toBe(-1)
     }
 
     it("should provide `read(buf)`") {
@@ -101,7 +100,7 @@ object ArrayBufferInputStreamTest extends JasmineTest {
       expect(buf).toEqual((46 to 50) ++ (11 to 25))
 
       expect(stream.read(buf, 0, 10)).toBe(-1)
-      expect(stream.read(buf, 0,  0)).toBe(0)
+      expect(stream.read(buf, 0, 0)).toBe(0)
       expect(buf).toEqual((46 to 50) ++ (11 to 25))
     }
 
@@ -109,6 +108,7 @@ object ArrayBufferInputStreamTest extends JasmineTest {
       val stream = newStream
 
       def mySkip(n: Int) = for (_ <- 1 to n) expect(stream.read()).not.toBe(-1)
+
       def check(n: Int) = expect(stream.available).toBe(n)
 
       check(50)
@@ -127,8 +127,7 @@ object ArrayBufferInputStreamTest extends JasmineTest {
 
       expect(stream.skip(7)).toBe(7)
 
-      for (i <- 8 to 32)
-        expect(stream.read()).toBe(i)
+      for (i <- 8 to 32) expect(stream.read()).toBe(i)
 
       expect(stream.skip(0)).toBe(0)
       expect(stream.read()).toBe(33)
@@ -158,7 +157,7 @@ object ArrayBufferInputStreamTest extends JasmineTest {
       def read(range: Range) = for (i <- range) expect(stream.read()).toBe(i)
 
       read(1 to 10)
-      stream.reset()  // mark must be 0 at creation
+      stream.reset() // mark must be 0 at creation
       read(1 to 5)
       stream.mark(length)
       read(6 to 22)

@@ -11,11 +11,10 @@ import org.junit.Test
 import org.junit.Assert._
 
 class ByteTest {
-
   @Test
   def `should_always_be_in_their_range`(): Unit = {
-    def test(x: Int, y: Byte): Unit =
-      assertEquals(y, x.toByte)
+
+    def test(x: Int, y: Byte): Unit = assertEquals(y, x.toByte)
 
     test(0, 0)
     test(127, 127)
@@ -28,10 +27,9 @@ class ByteTest {
     test(65536, 0)
     test(32768, 0)
 
-    def testC(x: Char, y: Byte): Unit =
-      assertEquals(y, x.toByte)
+    def testC(x: Char, y: Byte): Unit = assertEquals(y, x.toByte)
 
-    testC(-1.toChar, -1)
+    testC(- 1.toChar, -1)
     testC(200.toChar, -56)
   }
 }

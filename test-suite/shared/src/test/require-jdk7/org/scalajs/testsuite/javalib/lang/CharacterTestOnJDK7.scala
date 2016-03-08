@@ -11,7 +11,6 @@ import org.junit.Test
 import org.junit.Assert._
 
 class CharacterTestOnJDK7 {
-
   @Test
   def shouldProvideIsBmpCodePoint(): Unit = {
     // 50 randomly chosen characters that produce true

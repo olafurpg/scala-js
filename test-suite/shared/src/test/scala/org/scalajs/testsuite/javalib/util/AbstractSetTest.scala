@@ -14,8 +14,8 @@ abstract class AbstractSetTest extends SetTest {
 }
 
 object AbstractSetFactory {
-  def allFactories: Iterator[AbstractSetFactory] =
-    HashSetFactory.allFactories
+
+  def allFactories: Iterator[AbstractSetFactory] = HashSetFactory.allFactories
 }
 
 trait AbstractSetFactory extends SetFactory {

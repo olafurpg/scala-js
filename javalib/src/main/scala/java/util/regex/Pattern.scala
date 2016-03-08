@@ -4,17 +4,17 @@ import scala.annotation.switch
 
 import scala.scalajs.js
 
-final class Pattern private (jsRegExp: js.RegExp, _pattern: String, _flags: Int)
+final class Pattern private(jsRegExp: js.RegExp, _pattern: String, _flags: Int)
     extends Serializable {
-
   import Pattern._
 
   def pattern(): String = _pattern
+
   def flags(): Int = _flags
 
   override def toString(): String = pattern
 
-  private[regex] def newJSRegExp(): js.RegExp = {
+  private [regex] def newJSRegExp(): js.RegExp = {
     val r = new js.RegExp(jsRegExp)
     if (r ne jsRegExp) {
       r
@@ -27,9 +27,12 @@ final class Pattern private (jsRegExp: js.RegExp, _pattern: String, _flags: Int)
        * jsRegExp and create a new one from there.
        */
       val jsFlags = {
-        (if (jsRegExp.global) "g" else "") +
-        (if (jsRegExp.ignoreCase) "i" else "") +
-        (if (jsRegExp.multiline) "m" else "")
+        (if (jsRegExp.global) "g"
+         else "") +
+        (if (jsRegExp.ignoreCase) "i"
+            else "") +
+        (if (jsRegExp.multiline) "m"
+            else "")
       }
       new js.RegExp(jsRegExp.source, jsFlags)
     }
@@ -38,11 +41,12 @@ final class Pattern private (jsRegExp: js.RegExp, _pattern: String, _flags: Int)
   def matcher(input: CharSequence): Matcher =
     new Matcher(this, input, 0, input.length)
 
-  def split(input: CharSequence): Array[String] =
-    split(input, 0)
+  def split(input: CharSequence): Array[String] = split(input, 0)
 
   def split(input: CharSequence, limit: Int): Array[String] = {
-    val lim = if (limit > 0) limit else Int.MaxValue
+    val lim =
+      if (limit > 0) limit
+      else Int.MaxValue
 
     val result = js.Array[String]()
     val inputStr = input.toString
@@ -50,7 +54,7 @@ final class Pattern private (jsRegExp: js.RegExp, _pattern: String, _flags: Int)
     var prevEnd = 0
 
     // Actually split original string
-    while ((result.length < lim-1) && matcher.find()) {
+    while ((result.length < lim - 1) && matcher.find()) {
       result.push(inputStr.substring(prevEnd, matcher.start))
       prevEnd = matcher.end
     }
@@ -63,8 +67,7 @@ final class Pattern private (jsRegExp: js.RegExp, _pattern: String, _flags: Int)
     } else {
       var len = result.length
       if (limit == 0) {
-        while (len > 1 && result(len-1).isEmpty)
-          len -= 1
+        while (len > 1 && result(len - 1).isEmpty) len -= 1
       }
 
       val actualResult = new Array[String](len)
@@ -90,16 +93,17 @@ object Pattern {
       if ((flags & LITERAL) != 0) {
         (quote(regex), flags)
       } else {
-        trySplitHack(regex, flags) orElse
-        tryFlagHack(regex, flags) getOrElse
+        trySplitHack(regex, flags) orElse tryFlagHack(regex, flags) getOrElse
         (regex, flags)
       }
     }
 
     val jsFlags = {
       "g" +
-      (if ((flags1 & CASE_INSENSITIVE) != 0) "i" else "") +
-      (if ((flags1 & MULTILINE) != 0) "m" else "")
+      (if ((flags1 & CASE_INSENSITIVE) != 0) "i"
+          else "") +
+      (if ((flags1 & MULTILINE) != 0) "m"
+          else "")
     }
 
     val jsRegExp = new js.RegExp(jsPattern, jsFlags)
@@ -107,8 +111,7 @@ object Pattern {
     new Pattern(jsRegExp, regex, flags1)
   }
 
-  def compile(regex: String): Pattern =
-    compile(regex, 0)
+  def compile(regex: String): Pattern = compile(regex, 0)
 
   def matches(regex: String, input: CharSequence): Boolean =
     compile(regex).matcher(input).matches()
@@ -118,9 +121,10 @@ object Pattern {
     var i = 0
     while (i < s.length) {
       val c = s.charAt(i)
-      result += ((c: @switch) match {
-        case '\\' | '.' | '(' | ')' | '[' | ']' | '{' | '}' | '|'
-          | '?' | '*' | '+' | '^' | '$' => "\\"+c
+      result +=
+      ((c: @switch) match {
+        case '\\' | '.' | '(' | ')' | '[' | ']' | '{' | '}' | '|' | '?' | '*' | '+' | '^' | '$' =>
+          "\\" + c
         case _ => c
       })
       i += 1
@@ -136,36 +140,40 @@ object Pattern {
     val m = splitHackPat.exec(pat)
     if (m != null)
       Some((quote(m(1).get), flags))
-    else
-      None
+    else None
   }
 
   @inline
   private def tryFlagHack(pat: String, flags0: Int) = {
     val m = flagHackPat.exec(pat)
     if (m != null) {
-      val newPat = pat.substring(m(0).get.length) // cut off the flag specifiers
+      val newPat =
+        pat.substring(m(0).get.length) // cut off the flag specifiers
       val flags1 = m(1).fold(flags0) { chars =>
-        chars.foldLeft(flags0) { (f, c) => f | charToFlag(c) }
+        chars.foldLeft(flags0) { (f, c) =>
+          f | charToFlag(c)
+        }
       }
       val flags2 = m(2).fold(flags1) { chars =>
-        chars.foldLeft(flags1) { (f, c) => f & ~charToFlag(c) }
+        chars.foldLeft(flags1) { (f, c) =>
+          f & ~charToFlag(c)
+        }
       }
       Some((newPat, flags2))
-    } else
-      None
+    } else None
   }
 
-  private def charToFlag(c: Char) = (c: @switch) match {
-    case 'i' => CASE_INSENSITIVE
-    case 'd' => UNIX_LINES
-    case 'm' => MULTILINE
-    case 's' => DOTALL
-    case 'u' => UNICODE_CASE
-    case 'x' => COMMENTS
-    case 'U' => UNICODE_CHARACTER_CLASS
-    case _   => sys.error("bad in-pattern flag")
-  }
+  private def charToFlag(c: Char) =
+    (c: @switch) match {
+      case 'i' => CASE_INSENSITIVE
+      case 'd' => UNIX_LINES
+      case 'm' => MULTILINE
+      case 's' => DOTALL
+      case 'u' => UNICODE_CASE
+      case 'x' => COMMENTS
+      case 'U' => UNICODE_CHARACTER_CLASS
+      case _ => sys.error("bad in-pattern flag")
+    }
 
   /** matches \Q<char>\E to support StringLike.split */
   private val splitHackPat = new js.RegExp("^\\\\Q(.|\\n|\\r)\\\\E$")

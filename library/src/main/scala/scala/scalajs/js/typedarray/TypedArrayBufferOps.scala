@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package scala.scalajs.js.typedarray
 
 import scala.language.implicitConversions
@@ -21,8 +20,9 @@ import java.nio._
  *  elements in the buffer.
  */
 final class TypedArrayBufferOps[ // scalastyle:ignore
-    TypedArrayType <: TypedArray[_, TypedArrayType]](
-    val buffer: Buffer) extends AnyVal {
+    TypedArrayType <: TypedArray[_, TypedArrayType]](val buffer: Buffer)
+    extends AnyVal {
+
   /** Tests whether this buffer has a valid associated [[ArrayBuffer]].
    *
    *  This is true iff the buffer is direct and not read-only.
@@ -54,8 +54,7 @@ final class TypedArrayBufferOps[ // scalastyle:ignore
    *  @throws UnsupportedOperationException
    *    If this buffer has no backing [[ArrayBuffer]], i.e., !hasArrayBuffer()
    */
-  def dataView(): DataView =
-    TypedArrayBufferBridge.Buffer_dataView(buffer)
+  def dataView(): DataView = TypedArrayBufferBridge.Buffer_dataView(buffer)
 
   /** Tests whether this direct buffer has a valid associated [[TypedArray]].
    *
@@ -80,34 +79,44 @@ final class TypedArrayBufferOps[ // scalastyle:ignore
    *    If this buffer does not have a backing [[TypedArray]], i.e., !hasTypedArray().
    */
   def typedArray(): TypedArrayType =
-    TypedArrayBufferBridge.Buffer_typedArray(buffer).asInstanceOf[TypedArrayType]
+    TypedArrayBufferBridge
+      .Buffer_typedArray(buffer).asInstanceOf[TypedArrayType]
 }
 
 /** Extensions to [[java.nio.Buffer Buffer]]s for interoperability with
  *  JavaScript Typed Arrays.
  */
 object TypedArrayBufferOps {
-  implicit def bufferOps(buffer: Buffer): TypedArrayBufferOps[_ <: TypedArray[_, _]] =
+
+  implicit def bufferOps(
+      buffer: Buffer): TypedArrayBufferOps[_ <: TypedArray[_, _]] =
     new TypedArrayBufferOps(buffer)
 
-  implicit def byteBufferOps(buffer: ByteBuffer): TypedArrayBufferOps[Int8Array] =
+  implicit def byteBufferOps(
+      buffer: ByteBuffer): TypedArrayBufferOps[Int8Array] =
     new TypedArrayBufferOps(buffer)
 
-  implicit def charBufferOps(buffer: CharBuffer): TypedArrayBufferOps[Uint16Array] =
+  implicit def charBufferOps(
+      buffer: CharBuffer): TypedArrayBufferOps[Uint16Array] =
     new TypedArrayBufferOps(buffer)
 
-  implicit def shortBufferOps(buffer: ShortBuffer): TypedArrayBufferOps[Int16Array] =
+  implicit def shortBufferOps(
+      buffer: ShortBuffer): TypedArrayBufferOps[Int16Array] =
     new TypedArrayBufferOps(buffer)
 
-  implicit def intBufferOps(buffer: IntBuffer): TypedArrayBufferOps[Int32Array] =
+  implicit def intBufferOps(
+      buffer: IntBuffer): TypedArrayBufferOps[Int32Array] =
     new TypedArrayBufferOps(buffer)
 
-  implicit def longBufferOps(buffer: LongBuffer): TypedArrayBufferOps[Nothing] =
+  implicit def longBufferOps(
+      buffer: LongBuffer): TypedArrayBufferOps[Nothing] =
     new TypedArrayBufferOps(buffer)
 
-  implicit def floatBufferOps(buffer: FloatBuffer): TypedArrayBufferOps[Float32Array] =
+  implicit def floatBufferOps(
+      buffer: FloatBuffer): TypedArrayBufferOps[Float32Array] =
     new TypedArrayBufferOps(buffer)
 
-  implicit def doubleBufferOps(buffer: DoubleBuffer): TypedArrayBufferOps[Float64Array] =
+  implicit def doubleBufferOps(
+      buffer: DoubleBuffer): TypedArrayBufferOps[Float64Array] =
     new TypedArrayBufferOps(buffer)
 }

@@ -23,13 +23,13 @@ import java.io.InputStream
  *  @param offset Offset in bytes in [[buffer]]
  *  @param length Length in bytes in [[buffer]]
  */
-class ArrayBufferInputStream(val buffer: ArrayBuffer, val offset: Int,
-    val length: Int) extends InputStream {
-
+class ArrayBufferInputStream(
+    val buffer: ArrayBuffer, val offset: Int, val length: Int)
+    extends InputStream {
   /** Convenience constructor. Strictly equivalent to
    *  {{new ArrayBufferInputStream(buffer, 0, buffer.byteLength)}
    */
-  def this(buffer: ArrayBuffer) = this(buffer, 0, buffer.byteLength)
+  def this (buffer: ArrayBuffer) = this(buffer, 0, buffer.byteLength)
 
   private val uintView = new Uint8Array(buffer, offset, length)
   private val byteView = new Int8Array(buffer, offset, length)
@@ -41,13 +41,18 @@ class ArrayBufferInputStream(val buffer: ArrayBuffer, val offset: Int,
    *
    *  Use [[skip]] to update (protects from overrun and moving backwards).
    */
-  @inline def pos: Int = _pos
-  @inline protected def pos_=(x: Int): Unit = _pos = x
-  private[this] var _pos: Int = 0
+  @inline
+  def pos: Int = _pos
+  @inline
+  protected def pos_=(x: Int): Unit = _pos = x
+  private [ this] var _pos: Int = 0
 
   override def available(): Int = length - pos
+
   override def mark(readlimit: Int): Unit = { mark = pos }
+
   override def markSupported(): Boolean = true
+
   def read(): Int = {
     if (pos < length) {
       val res = uintView(pos)
@@ -63,13 +68,13 @@ class ArrayBufferInputStream(val buffer: ArrayBuffer, val offset: Int,
     val len = Math.min(reqLen, length - pos)
 
     if (reqLen == 0)
-       0 // 0 requested, 0 returned
+      0 // 0 requested, 0 returned
     else if (len == 0)
       -1 // nothing to read at all
     else {
       var i = 0
       while (i < len) {
-        b(i + off) = byteView(pos + i)
+        b (i + off) = byteView(pos + i)
         i += 1
       }
       pos += len
@@ -85,5 +90,4 @@ class ArrayBufferInputStream(val buffer: ArrayBuffer, val offset: Int,
     pos += k
     k.toLong
   }
-
 }

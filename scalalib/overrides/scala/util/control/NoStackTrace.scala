@@ -7,6 +7,7 @@
 \*                                                                      */
 
 package scala
+
 package util.control
 
 /** A trait for exceptions which, for efficiency reasons, do not
@@ -18,12 +19,14 @@ package util.control
  *  @since    2.8
  */
 trait NoStackTrace extends Throwable {
+
   override def fillInStackTrace(): Throwable =
     if (NoStackTrace.noSuppression) super.fillInStackTrace()
     else this
 }
 
 object NoStackTrace {
+
   final def noSuppression = _noSuppression
 
   // two-stage init to make checkinit happy, since sys.SystemProperties.noTraceSupression.value calls back into NoStackTrace.noSuppression

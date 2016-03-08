@@ -7,10 +7,8 @@ import scala.concurrent.TimeoutException
 import scala.concurrent.duration._
 
 trait TimeoutComTests extends TimeoutTests with ComTests {
-
   @Test
   def delayedInitTest: Unit = {
-
     val com = comRunner(s"""
       setTimeout(function() {
         scalajsCom.init(function(msg) {
@@ -31,12 +29,10 @@ trait TimeoutComTests extends TimeoutTests with ComTests {
 
     com.close()
     com.await(DefaultTimeout)
-
   }
 
   @Test
   def delayedReplyTest: Unit = {
-
     val com = comRunner(s"""
       scalajsCom.init(function(msg) {
         setTimeout(scalajsCom.send, 20, "Got: " + msg);
@@ -54,12 +50,10 @@ trait TimeoutComTests extends TimeoutTests with ComTests {
 
     com.close()
     com.await(DefaultTimeout)
-
   }
 
   @Test
   def receiveTimeoutTest: Unit = {
-
     val com = comRunner(s"""
       scalajsCom.init(function(msg) {
         setTimeout(scalajsCom.send, 2000, "Got: " + msg);
@@ -81,12 +75,10 @@ trait TimeoutComTests extends TimeoutTests with ComTests {
 
     com.close()
     com.await(DefaultTimeout)
-
   }
 
   @Test
   def intervalSendTest: Unit = {
-
     val com = comRunner(s"""
       scalajsCom.init(function(msg) {});
       var interval = setInterval(scalajsCom.send, 50, "Hello");
@@ -97,14 +89,12 @@ trait TimeoutComTests extends TimeoutTests with ComTests {
 
     start(com)
 
-    for (i <- 1 to 5)
-      assertEquals("Hello", com.receive())
+    for (i <- 1 to 5) assertEquals("Hello", com.receive())
 
     com.close()
     com.await(DefaultTimeout)
 
     assertTrue("Execution took too little time", deadline.isOverdue())
-
   }
 
   @Test
@@ -120,7 +110,6 @@ trait TimeoutComTests extends TimeoutTests with ComTests {
 
   @Test
   def stopTestTimeout: Unit = {
-
     val async = asyncRunner(s"""
       setInterval(function() {}, 0);
     """)
@@ -136,7 +125,6 @@ trait TimeoutComTests extends TimeoutTests with ComTests {
     }
 
     async.stop() // should do nothing, and not fail
-
   }
 
   @Test
@@ -158,5 +146,4 @@ trait TimeoutComTests extends TimeoutTests with ComTests {
 
     async.stop() // should do nothing, and not fail
   }
-
 }

@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.jsenv
 
 import org.scalajs.core.tools.io.VirtualJSFile
@@ -28,17 +27,19 @@ import org.scalajs.core.tools.jsdep.ResolvedJSDependency
  *  }}}
  */
 trait ComJSEnv extends AsyncJSEnv {
-  def comRunner(libs: Seq[ResolvedJSDependency], code: VirtualJSFile): ComJSRunner
+  def comRunner(
+      libs: Seq[ResolvedJSDependency], code: VirtualJSFile): ComJSRunner
 
   final def comRunner(code: VirtualJSFile): ComJSRunner = comRunner(Nil, code)
 
   override def loadLibs(libs: Seq[ResolvedJSDependency]): ComJSEnv =
     new ComLoadedLibs { val loadedLibs = libs }
 
-  private[jsenv] trait ComLoadedLibs extends AsyncLoadedLibs with ComJSEnv {
-    def comRunner(libs: Seq[ResolvedJSDependency],
-        code: VirtualJSFile): ComJSRunner = {
-      ComJSEnv.this.comRunner(loadedLibs ++ libs, code)
+  private [jsenv] trait ComLoadedLibs extends AsyncLoadedLibs with ComJSEnv {
+
+    def comRunner(
+        libs: Seq[ResolvedJSDependency], code: VirtualJSFile): ComJSRunner = {
+      ComJSEnv. this.comRunner(loadedLibs ++ libs, code)
     }
   }
 }
@@ -46,10 +47,10 @@ trait ComJSEnv extends AsyncJSEnv {
 object ComJSEnv {
   private final val defaultMsg = "JSCom has been closed"
 
-  class ComClosedException(msg: String,
-      cause: Throwable) extends Exception(msg, cause) {
-    def this() = this(defaultMsg, null)
-    def this(cause: Throwable) = this(defaultMsg, cause)
-    def this(msg: String) = this(msg, null)
+  class ComClosedException(msg: String, cause: Throwable)
+      extends Exception(msg, cause) {
+    def this () = this(defaultMsg, null)
+    def this (cause: Throwable) = this(defaultMsg, cause)
+    def this (msg: String) = this(msg, null)
   }
 }

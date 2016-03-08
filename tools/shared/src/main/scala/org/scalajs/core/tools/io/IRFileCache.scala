@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.tools.io
 
 import scala.annotation.tailrec
@@ -33,12 +32,13 @@ final class IRFileCache {
   import IRFileCache._
 
   /** Holds the cached IR */
-  private[this] val globalCache = new ConcurrentHashMap[String, PersistedFiles]
+  private [ this] val globalCache =
+    new ConcurrentHashMap[String, PersistedFiles]
 
   // Statistics
-  private[this] val statsReused = new AtomicInteger(0)
-  private[this] val statsInvalidated = new AtomicInteger(0)
-  private[this] val statsTreesRead = new AtomicInteger(0)
+  private [ this] val statsReused = new AtomicInteger(0)
+  private [ this] val statsInvalidated = new AtomicInteger(0)
+  private [ this] val statsTreesRead = new AtomicInteger(0)
 
   /** Create a new sub-cache.
    *
@@ -49,8 +49,8 @@ final class IRFileCache {
 
   /** Approximate statistics about the cache usage */
   def stats: IRFileCache.Stats = {
-    new IRFileCache.Stats(statsReused.get, statsInvalidated.get,
-        statsTreesRead.get)
+    new IRFileCache.Stats(
+        statsReused.get, statsInvalidated.get, statsTreesRead.get)
   }
 
   /** Reset statistics */
@@ -61,9 +61,9 @@ final class IRFileCache {
   }
 
   /** A cache to use for individual runs. Not threadsafe */
-  final class Cache private[IRFileCache] {
-    private[this] var readyToUse: Boolean = false
-    private[this] var localCache: Seq[PersistedFiles] = _
+  final class Cache private [IRFileCache] {
+    private [ this] var readyToUse: Boolean = false
+    private [ this] var localCache: Seq[PersistedFiles] = _
 
     /** Extract and cache IR.
      *
@@ -79,29 +79,32 @@ final class IRFileCache {
       localCache.flatMap(_.files)
     }
 
-    private def update(files: Seq[IRContainer]): Unit = clearOnThrow {
-      val result = Seq.newBuilder[PersistedFiles]
+    private def update(files: Seq[IRContainer]): Unit =
+      clearOnThrow {
+        val result = Seq.newBuilder[PersistedFiles]
 
-      for (file <- files) {
-        @tailrec
-        def putContents(): PersistedFiles = {
-          val newValue = new PersistedFiles(file.path)
-          val oldValue = globalCache.putIfAbsent(file.path, newValue)
+        for (file <- files) {
+          @tailrec
+          def putContents(): PersistedFiles = {
+            val newValue = new PersistedFiles(file.path)
+            val oldValue = globalCache.putIfAbsent(file.path, newValue)
 
-          val contents = if (oldValue != null) oldValue else newValue
+            val contents =
+              if (oldValue != null) oldValue
+              else newValue
 
-          if (contents.reference()) contents
-          else putContents()
+            if (contents.reference()) contents
+            else putContents()
+          }
+
+          val contents = putContents()
+          contents.update(file)
+          result += contents
         }
 
-        val contents = putContents()
-        contents.update(file)
-        result += contents
+        free()
+        localCache = result.result()
       }
-
-      free()
-      localCache = result.result()
-    }
 
     /** Should be called if this cache is not used anymore.
      *
@@ -131,21 +134,20 @@ final class IRFileCache {
    *  been unreferenced.
    */
   private final class PersistedFiles(path: String) {
-
     /** Number of references we have. -1 means we are a tombstone */
-    private[this] val _references = new AtomicInteger(0)
+    private [ this] val _references = new AtomicInteger(0)
 
     /** Last version we have been updated with.
      *  May only be written under synchronization, except if this is a tombstone
      */
     @volatile
-    private[this] var _version: Option[String] = None
+    private [ this] var _version: Option[String] = None
 
     /** Files in this [[PersistedFiles]]
      *  May only be written under synchronization, except if this is a tombstone
      */
     @volatile
-    private[this] var _files: Seq[VirtualRelativeIRFile] = null
+    private [ this] var _files: Seq[VirtualRelativeIRFile] = null
 
     def files: Seq[VirtualRelativeIRFile] = _files
 
@@ -156,7 +158,7 @@ final class IRFileCache {
     final def reference(): Boolean = {
       val refs = _references.get
 
-      if (refs == -1) {
+      if (refs == - 1) {
         // we are a tombstone, help cleaning up and bail out
         cleanup()
         false
@@ -225,21 +227,21 @@ final class IRFileCache {
       }
     }
 
-    private def extractIRFiles(file: IRContainer) = file match {
-      case IRContainer.File(file) => file :: Nil
-      case IRContainer.Jar(jar)   => jar.sjsirFiles
-    }
+    private def extractIRFiles(file: IRContainer) =
+      file match {
+        case IRContainer.File(file) => file :: Nil
+        case IRContainer.Jar(jar) => jar.sjsirFiles
+      }
   }
 
   private final class PersistentIRFile(
-      private[this] var _irFile: VirtualRelativeIRFile)
+      private [ this] var _irFile: VirtualRelativeIRFile)
       extends VirtualScalaJSIRFile with RelativeVirtualFile {
-
     import ir.Trees._
     import ir.Infos
 
     @volatile
-    private[this] var _tree: ClassDef = null
+    private [ this] var _tree: ClassDef = null
 
     override val path: String = _irFile.path
     override val version: Option[String] = _irFile.version
@@ -253,7 +255,8 @@ final class IRFileCache {
     override def tree: ClassDef = {
       if (_tree == null) {
         synchronized {
-          if (_tree == null) { // check again, race!
+          if (_tree == null) {
+            // check again, race!
             loadTree()
           }
         }
@@ -265,11 +268,12 @@ final class IRFileCache {
     def infoAndTree: (Infos.ClassInfo, ClassDef) = (info, tree)
 
     /** Must be called under synchronization only */
-    private def loadTree(): Unit = clearOnThrow {
-      statsTreesRead.incrementAndGet()
-      _tree = _irFile.tree // This can fail due to I/O
-      _irFile = null // Free for GC
-    }
+    private def loadTree(): Unit =
+      clearOnThrow {
+        statsTreesRead.incrementAndGet()
+        _tree = _irFile.tree // This can fail due to I/O
+        _irFile = null // Free for GC
+      }
   }
 
   /** If something fails, we clear the `globalCache` to avoid leaks. The already
@@ -279,23 +283,21 @@ final class IRFileCache {
    */
   @inline
   private def clearOnThrow[T](body: => T): T = {
-    try body
-    catch {
+    try body catch {
       case t: Throwable =>
         globalCache.clear()
         throw t
     }
   }
-
 }
 
 object IRFileCache {
+
   final class Stats(val reused: Int, val invalidated: Int, val treesRead: Int) {
+
     /** Descriptive line to display in logs */
     def logLine: String = {
-      s"reused: $reused -- " +
-      s"invalidated: $invalidated -- " +
-      s"trees read: $treesRead"
+      s"reused: $reused -- " + s"invalidated: $invalidated -- " + s"trees read: $treesRead"
     }
   }
 
@@ -304,19 +306,30 @@ object IRFileCache {
   sealed trait IRContainer extends VirtualFile
 
   object IRContainer extends IRContainerPlatformExtensions {
+
     final case class File(ir: VirtualRelativeIRFile) extends IRContainer {
+
       override def path: String = ir.path
+
       override def name: String = ir.name
+
       override def version: Option[String] = ir.version
+
       override def exists: Boolean = ir.exists
+
       override def toURI: URI = ir.toURI
     }
 
     final case class Jar(jar: VirtualJarFile) extends IRContainer {
+
       override def path: String = jar.path
+
       override def name: String = jar.name
+
       override def version: Option[String] = jar.version
+
       override def exists: Boolean = jar.exists
+
       override def toURI: URI = jar.toURI
     }
   }

@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.sbtplugin.cross
 
 import org.scalajs.sbtplugin.ScalaJSPlugin
@@ -206,16 +205,14 @@ import java.io.File
  *  Implement your own subclass (sub-object) of [[CrossType]].
  *
  */
-final class CrossProject private (
+final class CrossProject private(
     crossType: CrossType,
     val jvm: Project,
     val js: Project
-) {
-
+    ) {
   import CrossProject._
 
   // Transformers for inner projects
-
   /** Transform the underlying JVM project */
   def jvmConfigure(transformer: Project => Project): CrossProject =
     copy(jvm = transformer(jvm))
@@ -225,52 +222,52 @@ final class CrossProject private (
     copy(js = transformer(js))
 
   /** Add settings specific to the underlying JVM project */
-  def jvmSettings(ss: Def.Setting[_]*): CrossProject =
-    jvmConfigure(_.settings(ss: _*))
+  def jvmSettings(ss: Def.Setting[_] *): CrossProject =
+    jvmConfigure(_.settings(ss: _ *))
 
   /** Add settings specific to the underlying JS project */
-  def jsSettings(ss: Def.Setting[_]*): CrossProject =
-    jsConfigure(_.settings(ss: _*))
+  def jsSettings(ss: Def.Setting[_] *): CrossProject =
+    jsConfigure(_.settings(ss: _ *))
 
   // Concrete alteration members
 
-  def aggregate(refs: CrossProject*): CrossProject = {
-    copy(
-        jvm.aggregate(refs.map(_.jvm: ProjectReference): _*),
-        js.aggregate(refs.map(_.js: ProjectReference): _*))
+  def aggregate(refs: CrossProject *): CrossProject = {
+    copy(jvm.aggregate(refs.map(_.jvm: ProjectReference): _ *),
+         js.aggregate(refs.map(_.js: ProjectReference): _ *))
   }
 
-  def configs(cs: Configuration*): CrossProject =
-    copy(jvm.configs(cs: _*), js.configs(cs: _*))
+  def configs(cs: Configuration *): CrossProject =
+    copy(jvm.configs(cs: _ *), js.configs(cs: _ *))
 
-  def configure(transforms: (CrossProject => CrossProject)*): CrossProject =
+  def configure(transforms: (CrossProject => CrossProject) *): CrossProject =
     transforms.foldLeft(this)((p, t) => t(p))
 
-  def dependsOn(deps: CrossClasspathDependency*): CrossProject =
-    copy(jvm.dependsOn(deps.map(_.jvm): _*), js.dependsOn(deps.map(_.js): _*))
+  def dependsOn(deps: CrossClasspathDependency *): CrossProject =
+    copy(
+        jvm.dependsOn(deps.map(_.jvm): _ *), js.dependsOn(deps.map(_.js): _ *))
 
-  def disablePlugins(ps: AutoPlugin*): CrossProject =
-    copy(jvm.disablePlugins(ps: _*), js.disablePlugins(ps: _*))
+  def disablePlugins(ps: AutoPlugin *): CrossProject =
+    copy(jvm.disablePlugins(ps: _ *), js.disablePlugins(ps: _ *))
 
-  def enablePlugins(ns: Plugins*): CrossProject =
-    copy(jvm.enablePlugins(ns: _*), js.enablePlugins(ns: _*))
+  def enablePlugins(ns: Plugins *): CrossProject =
+    copy(jvm.enablePlugins(ns: _ *), js.enablePlugins(ns: _ *))
 
   def in(dir: File): CrossProject =
     copy(jvm.in(crossType.jvmDir(dir)), js.in(crossType.jsDir(dir)))
 
-  def overrideConfigs(cs: Configuration*): CrossProject =
-    copy(jvm.overrideConfigs(cs: _*), js.overrideConfigs(cs: _*))
+  def overrideConfigs(cs: Configuration *): CrossProject =
+    copy(jvm.overrideConfigs(cs: _ *), js.overrideConfigs(cs: _ *))
 
   /** Configures how settings from other sources, such as .sbt files, are
    *  appended to the explicitly specified settings for this project.
    *
    *  Note: If you disable AutoPlugins here, Scala.js will not work
    */
-  def settingSets(select: AddSettings*): CrossProject =
-    copy(jvm.settingSets(select: _*), js.settingSets(select: _*))
+  def settingSets(select: AddSettings *): CrossProject =
+    copy(jvm.settingSets(select: _ *), js.settingSets(select: _ *))
 
-  def settings(ss: Def.Setting[_]*): CrossProject =
-    copy(jvm.settings(ss: _*), js.settings(ss: _*))
+  def settings(ss: Def.Setting[_] *): CrossProject =
+    copy(jvm.settings(ss: _ *), js.settings(ss: _ *))
 
   override def toString(): String = s"CrossProject(jvm = $jvm, js = $js)"
 
@@ -278,55 +275,54 @@ final class CrossProject private (
 
   private def copy(jvm: Project = jvm, js: Project = js): CrossProject =
     new CrossProject(crossType, jvm, js)
-
 }
 
 object CrossProject extends CrossProjectExtra {
 
   def apply(id: String, base: File, crossType: CrossType): CrossProject = {
-    CrossProject(id + "JVM", id + "JS", base, crossType).
-      settings(name := id)
+    CrossProject(id + "JVM", id + "JS", base, crossType).settings(name := id)
   }
 
-  def apply(jvmId: String, jsId: String, base: File,
-      crossType: CrossType): CrossProject = {
-
+  def apply(jvmId: String,
+            jsId: String,
+            base: File,
+            crossType: CrossType): CrossProject = {
     val sss = sharedSrcSettings(crossType)
 
-    val jvm = Project(jvmId, crossType.jvmDir(base)).
-      settings(sss: _*)
+    val jvm = Project(jvmId, crossType.jvmDir(base)).settings(sss: _ *)
 
-    val js = Project(jsId, crossType.jsDir(base)).
-      settings(sss: _*).
-      enablePlugins(ScalaJSPlugin)
+    val js = Project(jsId, crossType.jsDir(base)).settings(sss: _ *)
+      .enablePlugins(ScalaJSPlugin)
 
     new CrossProject(crossType, jvm, js)
   }
 
-  private def sharedSrcSettings(crossType: CrossType) = Seq(
-      unmanagedSourceDirectories in Compile ++=
-        crossType.sharedSrcDir(baseDirectory.value, "main").toSeq,
-      unmanagedSourceDirectories in Test ++=
-        crossType.sharedSrcDir(baseDirectory.value, "test").toSeq
-  )
+  private def sharedSrcSettings(crossType: CrossType) =
+    Seq(
+        unmanagedSourceDirectories in Compile ++= crossType.sharedSrcDir(
+            baseDirectory.value, "main").toSeq,
+        unmanagedSourceDirectories in Test ++= crossType.sharedSrcDir(
+            baseDirectory.value, "test").toSeq
+    )
 
   final class Builder(id: String, base: File) {
+
     def crossType(crossType: CrossType): CrossProject =
       CrossProject(id, base, crossType)
   }
 
   def crossProject_impl(c: Context): c.Expr[Builder] = {
     import c.universe._
-    val enclosingValName = MacroUtils.definingValName(c, methodName =>
-      s"""$methodName must be directly assigned to a val, such as `val x = $methodName`.""")
+    val enclosingValName = MacroUtils.definingValName(
+        c,
+        methodName =>
+          s"""$methodName must be directly assigned to a val, such as `val x = $methodName`.""")
     val name = c.Expr[String](Literal(Constant(enclosingValName)))
     reify { new Builder(name.splice, new File(name.splice)) }
   }
-
 }
 
 trait CrossProjectExtra {
-
   def crossProject: CrossProject.Builder = macro CrossProject.crossProject_impl
 
   implicit def crossProjectFromBuilder(

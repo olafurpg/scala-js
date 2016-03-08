@@ -16,15 +16,15 @@ object FloatJSTest extends JasmineTest {
     y.toFloat
   }
 
-  when("strict-floats").
-  describe("Strict floats") {
-
+  when("strict-floats").describe("Strict floats") {
     it("fround for special values") {
       expect(froundNotInlined(Double.NaN).isNaN).toBeTruthy
       expect(1 / froundNotInlined(0.0).toDouble).toBe(Double.PositiveInfinity)
       expect(1 / froundNotInlined(-0.0).toDouble).toBe(Double.NegativeInfinity)
-      expect(froundNotInlined(Double.PositiveInfinity)).toBe(Float.PositiveInfinity)
-      expect(froundNotInlined(Double.NegativeInfinity)).toBe(Float.NegativeInfinity)
+      expect(froundNotInlined(Double.PositiveInfinity))
+        .toBe(Float.PositiveInfinity)
+      expect(froundNotInlined(Double.NegativeInfinity))
+        .toBe(Float.NegativeInfinity)
     }
 
     it("fround overflows") {
@@ -33,11 +33,14 @@ object FloatJSTest extends JasmineTest {
     }
 
     it("fround underflows") {
-      expect(1 / froundNotInlined(1e-300).toDouble).toBe(Double.PositiveInfinity)
-      expect(1 / froundNotInlined(-1e-300).toDouble).toBe(Double.NegativeInfinity)
+      expect(1 / froundNotInlined(1e-300).toDouble)
+        .toBe(Double.PositiveInfinity)
+      expect(1 / froundNotInlined(-1e-300).toDouble)
+        .toBe(Double.NegativeInfinity)
     }
 
     it("fround normal cases") {
+
       def test(input: Double, expected: Double): Unit =
         expect(input.toFloat.toDouble).toBe(expected)
 
@@ -87,6 +90,5 @@ object FloatJSTest extends JasmineTest {
       expect(float > intMax).toBeFalsy
       expect(float >= intMax).toBeTruthy
     }
-
   }
 }

@@ -12,7 +12,6 @@ import java.util.Random
 import scala.annotation.tailrec
 
 class ThreadLocalRandom extends Random {
-
   private var initialized: Boolean = _
   initialized = true
 
@@ -117,10 +116,7 @@ class ThreadLocalRandom extends Random {
 }
 
 object ThreadLocalRandom {
-
-  private val _current =
-    new ThreadLocalRandom()
+  private val _current = new ThreadLocalRandom()
 
   def current(): ThreadLocalRandom = _current
-
 }

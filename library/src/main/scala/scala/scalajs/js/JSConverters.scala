@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package scala.scalajs.js
 
 import scala.language.implicitConversions
@@ -21,19 +20,21 @@ import scala.scalajs.runtime.genTraversableOnce2jsArray
 object JSConverters {
 
   implicit class JSRichOption[T](val opt: Option[T]) extends AnyVal {
-    @inline final def orUndefined: UndefOr[T] =
-      opt.fold[UndefOr[T]](undefined)(v => v)
+    @inline
+    final def orUndefined: UndefOr[T] = opt.fold[UndefOr[T]](undefined)(v => v)
   }
 
-  implicit class JSRichGenTraversableOnce[T](
-      val col: GenTraversableOnce[T]) extends AnyVal {
-    @inline final def toJSArray: Array[T] = genTraversableOnce2jsArray(col)
+  implicit class JSRichGenTraversableOnce[T](val col: GenTraversableOnce[T])
+      extends AnyVal {
+    @inline
+    final def toJSArray: Array[T] = genTraversableOnce2jsArray(col)
   }
 
   implicit class JSRichGenMap[T](val map: GenMap[String, T]) extends AnyVal {
-    @inline final def toJSDictionary: Dictionary[T] = {
+    @inline
+    final def toJSDictionary: Dictionary[T] = {
       val result = Dictionary.empty[T]
-      map.foreach { case (key, value) => result(key) = value }
+      map.foreach { case (key, value) => result (key) = value }
       result
     }
   }
@@ -50,5 +51,4 @@ object JSConverters {
   implicit def array2JSRichGenTrav[T](
       arr: scala.Array[T]): JSRichGenTraversableOnce[T] =
     new JSRichGenTraversableOnce(arr)
-
 }

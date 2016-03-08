@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.tools.linker.frontend
 
 import org.scalajs.core.tools.logging.Logger
@@ -17,7 +16,8 @@ import org.scalajs.core.tools.javascript.ESLevel
 
 import org.scalajs.core.tools.linker.LinkingUnit
 import org.scalajs.core.tools.linker.analyzer.SymbolRequirement
-import org.scalajs.core.tools.linker.frontend.optimizer.{GenIncOptimizer, IncOptimizer}
+import org.scalajs.core.tools.linker.frontend.optimizer.{GenIncOptimizer,
+IncOptimizer}
 
 /** The frontend of the Scala.js linker. Produces a [[LinkingUnit]]
  *
@@ -33,40 +33,46 @@ final class LinkerFrontend(
     val withSourceMap: Boolean,
     config: LinkerFrontend.Config,
     optimizerFactory: Option[GenIncOptimizer.OptimizerFactory]) {
+  private [ this] val linker: BaseLinker = new BaseLinker(
+      semantics, esLevel, withSourceMap)
 
-  private[this] val linker: BaseLinker =
-    new BaseLinker(semantics, esLevel, withSourceMap)
-
-  private[this] val optOptimizer: Option[GenIncOptimizer] =
+  private [ this] val optOptimizer: Option[GenIncOptimizer] =
     optimizerFactory.map(_(semantics, esLevel, withSourceMap))
 
-  private[this] val refiner: Refiner = new Refiner
+  private [ this] val refiner: Refiner = new Refiner
 
   /** Link and optionally optimize the given IR to a [[LinkingUnit]]. */
   def link(irFiles: Seq[VirtualScalaJSIRFile],
-      symbolRequirements: SymbolRequirement, logger: Logger): LinkingUnit = {
-
+           symbolRequirements: SymbolRequirement,
+           logger: Logger): LinkingUnit = {
     val preOptimizerRequirements = optOptimizer.fold(symbolRequirements) {
-      optimizer => symbolRequirements ++ optimizer.symbolRequirements
+      optimizer =>
+        symbolRequirements ++ optimizer.symbolRequirements
     }
 
     val linkResult = logger.time("Basic Linking") {
-      linker.linkInternal(irFiles, logger, preOptimizerRequirements,
-          config.bypassLinkingErrors, config.checkIR)
+      linker.linkInternal(irFiles,
+                          logger,
+                          preOptimizerRequirements,
+                          config.bypassLinkingErrors,
+                          config.checkIR)
     }
 
     optOptimizer.fold(linkResult) { optimizer =>
       if (linkResult.isComplete) {
         optimize(linkResult, symbolRequirements, optimizer, logger)
       } else {
-        logger.warn("Not running the optimizer because there where linking errors.")
+        logger.warn(
+            "Not running the optimizer because there where linking errors.")
         linkResult
       }
     }
   }
 
-  private def optimize(unit: LinkingUnit, symbolRequirements: SymbolRequirement,
-      optimizer: GenIncOptimizer, logger: Logger): LinkingUnit = {
+  private def optimize(unit: LinkingUnit,
+                       symbolRequirements: SymbolRequirement,
+                       optimizer: GenIncOptimizer,
+                       logger: Logger): LinkingUnit = {
     val optimized = logger.time("Inc. optimizer") {
       optimizer.update(unit, logger)
     }
@@ -78,13 +84,14 @@ final class LinkerFrontend(
 }
 
 object LinkerFrontend {
+
   /** Configurations relevant to the frontend */
-  final class Config private (
+  final class Config private(
       /** Whether to only warn if the linker has errors. */
       val bypassLinkingErrors: Boolean = false,
       /** If true, performs expensive checks of the IR for the used parts. */
       val checkIR: Boolean = false
-  ) {
+      ) {
     @deprecated(
         "Bypassing linking errors will not be possible in the next major version.",
         "0.6.6")
@@ -92,22 +99,22 @@ object LinkerFrontend {
       copy(bypassLinkingErrors = bypassLinkingErrors)
 
     // Non-deprecated version to call from the sbt plugin
-    private[scalajs] def withBypassLinkingErrorsInternal(
+
+    private [scalajs] def withBypassLinkingErrorsInternal(
         bypassLinkingErrors: Boolean): Config = {
       copy(bypassLinkingErrors = bypassLinkingErrors)
     }
 
-    def withCheckIR(checkIR: Boolean): Config =
-      copy(checkIR = checkIR)
+    def withCheckIR(checkIR: Boolean): Config = copy(checkIR = checkIR)
 
-    private def copy(
-        bypassLinkingErrors: Boolean = bypassLinkingErrors,
-        checkIR: Boolean = checkIR): Config = {
+    private def copy(bypassLinkingErrors: Boolean = bypassLinkingErrors,
+                     checkIR: Boolean = checkIR): Config = {
       new Config(bypassLinkingErrors, checkIR)
     }
   }
 
   object Config {
+
     def apply(): Config = new Config()
   }
 }

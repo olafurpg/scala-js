@@ -49,6 +49,5 @@ trait EnvironmentInfo extends js.Object {
    *  @group envInfo
    */
   def sourceMapper: js.UndefOr[js.Function1[ // scalastyle:ignore
-    js.Array[JSStackTraceElem], js.Array[JSStackTraceElem]]] = js.native
-
+      js.Array[JSStackTraceElem], js.Array[JSStackTraceElem]]] = js.native
 }

@@ -18,7 +18,8 @@ class LinkedHashSetTest extends HashSetTest {
 
   override def factory: LinkedHashSetFactory = new LinkedHashSetFactory
 
-  @Test def should_iterate_over_elements_in_an_ordered_manner(): Unit = {
+  @Test
+  def should_iterate_over_elements_in_an_ordered_manner(): Unit = {
     val hs = factory.empty[String]
 
     val l1 = List[String]("ONE", "TWO", (null: String))
@@ -52,18 +53,17 @@ class LinkedHashSetTest extends HashSetTest {
     assertFalse(iter2.hasNext())
     assertTrue(result2.equals(l2))
   }
-
 }
 
 object LinkedHashSetFactory extends HashSetFactory {
+
   def allFactories: Iterator[LinkedHashSetFactory] =
     Iterator(new LinkedHashSetFactory)
 }
 
 class LinkedHashSetFactory extends HashSetFactory {
-  override def implementationName: String =
-    "java.util.LinkedHashSet"
 
-  override def empty[E]: ju.LinkedHashSet[E] =
-    new ju.LinkedHashSet[E]()
+  override def implementationName: String = "java.util.LinkedHashSet"
+
+  override def empty[E]: ju.LinkedHashSet[E] = new ju.LinkedHashSet[E]()
 }

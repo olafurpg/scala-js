@@ -2,32 +2,30 @@ package java.util
 
 import scala.scalajs.js
 
-class ArrayDeque[E] private (private var inner: js.Array[E])
-    extends AbstractCollection[E] with Deque[E] with Cloneable with Serializable {
+class ArrayDeque[E] private(private var inner: js.Array[E])
+    extends AbstractCollection[E] with Deque[E] with Cloneable
+    with Serializable {
   self =>
 
   private var status = 0
 
-  def this(initialCapacity: Int) = {
+  def this (initialCapacity: Int) = {
     this(new js.Array[E])
 
     if (initialCapacity < 0)
       throw new IllegalArgumentException
   }
 
-  def this() =
-    this(16)
+  def this () = this(16)
 
-  def this(c: Collection[_ <: E]) = {
+  def this (c: Collection[_ <: E]) = {
     this()
     addAll(c)
   }
 
-  def addFirst(e: E): Unit =
-    offerFirst(e)
+  def addFirst(e: E): Unit = offerFirst(e)
 
-  def addLast(e: E): Unit =
-    offerLast(e)
+  def addLast(e: E): Unit = offerLast(e)
 
   def offerFirst(e: E): Boolean = {
     if (e == null) {
@@ -52,15 +50,13 @@ class ArrayDeque[E] private (private var inner: js.Array[E])
   def removeFirst(): E = {
     if (inner.isEmpty)
       throw new NoSuchElementException()
-    else
-      pollFirst()
+    else pollFirst()
   }
 
   def removeLast(): E = {
     if (inner.isEmpty)
       throw new NoSuchElementException()
-    else
-      pollLast()
+    else pollLast()
   }
 
   def pollFirst(): E = {
@@ -80,15 +76,13 @@ class ArrayDeque[E] private (private var inner: js.Array[E])
   def getFirst(): E = {
     if (inner.isEmpty)
       throw new NoSuchElementException()
-    else
-      peekFirst()
+    else peekFirst()
   }
 
   def getLast(): E = {
     if (inner.isEmpty)
       throw new NoSuchElementException()
-    else
-      peekLast()
+    else peekLast()
   }
 
   def peekFirst(): E = {
@@ -107,8 +101,7 @@ class ArrayDeque[E] private (private var inner: js.Array[E])
       inner.remove(index)
       status += 1
       true
-    } else
-      false
+    } else false
   }
 
   def removeLastOccurrence(o: Any): Boolean = {
@@ -117,8 +110,7 @@ class ArrayDeque[E] private (private var inner: js.Array[E])
       inner.remove(index)
       status += 1
       true
-    } else
-      false
+    } else false
   }
 
   override def add(e: E): Boolean = {
@@ -144,6 +136,7 @@ class ArrayDeque[E] private (private var inner: js.Array[E])
 
   private def failFastIterator(startIndex: Int, nex: (Int) => Int) = {
     new Iterator[E] {
+
       private def checkStatus() =
         if (self.status != actualStatus)
           throw new ConcurrentModificationException()
@@ -175,8 +168,7 @@ class ArrayDeque[E] private (private var inner: js.Array[E])
     }
   }
 
-  def iterator(): Iterator[E] =
-    failFastIterator(-1, x => (x + 1))
+  def iterator(): Iterator[E] = failFastIterator(-1, x => (x + 1))
 
   def descendingIterator(): Iterator[E] =
     failFastIterator(inner.size, x => (x - 1))

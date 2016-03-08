@@ -13,9 +13,7 @@ import scala.scalajs.js.annotation.JSName
 import org.scalajs.jasminetest.JasmineTest
 
 object JSNameTest extends JasmineTest {
-
   describe("@JSName") {
-
     it("should work with defs that are properties") {
       val obj = js.Dynamic.literal(jsDef = 1).asInstanceOf[PropDefFacade]
       expect(obj.internalDef).toEqual(1)
@@ -42,7 +40,6 @@ object JSNameTest extends JasmineTest {
       expect(d.selectDynamic("a_=")).toEqual(2)
       expect(f.a).toEqual(2)
     }
-
   }
 
   @js.native
@@ -71,5 +68,4 @@ object JSNameTest extends JasmineTest {
     @JSName("a_=")
     def a_=(x: Int): Unit = js.native
   }
-
 }

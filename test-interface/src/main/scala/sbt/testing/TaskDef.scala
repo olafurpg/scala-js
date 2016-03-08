@@ -58,10 +58,11 @@ import java.io.Serializable
  *  @param selectors a possibly empty array of <code>Selectors</code>
  *            determining suites and tests to run
  */
-final class TaskDef(_fullyQualifiedName: String, _fingerprint: Fingerprint,
-    _explicitlySpecified: Boolean,
-    _selectors: Array[Selector]) extends Serializable {
-
+final class TaskDef(_fullyQualifiedName: String,
+                    _fingerprint: Fingerprint,
+                    _explicitlySpecified: Boolean,
+                    _selectors: Array[Selector])
+    extends Serializable {
   if (_fullyQualifiedName == null)
     throw new NullPointerException("fullyQualifiedName was null");
   if (_fingerprint == null)
@@ -97,29 +98,31 @@ final class TaskDef(_fullyQualifiedName: String, _fingerprint: Fingerprint,
    */
   def selectors(): Array[Selector] = _selectors
 
-  override def equals(that: Any): Boolean = that match {
-    case that: TaskDef =>
-      this.fullyQualifiedName  == that.fullyQualifiedName &&
-      this.fingerprint         == that.fingerprint &&
-      this.explicitlySpecified == that.explicitlySpecified &&
-      Arrays.equals(
-          this.selectors.asInstanceOf[Array[AnyRef]],
-          that.selectors.asInstanceOf[Array[AnyRef]])
-    case _ => false
-  }
+  override def equals(that: Any): Boolean =
+    that match {
+      case that: TaskDef =>
+        this.fullyQualifiedName == that.fullyQualifiedName &&
+        this.fingerprint == that.fingerprint &&
+        this.explicitlySpecified == that.explicitlySpecified &&
+        Arrays.equals(this.selectors.asInstanceOf[Array[AnyRef]],
+                      that.selectors.asInstanceOf[Array[AnyRef]])
+      case _ => false
+    }
 
   override def hashCode(): Int = {
     var retVal = 17
     retVal = 31 * retVal + _fullyQualifiedName.hashCode()
     retVal = 31 * retVal + _fingerprint.hashCode()
-    retVal = 31 * retVal + (if (_explicitlySpecified) 1 else 0)
+    retVal = 31 * retVal +
+    (if (_explicitlySpecified) 1
+        else 0)
     retVal = 31 * retVal + Arrays.hashCode(
         _selectors.asInstanceOf[Array[AnyRef]])
     retVal
   }
 
   override def toString(): String = {
-    "TaskDef(" + _fullyQualifiedName + ", " + _fingerprint + ", " +
-    _explicitlySpecified + ", " + _selectors.mkString("[", ", ", "]") + ")"
+    "TaskDef(" + _fullyQualifiedName + ", " + _fingerprint + ", " + _explicitlySpecified + ", " + _selectors
+      .mkString("[", ", ", "]") + ")"
   }
 }

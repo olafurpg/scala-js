@@ -38,7 +38,6 @@ import scala.scalajs.js.annotation.JSExport
  *  @version 2.1, 15/02/2011
  */
 trait App extends DelayedInit {
-
   /** The time when the execution of this program started, in milliseconds since 1
     * January 1970 UTC. */
   val executionStart: Long = currentTime
@@ -59,8 +58,8 @@ trait App extends DelayedInit {
    *  @param body the initialization code to be stored for later execution
    */
   override def delayedInit(body: => Unit) {
-    initCode += (() => body)
-  }
+        initCode += (() => body)
+      }
 
   /** The main method.
    *  This stores all argument so that they can be retrieved with `args`

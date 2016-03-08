@@ -19,7 +19,6 @@ object RegressionTest extends JasmineTest with ExpectExceptions {
   class Bug218Foo[T](val x: T) extends AnyVal
 
   describe("Scala.js compiler regression tests") {
-
     it("Wrong division conversion (7 / 2.0) - #18") {
       val div = 7 / 2.0
       expect(div).toEqual(3.5)
@@ -31,8 +30,11 @@ object RegressionTest extends JasmineTest with ExpectExceptions {
     }
 
     it("Abort with some pattern match guards - #22") {
+
       object PatternMatchGuards {
+
         def go(f: Int => Int): Int = f(1)
+
         def main(): Unit = {
           go {
             case x if false => x
@@ -58,9 +60,10 @@ object RegressionTest extends JasmineTest with ExpectExceptions {
     }
 
     class Bug66A(s: String, e: Object) {
-      def this(e: Object) = this("", e)
-      def this(s: String) = this(s, "")
+      def this (e: Object) = this("", e)
+      def this (s: String) = this(s, "")
     }
+
     class Bug66B(s: String, e: Object) extends Bug66A(s)
 
     it("should emit static calls when forwarding to another constructor - #66") {
@@ -69,15 +72,17 @@ object RegressionTest extends JasmineTest with ExpectExceptions {
 
     it("should not swallow Unit expressions when converting to js.Any - #83") {
       var effectHappened = false
+
       def doEffect(): Unit = effectHappened = true
+
       def f(): js.Any = doEffect()
       f()
       expect(effectHappened).toBeTruthy
     }
 
     it("should correctly call subSequence on non-string CharSequences - #55") {
-      val arr: CharSequence = Array('a','b','c','d')
-      val ss = arr.subSequence(2,3)
+      val arr: CharSequence = Array('a', 'b', 'c', 'd')
+      val ss = arr.subSequence(2, 3)
       expect(ss.length()).toEqual(1)
       expect(ss.charAt(0)).toEqual('c')
     }
@@ -88,7 +93,10 @@ object RegressionTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should resolve overloads on scala.Function.apply when converting to js.Function - #125") {
-      class Fct extends Function1[Int, Any] {
+
+      class Fct
+          extends Function1[Int, Any] {
+
         def apply(n: Int): Int = n
       }
 
@@ -98,32 +106,44 @@ object RegressionTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should correctly dispatch calls on private functions - #165") {
+
       class A {
+
         private def x: Int = 1
+
         def value: Int = x
       }
-      class B extends A {
+
+      class B
+          extends A {
+
         private def x: Int = 2
       }
       expect(new B().value).toEqual(1)
     }
 
     it("should correctly mangle JavaScript reserved identifiers - #153") {
+
       // scalastyle:off class.name
 
       // Class name
+
       class break {
         // class variable
         var continue: Int = 1
         // method name
+
         def switch: Int = {
           // local name
           val default = 2
           default
         }
       }
+
       trait Foo {
+
         // static member (through mixin)
+
         def function: Int = 3
       }
 
@@ -136,22 +156,28 @@ object RegressionTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should correctly mangle identifiers starting with a digit - #153") {
+
       // scalastyle:off class.name
 
       // Class name
+
       class `0` {
         // class variable
-        var `1`: Int = 1
+        var `1` : Int = 1
         // method name
-        def `2`: Int = {
+
+        def `2` : Int = {
           // local name
           val `22` = 2
           `22`
         }
       }
+
       trait Foo {
+
         // static member (through mixin)
-        def `3`: Int = 3
+
+        def `3` : Int = 3
       }
 
       val x = new `0` with Foo
@@ -170,8 +196,8 @@ object RegressionTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should support class literals for existential value types - #218") {
-      expect(scala.reflect.classTag[Bug218Foo[_]].toString).toEqual(
-          "org.scalajs.testsuite.compiler.RegressionTest$Bug218Foo")
+      expect(scala.reflect.classTag[Bug218Foo[_]].toString)
+        .toEqual("org.scalajs.testsuite.compiler.RegressionTest$Bug218Foo")
     }
 
     it("should support Buffer - #268") {
@@ -185,8 +211,11 @@ object RegressionTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should not call equals when comparing with a literal null - #362") {
+
       // scalastyle:off equals.hash.code
+
       class A {
+
         override def equals(x: Any): Boolean = !(this == null)
       }
       // scalastyle:on equals.hash.code
@@ -201,9 +230,11 @@ object RegressionTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should unbox null to the zero of types - #674") {
+
       class Box[A] {
         var value: A = _
       }
+
       def zero[A]: A = new Box[A].value
 
       /* Note: the same shape of test for Unit does not work, but it seems to
@@ -264,12 +295,17 @@ object RegressionTest extends JasmineTest with ExpectExceptions {
 
     it("x.synchronized should preserve side-effects of x") {
       var c = 0
-      def x: RegressionTest.this.type = { c += 1; this }
+
+      def x: RegressionTest. this. type = {
+        c += 1;
+        this
+      }
       expect(x.synchronized(5)).toEqual(5)
       expect(c).toEqual(1)
     }
 
     it("IR checker should allow Apply/Select on NullType and NothingType - #1123") {
+
       def giveMeANull(): Null = null
       expect(() => (giveMeANull(): StringBuilder).append(5)).toThrow
       expect(() => (giveMeANull(): scala.runtime.IntRef).elem).toThrow
@@ -292,6 +328,7 @@ object RegressionTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should properly order ctor statements when inlining - #1369") {
+
       trait Bar {
         def x: Int
         var y = x + 1
@@ -306,6 +343,7 @@ object RegressionTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should not restrict mutability of fields - #1021") {
+
       class A {
         /* This var is refered to in the lambda passed to `foreach`. Therefore
          * it is altered in another compilation unit (even though it is
@@ -313,12 +351,11 @@ object RegressionTest extends JasmineTest with ExpectExceptions {
          * This test makes sure the compiler doesn't wrongly mark it as
          * immutable because it is not changed in its compilation unit itself.
          */
-        private[this] var x: Int = 1
+        private [ this] var x: Int = 1
 
         def get: Int = x
 
-        def foo(): Unit =
-          Seq(2).foreach(x = _)
+        def foo(): Unit = Seq(2).foreach(x = _)
       }
 
       val a = new A()
@@ -328,6 +365,7 @@ object RegressionTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should populate desugar environments with Closure params - #1399") {
+
       /* To query whether a field is mutable, the JSDesugar needs to first
        * unnest a statement block from an argument list, and then unnest the
        * parameter under test.
@@ -336,12 +374,14 @@ object RegressionTest extends JasmineTest with ExpectExceptions {
        */
 
       // We need a true class for @noinline to work
+
       class Test {
         @noinline
         def concat(x: Any, y: Any): String = x.toString + y.toString
 
         @noinline
-        def fct: Function1[Any, String] = { (v: Any) => // parameter under test
+        def fct: Function1[Any, String] = { (v: Any) =>
+          // parameter under test
           /* Pass `v` as a first parameter, a true block as a second parameter.
            * Note that this only works after optimizations, because `v` is first
            * asInstanceOfd to Object and hence not the original `v` is used in
@@ -388,6 +428,7 @@ object RegressionTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should not cause Closure to crash with Unexpected variable 'NaN' - #1469") {
+
       /* Basically we want to make sure that a specialized bridge of Function1
        * taking and returning Double is emitted (and not dce'ed) for this
        * class F, which actually returns Unit.
@@ -404,13 +445,16 @@ object RegressionTest extends JasmineTest with ExpectExceptions {
        * Function1.apply(Double)Double is reachable, which will make it
        * reachable also for F.
        */
-      class F extends Function1[Any, Unit] {
-        def apply(x: Any): Unit =
-          expect(x.asInstanceOf[js.Any]).toBe(5)
+
+      class F
+          extends Function1[Any, Unit] {
+
+        def apply(x: Any): Unit = expect(x.asInstanceOf[js.Any]).toBe(5)
       }
 
       // Make sure the specialized Function1.apply(Double)Double is reachable.
-      @noinline def makeFun(y: Double): Double => Double = {
+      @noinline
+      def makeFun(y: Double): Double => Double = {
         val z = y + 1.5
         ((x: Double) => x * z): (Double => Double)
       }
@@ -418,19 +462,19 @@ object RegressionTest extends JasmineTest with ExpectExceptions {
       expect(someDoubleFun(42.0)).toEqual(147.0)
 
       // Make sure F itself is reachable and not completely inlineable
-      @noinline def makeF: Any => Any = (() => new F)()
+      @noinline
+      def makeF: Any => Any = (() => new F)()
       val f = makeF
       f(5)
     }
 
     it("switch-match with 2 guards for the same value - #1589") {
-      @noinline def genB(): Int = 0xE1
+      @noinline
+      def genB(): Int = 0xE1
       val b = genB()
       val x = b >> 4 match {
-        case 0xE if b == 0xE0 =>
-          4
-        case 0xE if b == 0xE1 =>
-          5
+        case 0xE if b == 0xE0 => 4
+        case 0xE if b == 0xE1 => 5
       }
       expect(x).toEqual(5)
     }
@@ -445,13 +489,14 @@ object RegressionTest extends JasmineTest with ExpectExceptions {
     }
 
     it("null.asInstanceOf[Unit] should succeed - #1691") {
+
       def getNull(): Any = null
       val x = getNull().asInstanceOf[Unit]: Any
       expect(x.asInstanceOf[js.Any]).toBeNull
     }
 
     it("lambda parameter with a dash - #1790") {
-      val f = (`a-b`: Int) => `a-b` + 1
+      val f = (`a-b` : Int) => `a-b` + 1
       expect(f(5)).toEqual(6)
     }
   }

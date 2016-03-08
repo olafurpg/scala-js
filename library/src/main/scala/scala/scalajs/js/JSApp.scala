@@ -15,6 +15,5 @@ import annotation.{JSExport, JSExportDescendentObjects}
  */
 @JSExportDescendentObjects
 trait JSApp {
-  @JSExport
-  def main(): Unit
+  @JSExport def main(): Unit
 }

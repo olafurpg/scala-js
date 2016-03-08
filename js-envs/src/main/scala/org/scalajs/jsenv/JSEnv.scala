@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.jsenv
 
 import org.scalajs.core.tools.io.VirtualJSFile
@@ -39,12 +38,13 @@ trait JSEnv {
   def loadLibs(libs: Seq[ResolvedJSDependency]): JSEnv =
     new LoadedLibs { val loadedLibs = libs }
 
-  private[jsenv] trait LoadedLibs extends JSEnv {
+  private [jsenv] trait LoadedLibs extends JSEnv {
     val loadedLibs: Seq[ResolvedJSDependency]
 
-    def name: String = JSEnv.this.name
+    def name: String = JSEnv. this.name
 
-    def jsRunner(libs: Seq[ResolvedJSDependency], code: VirtualJSFile): JSRunner =
-      JSEnv.this.jsRunner(loadedLibs ++ libs, code)
+    def jsRunner(
+        libs: Seq[ResolvedJSDependency], code: VirtualJSFile): JSRunner =
+      JSEnv. this.jsRunner(loadedLibs ++ libs, code)
   }
 }

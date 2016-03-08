@@ -36,17 +36,18 @@ trait VirtualFile {
   def toURI: URI = {
     new URI(
         "virtualfile", // Pseudo-Scheme
-        path,          // Scheme specific part
-        null           // Fragment
+        path, // Scheme specific part
+        null // Fragment
     )
   }
 }
 
 object VirtualFile {
+
   /** Splits at the last slash and returns remainder */
   def nameFromPath(path: String): String = {
     val pos = path.lastIndexOf('/')
-    if (pos == -1) path
+    if (pos == - 1) path
     else path.substring(pos + 1)
   }
 }
@@ -77,8 +78,8 @@ trait VirtualTextFile extends VirtualFile {
 }
 
 object VirtualTextFile {
-  def empty(path: String): VirtualTextFile =
-    new MemVirtualTextFile(path)
+
+  def empty(path: String): VirtualTextFile = new MemVirtualTextFile(path)
 }
 
 trait WritableVirtualTextFile extends VirtualTextFile {
@@ -103,6 +104,7 @@ trait WritableVirtualBinaryFile extends VirtualBinaryFile {
  *  It may have a source map associated with it.
  */
 trait VirtualJSFile extends VirtualTextFile {
+
   /** Optionally, content of the source map file associated with this
    *  JavaScript source.
    */
@@ -110,11 +112,13 @@ trait VirtualJSFile extends VirtualTextFile {
 }
 
 object VirtualJSFile {
+
   def empty(path: String): VirtualJSFile =
     new MemVirtualJSFile(path).withVersion(Some(path))
 }
 
-trait WritableVirtualJSFile extends WritableVirtualTextFile with VirtualJSFile {
+trait WritableVirtualJSFile extends WritableVirtualTextFile
+    with VirtualJSFile {
   def sourceMapWriter: Writer
 }
 
@@ -122,13 +126,12 @@ trait WritableVirtualJSFile extends WritableVirtualTextFile with VirtualJSFile {
  *  It contains the class info and the IR tree.
  */
 trait VirtualScalaJSIRFile extends VirtualFile {
+
   /** Class info of this file. */
-  def info: ir.Infos.ClassInfo =
-    infoAndTree._1
+  def info: ir.Infos.ClassInfo = infoAndTree._1
 
   /** IR Tree of this file. */
-  def tree: ir.Trees.ClassDef =
-    infoAndTree._2
+  def tree: ir.Trees.ClassDef = infoAndTree._2
 
   /** Class info and IR tree of this file. */
   def infoAndTree: (ir.Infos.ClassInfo, ir.Trees.ClassDef)
@@ -136,7 +139,9 @@ trait VirtualScalaJSIRFile extends VirtualFile {
 
 /** Base trait for virtual Scala.js IR files that are serialized as binary file.
  */
-trait VirtualSerializedScalaJSIRFile extends VirtualBinaryFile with VirtualScalaJSIRFile {
+trait VirtualSerializedScalaJSIRFile extends VirtualBinaryFile
+    with VirtualScalaJSIRFile {
+
   /** Class info of this file. */
   override def info: ir.Infos.ClassInfo = {
     // Overridden to read only the necessary parts
@@ -145,9 +150,12 @@ trait VirtualSerializedScalaJSIRFile extends VirtualBinaryFile with VirtualScala
       ir.InfoSerializers.deserialize(stream)
     } catch {
       case e: ir.IRVersionNotSupportedException =>
-        throw new ir.IRVersionNotSupportedException(e.version, e.supported,
-            s"Failed to deserialize info of file compiled with Scala.js ${e.version}" +
-            s" (supported: ${e.supported.mkString(", ")}): $path", e)
+        throw new ir.IRVersionNotSupportedException(
+            e.version,
+            e.supported,
+            s"Failed to deserialize info of file compiled with Scala.js ${e.version}" + s" (supported: ${e.supported
+              .mkString(", ")}): $path",
+            e)
 
       case e: IOException =>
         throw new IOException(s"Failed to deserialize info of $path", e)
@@ -161,8 +169,8 @@ trait VirtualSerializedScalaJSIRFile extends VirtualBinaryFile with VirtualScala
     val stream = inputStream
     try {
       val (version, info) = ir.InfoSerializers.deserializeWithVersion(stream)
-      val tree = ir.Serializers.deserialize(
-          stream, version).asInstanceOf[ir.Trees.ClassDef]
+      val tree = ir.Serializers
+        .deserialize(stream, version).asInstanceOf[ir.Trees.ClassDef]
       (info, tree)
     } catch {
       case e: IOException =>
@@ -174,6 +182,7 @@ trait VirtualSerializedScalaJSIRFile extends VirtualBinaryFile with VirtualScala
 }
 
 trait VirtualJarFile extends VirtualBinaryFile {
+
   /** All the `*.sjsir` files in this Jar
    *
    *  It is up to the implementation whether these files are read lazily or not.
@@ -206,11 +215,9 @@ trait VirtualJarFile extends VirtualBinaryFile {
       mkResult: (ZipEntry, InputStream) => T): Seq[T] = {
     val stream = new ZipInputStream(inputStream)
     try {
-      Iterator.continually(stream.getNextEntry())
-        .takeWhile(_ != null)
-        .filter(entry => cond(entry.getName))
-        .map(entry => mkResult(entry, stream))
-        .toList
+      Iterator.continually(stream.getNextEntry()).takeWhile(_ != null)
+        .filter(entry => cond(entry.getName)).map(entry =>
+        mkResult(entry, stream)).toList
     } finally {
       stream.close()
     }

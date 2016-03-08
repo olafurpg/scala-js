@@ -13,15 +13,17 @@ import org.junit.Assert._
 import scala.runtime.BoxedUnit
 
 class ClassTest {
-
-  @Test def getSimpleName(): Unit = {
+  @Test
+  def getSimpleName(): Unit = {
     assertEquals("Integer", classOf[java.lang.Integer].getSimpleName())
     assertEquals("Class", classOf[java.lang.Class[_]].getSimpleName())
     assertEquals("Map", classOf[scala.collection.Map[_, _]].getSimpleName())
-    assertEquals("InnerClass", classOf[ClassTestClass#InnerClass].getSimpleName())
+    assertEquals(
+        "InnerClass", classOf[ClassTestClass#InnerClass].getSimpleName())
   }
 
-  @Test def getComponentType(): Unit = {
+  @Test
+  def getComponentType(): Unit = {
     @noinline
     def testNoInline(clazz: Class[_], componentType: Class[_]): Unit =
       assertEquals(componentType, clazz.getComponentType)
@@ -53,5 +55,6 @@ class ClassTest {
 }
 
 class ClassTestClass {
+
   class InnerClass
 }

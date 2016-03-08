@@ -5,18 +5,16 @@ import java.lang.Thread
 import java.util.concurrent.TimeUnit
 
 class ReentrantLock(fair: Boolean) extends Lock with Serializable {
-
   private var locked = 0
 
-  def this() = this(false)
+  def this () = this(false)
 
   def lock(): Unit = locked += 1
 
   def lockInterruptibly(): Unit = {
     if (Thread.interrupted())
       throw new InterruptedException()
-    else
-      lock()
+    else lock()
   }
 
   def tryLock(): Boolean = {
@@ -27,15 +25,13 @@ class ReentrantLock(fair: Boolean) extends Lock with Serializable {
   def tryLock(time: Long, unit: TimeUnit): Boolean = {
     if (Thread.interrupted())
       throw new InterruptedException()
-    else
-      tryLock()
+    else tryLock()
   }
 
   def unlock(): Unit = {
     if (locked <= 0)
       throw new IllegalMonitorStateException()
-    else
-      locked -= 1
+    else locked -= 1
   }
 
   //Not implemented:
@@ -52,8 +48,7 @@ class ReentrantLock(fair: Boolean) extends Lock with Serializable {
   protected def getOwner(): Thread = {
     if (isLocked)
       Thread.currentThread()
-    else
-      null
+    else null
   }
 
   //Not Implemented

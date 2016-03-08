@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.ir
 
 import java.io._
@@ -14,7 +13,6 @@ import java.io._
 import Infos._
 
 object InfoSerializers {
-
   /** Scala.js IR File Magic Number
    *
    *    CA FE : first part of magic number of Java class files
@@ -36,6 +34,7 @@ object InfoSerializers {
   }
 
   private final class Serializer {
+
     def serialize(stream: OutputStream, classInfo: ClassInfo): Unit = {
       val s = new DataOutputStream(stream)
 
@@ -44,8 +43,7 @@ object InfoSerializers {
         seq.foreach(writeElem)
       }
 
-      def writeStrings(seq: Seq[String]): Unit =
-        writeSeq(seq)(s.writeUTF(_))
+      def writeStrings(seq: Seq[String]): Unit = writeSeq(seq)(s.writeUTF(_))
 
       // Write the Scala.js IR magic number
       s.writeInt(IRMagicNumber)
@@ -67,13 +65,19 @@ object InfoSerializers {
         s.writeBoolean(isAbstract)
         s.writeBoolean(isExported)
         writeSeq(methodsCalled.toSeq) {
-          case (cls, callees) => s.writeUTF(cls); writeStrings(callees)
+          case (cls, callees) =>
+            s.writeUTF(cls);
+            writeStrings(callees)
         }
         writeSeq(methodsCalledStatically.toSeq) {
-          case (cls, callees) => s.writeUTF(cls); writeStrings(callees)
+          case (cls, callees) =>
+            s.writeUTF(cls);
+            writeStrings(callees)
         }
         writeSeq(staticMethodsCalled.toSeq) {
-          case (cls, callees) => s.writeUTF(cls); writeStrings(callees)
+          case (cls, callees) =>
+            s.writeUTF(cls);
+            writeStrings(callees)
         }
         writeStrings(instantiatedClasses)
         writeStrings(accessedModules)
@@ -88,13 +92,12 @@ object InfoSerializers {
   }
 
   private final class Deserializer(stream: InputStream) {
-    private[this] val input = new DataInputStream(stream)
+    private [ this] val input = new DataInputStream(stream)
 
     def readList[A](readElem: => A): List[A] =
       List.fill(input.readInt())(readElem)
 
-    def readStrings(): List[String] =
-      readList(input.readUTF())
+    def readStrings(): List[String] = readList(input.readUTF())
 
     def deserialize(): (String, ClassInfo) = {
       val version = readHeader()
@@ -108,7 +111,9 @@ object InfoSerializers {
       val isExported = readBoolean()
       val kind = ClassKind.fromByte(readByte())
       val superClass0 = readUTF()
-      val superClass = if (superClass0 == "") None else Some(superClass0)
+      val superClass =
+        if (superClass0 == "") None
+        else Some(superClass0)
       val interfaces = readList(readUTF())
 
       def readMethod(): MethodInfo = {
@@ -117,27 +122,36 @@ object InfoSerializers {
         val isAbstract = readBoolean()
         val isExported = readBoolean()
         val methodsCalled = readList(readUTF() -> readStrings()).toMap
-        val methodsCalledStatically = readList(readUTF() -> readStrings()).toMap
+        val methodsCalledStatically =
+          readList(readUTF() -> readStrings()).toMap
         val staticMethodsCalled = readList(readUTF() -> readStrings()).toMap
         val instantiatedClasses = readStrings()
         val accessedModules = readStrings()
         val usedInstanceTests = readStrings()
         val accessedClassData = readStrings()
-        MethodInfo(encodedName, isStatic, isAbstract, isExported,
-            methodsCalled, methodsCalledStatically, staticMethodsCalled,
-            instantiatedClasses, accessedModules, usedInstanceTests,
-            accessedClassData)
+        MethodInfo(encodedName,
+                   isStatic,
+                   isAbstract,
+                   isExported,
+                   methodsCalled,
+                   methodsCalledStatically,
+                   staticMethodsCalled,
+                   instantiatedClasses,
+                   accessedModules,
+                   usedInstanceTests,
+                   accessedClassData)
       }
 
       val methods0 = readList(readMethod())
-      val methods = if (useHacks065) {
-        methods0.filter(m => !Definitions.isReflProxyName(m.encodedName))
-      } else {
-        methods0
-      }
+      val methods =
+        if (useHacks065) {
+          methods0.filter(m => !Definitions.isReflProxyName(m.encodedName))
+        } else {
+          methods0
+        }
 
-      val info = ClassInfo(encodedName, isExported, kind,
-          superClass, interfaces, methods)
+      val info = ClassInfo(
+          encodedName, isExported, kind, superClass, interfaces, methods)
 
       (version, info)
     }
@@ -154,9 +168,11 @@ object InfoSerializers {
       val version = input.readUTF()
       val supported = ScalaJSVersions.binarySupported
       if (!supported.contains(version)) {
-        throw new IRVersionNotSupportedException(version, supported,
-            s"This version ($version) of Scala.js IR is not supported. " +
-            s"Supported versions are: ${supported.mkString(", ")}")
+        throw new IRVersionNotSupportedException(
+            version,
+            supported,
+            s"This version ($version) of Scala.js IR is not supported. " + s"Supported versions are: ${supported
+              .mkString(", ")}")
       }
 
       version

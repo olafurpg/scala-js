@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package scala.scalajs.js
 
 import scala.language.experimental.macros
@@ -14,6 +13,6 @@ import scala.language.experimental.macros
 import scala.scalajs.macroimpls.UseAsMacros
 
 /** Helper for syntactic sugar of [[js.use]]. Only use in `js.use(x).as[T]` */
-final class Using[A] private[js] (val x: A) extends AnyVal {
-  def as[B <: Any]: B = macro UseAsMacros.as_impl[A, B]
+final class Using[A] private [js](val x: A) extends AnyVal {
+  def as [B <: Any]: B = macro UseAsMacros.as_impl[A, B]
 }

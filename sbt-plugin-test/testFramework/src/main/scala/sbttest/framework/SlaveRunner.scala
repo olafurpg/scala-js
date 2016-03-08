@@ -7,13 +7,13 @@ final class SlaveRunner(
     remoteArgs: Array[String],
     testClassLoader: ClassLoader,
     send: String => Unit
-) extends BaseRunner(args, remoteArgs, testClassLoader) {
-
+    )
+    extends BaseRunner(args, remoteArgs, testClassLoader) {
   /** Number of tasks completed on this node */
-  private[this] var doneCount = 0
+  private [ this] var doneCount = 0
 
   /** Whether we have seen a Hello message from the master yet */
-  private[this] var seenHello = false
+  private [ this] var seenHello = false
 
   // Notify master of our existence
   send("s")
@@ -32,7 +32,7 @@ final class SlaveRunner(
     "" // <- ignored
   }
 
-  private[framework] def taskDone(): Unit = doneCount += 1
+  private [framework] def taskDone(): Unit = doneCount += 1
 
   def receiveMessage(msg: String): Option[String] = {
     assert(msg == "Hello")
@@ -40,14 +40,14 @@ final class SlaveRunner(
     None // <- ignored
   }
 
-  override def serializeTask(task: Task,
-      serializer: TaskDef => String): String = {
+  override def serializeTask(
+      task: Task, serializer: TaskDef => String): String = {
     ensureSeenHello()
     super.serializeTask(task, serializer)
   }
 
-  override def deserializeTask(task: String,
-      deserializer: String => TaskDef): Task = {
+  override def deserializeTask(
+      task: String, deserializer: String => TaskDef): Task = {
     ensureSeenHello()
     super.deserializeTask(task, deserializer)
   }
@@ -56,5 +56,4 @@ final class SlaveRunner(
     if (!seenHello)
       throw new IllegalStateException("Have not seen the master yet")
   }
-
 }

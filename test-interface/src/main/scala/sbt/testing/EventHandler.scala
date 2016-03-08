@@ -7,7 +7,6 @@ package sbt.testing
  *  <code>execute</code> method of <a href="Task.html"><code>Task</code></a>s.
  */
 trait EventHandler {
-
   /** Handle an event.
    *
    *  @param event the event to handle

@@ -1,10 +1,9 @@
 package sbt.testing
 
 /** An optional <code>Throwable</code>. */
-final class OptionalThrowable(
-    private val exception: Throwable) extends Serializable {
-
-  def this() = this(null)
+final class OptionalThrowable(private val exception: Throwable)
+    extends Serializable {
+  def this () = this(null)
 
   /** Indicates whether this <code>OptionalThrowable</code> is "defined,"
    *  <em>i.e.</em>, contains a <code>Throwable</code>.
@@ -38,23 +37,22 @@ final class OptionalThrowable(
   def get(): Throwable = {
     if (exception == null)
       throw new IllegalStateException("This OptionalThrowable is not defined")
-    else
-      exception
+    else exception
   }
 
-  override def equals(that: Any): Boolean = that match {
-    case that: OptionalThrowable =>
-      this.exception eq that.exception
-    case _ => false
-  }
+  override def equals(that: Any): Boolean =
+    that match {
+      case that: OptionalThrowable => this.exception eq that.exception
+      case _ => false
+    }
 
   override def hashCode(): Int =
-    if (exception == null) 0 else exception.hashCode()
+    if (exception == null) 0
+    else exception.hashCode()
 
   override def toString(): String = {
     if (exception == null)
       "OptionalThrowable()"
-    else
-      s"OptionalThrowable($exception)"
+    else s"OptionalThrowable($exception)"
   }
 }

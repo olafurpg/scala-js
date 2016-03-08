@@ -15,7 +15,6 @@ import scala.tools.nsc._
  *  @author Sébastien Doeraene
  */
 trait Compat210Component {
-
   val global: Global
 
   import global._
@@ -23,7 +22,9 @@ trait Compat210Component {
   // unexpandedName replaces originalName
 
   implicit final class SymbolCompat(self: Symbol) {
+
     def unexpandedName: Name = self.originalName
+
     def originalName: Name = sys.error("infinite loop in Compat")
 
     def isLocalToBlock: Boolean = self.isLocal
@@ -31,28 +32,36 @@ trait Compat210Component {
 
   // enteringPhase/exitingPhase replace beforePhase/afterPhase
 
-  @inline final def enteringPhase[T](ph: Phase)(op: => T): T = {
+  @inline
+  final def enteringPhase[T](ph: Phase)(op: => T): T = {
     global.enteringPhase(ph)(op)
   }
 
-  @inline final def exitingPhase[T](ph: Phase)(op: => T): T = {
+  @inline
+  final def exitingPhase[T](ph: Phase)(op: => T): T = {
     global.exitingPhase(ph)(op)
   }
 
   implicit final class GlobalCompat(
-      self: Compat210Component.this.global.type) {
+      self: Compat210Component. this.global. type) {
 
     def enteringPhase[T](ph: Phase)(op: => T): T = self.beforePhase(ph)(op)
-    def beforePhase[T](ph: Phase)(op: => T): T = sys.error("infinite loop in Compat")
+
+    def beforePhase[T](ph: Phase)(op: => T): T =
+      sys.error("infinite loop in Compat")
 
     def exitingPhase[T](ph: Phase)(op: => T): T = self.afterPhase(ph)(op)
-    def afterPhase[T](ph: Phase)(op: => T): T = sys.error("infinite loop in Compat")
 
-    def delambdafy: DelambdafyCompat.type = DelambdafyCompat
+    def afterPhase[T](ph: Phase)(op: => T): T =
+      sys.error("infinite loop in Compat")
+
+    def delambdafy: DelambdafyCompat. type = DelambdafyCompat
   }
 
   object DelambdafyCompat {
+
     object FreeVarTraverser {
+
       def freeVarsOf(function: Function): mutable.LinkedHashSet[Symbol] =
         sys.error("FreeVarTraverser should not be called on 2.10")
     }
@@ -71,8 +80,15 @@ trait Compat210Component {
    */
 
   object LowPrioGenBCodeCompat {
-    object genBCode { // scalastyle:ignore
-      object bTypes { // scalastyle:ignore
+
+    object genBCode {
+
+      // scalastyle:ignore
+
+      object bTypes {
+
+        // scalastyle:ignore
+
         def initializeCoreBTypes(): Unit = ()
       }
     }
@@ -103,30 +119,31 @@ trait Compat210Component {
   // Compat to support: new overridingPairs.Cursor(sym).iterator
 
   implicit class OverridingPairsCursor2Iterable(cursor: overridingPairs.Cursor) {
-    def iterator: Iterator[SymbolPair] = new Iterator[SymbolPair] {
-      skipIgnoredEntries()
 
-      def hasNext: Boolean = cursor.hasNext
-
-      def next(): SymbolPair = {
-        val symbolPair = new SymbolPair(cursor.overriding, cursor.overridden)
-        cursor.next()
+    def iterator: Iterator[SymbolPair] =
+      new Iterator[SymbolPair] {
         skipIgnoredEntries()
-        symbolPair
-      }
 
-      private def skipIgnoredEntries(): Unit = {
-        while (cursor.hasNext && ignoreNextEntry)
+        def hasNext: Boolean = cursor.hasNext
+
+        def next(): SymbolPair = {
+          val symbolPair = new SymbolPair(cursor.overriding, cursor.overridden)
           cursor.next()
-      }
+          skipIgnoredEntries()
+          symbolPair
+        }
 
-      /** In 2.10 the overridingPairs.Cursor returns some false positives
+        private def skipIgnoredEntries(): Unit = {
+          while (cursor.hasNext && ignoreNextEntry) cursor.next()
+        }
+
+        /** In 2.10 the overridingPairs.Cursor returns some false positives
        *  on overriding members. The known false positives are always trying to
        *  override the `isInstanceOf` method.
        */
-      private def ignoreNextEntry: Boolean =
-        cursor.overriding.name == nme.isInstanceOf_
-    }
+        private def ignoreNextEntry: Boolean =
+          cursor.overriding.name == nme.isInstanceOf_
+      }
 
     class SymbolPair(val low: Symbol, val high: Symbol)
 
@@ -134,7 +151,9 @@ trait Compat210Component {
      *  `overridden` are only present in 2.10.
      */
     private implicit class Cursor210toCursor211(cursor: overridingPairs.Cursor) {
+
       def overriding: Symbol = sys.error("infinite loop in Compat")
+
       def overridden: Symbol = sys.error("infinite loop in Compat")
     }
   }
@@ -142,33 +161,37 @@ trait Compat210Component {
   // ErasedValueType has a different encoding
 
   implicit final class ErasedValueTypeCompat(self: global.ErasedValueType) {
+
     def valueClazz: Symbol = self.original.typeSymbol
+
     def erasedUnderlying: Type =
-      enteringPhase(currentRun.erasurePhase)(
-          erasure.erasedValueClassArg(self.original))
+      enteringPhase(currentRun.erasurePhase)(erasure.erasedValueClassArg(
+          self.original))
+
     def original: TypeRef = sys.error("infinite loop in Compat")
   }
 
   // repeatedToSingle
 
-  @inline final def repeatedToSingle(t: Type): Type =
+  @inline
+  final def repeatedToSingle(t: Type): Type =
     global.definitions.repeatedToSingle(t)
 
   private implicit final class DefinitionsCompat(
-      self: Compat210Component.this.global.definitions.type) {
+      self: Compat210Component. this.global.definitions. type) {
 
-    def repeatedToSingle(t: Type): Type = t match {
-      case TypeRef(_, self.RepeatedParamClass, arg :: Nil) => arg
-      case _ => t
-    }
-
+    def repeatedToSingle(t: Type): Type =
+      t match {
+        case TypeRef(_, self.RepeatedParamClass, arg :: Nil) => arg
+        case _ => t
+      }
   }
 
   // run.runDefinitions bundles methods and state related to the run
   // that were previously in definitions itself
 
   implicit final class RunCompat(self: Run) {
-    val runDefinitions: Compat210Component.this.global.definitions.type =
+    val runDefinitions: Compat210Component. this.global.definitions. type =
       global.definitions
   }
 
@@ -182,14 +205,20 @@ trait Compat210Component {
 }
 
 object Compat210Component {
+
   private object LowPriorityMode {
+
     object Mode {
+
       def FUNmode: Nothing = sys.error("infinite loop in Compat")
     }
   }
 
-  private implicit final class AnalyzerCompat(self: scala.tools.nsc.typechecker.Analyzer) {
-    def FUNmode = { // scalastyle:ignore
+  private implicit final class AnalyzerCompat(
+      self: scala.tools.nsc.typechecker.Analyzer) {
+
+    def FUNmode = {
+      // scalastyle:ignore
       import Compat210Component.LowPriorityMode._
       {
         import scala.reflect.internal._

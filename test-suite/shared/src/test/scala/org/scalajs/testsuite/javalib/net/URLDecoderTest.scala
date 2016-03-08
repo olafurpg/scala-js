@@ -8,16 +8,17 @@ import java.net.URLDecoder
 import java.io.UnsupportedEncodingException
 
 class URLDecoderTest {
-
   private final val utf8 = "utf-8"
   private final val ReplacementChar = '\uFFFD'
 
   @Test
   def decodeTest(): Unit = {
+
     def test(encoded: String, expected: String, enc: String = utf8): Unit =
       assertEquals(URLDecoder.decode(encoded, enc), expected)
 
-    def illegalArgumentOrReplacement(encoded: String, enc: String = utf8): Unit = {
+    def illegalArgumentOrReplacement(
+        encoded: String, enc: String = utf8): Unit = {
       val thrown = {
         try {
           val res = URLDecoder.decode(encoded, enc)

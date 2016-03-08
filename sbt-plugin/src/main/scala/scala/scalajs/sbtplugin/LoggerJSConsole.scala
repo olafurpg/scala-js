@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.sbtplugin
 
 import sbt.Logger
@@ -14,5 +13,6 @@ import org.scalajs.jsenv.JSConsole
 
 /** A proxy for a Logger that looks like a Mozilla console object */
 class LoggerJSConsole(logger: Logger) extends JSConsole {
+
   def log(msg: Any): Unit = logger.info(msg.toString)
 }

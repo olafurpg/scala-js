@@ -12,6 +12,7 @@ import java.{util => ju}
 import org.scalajs.testsuite.javalib.util.MapFactory
 
 object ConcurrentMapFactory {
+
   def allFactories: Iterator[ConcurrentMapFactory] =
     ConcurrentHashMapFactory.allFactories
 }

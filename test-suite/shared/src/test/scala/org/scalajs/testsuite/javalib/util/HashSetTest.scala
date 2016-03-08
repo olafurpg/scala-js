@@ -12,20 +12,21 @@ import scala.language.implicitConversions
 import java.{util => ju}
 
 class HashSetTest extends AbstractSetTest {
+
   def factory: HashSetFactory = new HashSetFactory
 }
 
 object HashSetFactory {
+
   def allFactories: Iterator[HashSetFactory] =
     Iterator(new HashSetFactory) ++ LinkedHashSetFactory.allFactories
 }
 
 class HashSetFactory extends AbstractSetFactory {
-  def implementationName: String =
-    "java.util.HashSet"
 
-  def empty[E]: ju.HashSet[E] =
-    new ju.HashSet[E]()
+  def implementationName: String = "java.util.HashSet"
+
+  def empty[E]: ju.HashSet[E] = new ju.HashSet[E]()
 
   def allowsNullElement: Boolean = true
 }

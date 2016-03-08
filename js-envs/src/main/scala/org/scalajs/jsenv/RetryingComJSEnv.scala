@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.jsenv
 
 import org.scalajs.core.tools.io._
@@ -31,47 +30,47 @@ import scala.util.{Try, Failure, Success}
  *
  *  No retrying is performed for synchronous, or normal asynchronous runs.
  */
-final class RetryingComJSEnv(val baseEnv: ComJSEnv,
-    val maxRetries: Int) extends ComJSEnv {
-
-  def this(baseEnv: ComJSEnv) = this(baseEnv, 5)
+final class RetryingComJSEnv(val baseEnv: ComJSEnv, val maxRetries: Int)
+    extends ComJSEnv {
+  def this (baseEnv: ComJSEnv) = this(baseEnv, 5)
 
   def name: String = s"Retrying ${baseEnv.name}"
 
-  def jsRunner(libs: Seq[ResolvedJSDependency],
-      code: VirtualJSFile): JSRunner = {
+  def jsRunner(
+      libs: Seq[ResolvedJSDependency], code: VirtualJSFile): JSRunner = {
     baseEnv.jsRunner(libs, code)
   }
 
-  def asyncRunner(libs: Seq[ResolvedJSDependency],
-      code: VirtualJSFile): AsyncJSRunner = {
+  def asyncRunner(
+      libs: Seq[ResolvedJSDependency], code: VirtualJSFile): AsyncJSRunner = {
     baseEnv.asyncRunner(libs, code)
   }
 
-  def comRunner(libs: Seq[ResolvedJSDependency],
-      code: VirtualJSFile): ComJSRunner = {
+  def comRunner(
+      libs: Seq[ResolvedJSDependency], code: VirtualJSFile): ComJSRunner = {
     new RetryingComJSRunner(libs, code)
   }
 
   /** Hack to work around abstract override in ComJSRunner */
   private trait DummyJSRunner {
+
     def stop(): Unit = ()
   }
 
-  private class RetryingComJSRunner(libs: Seq[ResolvedJSDependency],
-      code: VirtualJSFile) extends DummyJSRunner with ComJSRunner {
+  private class RetryingComJSRunner(
+      libs: Seq[ResolvedJSDependency], code: VirtualJSFile)
+      extends DummyJSRunner with ComJSRunner {
+    private [ this] val promise = Promise[Unit]
 
-    private[this] val promise = Promise[Unit]
+    private [ this] var curRunner = baseEnv.comRunner(libs, code)
 
-    private[this] var curRunner = baseEnv.comRunner(libs, code)
+    private [ this] var hasReceived = false
+    private [ this] var retryCount = 0
 
-    private[this] var hasReceived = false
-    private[this] var retryCount = 0
+    private [ this] val log = mutable.Buffer.empty[LogItem]
 
-    private[this] val log = mutable.Buffer.empty[LogItem]
-
-    private[this] var _logger: Logger = _
-    private[this] var _console: JSConsole = _
+    private [ this] var _logger: Logger = _
+    private [ this] var _console: JSConsole = _
 
     def future: Future[Unit] = promise.future
 
@@ -131,8 +130,8 @@ final class RetryingComJSEnv(val baseEnv: ComJSEnv,
         if (hasReceived || retryCount > maxRetries || promise.isCompleted)
           throw cause
 
-        _logger.warn("Retrying to launch a " + baseEnv.getClass.getName +
-          " after " + cause.toString)
+        _logger.warn(
+            "Retrying to launch a " + baseEnv.getClass.getName + " after " + cause.toString)
 
         val oldRunner = curRunner
 
@@ -140,8 +139,8 @@ final class RetryingComJSEnv(val baseEnv: ComJSEnv,
           baseEnv.comRunner(libs, code)
         } catch {
           case NonFatal(t) =>
-            _logger.error("Could not retry: creating an new runner failed: " +
-              t.toString)
+            _logger.error(
+                "Could not retry: creating an new runner failed: " + t.toString)
             throw cause
         }
 
@@ -161,37 +160,36 @@ final class RetryingComJSEnv(val baseEnv: ComJSEnv,
 
     private def logAndDo(task: LogItem) = {
       log += task
-      try executeTask(task)
-      catch {
+      try executeTask(task) catch {
         case NonFatal(t) => retry(t)
       }
     }
 
-    private def executeTask(task: LogItem) = task match {
-      case Start =>
-        import ExecutionContext.Implicits.global
-        val runner = curRunner
-        runner.start(_logger, _console) onComplete { result =>
-          // access to curRunner and promise must be synchronized
-          synchronized {
-            if (curRunner eq runner)
-              promise.complete(result)
+    private def executeTask(task: LogItem) =
+      task match {
+        case Start =>
+          import ExecutionContext.Implicits.global
+          val runner = curRunner
+          runner.start(_logger, _console) onComplete { result =>
+            // access to curRunner and promise must be synchronized
+            synchronized {
+              if (curRunner eq runner)
+                promise.complete(result)
+            }
           }
-        }
-      case Send(msg) =>
-        curRunner.send(msg)
-      case Stop =>
-        curRunner.stop()
-      case Close =>
-        curRunner.close()
-    }
+        case Send(msg) => curRunner.send(msg)
+        case Stop => curRunner.stop()
+        case Close => curRunner.close()
+      }
 
     private sealed trait LogItem
+
     private case object Start extends LogItem
+
     private case class Send(msg: String) extends LogItem
+
     private case object Stop extends LogItem
+
     private case object Close extends LogItem
-
   }
-
 }

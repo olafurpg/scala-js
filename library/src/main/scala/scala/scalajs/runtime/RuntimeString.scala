@@ -16,18 +16,21 @@ import java.util.regex._
  *  methods in the object, passing `this` as the first argument, that we
  *  consistently call `thiz` in this object.
  */
-private[runtime] object RuntimeString {
-
+private [runtime] object RuntimeString {
   /** Operations on a primitive JS string that are shadowed by Scala methods,
    *  and that we need to implement these very Scala methods.
    */
   @js.native
   private trait SpecialJSStringOps extends js.Any {
+
     def length: Int = js.native
+
     def charCodeAt(index: Int): Int = js.native
 
     def toLowerCase(): String = js.native
+
     def toUpperCase(): String = js.native
+
     def trim(): String = js.native
   }
 
@@ -40,18 +43,18 @@ private[runtime] object RuntimeString {
 
   final lazy val CASE_INSENSITIVE_ORDER: Comparator[String] = {
     new Comparator[String] with Serializable {
+
       def compare(o1: String, o2: String): Int = o1.compareToIgnoreCase(o2)
     }
   }
 
   def codePointAt(thiz: String, index: Int): Int = {
     val high = thiz.charAt(index)
-    if (index+1 < thiz.length) {
-      val low = thiz.charAt(index+1)
+    if (index + 1 < thiz.length) {
+      val low = thiz.charAt(index + 1)
       if (Character.isSurrogatePair(high, low))
         Character.toCodePoint(high, low)
-      else
-        high.toInt
+      else high.toInt
     } else {
       high.toInt
     }
@@ -74,7 +77,7 @@ private[runtime] object RuntimeString {
   def hashCode(thiz: String): Int = {
     var res = 0
     var mul = 1 // holds pow(31, length-i-1)
-    var i = thiz.length-1
+    var i = thiz.length - 1
     while (i >= 0) {
       res += thiz.charAt(i) * mul
       mul *= 31
@@ -86,8 +89,8 @@ private[runtime] object RuntimeString {
   @inline
   def compareTo(thiz: String, anotherString: String): Int = {
     if (thiz.equals(anotherString)) 0
-    else if ((thiz.asInstanceOf[js.Dynamic] <
-        anotherString.asInstanceOf[js.Dynamic]).asInstanceOf[Boolean]) -1
+    else if ((thiz.asInstanceOf[js.Dynamic] < anotherString.asInstanceOf[
+                     js.Dynamic]).asInstanceOf[Boolean]) -1
     else 1
   }
 
@@ -96,15 +99,16 @@ private[runtime] object RuntimeString {
 
   @inline
   def equalsIgnoreCase(thiz: String, that: String): Boolean =
-    thiz.toLowerCase() == (if (that == null) null else that.toLowerCase())
+    thiz.toLowerCase() ==
+    (if (that == null) null
+        else that.toLowerCase())
 
   @inline
-  def concat(thiz: String, s: String): String =
-    checkNull(thiz) + s
+  def concat(thiz: String, s: String): String = checkNull(thiz) + s
 
   @inline
   def contains(thiz: String, s: CharSequence): Boolean =
-    thiz.indexOf(s.toString) != -1
+    thiz.indexOf(s.toString) != - 1
 
   def endsWith(thiz: String, suffix: String): Boolean =
     thiz.jsSubstring(thiz.length - suffix.length) == suffix
@@ -122,32 +126,31 @@ private[runtime] object RuntimeString {
     res
   }
 
-  def getChars(thiz: String, srcBegin: Int, srcEnd: Int,
-      dst: Array[Char], dstBegin: Int): Unit = {
-    if (srcEnd   > thiz.length || // first test uses thiz
-        srcBegin < 0 ||
-        srcEnd   < 0 ||
-        srcBegin > srcEnd) {
+  def getChars(thiz: String,
+               srcBegin: Int,
+               srcEnd: Int,
+               dst: Array[Char],
+               dstBegin: Int): Unit = {
+    if (srcEnd > thiz.length || // first test uses thiz
+        srcBegin < 0 || srcEnd < 0 || srcBegin > srcEnd) {
       throw new StringIndexOutOfBoundsException("Index out of Bound")
     }
 
     val offset = dstBegin - srcBegin
     var i = srcBegin
     while (i < srcEnd) {
-      dst(i+offset) = thiz.charAt(i)
+      dst (i + offset) = thiz.charAt(i)
       i += 1
     }
   }
 
-  def indexOf(thiz: String, ch: Int): Int =
-    thiz.indexOf(fromCodePoint(ch))
+  def indexOf(thiz: String, ch: Int): Int = thiz.indexOf(fromCodePoint(ch))
 
   def indexOf(thiz: String, ch: Int, fromIndex: Int): Int =
     thiz.indexOf(fromCodePoint(ch), fromIndex)
 
   @inline
-  def indexOf(thiz: String, str: String): Int =
-    thiz.jsIndexOf(str)
+  def indexOf(thiz: String, str: String): Int = thiz.jsIndexOf(str)
 
   @inline
   def indexOf(thiz: String, str: String, fromIndex: Int): Int =
@@ -158,12 +161,10 @@ private[runtime] object RuntimeString {
    * and reference equality is the same.
    */
   @inline
-  def intern(thiz: String): String =
-    checkNull(thiz)
+  def intern(thiz: String): String = checkNull(thiz)
 
   @inline
-  def isEmpty(thiz: String): Boolean =
-    checkNull(thiz) == ""
+  def isEmpty(thiz: String): Boolean = checkNull(thiz) == ""
 
   def lastIndexOf(thiz: String, ch: Int): Int =
     thiz.lastIndexOf(fromCodePoint(ch))
@@ -173,8 +174,7 @@ private[runtime] object RuntimeString {
     else thiz.lastIndexOf(fromCodePoint(ch), fromIndex)
 
   @inline
-  def lastIndexOf(thiz: String, str: String): Int =
-    thiz.jsLastIndexOf(str)
+  def lastIndexOf(thiz: String, str: String): Int = thiz.jsLastIndexOf(str)
 
   @inline
   def lastIndexOf(thiz: String, str: String, fromIndex: Int): Int =
@@ -182,8 +182,7 @@ private[runtime] object RuntimeString {
     else thiz.jsLastIndexOf(str, fromIndex)
 
   @inline
-  def length(thiz: String): Int =
-    specialJSStringOps(thiz).length
+  def length(thiz: String): Int = specialJSStringOps(thiz).length
 
   @inline
   def matches(thiz: String, regex: String): Boolean = {
@@ -194,25 +193,35 @@ private[runtime] object RuntimeString {
   /* Both regionMatches ported from
    * https://github.com/gwtproject/gwt/blob/master/user/super/com/google/gwt/emul/java/lang/String.java
    */
-  def regionMatches(thiz: String, ignoreCase: Boolean,
-      toffset: Int, other: String, ooffset: Int, len: Int): Boolean = {
+
+  def regionMatches(thiz: String,
+                    ignoreCase: Boolean,
+                    toffset: Int,
+                    other: String,
+                    ooffset: Int,
+                    len: Int): Boolean = {
     checkNull(thiz)
     if (other == null) {
       throw new NullPointerException()
-    } else if (toffset < 0 || ooffset < 0 || toffset + len > thiz.length || ooffset + len > other.length) {
+    } else if (toffset < 0 || ooffset < 0 || toffset + len > thiz.length ||
+               ooffset + len > other.length) {
       false
     } else if (len <= 0) {
       true
     } else {
       val left = thiz.substring(toffset, toffset + len)
       val right = other.substring(ooffset, ooffset + len)
-      if (ignoreCase) left.equalsIgnoreCase(right) else left == right
+      if (ignoreCase) left.equalsIgnoreCase(right)
+      else left == right
     }
   }
 
   @inline
-  def regionMatches(thiz: String, toffset: Int,
-      other: String, ooffset: Int, len: Int): Boolean = {
+  def regionMatches(thiz: String,
+                    toffset: Int,
+                    other: String,
+                    ooffset: Int,
+                    len: Int): Boolean = {
     regionMatches(thiz, false, toffset, other, ooffset, len)
   }
 
@@ -221,7 +230,8 @@ private[runtime] object RuntimeString {
     thiz.replace(oldChar.toString, newChar.toString)
 
   @inline
-  def replace(thiz: String, target: CharSequence, replacement: CharSequence): String =
+  def replace(
+      thiz: String, target: CharSequence, replacement: CharSequence): String =
     thiz.jsSplit(target.toString).join(replacement.toString)
 
   def replaceAll(thiz: String, regex: String, replacement: String): String = {
@@ -235,8 +245,7 @@ private[runtime] object RuntimeString {
   }
 
   @inline
-  def split(thiz: String, regex: String): Array[String] =
-    thiz.split(regex, 0)
+  def split(thiz: String, regex: String): Array[String] = thiz.split(regex, 0)
 
   def split(thiz: String, regex: String, limit: Int): Array[String] = {
     checkNull(thiz)
@@ -270,7 +279,7 @@ private[runtime] object RuntimeString {
     val result = new Array[Char](length)
     var i = 0
     while (i < length) {
-      result(i) = thiz.charAt(i)
+      result (i) = thiz.charAt(i)
       i += 1
     }
     result
@@ -285,15 +294,13 @@ private[runtime] object RuntimeString {
     specialJSStringOps(thiz).toUpperCase()
 
   @inline
-  def trim(thiz: String): String =
-    specialJSStringOps(thiz).trim()
+  def trim(thiz: String): String = specialJSStringOps(thiz).trim()
 
   // Constructors
 
   def newString(): String = ""
 
-  def newString(value: Array[Char]): String =
-    newString(value, 0, value.length)
+  def newString(value: Array[Char]): String = newString(value, 0, value.length)
 
   def newString(value: Array[Char], offset: Int, count: Int): String = {
     val end = offset + count
@@ -306,7 +313,7 @@ private[runtime] object RuntimeString {
       charCodes += value(i).toInt
       i += 1
     }
-    fromCharCode(charCodes: _*)
+    fromCharCode(charCodes: _ *)
   }
 
   def newString(bytes: Array[Byte]): String =
@@ -321,12 +328,14 @@ private[runtime] object RuntimeString {
   def newString(bytes: Array[Byte], offset: Int, length: Int): String =
     newString(bytes, offset, length, Charset.defaultCharset)
 
-  def newString(bytes: Array[Byte], offset: Int, length: Int,
-      charsetName: String): String =
+  def newString(bytes: Array[Byte],
+                offset: Int,
+                length: Int,
+                charsetName: String): String =
     newString(bytes, offset, length, Charset.forName(charsetName))
 
-  def newString(bytes: Array[Byte], offset: Int, length: Int,
-      charset: Charset): String =
+  def newString(
+      bytes: Array[Byte], offset: Int, length: Int, charset: Charset): String =
     charset.decode(ByteBuffer.wrap(bytes, offset, length)).toString()
 
   def newString(codePoints: Array[Int], offset: Int, count: Int): String = {
@@ -349,41 +358,45 @@ private[runtime] object RuntimeString {
       }
       i += 1
     }
-    fromCharCode(charCodes: _*)
+    fromCharCode(charCodes: _ *)
   }
 
-  def newString(original: String): String =
-    checkNull(original)
+  def newString(original: String): String = checkNull(original)
 
-  def newString(buffer: java.lang.StringBuffer): String =
-    buffer.toString
+  def newString(buffer: java.lang.StringBuffer): String = buffer.toString
 
-  def newString(builder: java.lang.StringBuilder): String =
-    builder.toString
+  def newString(builder: java.lang.StringBuilder): String = builder.toString
 
   // Static methods (aka methods on the companion object)
 
   def valueOf(value: Boolean): String = value.toString()
-  def valueOf(value: Char): String    = value.toString()
-  def valueOf(value: Byte): String    = value.toString()
-  def valueOf(value: Short): String   = value.toString()
-  def valueOf(value: Int): String     = value.toString()
-  def valueOf(value: Long): String    = value.toString()
-  def valueOf(value: Float): String   = value.toString()
-  def valueOf(value: Double): String  = value.toString()
+
+  def valueOf(value: Char): String = value.toString()
+
+  def valueOf(value: Byte): String = value.toString()
+
+  def valueOf(value: Short): String = value.toString()
+
+  def valueOf(value: Int): String = value.toString()
+
+  def valueOf(value: Long): String = value.toString()
+
+  def valueOf(value: Float): String = value.toString()
+
+  def valueOf(value: Double): String = value.toString()
 
   def valueOf(value: Object): String =
-    if (value eq null) "null" else value.toString()
+    if (value eq null) "null"
+    else value.toString()
 
-  def valueOf(data: Array[Char]): String =
-    valueOf(data, 0, data.length)
+  def valueOf(data: Array[Char]): String = valueOf(data, 0, data.length)
 
   def valueOf(data: Array[Char], offset: Int, count: Int): String =
     newString(data, offset, count)
 
   def format(format: String, args: Array[AnyRef]): String = {
     val frm = new java.util.Formatter()
-    val res = frm.format(format, args: _*).toString()
+    val res = frm.format(format, args: _ *).toString()
     frm.close()
     res
   }
@@ -391,7 +404,7 @@ private[runtime] object RuntimeString {
   // Helpers
 
   @inline
-  private def checkNull(s: String): s.type =
+  private def checkNull(s: String): s. type =
     if (s == null) throw new NullPointerException()
     else s
 
@@ -402,14 +415,13 @@ private[runtime] object RuntimeString {
       throw new IllegalArgumentException
     else {
       val offsetCp = codePoint - 0x10000
-      fromCharCode(
-          (offsetCp >> 10) | 0xd800, (offsetCp & 0x3ff) | 0xdc00)
+      fromCharCode((offsetCp >> 10) | 0xd800, (offsetCp & 0x3ff) | 0xdc00)
     }
   }
 
-  @inline private def fromCharCode(charCodes: Int*): String = {
+  @inline
+  private def fromCharCode(charCodes: Int *): String = {
     js.Dynamic.global.String.applyDynamic("fromCharCode")(
-        charCodes.asInstanceOf[Seq[js.Any]]: _*).asInstanceOf[String]
+        charCodes.asInstanceOf[Seq[js.Any]]: _ *).asInstanceOf[String]
   }
-
 }

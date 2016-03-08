@@ -12,9 +12,7 @@ import org.scalajs.jasminetest.JasmineTest
 import scala.scalajs.js
 
 object OptimizerTest extends JasmineTest {
-
   describe("Inlineable classes") {
-
     it("must update fields of `this` in the computation of other fields - #1153") {
       val foo = new InlineClassDependentFields(5)
       expect(foo.x).toEqual(5)
@@ -26,11 +24,9 @@ object OptimizerTest extends JasmineTest {
       val foo = new InlineClassThisAlias(5)
       expect(foo.z).toEqual(5)
     }
-
   }
 
   describe("Optimizer regression tests") {
-
     it("must not break * (-1) for Int - #1453") {
       @noinline
       def start0: Int = (() => 10)()
@@ -45,11 +41,11 @@ object OptimizerTest extends JasmineTest {
     it("must not break * (-1) for Float and Double - #1478") {
       @noinline
       def a: Float = (() => 5.0f)()
-      expect(a * -1.0f).toEqual(-5.0f)
+      expect(a * - 1.0f).toEqual(-5.0f)
 
       @noinline
       def b: Double = (() => 7.0)()
-      expect(b * -1.0).toEqual(-7.0)
+      expect(b * - 1.0).toEqual(-7.0)
     }
 
     it("must not break foreach on downward Range - #1453") {
@@ -57,7 +53,7 @@ object OptimizerTest extends JasmineTest {
       def start0: Int = (() => 10)()
 
       val elements = js.Array[Int]()
-      for (i <- start0 to 2 by -1) {
+      for (i <- start0 to 2 by - 1) {
         if (i < 0)
           sys.error("Going into infinite loop")
         elements.push(i)
@@ -78,17 +74,18 @@ object OptimizerTest extends JasmineTest {
       expect(classOf[String] == classOf[Array[String]]).toBeFalsy
       expect(classOf[Array[Array[Object]]] == classOf[Array[Object]]).toBeFalsy
     }
-
   }
 
   describe("+[string] constant folding") {
     it("must not break when folding two constant strings") {
-      @inline def str: String = "I am "
+      @inline
+      def str: String = "I am "
       expect(str + "constant").toEqual("I am constant")
     }
 
     it("must not break when folding the empty string when associated with a string") {
-      @noinline def str: String = "hello"
+      @noinline
+      def str: String = "hello"
       expect(str + "").toEqual("hello")
       expect("" + str).toEqual("hello")
     }
@@ -99,15 +96,19 @@ object OptimizerTest extends JasmineTest {
     }
 
     it("must not break when folding cascading +[string]") {
-      @noinline def str: String = "awesome! 10/10"
+      @noinline
+      def str: String = "awesome! 10/10"
       expect("Scala.js" + (" is " + str)).toEqual("Scala.js is awesome! 10/10")
       expect((str + " is ") + "Scala.js").toEqual("awesome! 10/10 is Scala.js")
     }
 
     it("must not break when folding a chain of +[string]") {
-      @inline def b: String = "b"
-      @inline def d: String = "d"
-      @inline def f: String = "f"
+      @inline
+      def b: String = "b"
+      @inline
+      def d: String = "d"
+      @inline
+      def f: String = "f"
       expect("a" + b + "c" + d + "e" + f + "g").toEqual("abcdefg")
     }
 
@@ -119,7 +120,7 @@ object OptimizerTest extends JasmineTest {
     it("must not break when folding zero and stringLit") {
       expect(0.0 + "hello").toEqual("0hello")
       expect("hello" + 0.0).toEqual("hello0")
-      expect(-0.0 + "hello").toEqual("0hello")
+      expect(- 0.0 + "hello").toEqual("0hello")
       expect("hello" + (-0.0)).toEqual("hello0")
     }
 
@@ -135,26 +136,26 @@ object OptimizerTest extends JasmineTest {
       expect("hello" + Double.NaN).toEqual("helloNaN")
     }
 
-    unless("fullopt-stage").
-    it("must not break when folding double with decimal and stringLit") {
+    unless("fullopt-stage")
+      .it("must not break when folding double with decimal and stringLit") {
       expect(1.2323919403474454E21 + "hello")
         .toEqual("1.2323919403474454e+21hello")
       expect("hello" + 1.2323919403474454E21)
         .toEqual("hello1.2323919403474454e+21")
     }
 
-    unless("fullopt-stage").
-    it("must not break when folding double that JVM would print in scientific notation and stringLit") {
-      expect(123456789012345d + "hello")
-        .toEqual("123456789012345hello")
-      expect("hello" + 123456789012345d)
-        .toEqual("hello123456789012345")
+    unless("fullopt-stage").it(
+        "must not break when folding double that JVM would print in scientific notation and stringLit") {
+      expect(123456789012345d + "hello").toEqual("123456789012345hello")
+      expect("hello" + 123456789012345d).toEqual("hello123456789012345")
     }
 
-    unless("fullopt-stage").
-    it("must not break when folding doubles to String"){
-      @noinline def toStringNoInline(v: Double): String = v.toString
-      @inline def test(v: Double): Unit =
+    unless("fullopt-stage")
+      .it("must not break when folding doubles to String") {
+      @noinline
+      def toStringNoInline(v: Double): String = v.toString
+      @inline
+      def test(v: Double): Unit =
         expect(v.toString).toEqual(toStringNoInline(v))
 
       // Special cases
@@ -289,13 +290,14 @@ object OptimizerTest extends JasmineTest {
       expect('S' + "cala.js").toEqual("Scala.js")
       expect("Scala.j" + 's').toEqual("Scala.js")
     }
-
   }
 
   @inline
   class InlineClassDependentFields(val x: Int) {
     val b = x > 3
-    val y = if (b) x + 6 else x-2
+    val y =
+      if (b) x + 6
+      else x - 2
   }
 
   @inline
@@ -304,5 +306,4 @@ object OptimizerTest extends JasmineTest {
     val y = x
     val z = t.y
   }
-
 }

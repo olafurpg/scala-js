@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.sbtplugin.cross
 
 import sbt._
@@ -14,7 +13,6 @@ import sbt._
 import java.io.File
 
 abstract class CrossType {
-
   /** The base directory for a (true sbt) Project
    *  @param crossBase The base directory of the CrossProject
    *  @param projectType "jvm" or "js". Other values may be supported
@@ -33,12 +31,12 @@ abstract class CrossType {
    *      or "test")
    */
   def sharedSrcDir(projectBase: File, conf: String): Option[File]
-
 }
 
 object CrossType {
 
   object Full extends CrossType {
+
     def projectDir(crossBase: File, projectType: String): File =
       crossBase / projectType
 
@@ -47,6 +45,7 @@ object CrossType {
   }
 
   object Pure extends CrossType {
+
     def projectDir(crossBase: File, projectType: String): File =
       crossBase / ("." + projectType)
 
@@ -55,10 +54,10 @@ object CrossType {
   }
 
   object Dummy extends CrossType {
+
     def projectDir(crossBase: File, projectType: String): File =
       crossBase / projectType
 
     def sharedSrcDir(projectBase: File, conf: String): Option[File] = None
   }
-
 }

@@ -3,8 +3,8 @@ package java.lang
 import scala.scalajs.js
 
 class Runtime private {
-  def exit(status: Int): Unit =
-    halt(status)
+
+  def exit(status: Int): Unit = halt(status)
 
   //def addShutdownHook(hook: Thread): Unit
   //def removeShutdownHook(hook: Thread): Unit
@@ -14,9 +14,8 @@ class Runtime private {
 
     envInfo.exitFunction.fold {
       // We don't have an exit function. Fail
-      throw new SecurityException("Cannot terminate a JavaScript program. " +
-          "Define a JavaScript function `__ScalaJSEnv.exitFunction` to " +
-          "be called on exit.")
+      throw new SecurityException(
+          "Cannot terminate a JavaScript program. " + "Define a JavaScript function `__ScalaJSEnv.exitFunction` to " + "be called on exit.")
     } { exitFunction =>
       exitFunction(status)
       throw new IllegalStateException("__ScalaJSEnv.exitFunction returned")

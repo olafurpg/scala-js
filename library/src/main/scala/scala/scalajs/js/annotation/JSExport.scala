@@ -6,8 +6,6 @@
 **                          |/                                          **
 \*                                                                      */
 
-
-
 package scala.scalajs.js.annotation
 
 /** Specifies that the given entity should be exported for use in raw JS.
@@ -15,5 +13,5 @@ package scala.scalajs.js.annotation
  *  @see [[http://www.scala-js.org/doc/export-to-javascript.html Export Scala.js APIs to JavaScript]]
  */
 class JSExport extends scala.annotation.StaticAnnotation {
-  def this(name: String) = this()
+  def this (name: String) = this()
 }

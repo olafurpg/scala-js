@@ -15,21 +15,21 @@ import org.scalajs.testsuite.utils.Platform.executingInJVM
 
 class StringBufferTest {
 
-  def newBuf: java.lang.StringBuffer =
-    new java.lang.StringBuffer
+  def newBuf: java.lang.StringBuffer = new java.lang.StringBuffer
 
   def initBuf(str: String): java.lang.StringBuffer =
     new java.lang.StringBuffer(str)
 
-  @Test def append(): Unit = {
+  @Test
+  def append(): Unit = {
     assertEquals("asdf", newBuf.append("asdf").toString)
     assertEquals("null", newBuf.append(null: AnyRef).toString)
     assertEquals("null", newBuf.append(null: String).toString)
-    assertEquals("nu", newBuf.append(null: CharSequence,0,2).toString)
+    assertEquals("nu", newBuf.append(null: CharSequence, 0, 2).toString)
     assertEquals("true", newBuf.append(true).toString)
     assertEquals("a", newBuf.append('a').toString)
-    assertEquals("abcd", newBuf.append(Array('a','b','c','d')).toString)
-    assertEquals("bc", newBuf.append(Array('a','b','c','d'), 1, 2).toString)
+    assertEquals("abcd", newBuf.append(Array('a', 'b', 'c', 'd')).toString)
+    assertEquals("bc", newBuf.append(Array('a', 'b', 'c', 'd'), 1, 2).toString)
     assertEquals("4", newBuf.append(4.toByte).toString)
     assertEquals("304", newBuf.append(304.toShort).toString)
     assertEquals("100000", newBuf.append(100000).toString)
@@ -37,15 +37,17 @@ class StringBufferTest {
     assertEquals("3.5", newBuf.append(3.5).toString)
   }
 
-  @Test def insert(): Unit = {
+  @Test
+  def insert(): Unit = {
     assertEquals("asdf", newBuf.insert(0, "asdf").toString)
     assertEquals("null", newBuf.insert(0, null: AnyRef).toString)
     assertEquals("null", newBuf.insert(0, null: String).toString)
-    assertEquals("nu", newBuf.insert(0, null: CharSequence,0,2).toString)
+    assertEquals("nu", newBuf.insert(0, null: CharSequence, 0, 2).toString)
     assertEquals("true", newBuf.insert(0, true).toString)
     assertEquals("a", newBuf.insert(0, 'a').toString)
-    assertEquals("abcd", newBuf.insert(0, Array('a','b','c','d')).toString)
-    assertEquals("bc", newBuf.insert(0, Array('a','b','c','d'), 1, 2).toString)
+    assertEquals("abcd", newBuf.insert(0, Array('a', 'b', 'c', 'd')).toString)
+    assertEquals(
+        "bc", newBuf.insert(0, Array('a', 'b', 'c', 'd'), 1, 2).toString)
     assertEquals("4", newBuf.insert(0, 4.toByte).toString)
     assertEquals("304", newBuf.insert(0, 304.toShort).toString)
     assertEquals("100000", newBuf.insert(0, 100000).toString)
@@ -54,48 +56,54 @@ class StringBufferTest {
 
     assertEquals("abcdef", initBuf("adef").insert(1, "bc").toString)
     assertEquals("abcdef", initBuf("abcd").insert(4, "ef").toString)
-    assertEquals("abcdef", initBuf("adef").insert(1, Array('b','c')).toString)
+    assertEquals("abcdef", initBuf("adef").insert(1, Array('b', 'c')).toString)
     assertEquals("abcdef", initBuf("adef").insert(1, initBuf("bc")).toString)
-    assertEquals("abcdef", initBuf("abef").insert(2, Array('a','b','c','d','e'), 2, 2).toString)
-    assertEquals("abcdef", initBuf("abef").insert(2, initBuf("abcde"), 2, 4).toString)
+    assertEquals("abcdef",
+                 initBuf("abef").insert(
+                     2, Array('a', 'b', 'c', 'd', 'e'), 2, 2).toString)
+    assertEquals(
+        "abcdef", initBuf("abef").insert(2, initBuf("abcde"), 2, 4).toString)
 
     expectThrows(classOf[StringIndexOutOfBoundsException],
-        initBuf("abcd").insert(5, "whatever"))
+                 initBuf("abcd").insert(5, "whatever"))
     expectThrows(classOf[StringIndexOutOfBoundsException],
-        initBuf("abcd").insert(-1, "whatever"))
+                 initBuf("abcd").insert(-1, "whatever"))
   }
 
-  @Test def deleteCharAt(): Unit = {
+  @Test
+  def deleteCharAt(): Unit = {
     assertEquals("023", initBuf("0123").deleteCharAt(1).toString)
     assertEquals("123", initBuf("0123").deleteCharAt(0).toString)
     assertEquals("012", initBuf("0123").deleteCharAt(3).toString)
     expectThrows(classOf[StringIndexOutOfBoundsException],
-        initBuf("0123").deleteCharAt(-1))
+                 initBuf("0123").deleteCharAt(-1))
     expectThrows(classOf[StringIndexOutOfBoundsException],
-        initBuf("0123").deleteCharAt(4))
+                 initBuf("0123").deleteCharAt(4))
   }
 
-  @Test def replace(): Unit = {
-    assertEquals("0bc3", initBuf("0123").replace(1,3,"bc").toString)
-    assertEquals("abcd", initBuf("0123").replace(0,4,"abcd").toString)
-    assertEquals("abcd", initBuf("0123").replace(0,10,"abcd").toString)
-    assertEquals("012defg", initBuf("0123").replace(3,10,"defg").toString)
-    assertEquals("xxxx123", initBuf("0123").replace(0,1,"xxxx").toString)
-    assertEquals("0xxxx123", initBuf("0123").replace(1,1,"xxxx").toString)
+  @Test
+  def replace(): Unit = {
+    assertEquals("0bc3", initBuf("0123").replace(1, 3, "bc").toString)
+    assertEquals("abcd", initBuf("0123").replace(0, 4, "abcd").toString)
+    assertEquals("abcd", initBuf("0123").replace(0, 10, "abcd").toString)
+    assertEquals("012defg", initBuf("0123").replace(3, 10, "defg").toString)
+    assertEquals("xxxx123", initBuf("0123").replace(0, 1, "xxxx").toString)
+    assertEquals("0xxxx123", initBuf("0123").replace(1, 1, "xxxx").toString)
 
     expectThrows(classOf[StringIndexOutOfBoundsException],
-        initBuf("0123").replace(-1,3,"x"))
+                 initBuf("0123").replace(-1, 3, "x"))
     if (executingInJVM) {
       // It looks like there is a bug in the JDK implementation
-      expectThrows(classOf[ClassCastException],
-          initBuf("0123").replace(4, 5, "x"))
+      expectThrows(
+          classOf[ClassCastException], initBuf("0123").replace(4, 5, "x"))
     } else {
       expectThrows(classOf[StringIndexOutOfBoundsException],
-          initBuf("0123").replace(4, 5, "x"))
+                   initBuf("0123").replace(4, 5, "x"))
     }
   }
 
-  @Test def setCharAt(): Unit = {
+  @Test
+  def setCharAt(): Unit = {
     val buf = newBuf
     buf.append("foobar")
 
@@ -106,25 +114,34 @@ class StringBufferTest {
     assertEquals("foxbah", buf.toString)
 
     expectThrows(classOf[IndexOutOfBoundsException], buf.setCharAt(-1, 'h'))
-    expectThrows(classOf[IndexOutOfBoundsException], buf.setCharAt(6,  'h'))
+    expectThrows(classOf[IndexOutOfBoundsException], buf.setCharAt(6, 'h'))
   }
 
-  @Test def ensureCapacity(): Unit = {
+  @Test
+  def ensureCapacity(): Unit = {
     // test that ensureCapacity is linking
     newBuf.ensureCapacity(10)
   }
 
-  @Test def should_properly_setLength(): Unit = {
+  @Test
+  def should_properly_setLength(): Unit = {
     val buf = newBuf
     buf.append("foobar")
 
     expectThrows(classOf[IndexOutOfBoundsException], buf.setLength(-3))
 
-    assertEquals("foo", { buf.setLength(3); buf.toString })
-    assertEquals("foo\u0000\u0000\u0000", { buf.setLength(6); buf.toString })
+    assertEquals("foo", {
+      buf.setLength(3);
+      buf.toString
+    })
+    assertEquals("foo\u0000\u0000\u0000", {
+      buf.setLength(6);
+      buf.toString
+    })
   }
 
-  @Test def appendCodePoint(): Unit = {
+  @Test
+  def appendCodePoint(): Unit = {
     val buf = newBuf
     buf.appendCodePoint(0x61)
     assertEquals("a", buf.toString)
@@ -138,21 +155,22 @@ class StringBufferTest {
 
 class StringBuilderTest {
 
-  def newBuilder: java.lang.StringBuilder =
-    new java.lang.StringBuilder
+  def newBuilder: java.lang.StringBuilder = new java.lang.StringBuilder
 
   def initBuilder(str: String): java.lang.StringBuilder =
     new java.lang.StringBuilder(str)
 
-  @Test def append(): Unit = {
+  @Test
+  def append(): Unit = {
     assertEquals("asdf", newBuilder.append("asdf").toString)
     assertEquals("null", newBuilder.append(null: AnyRef).toString)
     assertEquals("null", newBuilder.append(null: String).toString)
-    assertEquals("nu", newBuilder.append(null: CharSequence,0,2).toString)
+    assertEquals("nu", newBuilder.append(null: CharSequence, 0, 2).toString)
     assertEquals("true", newBuilder.append(true).toString)
     assertEquals("a", newBuilder.append('a').toString)
-    assertEquals("abcd", newBuilder.append(Array('a','b','c','d')).toString)
-    assertEquals("bc", newBuilder.append(Array('a','b','c','d'), 1, 2).toString)
+    assertEquals("abcd", newBuilder.append(Array('a', 'b', 'c', 'd')).toString)
+    assertEquals(
+        "bc", newBuilder.append(Array('a', 'b', 'c', 'd'), 1, 2).toString)
     assertEquals("4", newBuilder.append(4.toByte).toString)
     assertEquals("304", newBuilder.append(304.toShort).toString)
     assertEquals("100000", newBuilder.append(100000).toString)
@@ -160,15 +178,18 @@ class StringBuilderTest {
     assertEquals("3.5", newBuilder.append(3.5).toString)
   }
 
-  @Test def insert(): Unit = {
+  @Test
+  def insert(): Unit = {
     assertEquals("asdf", newBuilder.insert(0, "asdf").toString)
     assertEquals("null", newBuilder.insert(0, null: AnyRef).toString)
     assertEquals("null", newBuilder.insert(0, null: String).toString)
-    assertEquals("nu", newBuilder.insert(0, null: CharSequence,0,2).toString)
+    assertEquals("nu", newBuilder.insert(0, null: CharSequence, 0, 2).toString)
     assertEquals("true", newBuilder.insert(0, true).toString)
     assertEquals("a", newBuilder.insert(0, 'a').toString)
-    assertEquals("abcd", newBuilder.insert(0, Array('a','b','c','d')).toString)
-    assertEquals("bc", newBuilder.insert(0, Array('a','b','c','d'), 1, 2).toString)
+    assertEquals(
+        "abcd", newBuilder.insert(0, Array('a', 'b', 'c', 'd')).toString)
+    assertEquals(
+        "bc", newBuilder.insert(0, Array('a', 'b', 'c', 'd'), 1, 2).toString)
     assertEquals("4", newBuilder.insert(0, 4.toByte).toString)
     assertEquals("304", newBuilder.insert(0, 304.toShort).toString)
     assertEquals("100000", newBuilder.insert(0, 100000).toString)
@@ -177,52 +198,64 @@ class StringBuilderTest {
 
     assertEquals("abcdef", initBuilder("adef").insert(1, "bc").toString)
     assertEquals("abcdef", initBuilder("abcd").insert(4, "ef").toString)
-    assertEquals("abcdef", initBuilder("adef").insert(1, Array('b','c')).toString)
-    assertEquals("abcdef", initBuilder("adef").insert(1, initBuilder("bc")).toString)
-    assertEquals("abcdef", initBuilder("abef").insert(2, Array('a','b','c','d','e'), 2, 2).toString)
-    assertEquals("abcdef", initBuilder("abef").insert(2, initBuilder("abcde"), 2, 4).toString)
+    assertEquals(
+        "abcdef", initBuilder("adef").insert(1, Array('b', 'c')).toString)
+    assertEquals(
+        "abcdef", initBuilder("adef").insert(1, initBuilder("bc")).toString)
+    assertEquals("abcdef",
+                 initBuilder("abef").insert(
+                     2, Array('a', 'b', 'c', 'd', 'e'), 2, 2).toString)
+    assertEquals(
+        "abcdef",
+        initBuilder("abef").insert(2, initBuilder("abcde"), 2, 4).toString)
 
     expectThrows(classOf[StringIndexOutOfBoundsException],
-        initBuilder("abcd").insert(5, "whatever"))
+                 initBuilder("abcd").insert(5, "whatever"))
     expectThrows(classOf[StringIndexOutOfBoundsException],
-        initBuilder("abcd").insert(-1, "whatever"))
+                 initBuilder("abcd").insert(-1, "whatever"))
   }
 
-  @Test def should_allow_string_interpolation_to_survive_null_and_undefined(): Unit = {
+  @Test
+  def should_allow_string_interpolation_to_survive_null_and_undefined(): Unit = {
     assertEquals("null", s"${null}")
   }
 
-  @Test def deleteCharAt(): Unit = {
+  @Test
+  def deleteCharAt(): Unit = {
     assertEquals("023", initBuilder("0123").deleteCharAt(1).toString)
     assertEquals("123", initBuilder("0123").deleteCharAt(0).toString)
     assertEquals("012", initBuilder("0123").deleteCharAt(3).toString)
     expectThrows(classOf[StringIndexOutOfBoundsException],
-        initBuilder("0123").deleteCharAt(-1))
+                 initBuilder("0123").deleteCharAt(-1))
     expectThrows(classOf[StringIndexOutOfBoundsException],
-        initBuilder("0123").deleteCharAt(4))
+                 initBuilder("0123").deleteCharAt(4))
   }
 
-  @Test def replace(): Unit = {
-    assertEquals("0bc3", initBuilder("0123").replace(1,3,"bc").toString)
-    assertEquals("abcd", initBuilder("0123").replace(0,4,"abcd").toString)
-    assertEquals("abcd", initBuilder("0123").replace(0,10,"abcd").toString)
-    assertEquals("012defg", initBuilder("0123").replace(3,10,"defg").toString)
-    assertEquals("xxxx123", initBuilder("0123").replace(0,1,"xxxx").toString)
-    assertEquals("0xxxx123", initBuilder("0123").replace(1,1,"xxxx").toString)
+  @Test
+  def replace(): Unit = {
+    assertEquals("0bc3", initBuilder("0123").replace(1, 3, "bc").toString)
+    assertEquals("abcd", initBuilder("0123").replace(0, 4, "abcd").toString)
+    assertEquals("abcd", initBuilder("0123").replace(0, 10, "abcd").toString)
+    assertEquals(
+        "012defg", initBuilder("0123").replace(3, 10, "defg").toString)
+    assertEquals("xxxx123", initBuilder("0123").replace(0, 1, "xxxx").toString)
+    assertEquals(
+        "0xxxx123", initBuilder("0123").replace(1, 1, "xxxx").toString)
 
     expectThrows(classOf[StringIndexOutOfBoundsException],
-        initBuilder("0123").replace(-1,3,"x"))
+                 initBuilder("0123").replace(-1, 3, "x"))
     if (executingInJVM) {
       // It looks like there is a bug in the JDK implementation
-      expectThrows(classOf[ClassCastException],
-          initBuilder("0123").replace(4, 5, "x"))
+      expectThrows(
+          classOf[ClassCastException], initBuilder("0123").replace(4, 5, "x"))
     } else {
       expectThrows(classOf[StringIndexOutOfBoundsException],
-          initBuilder("0123").replace(4, 5, "x"))
+                   initBuilder("0123").replace(4, 5, "x"))
     }
   }
 
-  @Test def setCharAt(): Unit = {
+  @Test
+  def setCharAt(): Unit = {
     val b = newBuilder
     b.append("foobar")
 
@@ -233,25 +266,34 @@ class StringBuilderTest {
     assertEquals("foxbah", b.toString)
 
     expectThrows(classOf[IndexOutOfBoundsException], b.setCharAt(-1, 'h'))
-    expectThrows(classOf[IndexOutOfBoundsException], b.setCharAt(6,  'h'))
+    expectThrows(classOf[IndexOutOfBoundsException], b.setCharAt(6, 'h'))
   }
 
-  @Test def ensureCapacity(): Unit = {
+  @Test
+  def ensureCapacity(): Unit = {
     // test that ensureCapacity is linking
     newBuilder.ensureCapacity(10)
   }
 
-  @Test def should_properly_setLength(): Unit = {
+  @Test
+  def should_properly_setLength(): Unit = {
     val b = newBuilder
     b.append("foobar")
 
     expectThrows(classOf[IndexOutOfBoundsException], b.setLength(-3))
 
-    assertEquals("foo", { b.setLength(3); b.toString })
-    assertEquals("foo\u0000\u0000\u0000", { b.setLength(6); b.toString })
+    assertEquals("foo", {
+      b.setLength(3);
+      b.toString
+    })
+    assertEquals("foo\u0000\u0000\u0000", {
+      b.setLength(6);
+      b.toString
+    })
   }
 
-  @Test def appendCodePoint(): Unit = {
+  @Test
+  def appendCodePoint(): Unit = {
     val b = newBuilder
     b.appendCodePoint(0x61)
     assertEquals("a", b.toString)

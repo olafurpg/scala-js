@@ -6,28 +6,26 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.testadapter
 
 import sbt.testing._
 
 import org.scalajs.core.tools.json._
 
-private[testadapter] object FingerprintSerializers {
+private [testadapter] object FingerprintSerializers {
 
   implicit object FingerprintSerializer extends JSONSerializer[Fingerprint] {
+
     def serialize(fp: Fingerprint): JSON = {
       val bld = new JSONObjBuilder()
       fp match {
-        case fp: AnnotatedFingerprint => bld
-          .fld("fpType", "AnnotatedFingerprint")
-          .fld("isModule", fp.isModule)
-          .fld("annotationName", fp.annotationName)
-        case fp: SubclassFingerprint => bld
-          .fld("fpType", "SubclassFingerprint")
-          .fld("isModule", fp.isModule)
-          .fld("superclassName", fp.superclassName)
-          .fld("requireNoArgConstructor", fp.requireNoArgConstructor)
+        case fp: AnnotatedFingerprint =>
+          bld.fld("fpType", "AnnotatedFingerprint").fld(
+              "isModule", fp.isModule).fld("annotationName", fp.annotationName)
+        case fp: SubclassFingerprint =>
+          bld.fld("fpType", "SubclassFingerprint").fld("isModule", fp.isModule)
+            .fld("superclassName", fp.superclassName)
+            .fld("requireNoArgConstructor", fp.requireNoArgConstructor)
         case _ =>
           throw new IllegalArgumentException(
               s"Unknown Fingerprint type: ${fp.getClass}")
@@ -37,6 +35,7 @@ private[testadapter] object FingerprintSerializers {
   }
 
   implicit object FingerprintDeserializer extends JSONDeserializer[Fingerprint] {
+
     def deserialize(x: JSON): Fingerprint = {
       val obj = new JSONObjExtractor(x)
       obj.fld[String]("fpType") match {
@@ -58,12 +57,11 @@ private[testadapter] object FingerprintSerializers {
   final class DeserializedAnnotatedFingerprint(
       val isModule: Boolean,
       val annotationName: String
-  ) extends AnnotatedFingerprint
+      ) extends AnnotatedFingerprint
 
   final class DeserializedSubclassFingerprint(
       val isModule: Boolean,
       val superclassName: String,
       val requireNoArgConstructor: Boolean
-  ) extends SubclassFingerprint
-
+      ) extends SubclassFingerprint
 }

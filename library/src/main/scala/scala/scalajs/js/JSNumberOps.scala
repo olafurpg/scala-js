@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 /**
  * All doc-comments marked as "MDN" are by Mozilla Contributors,
  * distributed under the Creative Commons Attribution-ShareAlike license from
@@ -35,6 +34,7 @@ trait JSNumberOps extends Any {
    * MDN
    */
   def toFixed(fractionDigits: Int): String = native
+
   def toFixed(): String = native
 
   /**
@@ -52,6 +52,7 @@ trait JSNumberOps extends Any {
    * MDN
    */
   def toExponential(fractionDigits: Int): String = native
+
   def toExponential(): String = native
 
   /**
@@ -66,10 +67,12 @@ trait JSNumberOps extends Any {
    * MDN
    */
   def toPrecision(precision: Int): String = native
+
   def toPrecision(): String = native
 }
 
 object JSNumberOps {
+
   implicit def enableJSNumberOps(x: Int): JSNumberOps =
     x.asInstanceOf[JSNumberOps]
 
@@ -83,7 +86,8 @@ object JSNumberOps {
     new ExtOps(x.asInstanceOf[Dynamic])
 
   final class ExtOps(val self: Dynamic) extends AnyVal {
-    @inline def toUint: Double =
+    @inline
+    def toUint: Double =
       (self >>> 0.asInstanceOf[Dynamic]).asInstanceOf[Double]
   }
 
@@ -91,15 +95,15 @@ object JSNumberOps {
    * number operations on a Long by error.
    */
 
-  @deprecated("A Long is converted to Double to perform JavaScript "+
-      "operations. This is almost certainly not what you want. "+
-      "Use `.toDouble` explicitly if you need it.", "0.6.0")
+  @deprecated(
+      "A Long is converted to Double to perform JavaScript " + "operations. This is almost certainly not what you want. " + "Use `.toDouble` explicitly if you need it.",
+      "0.6.0")
   implicit def enableJSNumberOps(x: Long): JSNumberOps =
     x.toDouble.asInstanceOf[JSNumberOps]
 
-  @deprecated("A Long is converted to Double to perform JavaScript "+
-      "operations. This is almost certainly not what you want. "+
-      "Use `.toDouble` explicitly if you need it.", "0.6.0")
+  @deprecated(
+      "A Long is converted to Double to perform JavaScript " + "operations. This is almost certainly not what you want. " + "Use `.toDouble` explicitly if you need it.",
+      "0.6.0")
   implicit def enableJSNumberExtOps(x: Long): ExtOps =
     new ExtOps(x.toDouble.asInstanceOf[Dynamic])
 }

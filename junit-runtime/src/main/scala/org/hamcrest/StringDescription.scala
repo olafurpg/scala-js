@@ -7,6 +7,7 @@ import java.io.IOException
 import java.lang.StringBuilder
 
 object StringDescription {
+
   def toString(selfDescribing: SelfDescribing): String =
     new StringDescription().appendDescriptionOf(selfDescribing).toString()
 
@@ -16,6 +17,7 @@ object StringDescription {
 
 class StringDescription(out: Appendable = new StringBuilder())
     extends BaseDescription {
+
   override protected def append(str: String): Unit = {
     try {
       out.append(str)
@@ -34,6 +36,5 @@ class StringDescription(out: Appendable = new StringBuilder())
     }
   }
 
-  override def toString(): String =
-    out.toString()
+  override def toString(): String = out.toString()
 }

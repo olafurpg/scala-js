@@ -8,22 +8,24 @@ import org.eclipse.jetty.websocket.{WebSocket, WebSocketHandler}
 import org.eclipse.jetty.util.component.{LifeCycle, AbstractLifeCycle}
 import org.eclipse.jetty.util.log
 
-private[phantomjs] final class JettyWebsocketManager(
-    wsListener: WebsocketListener) extends WebsocketManager { thisMgr =>
+private [phantomjs] final class JettyWebsocketManager(
+    wsListener: WebsocketListener)
+    extends WebsocketManager {
+  thisMgr =>
 
-  private[this] var webSocketConn: WebSocket.Connection = null
-  private[this] var closed = false
+  private [ this] var webSocketConn: WebSocket.Connection = null
+  private [ this] var closed = false
 
   // We can just set the logger here, since we are supposed to be protected by
   // the private ClassLoader that loads us reflectively.
   log.Log.setLog(new WSLogger("root"))
 
-  private[this] val connector = new SelectChannelConnector
+  private [ this] val connector = new SelectChannelConnector
 
   connector.setHost("localhost")
   connector.setPort(0)
 
-  private[this] val server = new Server()
+  private [ this] val server = new Server()
 
   server.addConnector(connector)
   server.setHandler(new WebSocketHandler {
@@ -36,6 +38,7 @@ private[phantomjs] final class JettyWebsocketManager(
   })
 
   server.addLifeCycleListener(new AbstractLifeCycle.AbstractLifeCycleListener {
+
     override def lifeCycleStarted(event: LifeCycle): Unit = {
       if (event.isRunning())
         wsListener.onRunning()
@@ -43,6 +46,7 @@ private[phantomjs] final class JettyWebsocketManager(
   })
 
   private class ComWebSocketListener extends WebSocket.OnTextMessage {
+
     override def onOpen(connection: WebSocket.Connection): Unit = {
       thisMgr.synchronized {
         if (isConnected)
@@ -61,8 +65,8 @@ private[phantomjs] final class JettyWebsocketManager(
       server.stop()
 
       if (statusCode != 1000) {
-        throw new Exception("Abnormal closing of connection. " +
-            s"Code: $statusCode, Reason: $reason")
+        throw new Exception(
+            "Abnormal closing of connection. " + s"Code: $statusCode, Reason: $reason")
       }
     }
 
@@ -71,33 +75,37 @@ private[phantomjs] final class JettyWebsocketManager(
   }
 
   private class WSLogger(fullName: String) extends log.AbstractLogger {
-    private[this] var debugEnabled = false
+    private [ this] var debugEnabled = false
 
-    def debug(msg: String, args: Object*): Unit =
+    def debug(msg: String, args: Object *): Unit =
       if (debugEnabled) log("DEBUG", msg, args)
 
     def debug(msg: String, thrown: Throwable): Unit =
       if (debugEnabled) log("DEBUG", msg, thrown)
 
-    def debug(thrown: Throwable): Unit =
-      if (debugEnabled) log("DEBUG", thrown)
+    def debug(thrown: Throwable): Unit = if (debugEnabled) log("DEBUG", thrown)
 
     def getName(): String = fullName
 
     def ignore(ignored: Throwable): Unit = ()
 
-    def info(msg: String, args: Object*): Unit = log("INFO", msg, args)
+    def info(msg: String, args: Object *): Unit = log("INFO", msg, args)
+
     def info(msg: String, thrown: Throwable): Unit = log("INFO", msg, thrown)
+
     def info(thrown: Throwable): Unit = log("INFO", thrown)
 
-    def warn(msg: String, args: Object*): Unit = log("WARN", msg, args)
+    def warn(msg: String, args: Object *): Unit = log("WARN", msg, args)
+
     def warn(msg: String, thrown: Throwable): Unit = log("WARN", msg, thrown)
+
     def warn(thrown: Throwable): Unit = log("WARN", thrown)
 
     def isDebugEnabled(): Boolean = debugEnabled
+
     def setDebugEnabled(enabled: Boolean): Unit = debugEnabled = enabled
 
-    private def log(lvl: String, msg: String, args: Object*): Unit =
+    private def log(lvl: String, msg: String, args: Object *): Unit =
       wsListener.log(s"$lvl: $msg " + args.mkString(", "))
 
     private def log(lvl: String, msg: String, thrown: Throwable): Unit =
@@ -114,13 +122,14 @@ private[phantomjs] final class JettyWebsocketManager(
   def stop(): Unit = server.stop()
 
   def isConnected: Boolean = webSocketConn != null && !closed
+
   def isClosed: Boolean = closed
 
   def localPort: Int = connector.getLocalPort()
 
-  def sendMessage(msg: String): Unit = synchronized {
-    if (webSocketConn != null)
-      webSocketConn.sendMessage(msg)
-  }
-
+  def sendMessage(msg: String): Unit =
+    synchronized {
+      if (webSocketConn != null)
+        webSocketConn.sendMessage(msg)
+    }
 }

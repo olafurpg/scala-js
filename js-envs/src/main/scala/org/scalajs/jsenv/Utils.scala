@@ -6,14 +6,18 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.jsenv
 
 import scala.concurrent.duration._
 
-private[jsenv] object Utils {
-  final class OptDeadline private (
-      val deadline: Deadline /* nullable */) extends AnyVal { // scalastyle:ignore
+private [jsenv] object Utils {
+
+  final class OptDeadline private(val deadline: Deadline
+      /* nullable */ )
+      extends AnyVal {
+
+    // scalastyle:ignore
+
     def millisLeft: Long =
       if (deadline == null) 0
       else (deadline.timeLeft.toMillis max 1L)
@@ -24,10 +28,11 @@ private[jsenv] object Utils {
   }
 
   object OptDeadline {
+
     def apply(timeout: Duration): OptDeadline = {
       new OptDeadline(timeout match {
         case timeout: FiniteDuration => timeout.fromNow
-        case _                       => null
+        case _ => null
       })
     }
   }

@@ -6,14 +6,13 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.tools.javascript
 
 import java.io.Writer
 import java.net.URI
 import java.{util => ju}
 
-import scala.collection.mutable.{ ListBuffer, HashMap, Stack, StringBuilder }
+import scala.collection.mutable.{ListBuffer, HashMap, Stack, StringBuilder}
 
 import org.scalajs.core.ir
 import ir.Position
@@ -22,9 +21,7 @@ import ir.Utils
 
 private object SourceMapWriter {
   private val Base64Map =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-      "abcdefghijklmnopqrstuvwxyz" +
-      "0123456789+/"
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "abcdefghijklmnopqrstuvwxyz" + "0123456789+/"
 
   // Some constants for writeBase64VLQ
   // Each base-64 digit covers 6 bits, but 1 is used for the continuation
@@ -44,22 +41,19 @@ private object SourceMapWriter {
     private var posStack: Array[Position] = new Array(128)
     private var nameStack: Array[String] = new Array(128)
 
-    def pop(): Unit =
-      topIndex -= 1
+    def pop(): Unit = topIndex -= 1
 
-    def topPos: Position =
-      posStack(topIndex)
+    def topPos: Position = posStack(topIndex)
 
-    def topName: String =
-      nameStack(topIndex)
+    def topName: String = nameStack(topIndex)
 
     def push(pos: Position, originalName: String): Unit = {
       val newTopIdx = topIndex + 1
       topIndex = newTopIdx
       if (newTopIdx >= posStack.length)
         growStack()
-      posStack(newTopIdx) = pos
-      nameStack(newTopIdx) = originalName
+      posStack (newTopIdx) = pos
+      nameStack (newTopIdx) = originalName
     }
 
     private def growStack(): Unit = {
@@ -70,11 +64,9 @@ private object SourceMapWriter {
   }
 }
 
-class SourceMapWriter(
-    val out: Writer,
-    val generatedFile: String,
-    val relativizeBaseURI: Option[URI] = None) {
-
+class SourceMapWriter(val out: Writer,
+                      val generatedFile: String,
+                      val relativizeBaseURI: Option[URI] = None) {
   import SourceMapWriter._
 
   private val sources = new ListBuffer[String]
@@ -155,8 +147,9 @@ class SourceMapWriter(
     startSegment(column, originalPos, null)
   }
 
-  def startNode(column: Int, originalPos: Position,
-      optOriginalName: Option[String]): Unit = {
+  def startNode(column: Int,
+                originalPos: Position,
+                optOriginalName: Option[String]): Unit = {
     val originalName =
       if (optOriginalName.isDefined) optOriginalName.get
       else null
@@ -169,8 +162,8 @@ class SourceMapWriter(
     startSegment(column, nodePosStack.topPos, nodePosStack.topName)
   }
 
-  private def startSegment(startColumn: Int, originalPos: Position,
-      originalName: String): Unit = {
+  private def startSegment(
+      startColumn: Int, originalPos: Position, originalName: String): Unit = {
     // There is no point in outputting a segment with the same information
     if ((originalPos == pendingPos) && (originalName == pendingName))
       return
@@ -186,52 +179,53 @@ class SourceMapWriter(
   }
 
   private def writePendingSegment() {
-    if (pendingColumnInGenerated < 0)
-      return
+        if (pendingColumnInGenerated < 0)
+          return
 
-    // Segments of a line are separated by ','
-    if (firstSegmentOfLine) firstSegmentOfLine = false
-    else out.write(',')
+        // Segments of a line are separated by ','
+        if (firstSegmentOfLine) firstSegmentOfLine = false
+        else out.write(',')
 
-    // Generated column field
-    writeBase64VLQ(pendingColumnInGenerated-lastColumnInGenerated)
-    lastColumnInGenerated = pendingColumnInGenerated
+        // Generated column field
+        writeBase64VLQ(pendingColumnInGenerated - lastColumnInGenerated)
+        lastColumnInGenerated = pendingColumnInGenerated
 
-    // If the position is NoPosition, stop here
-    val pendingPos1 = pendingPos
-    if (pendingPos1.isEmpty)
-      return
+        // If the position is NoPosition, stop here
+        val pendingPos1 = pendingPos
+        if (pendingPos1.isEmpty)
+          return
 
-    // Extract relevant properties of pendingPos
-    val source = pendingPos1.source
-    val line = pendingPos1.line
-    val column = pendingPos1.column
+        // Extract relevant properties of pendingPos
+        val source = pendingPos1.source
+        val line = pendingPos1.line
+        val column = pendingPos1.column
 
-    // Source index field
-    if (source eq lastSource) { // highly likely
-      writeBase64VLQ0()
-    } else {
-      val sourceIndex = sourceToIndex(source)
-      writeBase64VLQ(sourceIndex-lastSourceIndex)
-      lastSource = source
-      lastSourceIndex = sourceIndex
-    }
+        // Source index field
+        if (source eq lastSource) {
+          // highly likely
+          writeBase64VLQ0()
+        } else {
+          val sourceIndex = sourceToIndex(source)
+          writeBase64VLQ(sourceIndex - lastSourceIndex)
+          lastSource = source
+          lastSourceIndex = sourceIndex
+        }
 
-    // Line field
-    writeBase64VLQ(line - lastLine)
-    lastLine = line
+        // Line field
+        writeBase64VLQ(line - lastLine)
+        lastLine = line
 
-    // Column field
-    writeBase64VLQ(column - lastColumn)
-    lastColumn = column
+        // Column field
+        writeBase64VLQ(column - lastColumn)
+        lastColumn = column
 
-    // Name field
-    if (pendingName != null) {
-      val nameIndex = nameToIndex(pendingName)
-      writeBase64VLQ(nameIndex-lastNameIndex)
-      lastNameIndex = nameIndex
-    }
-  }
+        // Name field
+        if (pendingName != null) {
+          val nameIndex = nameToIndex(pendingName)
+          writeBase64VLQ(nameIndex - lastNameIndex)
+          lastNameIndex = nameIndex
+        }
+      }
 
   def complete(): Unit = {
     writePendingSegment()
@@ -285,12 +279,14 @@ class SourceMapWriter(
      *   So we get (value0 << 1) | 0 == value0 << 1 as required
      */
     val signExtended = value0 >> 31
-    val value = (((value0 ^ signExtended) - signExtended) << 1) | (signExtended & 1)
+    val value =
+      (((value0 ^ signExtended) - signExtended) << 1) | (signExtended & 1)
 
     // Write as many base-64 digits as necessary to encode value
     if (value < 26) {
       return out.write('A' + value)
     } else {
+
       def writeBase64VLQSlowPath(value0: Int): Unit = {
         var value = value0
         do {
@@ -305,6 +301,5 @@ class SourceMapWriter(
     }
   }
 
-  private def writeBase64VLQ0(): Unit =
-    out.write('A')
+  private def writeBase64VLQ0(): Unit = out.write('A')
 }

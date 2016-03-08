@@ -15,16 +15,16 @@ import org.scalajs.core.ir
 import ir.{Trees => js}
 
 abstract class JSASTTest extends DirectTest {
-
   private var lastAST: JSAST = _
 
   class JSAST(val clDefs: List[js.Tree]) {
     type Pat = PartialFunction[js.Tree, Unit]
 
     class PFTraverser(pf: Pat) extends ir.Traversers.Traverser {
+
       private case object Found extends ControlThrowable
 
-      private[this] var finding = false
+      private [ this] var finding = false
 
       def find: Boolean = {
         finding = true
@@ -52,35 +52,35 @@ abstract class JSASTTest extends DirectTest {
       }
     }
 
-    def has(trgName: String)(pf: Pat): this.type = {
+    def has(trgName: String)(pf: Pat): this. type = {
       val tr = new PFTraverser(pf)
       assertTrue(s"AST should have $trgName", tr.find)
       this
     }
 
-    def hasNot(trgName: String)(pf: Pat): this.type = {
+    def hasNot(trgName: String)(pf: Pat): this. type = {
       val tr = new PFTraverser(pf)
       assertFalse(s"AST should not have $trgName", tr.find)
       this
     }
 
-    def traverse(pf: Pat): this.type = {
+    def traverse(pf: Pat): this. type = {
       val tr = new PFTraverser(pf)
       tr.traverse()
       this
     }
 
-    def show: this.type = {
+    def show: this. type = {
       clDefs foreach println _
       this
     }
-
   }
 
   implicit def string2ast(str: String): JSAST = stringAST(str)
 
   override def newScalaJSPlugin(global: Global): ScalaJSPlugin = {
     new ScalaJSPlugin(global) {
+
       override def generatedJSAST(cld: List[js.Tree]): Unit = {
         lastAST = new JSAST(cld)
       }
@@ -88,15 +88,16 @@ abstract class JSASTTest extends DirectTest {
   }
 
   def stringAST(code: String): JSAST = stringAST(defaultGlobal)(code)
+
   def stringAST(global: Global)(code: String): JSAST = {
     compileString(global)(code)
     lastAST
   }
 
   def sourceAST(source: SourceFile): JSAST = sourceAST(defaultGlobal)(source)
+
   def sourceAST(global: Global)(source: SourceFile): JSAST = {
     compileSources(global)(source)
     lastAST
   }
-
 }

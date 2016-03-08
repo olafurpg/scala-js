@@ -22,9 +22,9 @@ trait ScalaJSOptions {
   /** which source locations in source maps should be relativized (or where
    *  should they be mapped to)? */
   def sourceURIMaps: List[URIMap]
-
 }
 
 object ScalaJSOptions {
+
   case class URIMap(from: URI, to: Option[URI])
 }

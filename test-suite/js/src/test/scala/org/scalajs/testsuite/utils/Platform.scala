@@ -22,6 +22,5 @@ object Platform {
   // Members that are only accessible from testSuite/js
   // (i.e. do no link on the JVM).
 
-  def areTypedArraysSupported: Boolean =
-    runtime.Bits.areTypedArraysSupported
+  def areTypedArraysSupported: Boolean = runtime.Bits.areTypedArraysSupported
 }

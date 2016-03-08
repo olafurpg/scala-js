@@ -24,7 +24,6 @@ object UnionTypeTest extends JasmineTest {
   private implicit def unionAsJSAny(x: _ | _): js.Any = x.asInstanceOf[js.Any]
 
   describe("js.| (postive)") {
-
     it("Left and right") {
       val x1: Int | String = 4
       expect(x1).toBe(4)
@@ -148,16 +147,20 @@ object UnionTypeTest extends JasmineTest {
       expect(a: js.UndefOr[js.UndefOr[Int] | String]).toBe(a)
       expect(a: js.UndefOr[Int | js.UndefOr[String]]).toBe(a)
       expect(a: js.UndefOr[js.UndefOr[Int] | js.UndefOr[String]]).toBe(a)
-      expect(a: js.UndefOr[js.UndefOr[js.UndefOr[Int]] | js.UndefOr[String]]).toBe(a)
-      expect(a: js.UndefOr[js.UndefOr[Int] | js.UndefOr[js.UndefOr[String]]]).toBe(a)
+      expect(a: js.UndefOr[js.UndefOr[js.UndefOr[Int]] | js.UndefOr[String]])
+        .toBe(a)
+      expect(a: js.UndefOr[js.UndefOr[Int] | js.UndefOr[js.UndefOr[String]]])
+        .toBe(a)
 
       expect(a: js.UndefOr[String | Int]).toBe(a)
       expect(a: js.UndefOr[String | Int]).toBe(a)
       expect(a: js.UndefOr[js.UndefOr[String] | Int]).toBe(a)
       expect(a: js.UndefOr[String | js.UndefOr[Int]]).toBe(a)
       expect(a: js.UndefOr[js.UndefOr[String] | js.UndefOr[Int]]).toBe(a)
-      expect(a: js.UndefOr[js.UndefOr[String] | js.UndefOr[js.UndefOr[Int]]]).toBe(a)
-      expect(a: js.UndefOr[js.UndefOr[js.UndefOr[String]] | js.UndefOr[Int]]).toBe(a)
+      expect(a: js.UndefOr[js.UndefOr[String] | js.UndefOr[js.UndefOr[Int]]])
+        .toBe(a)
+      expect(a: js.UndefOr[js.UndefOr[js.UndefOr[String]] | js.UndefOr[Int]])
+        .toBe(a)
 
       // Confirm that we're working with triple unions too
 
@@ -178,42 +181,33 @@ object UnionTypeTest extends JasmineTest {
   }
 
   describe("js.| (negative)") {
-
     /* Error messages vary a lot depending on the version of Scala, so we do
      * not test them.
      */
 
     it("Neither left nor right") {
-      typeError(
-          "3: Boolean | String")
+      typeError("3: Boolean | String")
     }
 
     it("None of three types") {
-      typeError(
-          "3: Boolean | String | List[Int]")
+      typeError("3: Boolean | String | List[Int]")
     }
 
     it("Wrong type parameter on left or right") {
-      typeError(
-          "List(1, 2): List[String] | String")
-      typeError(
-          "List(1, 2): String | List[String]")
+      typeError("List(1, 2): List[String] | String")
+      typeError("List(1, 2): String | List[String]")
     }
 
     it("Left of |-type is not a subtype of rhs") {
-      typeError(
-          "(1: Int | List[String]): String | List[String]")
+      typeError("(1: Int | List[String]): String | List[String]")
     }
 
     it("Right of |-type is not a subtype of rhs") {
-      typeError(
-          "(1: Int | List[String]): String | Int")
+      typeError("(1: Int | List[String]): String | Int")
     }
 
     it("merge with an incorrect subtype") {
-      typeError(
-          "(List(1, 2): List[Int] | Set[Int]).merge: Seq[Int]")
+      typeError("(List(1, 2): List[Int] | Set[Int]).merge: Seq[Int]")
     }
-
   }
 }

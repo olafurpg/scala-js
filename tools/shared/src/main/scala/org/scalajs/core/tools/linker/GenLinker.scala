@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.tools.linker
 
 import org.scalajs.core.tools.logging.Logger
@@ -25,8 +24,10 @@ trait GenLinker {
   def esLevel: ESLevel
 
   def linkUnit(irFiles: Seq[VirtualScalaJSIRFile],
-      symbolRequirements: SymbolRequirement, logger: Logger): LinkingUnit
+               symbolRequirements: SymbolRequirement,
+               logger: Logger): LinkingUnit
 
   def link(irFiles: Seq[VirtualScalaJSIRFile],
-      output: WritableVirtualJSFile, logger: Logger): Unit
+           output: WritableVirtualJSFile,
+           logger: Logger): Unit
 }

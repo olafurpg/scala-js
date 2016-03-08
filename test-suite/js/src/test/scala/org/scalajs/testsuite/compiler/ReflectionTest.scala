@@ -22,10 +22,11 @@ import org.scalajs.jasminetest.JasmineTest
 /** Tests the little reflection we support */
 object ReflectionTest extends JasmineTest {
 
-  def implicitClassTagTest[A: ClassTag](x: Any): Boolean = x match {
-    case x: A => true
-    case _    => false
-  }
+  def implicitClassTagTest[A : ClassTag](x: Any): Boolean =
+    x match {
+      case x: A => true
+      case _ => false
+    }
 
   describe("Scala.js Reflection (through java.lang.Class)") {
     it("java.lang.Class.getName under normal circumstances") {
@@ -33,8 +34,8 @@ object ReflectionTest extends JasmineTest {
     }
 
     it("should append $ to class name of objects") {
-      expect(TestObject.getClass.getName).toEqual(
-        "org.scalajs.testsuite.compiler.ReflectionTest$TestObject$")
+      expect(TestObject.getClass.getName)
+        .toEqual("org.scalajs.testsuite.compiler.ReflectionTest$TestObject$")
     }
 
     it("java.lang.Class.getName renamed through semantics") {
@@ -42,7 +43,9 @@ object ReflectionTest extends JasmineTest {
     }
 
     it("should support isInstance") {
+
       class A
+
       class B extends A
       val b = new B
       expect(classOf[A].isInstance(b)).toBeTruthy
@@ -59,8 +62,8 @@ object ReflectionTest extends JasmineTest {
     }
 
     it("isInstance for raw JS class") {
-      js.Dynamic.global.ReflectionTestRawJSClass =
-        js.eval("""(function() {})""")
+      js.Dynamic.global.ReflectionTestRawJSClass = js.eval(
+          """(function() {})""")
 
       val obj = new ReflectionTestRawJSClass
       expect(obj.isInstanceOf[ReflectionTestRawJSClass]).toBeTruthy
@@ -88,7 +91,9 @@ object ReflectionTest extends JasmineTest {
     }
 
     it("getClass() for normal types") {
+
       class Foo {
+
         def bar(): Class[_] = super.getClass()
       }
       val foo = new Foo
@@ -97,6 +102,7 @@ object ReflectionTest extends JasmineTest {
     }
 
     it("getClass() for anti-boxed primitive types") {
+
       implicit def classAsAny(c: java.lang.Class[_]): js.Any =
         c.asInstanceOf[js.Any]
       expect((false: Any).getClass).toBe(classOf[java.lang.Boolean])
@@ -126,7 +132,9 @@ object ReflectionTest extends JasmineTest {
       expect(classOf[String].getSuperclass == classOf[AnyRef]).toBeTruthy
       expect(classOf[Integer].getSuperclass == classOf[Number]).toBeTruthy
 
-      expect(classOf[ChildClassWhoseDataIsAccessedDirectly].getSuperclass.getName).toEqual(
+      expect(
+          classOf[ChildClassWhoseDataIsAccessedDirectly].getSuperclass.getName)
+        .toEqual(
           "org.scalajs.testsuite.compiler.ReflectionTest$ParentClassWhoseDataIsNotAccessedDirectly")
     }
 
@@ -139,8 +147,7 @@ object ReflectionTest extends JasmineTest {
       expect(() => classOf[Object].cast(js.Array(3, 4))).not.toThrow
     }
 
-    when("compliant-asinstanceofs").
-    it("cast(), negative") {
+    when("compliant-asinstanceofs").it("cast(), negative") {
       expect(() => classOf[String].cast(5)).toThrow
       expect(() => classOf[Seq[_]].cast(Some("foo"))).toThrow
     }
@@ -158,9 +165,11 @@ object ReflectionTest extends JasmineTest {
   trait ReflectionTestRawJSTrait extends js.Object
 
   class SomeParentClass
+
   class SomeChildClass extends SomeParentClass
 
   class ParentClassWhoseDataIsNotAccessedDirectly
-  class ChildClassWhoseDataIsAccessedDirectly extends ParentClassWhoseDataIsNotAccessedDirectly
 
+  class ChildClassWhoseDataIsAccessedDirectly
+      extends ParentClassWhoseDataIsNotAccessedDirectly
 }

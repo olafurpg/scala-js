@@ -13,12 +13,12 @@ import org.junit.Assert._
 class CharTest {
   @Test
   def `should_always_be_positive_when_coerced`(): Unit = {
-    assertEquals(-3.toByte.toChar.toInt, 65533)
-    assertEquals(-100.toShort.toChar.toInt, 65436)
-    assertEquals(-66000.toChar.toInt, 65072)
-    assertEquals(-4567L.toChar.toInt, 60969)
-    assertEquals(-5.3f.toChar.toInt, 65531)
-    assertEquals(-7.9.toChar.toInt, 65529)
+    assertEquals(- 3.toByte.toChar.toInt, 65533)
+    assertEquals(- 100.toShort.toChar.toInt, 65436)
+    assertEquals(- 66000.toChar.toInt, 65072)
+    assertEquals(- 4567L.toChar.toInt, 60969)
+    assertEquals(- 5.3f.toChar.toInt, 65531)
+    assertEquals(- 7.9.toChar.toInt, 65529)
   }
 
   @Test
@@ -29,6 +29,7 @@ class CharTest {
 
   @Test
   def `should_overflow_with_times`(): Unit = {
+
     def test(a: Char, b: Char, expected: Int): Unit =
       assertEquals(a * b, expected)
 

@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package scala.scalajs.js
 
 import scala.concurrent.duration.FiniteDuration
@@ -80,5 +79,4 @@ package object timers {
    */
   def clearInterval(handle: SetIntervalHandle): Unit =
     RawTimers.clearInterval(handle)
-
 }

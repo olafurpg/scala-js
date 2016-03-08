@@ -13,12 +13,10 @@ class NodeVirtualFile(override val path: String) extends VirtualFile {
     val stat = fs.statSync(path)
     if (js.isUndefined(stat.mtime))
       None
-    else
-      Some(stat.mtime.asInstanceOf[js.Date].getTime.toString)
+    else Some(stat.mtime.asInstanceOf[js.Date].getTime.toString)
   }
 
-  override def exists: Boolean =
-    fs.existsSync(path).asInstanceOf[Boolean]
+  override def exists: Boolean = fs.existsSync(path).asInstanceOf[Boolean]
 
   override def toURI: URI = {
     val abspath = fs.realpathSync(path).asInstanceOf[String]
@@ -26,8 +24,8 @@ class NodeVirtualFile(override val path: String) extends VirtualFile {
   }
 }
 
-class NodeVirtualTextFile(p: String) extends NodeVirtualFile(p)
-                                        with VirtualTextFile {
+class NodeVirtualTextFile(p: String)
+    extends NodeVirtualFile(p) with VirtualTextFile {
   import NodeFS.fs
 
   override def content: String = {
@@ -36,19 +34,20 @@ class NodeVirtualTextFile(p: String) extends NodeVirtualFile(p)
   }
 }
 
-class NodeVirtualBinaryFile(p: String) extends NodeVirtualFile(p)
-                                          with VirtualBinaryFile {
+class NodeVirtualBinaryFile(p: String)
+    extends NodeVirtualFile(p) with VirtualBinaryFile {
   import NodeFS.fs
 
   private def buf: ArrayBuffer =
     new Uint8Array(fs.readFileSync(path).asInstanceOf[js.Array[Int]]).buffer
 
   override def content: Array[Byte] = new Int8Array(buf).toArray
+
   override def inputStream: InputStream = new ArrayBufferInputStream(buf)
 }
 
-class NodeVirtualJSFile(p: String) extends NodeVirtualTextFile(p)
-                                      with VirtualJSFile {
+class NodeVirtualJSFile(p: String)
+    extends NodeVirtualTextFile(p) with VirtualJSFile {
 
   /** Always returns None. We can't read them on JS anyway */
   override def sourceMap: Option[String] = None
@@ -57,6 +56,6 @@ class NodeVirtualJSFile(p: String) extends NodeVirtualTextFile(p)
 class NodeVirtualScalaJSIRFile(p: String)
     extends NodeVirtualBinaryFile(p) with VirtualSerializedScalaJSIRFile
 
-private[io] object NodeFS {
+private [io] object NodeFS {
   val fs = js.Dynamic.global.require("fs")
 }

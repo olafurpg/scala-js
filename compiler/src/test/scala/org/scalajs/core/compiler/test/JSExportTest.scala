@@ -7,8 +7,7 @@ import org.junit.Test
 
 class JSExportTest extends DirectTest with TestHelpers {
 
-  override def preamble: String =
-    """import scala.scalajs.js, js.annotation._
+  override def preamble: String = """import scala.scalajs.js, js.annotation._
     """
 
   @Test
@@ -28,8 +27,7 @@ class JSExportTest extends DirectTest with TestHelpers {
 
     @JSExport
     @ScalaJSDefined class C__ extends js.Object
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:4: error: An exported name may not contain a double underscore (`__`)
       |      @JSExport(name = "__")
       |                       ^
@@ -52,8 +50,7 @@ class JSExportTest extends DirectTest with TestHelpers {
     package fo__o {
       object B extends A
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:7: error: B may not have a double underscore (`__`) in its fully qualified name, since it is forced to be exported by a @JSExportDescendentObjects on trait A
       |      object B extends A
       |             ^
@@ -66,8 +63,7 @@ class JSExportTest extends DirectTest with TestHelpers {
     package fo__o {
       @ScalaJSDefined object B extends A
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:7: error: B may not have a double underscore (`__`) in its fully qualified name, since it is forced to be exported by a @JSExportDescendentObjects on trait A
       |      @ScalaJSDefined object B extends A
       |                             ^
@@ -84,8 +80,7 @@ class JSExportTest extends DirectTest with TestHelpers {
         private def this(s: String) = this(1)
       }
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:7: error: B may not have a double underscore (`__`) in its fully qualified name, since it is forced to be exported by a @JSExportDescendentClasses on trait A
       |      class B(x: Int) extends A {
       |             ^
@@ -101,8 +96,7 @@ class JSExportTest extends DirectTest with TestHelpers {
     package fo__o {
       @ScalaJSDefined class B(x: Int) extends A
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:7: error: B may not have a double underscore (`__`) in its fully qualified name, since it is forced to be exported by a @JSExportDescendentClasses on trait A
       |      @ScalaJSDefined class B(x: Int) extends A
       |                            ^
@@ -119,7 +113,7 @@ class JSExportTest extends DirectTest with TestHelpers {
       @JSExport("value")
       def world = "bar"
     }
-    """ fails() // No error test, Scala version dependent error messages
+    """ fails () // No error test, Scala version dependent error messages
 
     """
     class Confl {
@@ -130,7 +124,7 @@ class JSExportTest extends DirectTest with TestHelpers {
       @JSExport
       def ub(x: Box[Int]): Int = x.x
     }
-    """ fails() // No error test, Scala version dependent error messages
+    """ fails () // No error test, Scala version dependent error messages
 
     """
     class Confl {
@@ -140,7 +134,7 @@ class JSExportTest extends DirectTest with TestHelpers {
       @JSExport
       def rtType(x: Double) = x
     }
-    """ fails() // Error message depends on Scala version
+    """ fails () // Error message depends on Scala version
 
     """
     class Confl {
@@ -150,8 +144,7 @@ class JSExportTest extends DirectTest with TestHelpers {
       @JSExport
       def foo(x: Int*) = x
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:7: error: Cannot disambiguate overloads for exported method $js$exported$meth$foo with types
       |  (x: Seq)Object
       |  (x: Int, ys: Seq)Object
@@ -166,8 +159,7 @@ class JSExportTest extends DirectTest with TestHelpers {
       @JSExport
       def foo(x: String*) = x
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:4: error: Cannot disambiguate overloads for exported method $js$exported$meth$foo with types
       |  (x: Int)Object
       |  (x: Seq)Object
@@ -182,7 +174,7 @@ class JSExportTest extends DirectTest with TestHelpers {
       @JSExport
       def foo(x: Double, y: String)(z: String*) = x
     }
-    """ fails() // Error message depends on Scala version
+    """ fails () // Error message depends on Scala version
 
     """
     class A {
@@ -192,8 +184,7 @@ class JSExportTest extends DirectTest with TestHelpers {
       @JSExport
       def a(x: Any) = 2
     }
-    """ fails() // Error message depends on Scala version
-
+    """ fails () // Error message depends on Scala version
   }
 
   @Test
@@ -209,8 +200,7 @@ class JSExportTest extends DirectTest with TestHelpers {
         @ScalaJSDefined class B extends js.Object
       }
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:5: error: You may not export a local class
       |        @JSExport
       |         ^
@@ -230,8 +220,7 @@ class JSExportTest extends DirectTest with TestHelpers {
         @ScalaJSDefined object B extends js.Object
       }
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:5: error: You may not export a local object
       |        @JSExport
       |         ^
@@ -248,8 +237,7 @@ class JSExportTest extends DirectTest with TestHelpers {
         def foo = 1
       }
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:5: error: You may not export a local definition
       |        @JSExport
       |         ^
@@ -263,8 +251,7 @@ class JSExportTest extends DirectTest with TestHelpers {
         val x = 1
       }
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:5: error: You may not export a local definition
       |        @JSExport
       |         ^
@@ -278,66 +265,54 @@ class JSExportTest extends DirectTest with TestHelpers {
         var x = 1
       }
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:5: error: You may not export a local definition
       |        @JSExport
       |         ^
     """
-
   }
 
   @Test
   def infoExportLocal: Unit = {
-
     """
     class A(@JSExport val x: Int)
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:3: error: You may not export a local definition. To export a (case) class field, use the meta-annotation scala.annotation.meta.field like this: @(JSExport @field).
       |    class A(@JSExport val x: Int)
       |             ^
     """
-
   }
 
   @Test
   def noMiddleVarArg: Unit = {
-
     """
     class A {
       @JSExport
       def method(xs: Int*)(ys: String) = 1
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:4: error: In an exported method, a *-parameter must come last (through all parameter lists)
       |      @JSExport
       |       ^
     """
-
   }
 
   @Test
   def noMiddleDefaultParam: Unit = {
-
     """
     class A {
       @JSExport
       def method(x: Int = 1)(y: String) = 1
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:4: error: In an exported method, all parameters with defaults must be at the end
       |      @JSExport
       |       ^
     """
-
   }
 
   @Test
   def noExportAbstractClass: Unit = {
-
     """
     @JSExport
     abstract class A
@@ -349,8 +324,7 @@ class JSExportTest extends DirectTest with TestHelpers {
 
     @JSExport
     @ScalaJSDefined abstract class C extends js.Object
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:3: error: You may not export an abstract class
       |    @JSExport
       |     ^
@@ -361,12 +335,10 @@ class JSExportTest extends DirectTest with TestHelpers {
       |    @JSExport
       |     ^
     """
-
   }
 
   @Test
   def noExportTrait: Unit = {
-
     """
     @JSExport
     trait Test
@@ -377,8 +349,7 @@ class JSExportTest extends DirectTest with TestHelpers {
     @JSExport
     @js.native
     trait Test3 extends js.Object
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:3: error: You may not export a trait
       |    @JSExport
       |     ^
@@ -389,12 +360,10 @@ class JSExportTest extends DirectTest with TestHelpers {
       |    @JSExport
       |     ^
     """
-
   }
 
   @Test
   def noExportNonPublicClassOrObject: Unit = {
-
     """
     @JSExport
     private class A
@@ -407,8 +376,7 @@ class JSExportTest extends DirectTest with TestHelpers {
 
     @JSExport
     @ScalaJSDefined protected[this] class D extends js.Object
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:3: error: You may only export public and protected classes
       |    @JSExport
       |     ^
@@ -435,8 +403,7 @@ class JSExportTest extends DirectTest with TestHelpers {
 
     @JSExport
     @ScalaJSDefined protected[this] object D extends js.Object
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:3: error: You may only export public and protected objects
       |    @JSExport
       |     ^
@@ -450,12 +417,10 @@ class JSExportTest extends DirectTest with TestHelpers {
       |    @JSExport
       |     ^
     """
-
   }
 
   @Test
   def noExportNonPublicMember: Unit = {
-
     """
     class A {
       @JSExport
@@ -464,8 +429,7 @@ class JSExportTest extends DirectTest with TestHelpers {
       @JSExport
       protected[this] def bar = 2
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:4: error: You may only export public and protected methods
       |      @JSExport
       |       ^
@@ -473,12 +437,10 @@ class JSExportTest extends DirectTest with TestHelpers {
       |      @JSExport
       |       ^
     """
-
   }
 
   @Test
   def noExportNestedClass: Unit = {
-
     """
     class A {
       @JSExport
@@ -487,8 +449,7 @@ class JSExportTest extends DirectTest with TestHelpers {
       @JSExport
       @ScalaJSDefined class Nested2 extends js.Object
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:4: error: You may not export a nested class. Create an exported factory method in the outer class to work around this limitation.
       |      @JSExport
       |       ^
@@ -505,8 +466,7 @@ class JSExportTest extends DirectTest with TestHelpers {
       @JSExport
       @ScalaJSDefined class Nested2 extends js.Object
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:4: error: You may not export a nested class. Create an exported factory method in the outer class to work around this limitation.
       |      @JSExport
       |       ^
@@ -514,12 +474,10 @@ class JSExportTest extends DirectTest with TestHelpers {
       |      @JSExport
       |       ^
     """
-
   }
 
   @Test
   def noExportNestedObject: Unit = {
-
     """
     class A {
       @JSExport
@@ -528,8 +486,7 @@ class JSExportTest extends DirectTest with TestHelpers {
       @JSExport
       @ScalaJSDefined object Nested2 extends js.Object
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:4: error: You may not export a nested object
       |      @JSExport
       |       ^
@@ -546,8 +503,7 @@ class JSExportTest extends DirectTest with TestHelpers {
       @JSExport
       @ScalaJSDefined object Nested2 extends js.Object
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:4: error: You may not export a nested object
       |      @JSExport
       |       ^
@@ -555,20 +511,17 @@ class JSExportTest extends DirectTest with TestHelpers {
       |      @JSExport
       |       ^
     """
-
   }
 
   @Test
   def noExportJSRaw: Unit = {
-
     """
     import scala.scalajs.js
 
     @JSExport
     @js.native
     object A extends js.Object
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:5: error: You may not export a native JS class or object
       |    @JSExport
       |     ^
@@ -580,8 +533,7 @@ class JSExportTest extends DirectTest with TestHelpers {
     @JSExport
     @js.native
     trait A extends js.Object
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:5: error: You may not export a trait
       |    @JSExport
       |     ^
@@ -596,8 +548,7 @@ class JSExportTest extends DirectTest with TestHelpers {
       @JSExport
       def this(x: Int) = this()
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:5: error: You may not export a native JS class or object
       |    @JSExport
       |     ^
@@ -605,12 +556,10 @@ class JSExportTest extends DirectTest with TestHelpers {
       |      @JSExport
       |       ^
     """
-
   }
 
   @Test
   def noExportJSRawMember: Unit = {
-
     """
     import scala.scalajs.js
 
@@ -619,8 +568,7 @@ class JSExportTest extends DirectTest with TestHelpers {
       @JSExport
       def foo: Int = js.native
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:7: error: You may not export a method of a subclass of js.Any
       |      @JSExport
       |       ^
@@ -634,26 +582,22 @@ class JSExportTest extends DirectTest with TestHelpers {
       @JSExport
       def foo: Int = js.native
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:7: error: You may not export a method of a subclass of js.Any
       |      @JSExport
       |       ^
     """
-
   }
 
   @Test
   def noBadSetterType: Unit = {
-
     // Bad param list
     """
     class A {
       @JSExport
       def foo_=(x: Int, y: Int) = ()
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:4: error: Exported setters must have exactly one argument
       |      @JSExport
       |       ^
@@ -665,8 +609,7 @@ class JSExportTest extends DirectTest with TestHelpers {
       @JSExport
       def foo_=(x: Int) = "string"
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:4: error: Exported setters must return Unit
       |      @JSExport
       |       ^
@@ -678,8 +621,7 @@ class JSExportTest extends DirectTest with TestHelpers {
       @JSExport
       def foo_=(x: Int*) = ()
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:4: error: Exported setters may not have repeated params
       |      @JSExport
       |       ^
@@ -691,43 +633,36 @@ class JSExportTest extends DirectTest with TestHelpers {
       @JSExport
       def foo_=(x: Int = 1) = ()
     }
-    """ hasWarns
-    """
+    """ hasWarns """
       |newSource1.scala:4: warning: Exported setters may not have default params. This will be enforced in 1.0.
       |      @JSExport
       |       ^
     """
-
   }
 
   @Test
   def noBadToStringExport: Unit = {
-
     """
     class A {
       @JSExport("toString")
       def a(): Int = 5
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:4: error: You may not export a zero-argument method named other than 'toString' under the name 'toString'
       |      @JSExport("toString")
       |       ^
     """
-
   }
 
   @Test
   def noBadNameExportAll: Unit = {
-
     """
     @JSExportAll
     class A {
       val __f = 1
       def a_= = 2
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:5: error: An exported name may not contain a double underscore (`__`)
       |      val __f = 1
       |          ^
@@ -735,12 +670,10 @@ class JSExportTest extends DirectTest with TestHelpers {
       |    @JSExportAll
       |     ^
     """
-
   }
 
   @Test
   def noConflictingMethodAndProperty: Unit = {
-
     // Basic case
     """
     class A {
@@ -750,8 +683,7 @@ class JSExportTest extends DirectTest with TestHelpers {
       @JSExport("a")
       val foo = 1
     }
-    """ hasErrors
-    """
+    """ hasErrors """
     |newSource1.scala:7: error: Exported method a conflicts with A.$js$exported$prop$a
     |      @JSExport("a")
     |       ^
@@ -774,18 +706,15 @@ class JSExportTest extends DirectTest with TestHelpers {
       @JSExport("a")
       val foo = 1
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:4: error: Exported property a conflicts with A.$js$exported$meth$a
       |      @JSExport("a")
       |       ^
     """
-
   }
 
   @Test
   def noOverrideNamedExport: Unit = {
-
     """
     class A {
       @JSExportNamed
@@ -796,19 +725,16 @@ class JSExportTest extends DirectTest with TestHelpers {
       @JSExportNamed
       override def foo(x: Int, y: Int) = 2
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:9: error: overriding method $js$exported$meth$foo in class A of type (namedArgs: Any)Any;
       | method $js$exported$meth$foo cannot override final member
       |      @JSExportNamed
       |       ^
     """
-
   }
 
   @Test
   def noConflictNamedExport: Unit = {
-
     // Normal method
     """
     class A {
@@ -818,7 +744,7 @@ class JSExportTest extends DirectTest with TestHelpers {
       @JSExport
       def foo(x: scala.scalajs.js.Any) = 2
     }
-    """ fails() // No error test, Scala version dependent error messages
+    """ fails () // No error test, Scala version dependent error messages
 
     // Ctors
     """
@@ -832,21 +758,18 @@ class JSExportTest extends DirectTest with TestHelpers {
       @JSExportNamed
       def this(x: Long) = this()
     }
-    """ fails() // No error test, Scala version dependent error messages
-
+    """ fails () // No error test, Scala version dependent error messages
   }
 
   @Test
   def noNamedExportObject: Unit = {
-
     """
     @JSExportNamed
     object A
 
     @JSExportNamed
     @ScalaJSDefined object B extends js.Object
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:3: error: You may not use @JSNamedExport on an object
       |    @JSExportNamed
       |     ^
@@ -854,71 +777,58 @@ class JSExportTest extends DirectTest with TestHelpers {
       |    @JSExportNamed
       |     ^
     """
-
   }
 
   @Test
   def noNamedExportSJSDefinedClass: Unit = {
-
     """
     @JSExportNamed
     @ScalaJSDefined class A extends js.Object
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:3: error: You may not use @JSNamedExport on a Scala.js-defined JS class
       |    @JSExportNamed
       |     ^
     """
-
   }
 
   @Test
   def noNamedExportVarArg: Unit = {
-
     """
     class A {
       @JSExportNamed
       def foo(a: Int*) = 1
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:4: error: You may not name-export a method with a *-parameter
       |      @JSExportNamed
       |       ^
     """
-
   }
 
   @Test
   def noNamedExportProperty: Unit = {
-
     // Getter
     """
     class A {
       @JSExportNamed
       def a = 1
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:4: error: You may not export a getter or a setter as a named export
       |      @JSExportNamed
       |       ^
     """
-
-
     // Setter
     """
     class A {
       @JSExportNamed
       def a_=(x: Int) = ()
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:4: error: You may not export a getter or a setter as a named export
       |      @JSExportNamed
       |       ^
     """
-
   }
 
   @Test
@@ -933,12 +843,11 @@ class JSExportTest extends DirectTest with TestHelpers {
       def foo(x: String, y: String = "hello") = x
       def foo(x: Int, y: String = "bar") = x
     }
-    """ fails()
+    """ fails ()
   }
 
   @Test
   def noNonLiteralExportNames: Unit = {
-
     """
     object A {
       val a = "Hello"
@@ -951,18 +860,15 @@ class JSExportTest extends DirectTest with TestHelpers {
       @JSExport(A.b)
       def bar = 1
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:9: error: The argument to JSExport must be a literal string
       |      @JSExport(A.a)
       |       ^
     """
-
   }
 
   @Test
   def noInheritIgnoreInvalidDescendants: Unit = {
-
     """
     @JSExportDescendentClasses
     trait A
@@ -974,8 +880,7 @@ class JSExportTest extends DirectTest with TestHelpers {
       // Local class is not allowed
       def foo = { new A with B }
     }
-    """ hasErrors
-    """
+    """ hasErrors """
       |newSource1.scala:11: error: You may not export a local class
       |      def foo = { new A with B }
       |                      ^
@@ -984,14 +889,12 @@ class JSExportTest extends DirectTest with TestHelpers {
 
   @Test
   def noExportImplicitApply: Unit = {
-
     """
     class A {
       @JSExport
       def apply(): Int = 1
     }
-    """ hasWarns
-    """
+    """ hasWarns """
       |newSource1.scala:4: warning: Member cannot be exported to function application. It is available under the name apply instead. Add @JSExport("apply") to silence this warning. This will be enforced in 1.0.
       |      @JSExport
       |       ^
@@ -1002,8 +905,7 @@ class JSExportTest extends DirectTest with TestHelpers {
     class A {
       def apply(): Int = 1
     }
-    """ hasWarns
-    """
+    """ hasWarns """
       |newSource1.scala:5: warning: Member cannot be exported to function application. It is available under the name apply instead. Add @JSExport("apply") to silence this warning. This will be enforced in 1.0.
       |      def apply(): Int = 1
       |          ^
@@ -1016,8 +918,7 @@ class JSExportTest extends DirectTest with TestHelpers {
       @JSExport("foo")
       def apply(): Int = 1
     }
-    """ hasWarns
-    """
+    """ hasWarns """
       |newSource1.scala:7: warning: Member cannot be exported to function application. It is available under the name apply instead. Add @JSExport("apply") to silence this warning. This will be enforced in 1.0.
       |      def apply(): Int = 1
       |          ^
@@ -1030,17 +931,13 @@ class JSExportTest extends DirectTest with TestHelpers {
       def apply(): Int = 1
     }
     """.hasNoWarns
-
   }
 
   @Test
   def exportObjectAsToString: Unit = {
-
     """
     @JSExport("toString")
     object ExportAsToString
     """.succeeds
-
   }
-
 }

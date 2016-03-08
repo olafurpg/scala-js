@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.tools.linker
 
 import java.util.concurrent.atomic.AtomicBoolean
@@ -19,31 +18,33 @@ import org.scalajs.core.tools.javascript.ESLevel
 import org.scalajs.core.tools.linker.analyzer.SymbolRequirement
 import org.scalajs.core.tools.linker.frontend.LinkerFrontend
 import org.scalajs.core.tools.linker.frontend.optimizer.IncOptimizer
-import org.scalajs.core.tools.linker.backend.{LinkerBackend, BasicLinkerBackend}
+import org.scalajs.core.tools.linker.backend.{LinkerBackend,
+BasicLinkerBackend}
 
 /** The Scala.js linker */
 final class Linker(frontend: LinkerFrontend, backend: LinkerBackend)
     extends GenLinker {
-
   require(!backend.withSourceMap || frontend.withSourceMap,
-      "Frontend must have source maps enabled if backend has them enabled")
+          "Frontend must have source maps enabled if backend has them enabled")
   require(frontend.semantics == backend.semantics,
-      "Frontend and backend must agree on semantics")
+          "Frontend and backend must agree on semantics")
   require(frontend.esLevel == backend.esLevel,
-      "Frontend and backend must agree on ESLevel")
+          "Frontend and backend must agree on ESLevel")
 
   val semantics: Semantics = frontend.semantics
   val esLevel: ESLevel = backend.esLevel
 
-  private[this] var _valid = true
-  private[this] val _linking = new AtomicBoolean(false)
+  private [ this] var _valid = true
+  private [ this] val _linking = new AtomicBoolean(false)
 
   def linkUnit(irFiles: Seq[VirtualScalaJSIRFile],
-      symbolRequirements: SymbolRequirement, logger: Logger): LinkingUnit =
+               symbolRequirements: SymbolRequirement,
+               logger: Logger): LinkingUnit =
     guard(frontend.link(irFiles, symbolRequirements, logger))
 
   def link(irFiles: Seq[VirtualScalaJSIRFile],
-      output: WritableVirtualJSFile, logger: Logger): Unit = {
+           output: WritableVirtualJSFile,
+           logger: Logger): Unit = {
     guard {
       val unit = frontend.link(irFiles, backend.symbolRequirements, logger)
       backend.emit(unit, output, logger)
@@ -51,7 +52,7 @@ final class Linker(frontend: LinkerFrontend, backend: LinkerBackend)
   }
 
   @inline
-  private[this] def guard[T](body: => T): T = {
+  private [ this] def guard[T](body: => T): T = {
     if (!_linking.compareAndSet(false, true)) {
       throw new IllegalStateException("Linker used concurrently")
     }

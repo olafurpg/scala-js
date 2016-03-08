@@ -14,21 +14,22 @@ import org.scalajs.testsuite.utils.AssertThrows._
 import org.scalajs.testsuite.utils.Platform._
 
 class CharacterTest {
-
-  @Test def isISOControl(): Unit = {
-    val isoControlChars = (('\u0000' to '\u001F') ++
-        ('\u007F' to '\u009F')).map(_.toInt).toSet
+  @Test
+  def isISOControl(): Unit = {
+    val isoControlChars = (('\u0000' to '\u001F') ++ ('\u007F' to '\u009F'))
+      .map(_.toInt).toSet
     isoControlChars foreach { c =>
       assertEquals(true, Character.isISOControl(c))
     }
 
     val randomInts = List.fill(100)(scala.util.Random.nextInt)
-    ((-1000 to 1000) ++ randomInts).filterNot(isoControlChars) foreach { c =>
+    ((- 1000 to 1000) ++ randomInts).filterNot(isoControlChars) foreach { c =>
       assertEquals(false, Character.isISOControl(c))
     }
   }
 
-  @Test def digit(): Unit = {
+  @Test
+  def digit(): Unit = {
     assertEquals(10, Character.digit('a', 16))
     assertEquals(-1, Character.digit('}', 5))
     assertEquals(-1, Character.digit('1', 50))
@@ -37,7 +38,8 @@ class CharacterTest {
     assertEquals(11, Character.digit('\uFF22', 20))
   }
 
-  @Test def forDigit(): Unit = {
+  @Test
+  def forDigit(): Unit = {
     /* Ported from
      * https://github.com/gwtproject/gwt/blob/master/user/test/com/google/gwt/emultest/java/lang/CharacterTest.java
      */
@@ -47,17 +49,24 @@ class CharacterTest {
     assertEquals('9', Character.forDigit(9, 10))
   }
 
-  @Test def toChars(): Unit = {
+  @Test
+  def toChars(): Unit = {
     assertTrue(Character.toChars(0x61) sameElements Array('a'))
-    assertTrue(Character.toChars(0x10000) sameElements Array('\uD800', '\uDC00'))
-    assertTrue(Character.toChars(0x10001) sameElements Array('\uD800', '\uDC01'))
-    assertTrue(Character.toChars(0x10401) sameElements Array('\uD801', '\uDC01'))
-    assertTrue(Character.toChars(0x10FFFF) sameElements Array('\uDBFF', '\uDFFF'))
+    assertTrue(
+        Character.toChars(0x10000) sameElements Array('\uD800', '\uDC00'))
+    assertTrue(
+        Character.toChars(0x10001) sameElements Array('\uD800', '\uDC01'))
+    assertTrue(
+        Character.toChars(0x10401) sameElements Array('\uD801', '\uDC01'))
+    assertTrue(
+        Character.toChars(0x10FFFF) sameElements Array('\uDBFF', '\uDFFF'))
 
-    expectThrows(classOf[IllegalArgumentException], Character.toChars(Integer.MAX_VALUE))
+    expectThrows(classOf[IllegalArgumentException],
+                 Character.toChars(Integer.MAX_VALUE))
   }
 
-  @Test def isDigit(): Unit = {
+  @Test
+  def isDigit(): Unit = {
     assertFalse(Character.isDigit('a'))
     assertTrue(Character.isDigit('0'))
     assertTrue(Character.isDigit('5'))
@@ -258,7 +267,9 @@ class CharacterTest {
     assertFalse(Character.isDigit('\uFBFC'))
   }
 
-  @Test def compareTo(): Unit = {
+  @Test
+  def compareTo(): Unit = {
+
     def compare(x: Char, y: Char): Int =
       new Character(x).compareTo(new Character(y))
 
@@ -268,7 +279,9 @@ class CharacterTest {
     assertEquals(0, compare('b', 'b'))
   }
 
-  @Test def should_be_a_Comparable(): Unit = {
+  @Test
+  def should_be_a_Comparable(): Unit = {
+
     def compare(x: Any, y: Any): Int =
       x.asInstanceOf[Comparable[Any]].compareTo(y)
 
@@ -278,15 +291,16 @@ class CharacterTest {
     assertEquals(0, compare('b', 'b'))
   }
 
-  @Test def isIdentifierIgnorable(): Unit = {
-    for (c <- '\u0000' to '\u0008')
-      assertTrue(Character.isIdentifierIgnorable(c))
+  @Test
+  def isIdentifierIgnorable(): Unit = {
+    for (c <- '\u0000' to '\u0008') assertTrue(
+        Character.isIdentifierIgnorable(c))
 
-    for (c <- '\u000E' to '\u001B')
-      assertTrue(Character.isIdentifierIgnorable(c))
+    for (c <- '\u000E' to '\u001B') assertTrue(
+        Character.isIdentifierIgnorable(c))
 
-    for (c <- '\u007F' to '\u009F')
-      assertTrue(Character.isIdentifierIgnorable(c))
+    for (c <- '\u007F' to '\u009F') assertTrue(
+        Character.isIdentifierIgnorable(c))
 
     // Exhaustive list of Cf category. Unicode 7.0.0
     assertTrue(Character.isIdentifierIgnorable('\u00AD'))
@@ -457,10 +471,10 @@ class CharacterTest {
     assertFalse(Character.isIdentifierIgnorable('\uffa9'))
     assertFalse(Character.isIdentifierIgnorable('\u37b0'))
     assertFalse(Character.isIdentifierIgnorable('\u3e04'))
-
   }
 
-  @Test def isUnicodeIdentifierStart(): Unit = {
+  @Test
+  def isUnicodeIdentifierStart(): Unit = {
     // 100 randomly generated positives and 100 randomly generated negatives
 
     assertTrue(Character.isUnicodeIdentifierStart('\ud6d5'))
@@ -673,7 +687,8 @@ class CharacterTest {
     assertFalse(Character.isUnicodeIdentifierStart('\uf817'))
   }
 
-  @Test def isUnicodeIdentifierPart(): Unit = {
+  @Test
+  def isUnicodeIdentifierPart(): Unit = {
     // 100 randomly generated positives and 100 randomly generated negatives
 
     assertTrue(Character.isUnicodeIdentifierPart('\u48d3'))
@@ -891,13 +906,11 @@ class CharacterTest {
     assertFalse(Character.isUnicodeIdentifierPart('\u2d2c'))
   }
 
-  @Test def isUpperCase(): Unit = {
-    for (c <- 'a' to 'z')
-      assertFalse(Character.isUpperCase(c))
-    for (c <- 'A' to 'Z')
-      assertTrue(Character.isUpperCase(c))
-    for (c <- '0' to '9')
-      assertFalse(Character.isUpperCase(c))
+  @Test
+  def isUpperCase(): Unit = {
+    for (c <- 'a' to 'z') assertFalse(Character.isUpperCase(c))
+    for (c <- 'A' to 'Z') assertTrue(Character.isUpperCase(c))
+    for (c <- '0' to '9') assertFalse(Character.isUpperCase(c))
 
     // example form issue #1646
     assertFalse(Character.isUpperCase('('))
@@ -1136,13 +1149,11 @@ class CharacterTest {
     assertFalse(Character.isUpperCase('\u97FF'))
   }
 
-  @Test def isLowerCase(): Unit = {
-    for (c <- 'a' to 'z')
-      assertTrue(Character.isLowerCase(c))
-    for (c <- 'A' to 'Z')
-      assertFalse(Character.isLowerCase(c))
-    for (c <- '0' to '9')
-      assertFalse(Character.isLowerCase(c))
+  @Test
+  def isLowerCase(): Unit = {
+    for (c <- 'a' to 'z') assertTrue(Character.isLowerCase(c))
+    for (c <- 'A' to 'Z') assertFalse(Character.isLowerCase(c))
+    for (c <- '0' to '9') assertFalse(Character.isLowerCase(c))
 
     // example form issue #1646
     assertFalse(Character.isLowerCase('('))
@@ -1254,11 +1265,10 @@ class CharacterTest {
     assertFalse(Character.isLowerCase(989574))
   }
 
-  @Test def isLetter(): Unit = {
-    for (c <- 'a' to 'z')
-      assertTrue(Character.isLetter(c))
-    for (c <- 'A' to 'Z')
-      assertTrue(Character.isLetter(c))
+  @Test
+  def isLetter(): Unit = {
+    for (c <- 'a' to 'z') assertTrue(Character.isLetter(c))
+    for (c <- 'A' to 'Z') assertTrue(Character.isLetter(c))
 
     // 100 randomly chosen characters that produce true
     assertTrue(Character.isLetter('\u0931'))
@@ -1472,7 +1482,8 @@ class CharacterTest {
     assertFalse(Character.isLetter(983136))
   }
 
-  @Test def isLetterOrDigit(): Unit = {
+  @Test
+  def isLetterOrDigit(): Unit = {
     // 100 randomly chosen characters that produce true
     assertTrue(Character.isLetterOrDigit('\u0209'))
     if (!executingInJVMOnJDK6)
@@ -1683,7 +1694,8 @@ class CharacterTest {
     assertFalse(Character.isLetterOrDigit('\uFE4B'))
   }
 
-  @Test def isSpaceChar(): Unit = {
+  @Test
+  def isSpaceChar(): Unit = {
     assertTrue(Character.isSpaceChar('\u0020'))
     assertTrue(Character.isSpaceChar('\u00A0'))
     assertTrue(Character.isSpaceChar('\u1680'))
@@ -1807,7 +1819,8 @@ class CharacterTest {
     assertFalse(Character.isSpaceChar('\uFD88'))
   }
 
-  @Test def isWhitespace(): Unit = {
+  @Test
+  def isWhitespace(): Unit = {
     // All whitespaces
     assertTrue(Character.isWhitespace('\u0009'))
     assertTrue(Character.isWhitespace('\u000a'))
@@ -1944,7 +1957,8 @@ class CharacterTest {
     assertFalse(Character.isWhitespace(942329))
   }
 
-  @Test def isTitleCase(): Unit = {
+  @Test
+  def isTitleCase(): Unit = {
     // all tilteCases
     assertTrue(Character.isTitleCase('\u01C5'))
     assertTrue(Character.isTitleCase('\u01C8'))
@@ -2081,7 +2095,8 @@ class CharacterTest {
     assertFalse(Character.isTitleCase('\u0070'))
   }
 
-  @Test def isMirrored(): Unit = {
+  @Test
+  def isMirrored(): Unit = {
     // 50 randomly chosen characters that produce true
     assertTrue(Character.isMirrored('\u208D'))
     assertTrue(Character.isMirrored('\u208E'))
@@ -2188,7 +2203,8 @@ class CharacterTest {
     assertFalse(Character.isMirrored(962242))
   }
 
-  @Test def isDefined(): Unit = {
+  @Test
+  def isDefined(): Unit = {
     // 100 randomly chosen characters that produce true
     assertTrue(Character.isDefined('\u0191'))
     assertTrue(Character.isDefined('\u03D6'))
@@ -2395,7 +2411,8 @@ class CharacterTest {
     assertFalse(Character.isDefined('\uFFF3'))
   }
 
-  @Test def getType(): Unit = {
+  @Test
+  def getType(): Unit = {
     // 300 first characters
     assertEquals(15, Character.getType(0))
     assertEquals(15, Character.getType(1))
@@ -3106,7 +3123,8 @@ class CharacterTest {
     assertEquals(18, Character.getType(1112476))
   }
 
-  @Test def isJavaLetter(): Unit = {
+  @Test
+  def isJavaLetter(): Unit = {
     // 50 randomly chosen characters that produce true
     assertTrue(Character.isJavaLetter('\u1115'))
     assertTrue(Character.isJavaLetter('\u1895'))
@@ -3213,7 +3231,8 @@ class CharacterTest {
     assertFalse(Character.isJavaLetter('\u0FF9'))
   }
 
-  @Test def isJavaLetterOrDigit(): Unit = {
+  @Test
+  def isJavaLetterOrDigit(): Unit = {
     // 50 randomly chosen characters that produce true
     assertTrue(Character.isJavaLetterOrDigit('\u0B42'))
     assertTrue(Character.isJavaLetterOrDigit('\u0C35'))
@@ -3320,7 +3339,8 @@ class CharacterTest {
     assertFalse(Character.isJavaLetterOrDigit('\uFF03'))
   }
 
-  @Test def isJavaIdentifierStart(): Unit = {
+  @Test
+  def isJavaIdentifierStart(): Unit = {
     // 50 randomly chosen characters that produce true
     assertTrue(Character.isJavaIdentifierStart('\u186C'))
     assertTrue(Character.isJavaIdentifierStart('\u1F75'))

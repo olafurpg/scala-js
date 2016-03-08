@@ -15,9 +15,7 @@ import scala.scalajs.js
 import scala.scalajs.js.JSConverters._
 
 object RandomTest extends JasmineTest {
-
   describe("java.util.Random") {
-
     it("should produce bits according to spec with seed=10") {
       val random = new HackRandom(10)
 
@@ -175,16 +173,39 @@ object RandomTest extends JasmineTest {
     it("should correctly implement nextBytes") {
       val random = new Random(7399572013373333L)
 
-      def test(exps: Int*): Unit = {
-        val exp = js.Array(exps.map(_.toByte): _*)
+      def test(exps: Int *): Unit = {
+        val exp = js.Array(exps.map(_.toByte): _ *)
         val buf = new Array[Byte](exp.length)
         random.nextBytes(buf)
         expect(buf.toJSArray).toEqual(exp)
       }
 
       test(62, 89, 68, -91, 10, 0, 85)
-      test(-89, -76, 88, 121, -25, 47, 58, -8, 78, 20, -77, 84, -3,
-        -33, 58, -9, 11, 57, -118, 40, -74, -86, 78, 123, 58)
+      test(-89,
+           -76,
+           88,
+           121,
+           -25,
+           47,
+           58,
+           -8,
+           78,
+           20,
+           -77,
+           84,
+           -3,
+           -33,
+           58,
+           -9,
+           11,
+           57,
+           -118,
+           40,
+           -74,
+           -86,
+           78,
+           123,
+           58)
       test(-77, 112, -116)
       test()
       test(-84, -96, 108)
@@ -214,12 +235,11 @@ object RandomTest extends JasmineTest {
       expect(random.nextGaussian()).toBe(0.3990565555091522)
       expect(random.nextGaussian()).toBe(2.0051627385915154)
     }
-
   }
 
   /** Helper class to access next */
   class HackRandom(seed: Long) extends Random(seed) {
+
     override def next(bits: Int): Int = super.next(bits)
   }
-
 }

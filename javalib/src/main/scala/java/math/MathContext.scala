@@ -24,7 +24,6 @@
 package java.math
 
 object MathContext {
-
   val DECIMAL128 = MathContext(34, RoundingMode.HALF_EVEN)
 
   val DECIMAL32 = MathContext(7, RoundingMode.HALF_EVEN)
@@ -40,9 +39,9 @@ object MathContext {
     checkNotNull(s, "null string")
     val precisionLength = "precision=".length
     val roundingModeLength = "roundingMode=".length
-    val spaceIndex= s.indexOf(' ', precisionLength)
+    val spaceIndex = s.indexOf(' ', precisionLength)
 
-    if (!s.startsWith("precision=") || spaceIndex == -1)
+    if (!s.startsWith("precision=") || spaceIndex == - 1)
       invalidMathContext("Missing precision", s)
 
     val precisionString = s.substring(precisionLength, spaceIndex)
@@ -55,7 +54,8 @@ object MathContext {
     }
 
     val roundingModeStrStart = spaceIndex + 1
-    if (!s.regionMatches(roundingModeStrStart, "roundingMode=", 0, roundingModeLength))
+    if (!s.regionMatches(
+            roundingModeStrStart, "roundingMode=", 0, roundingModeLength))
       invalidMathContext("Missing rounding mode", s)
 
     val roundingModeStart = roundingModeStrStart + roundingModeLength
@@ -75,35 +75,34 @@ object MathContext {
 }
 
 class MathContext(setPrecision: Int, setRoundingMode: RoundingMode) {
+  private [math] val precision = setPrecision
 
-  private[math] val precision = setPrecision
-
-  private[math] val roundingMode = setRoundingMode
+  private [math] val roundingMode = setRoundingMode
 
   def getPrecision(): Int = precision
 
   def getRoundingMode(): RoundingMode = roundingMode
 
-  def this(setPrecision: Int) = {
+  def this (setPrecision: Int) = {
     this(setPrecision, RoundingMode.HALF_UP)
   }
 
-  private def this(args: (Int, RoundingMode)) = {
+  private def this (args: (Int, RoundingMode)) = {
     this(args._1, args._2)
   }
 
-  def this(s: String) = {
+  def this (s: String) = {
     this(MathContext.getArgs(s))
     checkValid()
   }
 
-  override def equals(x: Any): Boolean = x match {
-    case that: MathContext =>
-      this.precision == that.precision &&
-      this.roundingMode == that.roundingMode
-    case _ =>
-      false
-  }
+  override def equals(x: Any): Boolean =
+    x match {
+      case that: MathContext =>
+        this.precision == that.precision &&
+        this.roundingMode == that.roundingMode
+      case _ => false
+    }
 
   override def hashCode(): Int = (precision << 3) | roundingMode.ordinal()
 

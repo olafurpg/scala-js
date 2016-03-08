@@ -7,6 +7,7 @@
 \*                                                                      */
 
 package scala
+
 package util
 
 import java.lang.InheritableThreadLocal
@@ -42,7 +43,7 @@ class DynamicVariable[T](init: T) {
    * This removes the dependency on ThreadLocal and InheritableThreadLocal from the
    * Hello World.
    */
-  private[this] var v = init
+  private [ this] var v = init
 
   /** Retrieve the current value */
   def value: T = v
@@ -57,8 +58,7 @@ class DynamicVariable[T](init: T) {
     val oldval = v
     v = newval
 
-    try thunk
-    finally v = oldval
+    try thunk finally v = oldval
   }
 
   /** Change the currently bound value, discarding the old value.

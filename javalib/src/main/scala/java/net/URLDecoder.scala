@@ -5,7 +5,6 @@ import java.nio.{CharBuffer, ByteBuffer}
 import java.nio.charset.{Charset, MalformedInputException}
 
 object URLDecoder {
-
   @Deprecated
   def decode(s: String): String = decodeImpl(s, Charset.defaultCharset)
 
@@ -16,8 +15,7 @@ object URLDecoder {
     lazy val charset = {
       if (!Charset.isSupported(enc))
         throw new UnsupportedEncodingException(enc)
-      else
-        Charset.forName(enc)
+      else Charset.forName(enc)
     }
 
     decodeImpl(s, charset)
@@ -42,8 +40,7 @@ object URLDecoder {
           charBuffer.append(' ')
           i += 1
 
-        case '%' if i + 3 > len =>
-          throwIllegalHex()
+        case '%' if i + 3 > len => throwIllegalHex()
 
         case '%' =>
           val decoder = charsetDecoder
@@ -69,9 +66,9 @@ object URLDecoder {
           if (decodeResult.isError || flushResult.isError)
             throwIllegalHex()
 
-      case c =>
-        charBuffer.append(c)
-        i += 1
+        case c =>
+          charBuffer.append(c)
+          i += 1
       }
     }
 

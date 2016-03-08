@@ -11,31 +11,23 @@ import scala.scalajs.js
 import org.scalajs.jasminetest.JasmineTest
 
 object LinkingInfoTest extends JasmineTest {
-
   import scala.scalajs.LinkingInfo
 
   describe("scala.scalajs.LinkingInfo") {
-
-    when("production-mode").
-    it("productionMode when in production mode") {
+    when("production-mode").it("productionMode when in production mode") {
       expect(LinkingInfo.productionMode).toBeTruthy
     }
 
-    when("development-mode").
-    it("productionMode when in development mode") {
+    when("development-mode").it("productionMode when in development mode") {
       expect(LinkingInfo.productionMode).toBeFalsy
     }
 
-    when("production-mode").
-    it("developmentMode when in production mode") {
+    when("production-mode").it("developmentMode when in production mode") {
       expect(LinkingInfo.developmentMode).toBeFalsy
     }
 
-    when("development-mode").
-    it("developmentMode when in development mode") {
+    when("development-mode").it("developmentMode when in development mode") {
       expect(LinkingInfo.developmentMode).toBeTruthy
     }
-
   }
-
 }

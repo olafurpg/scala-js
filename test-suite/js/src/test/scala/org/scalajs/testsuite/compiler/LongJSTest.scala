@@ -19,21 +19,20 @@ import org.scalajs.jasminetest.JasmineTest
  *  for a test of the implementation itself
  */
 class LongJSTest {
-  @Test def `should_convert_to_js.Any`(): Unit = {
+  @Test
+  def `should_convert_to_js.Any`(): Unit = {
     val x = 5: js.Any
     assertTrue((5L: js.Any) == x)
   }
 }
 
 object LongJSTest extends JasmineTest {
-
   describe("JavaScript 64-bit long compatibility") {
-    when("compliant-asinstanceofs").
-    it("should correctly implement asInstanceOf Longs (negative)") {
+    when("compliant-asinstanceofs")
+      .it("should correctly implement asInstanceOf Longs (negative)") {
       val dyn: Any = 5L
 
       expect(() => dyn.asInstanceOf[Int]).toThrow
     }
   }
-
 }

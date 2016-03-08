@@ -25,8 +25,7 @@ package java.math
 import scala.annotation.tailrec
 
 /** Object that provides all multiplication of {@link BigInteger} methods. */
-private[math] object Multiplication {
-
+private [math] object Multiplication {
   /** An array of powers of ten.
    *
    *  An array with powers of ten that fit in the type
@@ -46,14 +45,14 @@ private[math] object Multiplication {
    *  An array with the first powers of ten in {@code BigInteger} version.
    *  ({@code 10^0,10^1,...,10^31})
    */
-  private[math] val BigTenPows = new Array[BigInteger](32)
+  private [math] val BigTenPows = new Array[BigInteger](32)
 
   /** An array of {@code BigInteger} of powers of five.
    *
    *  An array with the first powers of five in {@code BigInteger} version.
    *  ({@code 5^0,5^1,...,5^31})
    */
-  private[math] val BigFivePows = new Array[BigInteger](32)
+  private [math] val BigFivePows = new Array[BigInteger](32)
 
   private final val whenUseKaratsuba = 63
 
@@ -91,7 +90,8 @@ private[math] object Multiplication {
     } else {
       val resLength = aNumberLength + 1
       val resDigits = new Array[Int](resLength)
-      resDigits(aNumberLength) = multiplyByInt(resDigits, aDigits, aNumberLength, factor)
+      resDigits (aNumberLength) = multiplyByInt(
+          resDigits, aDigits, aNumberLength, factor)
       val result = new BigInteger(resSign, resLength, resDigits)
       result.cutOffLeadingZeroes()
       result
@@ -123,10 +123,10 @@ private[math] object Multiplication {
       carry = 0
       for (j <- i + 1 until aLen) {
         val t = unsignedMultAddAdd(a(i), a(j), res(i + j), carry)
-        res(i + j) = t.toInt
+        res (i + j) = t.toInt
         carry = (t >>> 32).toInt
       }
-      res(i + aLen) = carry
+      res (i + aLen) = carry
     }
     BitLevel.shiftLeftOneBit(res, res, aLen << 1)
     carry = 0
@@ -134,10 +134,10 @@ private[math] object Multiplication {
     var index = 0
     while (i < aLen) {
       val t = unsignedMultAddAdd(a(i), a(i), res(index), carry)
-      res(index) = t.toInt
+      res (index) = t.toInt
       index += 1
       val t2 = (t >>> 32) + (res(index) & 0xFFFFFFFFL)
-      res(index) = t2.toInt
+      res (index) = t2.toInt
       carry = (t2 >>> 32).toInt
       i += 1
       index += 1
@@ -154,7 +154,8 @@ private[math] object Multiplication {
    *  @return value of expression
    */
   def unsignedMultAddAdd(a: Int, b: Int, c: Int, d: Int): Long =
-    (a & 0xFFFFFFFFL) * (b & 0xFFFFFFFFL) + (c & 0xFFFFFFFFL) + (d & 0xFFFFFFFFL)
+    (a & 0xFFFFFFFFL) * (b & 0xFFFFFFFFL) + (c & 0xFFFFFFFFL) +
+    (d & 0xFFFFFFFFL)
 
   /** Performs the multiplication with the Karatsuba's algorithm.
    *
@@ -193,7 +194,8 @@ private[math] object Multiplication {
 
       var upper = karatsuba(upperOp1, upperOp2)
       val lower = karatsuba(lowerOp1, lowerOp2)
-      var middle = karatsuba(upperOp1.subtract(lowerOp1), lowerOp2.subtract(upperOp2))
+      var middle = karatsuba(
+          upperOp1.subtract(lowerOp1), lowerOp2.subtract(upperOp2))
       middle = middle.add(upper).add(lower)
       middle = middle.shiftLeft(ndiv2)
       upper = upper.shiftLeft(ndiv2 << 1)
@@ -201,15 +203,17 @@ private[math] object Multiplication {
     }
   }
 
-  def multArraysPAP(aDigits: Array[Int], aLen: Int, bDigits: Array[Int],
-      bLen: Int, resDigits: Array[Int]): Unit = {
+  def multArraysPAP(aDigits: Array[Int],
+                    aLen: Int,
+                    bDigits: Array[Int],
+                    bLen: Int,
+                    resDigits: Array[Int]): Unit = {
     if (!(aLen == 0 || bLen == 0)) {
       if (aLen == 1)
-        resDigits(bLen) = multiplyByInt(resDigits, bDigits, bLen, aDigits(0))
+        resDigits (bLen) = multiplyByInt(resDigits, bDigits, bLen, aDigits(0))
       else if (bLen == 1)
-        resDigits(aLen) = multiplyByInt(resDigits, aDigits, aLen, bDigits(0))
-      else
-        multPAP(aDigits, bDigits, resDigits, aLen, bLen)
+        resDigits (aLen) = multiplyByInt(resDigits, aDigits, aLen, bDigits(0))
+      else multPAP(aDigits, bDigits, resDigits, aLen, bLen)
     }
   }
 
@@ -367,9 +371,11 @@ private[math] object Multiplication {
       BigTenPows(exp.toInt)
     } else if (exp <= 50) {
       BigInteger.TEN.pow(exp.toInt)
-    } else if (exp <= Int.MaxValue) { // "LARGE POWERS"
+    } else if (exp <= Int.MaxValue) {
+      // "LARGE POWERS"
       BigFivePows(1).pow(exp.toInt).shiftLeft(exp.toInt)
-    } else { //"HUGE POWERS"
+    } else {
+      //"HUGE POWERS"
       val powerOfFive = BigFivePows(1).pow(Integer.MAX_VALUE)
       var res: BigInteger = powerOfFive
       var longExp = exp - Int.MaxValue
@@ -406,29 +412,32 @@ private[math] object Multiplication {
     var fivePow = 1L
     for (i <- 0 until 32) {
       if (i <= 18) {
-        BigFivePows(i) = BigInteger.valueOf(fivePow)
-        BigTenPows(i) = BigInteger.valueOf(fivePow << i)
+        BigFivePows (i) = BigInteger.valueOf(fivePow)
+        BigTenPows (i) = BigInteger.valueOf(fivePow << i)
         fivePow *= 5
       } else {
-        BigFivePows(i) = BigFivePows(i - 1).multiply(BigFivePows(1))
-        BigTenPows(i) = BigTenPows(i - 1).multiply(BigInteger.TEN)
+        BigFivePows (i) = BigFivePows(i - 1).multiply(BigFivePows(1))
+        BigTenPows (i) = BigTenPows(i - 1).multiply(BigInteger.TEN)
       }
     }
   }
 
-  private def multiplyByInt(res: Array[Int], a: Array[Int], aSize: Int,
-      factor: Int): Int = {
+  private def multiplyByInt(
+      res: Array[Int], a: Array[Int], aSize: Int, factor: Int): Int = {
     var carry = 0
     for (i <- 0 until aSize) {
       val t = unsignedMultAddAdd(a(i), factor, carry, 0)
-      res(i) = t.toInt
+      res (i) = t.toInt
       carry = (t >>> 32).toInt
     }
     carry
   }
 
-  private def multPAP(a: Array[Int], b: Array[Int], t: Array[Int],
-      aLen: Int, bLen: Int): Unit = {
+  private def multPAP(a: Array[Int],
+                      b: Array[Int],
+                      t: Array[Int],
+                      aLen: Int,
+                      bLen: Int): Unit = {
     if (a == b && aLen == bLen) {
       square(a, aLen, t)
     } else {
@@ -437,10 +446,10 @@ private[math] object Multiplication {
         val aI = a(i)
         for (j <- 0 until bLen) {
           val added = unsignedMultAddAdd(aI, b(j), t(i + j), carry.toInt)
-          t(i + j) = added.toInt
+          t (i + j) = added.toInt
           carry = (added >>> 32).toInt
         }
-        t(i + bLen) = carry
+        t (i + bLen) = carry
       }
     }
   }

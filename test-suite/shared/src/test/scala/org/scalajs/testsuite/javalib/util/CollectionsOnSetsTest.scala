@@ -9,7 +9,9 @@ import scala.collection.JavaConversions._
 trait CollectionsOnSetsTest extends CollectionsOnCollectionsTest {
   def factory: SetFactory
 
-  @Test def unmodifiableSet():Unit = {
+  @Test
+  def unmodifiableSet(): Unit = {
+
     def test[E](toElem: Int => E): Unit = {
       val set = factory.empty[E]
       testSetImmutability(ju.Collections.unmodifiableSet(set), toElem(0))
@@ -27,14 +29,16 @@ trait CollectionsOnSetsTest extends CollectionsOnCollectionsTest {
 trait CollectionsOnSortedSetsTest extends CollectionsOnSetsTest {
   def factory: SortedSetFactory
 
-  @Test def unmodifiableSortedSet():Unit = {
+  @Test
+  def unmodifiableSortedSet(): Unit = {
+
     def test[E](toElem: Int => E): Unit = {
       val sortedSet = factory.empty[E]
-      testSortedSetImmutability(ju.Collections.unmodifiableSortedSet(sortedSet),
-        toElem(0))
+      testSortedSetImmutability(
+          ju.Collections.unmodifiableSortedSet(sortedSet), toElem(0))
       sortedSet.addAll(range.map(toElem))
-      testSortedSetImmutability(ju.Collections.unmodifiableSortedSet(sortedSet),
-        toElem(0))
+      testSortedSetImmutability(
+          ju.Collections.unmodifiableSortedSet(sortedSet), toElem(0))
     }
 
     test[Int](_.toInt)
@@ -45,14 +49,17 @@ trait CollectionsOnSortedSetsTest extends CollectionsOnSetsTest {
 }
 
 class CollectionsOnHashSetFactoryTest extends CollectionsOnSetsTest {
+
   def factory: SetFactory = new HashSetFactory
 }
 
 class CollectionsOnLinkedHashSetFactoryTest extends CollectionsOnSetsTest {
+
   def factory: SetFactory = new LinkedHashSetFactory
 }
 
 class CollectionsOnConcurrentSkipListSetFactoryTest
     extends CollectionsOnSetsTest {
+
   def factory: SetFactory = new concurrent.ConcurrentSkipListSetFactory
 }

@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.jsenv.rhino
 
 import scala.collection.mutable
@@ -25,12 +24,11 @@ import org.mozilla.javascript.{Scriptable, Context}
  *  It is immensely useful, because it allows to load lazily only the scripts
  *  that are actually needed.
  */
-private[rhino] class LazyScalaJSScope(
-    coreLib: ScalaJSCoreLib,
-    globalScope: Scriptable,
-    base: Scriptable,
-    isStatics: Boolean) extends Scriptable {
-
+private [rhino] class LazyScalaJSScope(coreLib: ScalaJSCoreLib,
+                                       globalScope: Scriptable,
+                                       base: Scriptable,
+                                       isStatics: Boolean)
+    extends Scriptable {
   private val fields = mutable.HashMap.empty[String, Any]
   private var prototype: Scriptable = _
   private var parentScope: Scriptable = _
@@ -84,21 +82,26 @@ private[rhino] class LazyScalaJSScope(
 
   override def has(name: String, start: Scriptable): Boolean =
     fields.contains(name)
+
   override def has(index: Int, start: Scriptable): Boolean =
     has(index.toString, start)
 
   override def put(name: String, start: Scriptable, value: Any): Unit =
-    fields(name) = value
+    fields (name) = value
+
   override def put(index: Int, start: Scriptable, value: Any): Unit =
     put(index.toString, start, value)
 
   override def delete(name: String): Unit = ()
+
   override def delete(index: Int): Unit = ()
 
   override def getPrototype(): Scriptable = prototype
+
   override def setPrototype(value: Scriptable): Unit = prototype = value
 
   override def getParentScope(): Scriptable = parentScope
+
   override def setParentScope(value: Scriptable): Unit = parentScope = value
 
   override def getIds(): Array[AnyRef] = fields.keys.toArray

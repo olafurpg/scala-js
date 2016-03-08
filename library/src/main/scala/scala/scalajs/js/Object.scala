@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 /**
  * All doc-comments marked as "MDN" are by Mozilla Contributors,
  * distributed under the Creative Commons Attribution-ShareAlike license from
@@ -17,9 +16,10 @@ package scala.scalajs.js
 /** Base class of all JavaScript objects. */
 @native
 class Object extends Any {
-  def this(value: Any) = this()
+  def this (value: Any) = this()
 
   def toLocaleString(): String = native
+
   def valueOf(): scala.Any = native
 
   /** Tests whether this object has the specified property as a direct property.
@@ -47,7 +47,9 @@ class Object extends Any {
 /** The top-level `Object` JavaScript object. */
 @native
 object Object extends Object {
+
   def apply(): Object = native
+
   def apply(value: Any): Object = native
 
   /** Tests whether the object has a property on itself or in its prototype
@@ -70,7 +72,8 @@ object Object extends Object {
    *
    * MDN
    */
-  def getOwnPropertyDescriptor(o: Object, p: String): PropertyDescriptor = native
+  def getOwnPropertyDescriptor(o: Object, p: String): PropertyDescriptor =
+    native
 
   /**
    * Object.getOwnPropertyNames returns an array whose elements are strings
@@ -91,6 +94,7 @@ object Object extends Object {
    * MDN
    */
   def create(o: Object, properties: Any): Object = native
+
   def create(o: Object): Object = native
 
   /**
@@ -112,7 +116,8 @@ object Object extends Object {
    *
    * MDN
    */
-  def defineProperty(o: Object, p: String, attributes: PropertyDescriptor): o.type = native
+  def defineProperty(
+      o: Object, p: String, attributes: PropertyDescriptor): o. type = native
 
   /**
    * The Object.defineProperties() method defines new or modifies existing
@@ -120,7 +125,7 @@ object Object extends Object {
    *
    * MDN
    */
-  def defineProperties(o: Object, properties: Any): o.type = native
+  def defineProperties(o: Object, properties: Any): o. type = native
 
   /**
    * The Object.seal() method seals an object, preventing new properties from
@@ -130,7 +135,7 @@ object Object extends Object {
    *
    * MDN
    */
-  def seal(o: Object): o.type = native
+  def seal(o: Object): o. type = native
 
   /**
    * The Object.freeze() method freezes an object: that is, prevents new properties
@@ -141,7 +146,7 @@ object Object extends Object {
    *
    * MDN
    */
-  def freeze(o: Object): o.type = native
+  def freeze(o: Object): o. type = native
 
   /**
    * The Object.preventExtensions() method prevents new properties from ever
@@ -161,7 +166,7 @@ object Object extends Object {
    *
    * MDN
    */
-  def preventExtensions(o: Object): o.type = native
+  def preventExtensions(o: Object): o. type = native
 
   /**
    * Returns true if the object is sealed, otherwise false. An object is sealed

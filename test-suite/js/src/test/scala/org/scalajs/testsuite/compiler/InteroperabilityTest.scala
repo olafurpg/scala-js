@@ -16,10 +16,9 @@ import org.scalajs.jasminetest.{JasmineTest, TestSuiteContext}
  * Based on examples in:
  * http://lampwww.epfl.ch/~doeraene/scala-js/doc/js-interoperability.html
  */
+
 object InteroperabilityTest extends JasmineTest {
-
   describe("JavaScript interoperability") {
-
     it("should support backquotes to escape Scala fields") {
       val obj = js.eval("""
         var interoperabilityTestFieldEscape = {
@@ -78,7 +77,7 @@ object InteroperabilityTest extends JasmineTest {
       """).asInstanceOf[InteroperabilityTestJSBracketAccess]
 
       expect(obj(2)).toEqual(7357)
-      obj(2) = 42
+      obj (2) = 42
       expect(obj(2)).toEqual(42)
     }
 
@@ -219,13 +218,14 @@ object InteroperabilityTest extends JasmineTest {
       expect(dyn.foo()).toEqual(js.Array())
       expect(dyn.foo(3, 6)).toEqual(js.Array(3, 6))
       expect(dyn.foo("hello", false)).toEqual(js.Array("hello", false))
-      expect(dyn.applyDynamic("foo")(elems: _*)).toEqual(js.Array("plop", 42, 51))
+      expect(dyn.applyDynamic("foo")(elems: _ *))
+        .toEqual(js.Array("plop", 42, 51))
 
       val stat = obj.asInstanceOf[InteroperabilityTestVariadicMethod]
       expect(stat.foo()).toEqual(js.Array())
       expect(stat.foo(3, 6)).toEqual(js.Array(3, 6))
       expect(stat.foo("hello", false)).toEqual(js.Array("hello", false))
-      expect(stat.foo(elems: _*)).toEqual(js.Array("plop", 42, 51))
+      expect(stat.foo(elems: _ *)).toEqual(js.Array("plop", 42, 51))
     }
 
     it("should allow to call JS constructors with variadic parameters") {
@@ -245,14 +245,15 @@ object InteroperabilityTest extends JasmineTest {
       val ctor = js.Dynamic.global.InteroperabilityTestVariadicCtor
       expect(jsnew(ctor)().args).toEqual(js.Array())
       expect(jsnew(ctor)(3, 6).args).toEqual(js.Array(3, 6))
-      expect(jsnew(ctor)("hello", false).args).toEqual(js.Array("hello", false))
-      expect(jsnew(ctor)(elems: _*).args).toEqual(js.Array("plop", 42, 51))
+      expect(jsnew(ctor)("hello", false).args).toEqual(js.Array("hello",
+                                                                false))
+      expect(jsnew(ctor)(elems: _ *).args).toEqual(js.Array("plop", 42, 51))
 
       import org.scalajs.testsuite.compiler.{InteroperabilityTestVariadicCtor => C}
       expect(new C().args).toEqual(js.Array())
       expect(new C(3, 6).args).toEqual(js.Array(3, 6))
       expect(new C("hello", false).args).toEqual(js.Array("hello", false))
-      expect(new C(elems: _*).args).toEqual(js.Array("plop", 42, 51))
+      expect(new C(elems: _ *).args).toEqual(js.Array("plop", 42, 51))
     }
 
     it("should acces top-level JS objects via Scala object inheriting from js.GlobalScope") {
@@ -290,6 +291,7 @@ object InteroperabilityTest extends JasmineTest {
       class InScalaSelect(check: js.Function1[Int, Int]) {
         @JSExport
         val member: Int = 0xbad2
+
         def test(): Unit = expect(check(5894)).toEqual(5894)
       }
       new InScalaSelect(check).test()
@@ -308,18 +310,15 @@ object InteroperabilityTest extends JasmineTest {
       val undef = js.undefined
 
       expect(obj.simple(1)).toEqual(args(`0` = 1))
-      expect(obj.simple(1,5)).toEqual(args(`0` = 1, `1` = 5))
+      expect(obj.simple(1, 5)).toEqual(args(`0` = 1, `1` = 5))
       expect(obj.named(y = 5)).toEqual(args(`0` = undef, `1` = 5))
       expect(obj.named(x = 5)).toEqual(args(`0` = 5))
-      expect(obj.multi()(1,2,3,4)()).toEqual(args(
-          `0` = undef,
-          `1` = 1,
-          `2` = 2,
-          `3` = 3,
-          `4` = 4))
-      expect(obj.multi(2)()(5)).toEqual(args(
-          `0` = 2,
-          `1` = 5))
+      expect(obj.multi()(1, 2, 3, 4)()).toEqual(args(`0` = undef,
+                                                     `1` = 1,
+                                                     `2` = 2,
+                                                     `3` = 3,
+                                                     `4` = 4))
+      expect(obj.multi(2)()(5)).toEqual(args(`0` = 2, `1` = 5))
     }
 
     it("should properly handle default parameters for constructors - #791") {
@@ -329,10 +328,12 @@ object InteroperabilityTest extends JasmineTest {
         }
       """);
 
-      expect(new InteroperabilityTestCtor().values).toEqual(js.Array(6,8))
-      expect(new InteroperabilityTestCtor(y = 7).values).toEqual(js.Array(6,7))
-      expect(new InteroperabilityTestCtor(3).values).toEqual(js.Array(3,8))
-      expect(new InteroperabilityTestCtor(10, 2).values).toEqual(js.Array(10,2))
+      expect(new InteroperabilityTestCtor().values).toEqual(js.Array(6, 8))
+      expect(new InteroperabilityTestCtor(y = 7).values).toEqual(js.Array(6,
+                                                                          7))
+      expect(new InteroperabilityTestCtor(3).values).toEqual(js.Array(3, 8))
+      expect(new InteroperabilityTestCtor(10, 2).values).toEqual(js.Array(10,
+                                                                          2))
     }
 
     it("should generate exports for methods inherited from traits - #178") {
@@ -342,6 +343,7 @@ object InteroperabilityTest extends JasmineTest {
         @JSExport
         def theValue: Int = 1
       }
+
       class Bar extends Foo
 
       val x = (new Bar).asInstanceOf[js.Dynamic]
@@ -430,8 +432,8 @@ object InteroperabilityTest extends JasmineTest {
         expect(() => obj.test()).toThrow // in expression position, should throw
     }
 
-    when("compliant-asinstanceofs").
-    it("should asInstanceOf values received from calling a JS interop method") {
+    when("compliant-asinstanceofs").it(
+        "should asInstanceOf values received from calling a JS interop method") {
       val obj = js.eval("""
         var obj = {
           testChar: function() { return 5; },
@@ -455,13 +457,14 @@ object InteroperabilityTest extends JasmineTest {
       expect(() => obj.testNormalClass()).toThrow
       expect(() => obj.testAny()).not.toThrow
     }
-
   }
 
   @js.native
   trait InteroperabilityTestFieldEscape extends js.Object {
-    var `def`: Int = js.native
+    var `def` : Int = js.native
+
     def `val`(): Int = js.native
+
     def `val`(n: Int): Int = js.native
   }
 
@@ -475,7 +478,9 @@ object InteroperabilityTest extends JasmineTest {
 
   @js.native
   trait InteroperabilityTestProperty extends js.Object {
+
     def a_=(x: Int): Unit = js.native
+
     def a: Int = js.native
   }
 
@@ -485,6 +490,7 @@ object InteroperabilityTest extends JasmineTest {
     def a_=(x: Int): Unit = js.native
     @JSName("b")
     def a: Int = js.native
+
     def b: Int = js.native
   }
 
@@ -511,43 +517,56 @@ object InteroperabilityTest extends JasmineTest {
     @JSName("fun")
     def named(x: Int = 1, y: Int = 1, z: Int = 1): js.Any = js.native
     @JSName("fun")
-    def multi(x: Int = 1)(ys: Int*)(z: Int = 1): js.Any = js.native
+    def multi(x: Int = 1)(ys: Int *)(z: Int = 1): js.Any = js.native
   }
 
   @js.native
   trait InteroperabilityTestCharResult extends js.Object {
+
     def get(): Char = js.native
   }
 
   @js.native
   trait InteroperabilityTestCharParam extends js.Object {
+
     def twice(c: Char): String = js.native
   }
 
   @js.native
   trait InteroperabilityTestValueClassResult extends js.Object {
+
     def test(vc: Any): SomeValueClass = js.native
   }
 
   @js.native
   trait InteroperabilityTestValueClassParam extends js.Object {
+
     def stringOf(vc: SomeValueClass): String = js.native
   }
 
   @js.native
   trait InteroperabilityTestNoUnboxResultInStatement extends js.Object {
+
     def test(): String = js.native
   }
 
   @js.native
   trait InteroperabilityTestAsInstanceOfResult extends js.Object {
+
     def testChar(): Char = js.native
+
     def testInt(): Int = js.native
+
     def testShort(): Short = js.native
+
     def testDouble(): Double = js.native
+
     def testString(): String = js.native
+
     def testValueClass(): SomeValueClass = js.native
+
     def testNormalClass(): List[Int] = js.native
+
     def testAny(): Any = js.native
   }
 }
@@ -560,22 +579,26 @@ object InteroperabilityTest extends JasmineTest {
 
 @JSName("InteroperabilityTestInherit.Pattern")
 @js.native
-class InteroperabilityTestPattern protected () extends js.Object {
-  def this(pattern: String) = this()
+class InteroperabilityTestPattern protected() extends js.Object {
+  def this (pattern: String) = this()
   val field: Int = js.native
+
   def method(): String = js.native
+
   def getConstructorParam(): String = js.native
 }
 
 @js.native
 trait InteroperabilityTestTopLevel extends js.Object {
   val value: String = js.native
+
   def valueAsInt(): Int = js.native
 }
 
 @JSName("InteroperabilityTestTopLevelObject")
 @js.native
 object InteroperabilityTestTopLevel extends js.Object {
+
   def apply(value: String): InteroperabilityTestTopLevel = js.native
 }
 
@@ -637,26 +660,30 @@ object InteroperabilityTestContainerObjectWithJSName extends js.Object {
 
 @js.native
 trait InteroperabilityTestVariadicMethod extends js.Object {
-  def foo(args: Any*): js.Array[Any] = js.native
+
+  def foo(args: Any *): js.Array[Any] = js.native
 }
 
 @js.native
-class InteroperabilityTestVariadicCtor(inargs: Any*) extends js.Object {
+class InteroperabilityTestVariadicCtor(inargs: Any *) extends js.Object {
   val args: js.Array[Any] = js.native
 }
 
 @js.native
 object InteroperabilityTestGlobalScope extends js.GlobalScope {
   var interoperabilityTestGlobalScopeValue: String = js.native
+
   def interoperabilityTestGlobalScopeValueAsInt(): Int = js.native
 }
 
 class SomeValueClass(val i: Int) extends AnyVal {
+
   override def toString(): String = s"SomeValueClass($i)"
 }
 
 @js.native
 class InteroperabilityTestCtor(x: Int = 5, y: Int = ???) extends js.Object {
+
   def values: js.Array[Int] = js.native
 }
 

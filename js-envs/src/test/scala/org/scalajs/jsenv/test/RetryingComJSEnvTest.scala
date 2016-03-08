@@ -15,10 +15,10 @@ import scala.concurrent.duration.Duration
 import org.junit.Test
 
 class RetryingComJSEnvTest extends JSEnvTest with ComTests {
-
   private final val maxFails = 5
 
   // Don't log anything here
+
   override protected def start(runner: AsyncJSRunner): Future[Unit] = {
     runner.start(NullLogger, ConsoleJSConsole)
   }
@@ -27,28 +27,30 @@ class RetryingComJSEnvTest extends JSEnvTest with ComTests {
     new RetryingComJSEnv(new FailingEnv(new RhinoJSEnv), maxFails)
 
   private final class FailingEnv(baseEnv: ComJSEnv) extends ComJSEnv {
+
     def name: String = s"FailingJSEnv of ${baseEnv.name}"
 
-    private[this] var fails = 0
-    private[this] var failedReceive = false
+    private [ this] var fails = 0
+    private [ this] var failedReceive = false
 
-    def jsRunner(libs: Seq[ResolvedJSDependency],
-        code: VirtualJSFile): JSRunner = {
+    def jsRunner(
+        libs: Seq[ResolvedJSDependency], code: VirtualJSFile): JSRunner = {
       baseEnv.jsRunner(libs, code)
     }
 
     def asyncRunner(libs: Seq[ResolvedJSDependency],
-        code: VirtualJSFile): AsyncJSRunner = {
+                    code: VirtualJSFile): AsyncJSRunner = {
       baseEnv.asyncRunner(libs, code)
     }
 
-    def comRunner(libs: Seq[ResolvedJSDependency],
-        code: VirtualJSFile): ComJSRunner = {
+    def comRunner(
+        libs: Seq[ResolvedJSDependency], code: VirtualJSFile): ComJSRunner = {
       new FailingComJSRunner(baseEnv.comRunner(libs, code))
     }
 
     /** Hack to work around abstract override in ComJSRunner */
     private trait DummyJSRunner {
+
       def stop(): Unit = ()
     }
 
@@ -98,5 +100,4 @@ class RetryingComJSEnvTest extends JSEnvTest with ComTests {
       }
     }
   }
-
 }

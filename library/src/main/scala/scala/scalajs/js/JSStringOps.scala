@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 /**
  * All doc-comments marked as "MDN" are by Mozilla Contributors,
  * distributed under the Creative Commons Attribution-ShareAlike license from
@@ -25,7 +24,6 @@ import scala.scalajs.js.annotation._
  */
 @native
 trait JSStringOps extends Any {
-
   /**
    * Returns the index within the calling String object of the first occurrence
    * of the specified value, starting the search at fromIndex,
@@ -79,6 +77,7 @@ trait JSStringOps extends Any {
    * MDN
    */
   def `match`(regexp: String): Array[String] = native
+
   def `match`(regexp: RegExp): Array[String] = native
 
   /**
@@ -116,6 +115,7 @@ trait JSStringOps extends Any {
    * MDN
    */
   def search(regexp: String): Int = native
+
   def search(regexp: RegExp): Int = native
 
   /**
@@ -201,6 +201,7 @@ trait JSStringOps extends Any {
 }
 
 object JSStringOps {
+
   implicit def enableJSStringOps(x: String): JSStringOps =
     x.asInstanceOf[JSStringOps]
 }

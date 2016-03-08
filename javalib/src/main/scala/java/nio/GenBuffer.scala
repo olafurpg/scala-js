@@ -1,16 +1,15 @@
 package java.nio
 
-private[nio] object GenBuffer {
-  def apply[B <: Buffer](self: B): GenBuffer[B] =
-    new GenBuffer(self)
+private [nio] object GenBuffer {
+
+  def apply[B <: Buffer](self: B): GenBuffer[B] = new GenBuffer(self)
 }
 
-private[nio] final class GenBuffer[B <: Buffer](val self: B) extends AnyVal {
+private [nio] final class GenBuffer[B <: Buffer](val self: B) extends AnyVal {
   import self._
 
   @inline
-  def generic_get(): ElementType =
-    load(getPosAndAdvanceRead())
+  def generic_get(): ElementType = load(getPosAndAdvanceRead())
 
   @inline
   def generic_put(elem: ElementType): B = {
@@ -20,8 +19,7 @@ private[nio] final class GenBuffer[B <: Buffer](val self: B) extends AnyVal {
   }
 
   @inline
-  def generic_get(index: Int): ElementType =
-    load(validateIndex(index))
+  def generic_get(index: Int): ElementType = load(validateIndex(index))
 
   @inline
   def generic_put(index: Int, elem: ElementType): BufferType = {
@@ -31,8 +29,8 @@ private[nio] final class GenBuffer[B <: Buffer](val self: B) extends AnyVal {
   }
 
   @inline
-  def generic_get(dst: Array[ElementType],
-      offset: Int, length: Int): BufferType = {
+  def generic_get(
+      dst: Array[ElementType], offset: Int, length: Int): BufferType = {
     validateArrayIndexRange(dst, offset, length)
     load(getPosAndAdvanceRead(length), dst, offset, length)
     self
@@ -64,8 +62,8 @@ private[nio] final class GenBuffer[B <: Buffer](val self: B) extends AnyVal {
   }
 
   @inline
-  def generic_put(src: Array[ElementType],
-      offset: Int, length: Int): BufferType = {
+  def generic_put(
+      src: Array[ElementType], offset: Int, length: Int): BufferType = {
     ensureNotReadOnly()
     validateArrayIndexRange(src, offset, length)
     store(getPosAndAdvanceWrite(length), src, offset, length)
@@ -73,8 +71,7 @@ private[nio] final class GenBuffer[B <: Buffer](val self: B) extends AnyVal {
   }
 
   @inline
-  def generic_hasArray(): Boolean =
-    _array != null && !isReadOnly
+  def generic_hasArray(): Boolean = _array != null && !isReadOnly
 
   @inline
   def generic_array(): Array[ElementType] = {
@@ -89,7 +86,7 @@ private[nio] final class GenBuffer[B <: Buffer](val self: B) extends AnyVal {
   @inline
   def generic_arrayOffset(): Int = {
     val o = _arrayOffset
-    if (o == -1)
+    if (o == - 1)
       throw new UnsupportedOperationException
     if (isReadOnly)
       throw new ReadOnlyBufferException
@@ -107,7 +104,7 @@ private[nio] final class GenBuffer[B <: Buffer](val self: B) extends AnyVal {
       h = mix(h, load(i).##)
       i += 1
     }
-    finalizeHash(h, end-start)
+    finalizeHash(h, end - start)
   }
 
   @inline
@@ -138,12 +135,14 @@ private[nio] final class GenBuffer[B <: Buffer](val self: B) extends AnyVal {
 
   @inline
   def generic_load(startIndex: Int,
-      dst: Array[ElementType], offset: Int, length: Int): Unit = {
+                   dst: Array[ElementType],
+                   offset: Int,
+                   length: Int): Unit = {
     var selfPos = startIndex
     val endPos = selfPos + length
     var arrayIndex = offset
     while (selfPos != endPos) {
-      dst(arrayIndex) = load(selfPos)
+      dst (arrayIndex) = load(selfPos)
       selfPos += 1
       arrayIndex += 1
     }
@@ -151,7 +150,9 @@ private[nio] final class GenBuffer[B <: Buffer](val self: B) extends AnyVal {
 
   @inline
   def generic_store(startIndex: Int,
-      src: Array[ElementType], offset: Int, length: Int): Unit = {
+                    src: Array[ElementType],
+                    offset: Int,
+                    length: Int): Unit = {
     var selfPos = startIndex
     val endPos = selfPos + length
     var arrayIndex = offset
@@ -161,5 +162,4 @@ private[nio] final class GenBuffer[B <: Buffer](val self: B) extends AnyVal {
       arrayIndex += 1
     }
   }
-
 }

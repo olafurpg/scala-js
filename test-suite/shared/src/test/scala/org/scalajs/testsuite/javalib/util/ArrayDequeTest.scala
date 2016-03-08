@@ -20,7 +20,8 @@ class ArrayDequeTest extends AbstractCollectionTest with DequeTest {
 
   override def factory: ArrayDequeFactory = new ArrayDequeFactory
 
-  @Test def should_add_and_remove_head_and_last(): Unit = {
+  @Test
+  def should_add_and_remove_head_and_last(): Unit = {
     val ad = factory.empty[Int]
 
     ad.addLast(1)
@@ -36,20 +37,21 @@ class ArrayDequeTest extends AbstractCollectionTest with DequeTest {
     assertEquals(ad.peekLast(), 2)
   }
 
-  @Test def could_be_instantiated_with_a_prepopulated_Collection(): Unit = {
+  @Test
+  def could_be_instantiated_with_a_prepopulated_Collection(): Unit = {
     val s = Seq(1, 5, 2, 3, 4)
     val l = asJavaCollection(s)
     val ad = factory.from[Int](l)
 
     assertEquals(ad.size(), 5)
 
-    for (i <- 0 until s.size)
-      assertEquals(ad.poll(), s(i))
+    for (i <- 0 until s.size) assertEquals(ad.poll(), s(i))
 
     assertTrue(ad.isEmpty)
   }
 
-  @Test def should_add_multiple_element_in_one_operation(): Unit = {
+  @Test
+  def should_add_multiple_element_in_one_operation(): Unit = {
     val l = asJavaCollection(Set(1, 5, 2, 3, 4))
     val ad = factory.empty[Int]
 
@@ -60,7 +62,8 @@ class ArrayDequeTest extends AbstractCollectionTest with DequeTest {
     assertEquals(ad.size(), 6)
   }
 
-  @Test def should_retrieve_last_element(): Unit = {
+  @Test
+  def should_retrieve_last_element(): Unit = {
     val adInt = factory.empty[Int]
 
     assertTrue(adInt.add(1000))
@@ -80,7 +83,8 @@ class ArrayDequeTest extends AbstractCollectionTest with DequeTest {
     assertEquals(adDouble.pollLast(), -0.987, 0.0)
   }
 
-  @Test def should_perform_as_a_stack_with_push_and_pop(): Unit = {
+  @Test
+  def should_perform_as_a_stack_with_push_and_pop(): Unit = {
     val adInt = factory.empty[Int]
 
     adInt.push(1000)
@@ -106,7 +110,8 @@ class ArrayDequeTest extends AbstractCollectionTest with DequeTest {
     assertTrue(adString.isEmpty())
   }
 
-  @Test def should_poll_and_peek_elements(): Unit = {
+  @Test
+  def should_poll_and_peek_elements(): Unit = {
     val pq = factory.empty[String]
 
     assertTrue(pq.add("one"))
@@ -129,7 +134,8 @@ class ArrayDequeTest extends AbstractCollectionTest with DequeTest {
     assertNull(pq.pollLast)
   }
 
-  @Test def should_remove_occurrences_of_provided_elements(): Unit = {
+  @Test
+  def should_remove_occurrences_of_provided_elements(): Unit = {
     val l = asJavaCollection(Seq("one", "two", "three", "two", "one"))
     val ad = factory.from[String](l)
 
@@ -142,7 +148,8 @@ class ArrayDequeTest extends AbstractCollectionTest with DequeTest {
     assertTrue(ad.isEmpty)
   }
 
-  @Test def should_iterate_over_elements_in_both_directions(): Unit = {
+  @Test
+  def should_iterate_over_elements_in_both_directions(): Unit = {
     val s = Seq("one", "two", "three")
     val l = asJavaCollection(s)
     val ad = factory.from[String](l)
@@ -164,16 +171,16 @@ class ArrayDequeTest extends AbstractCollectionTest with DequeTest {
 }
 
 object ArrayDequeFactory {
+
   def allFactories: Iterator[ArrayDequeFactory] =
     Iterator(new ArrayDequeFactory())
 }
 
 class ArrayDequeFactory extends AbstractCollectionFactory with DequeFactory {
-  override def implementationName: String =
-    "java.util.ArrayDeque"
 
-  override def empty[E]: ju.ArrayDeque[E] =
-    new ju.ArrayDeque[E]
+  override def implementationName: String = "java.util.ArrayDeque"
+
+  override def empty[E]: ju.ArrayDeque[E] = new ju.ArrayDeque[E]
 
   def from[E](coll: ju.Collection[E]): ju.ArrayDeque[E] =
     new ju.ArrayDeque[E](coll)

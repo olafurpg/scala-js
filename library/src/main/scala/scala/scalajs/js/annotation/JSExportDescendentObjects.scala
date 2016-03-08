@@ -6,8 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
-
 package scala.scalajs.js.annotation
 
 /** Specifies that all the objects extending the annotated class or trait
@@ -25,5 +23,5 @@ class JSExportDescendentObjects(ignoreInvalidDescendants: Boolean)
    *
    *  same as setting ingoreInvalidDescendants to false
    */
-  def this() = this(false)
+  def this () = this(false)
 }

@@ -6,8 +6,6 @@
 **                          |/                                          **
 \*                                                                      */
 
-
-
 package scala.scalajs.js.annotation
 
 /** Specifies the JavaScript name of an entity.

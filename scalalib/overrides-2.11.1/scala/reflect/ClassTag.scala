@@ -1,9 +1,10 @@
 package scala
+
 package reflect
 
-import java.lang.{ Class => jClass }
+import java.lang.{Class => jClass}
 import scala.language.{implicitConversions, existentials}
-import scala.runtime.ScalaRunTime.{ arrayClass, arrayElementClass }
+import scala.runtime.ScalaRunTime.{arrayClass, arrayElementClass}
 
 /**
  *
@@ -35,10 +36,10 @@ import scala.runtime.ScalaRunTime.{ arrayClass, arrayElementClass }
  *
  */
 @scala.annotation.implicitNotFound(msg = "No ClassTag available for ${T}")
-trait ClassTag[T] extends ClassManifestDeprecatedApis[T] with Equals with Serializable {
+trait ClassTag[T] extends ClassManifestDeprecatedApis[T] with Equals
+    with Serializable {
   // please, don't add any APIs here, like it was with `newWrappedArray` and `newArrayBuilder`
   // class tags, and all tags in general, should be as minimalistic as possible
-
   /** A class representing the type `U` to which `T` would be erased.
    *  Note that there is no subtyping relationship between `T` and `U`.
    */
@@ -50,16 +51,21 @@ trait ClassTag[T] extends ClassManifestDeprecatedApis[T] with Equals with Serial
   /** Produces a new array with element type `T` and length `len` */
   override def newArray(len: Int): Array[T] =
     runtimeClass match {
-      case java.lang.Byte.TYPE      => new Array[Byte](len).asInstanceOf[Array[T]]
-      case java.lang.Short.TYPE     => new Array[Short](len).asInstanceOf[Array[T]]
-      case java.lang.Character.TYPE => new Array[Char](len).asInstanceOf[Array[T]]
-      case java.lang.Integer.TYPE   => new Array[Int](len).asInstanceOf[Array[T]]
-      case java.lang.Long.TYPE      => new Array[Long](len).asInstanceOf[Array[T]]
-      case java.lang.Float.TYPE     => new Array[Float](len).asInstanceOf[Array[T]]
-      case java.lang.Double.TYPE    => new Array[Double](len).asInstanceOf[Array[T]]
-      case java.lang.Boolean.TYPE   => new Array[Boolean](len).asInstanceOf[Array[T]]
-      case java.lang.Void.TYPE      => new Array[Unit](len).asInstanceOf[Array[T]]
-      case _                        => java.lang.reflect.Array.newInstance(runtimeClass, len).asInstanceOf[Array[T]]
+      case java.lang.Byte.TYPE => new Array[Byte](len).asInstanceOf[Array[T]]
+      case java.lang.Short.TYPE => new Array[Short](len).asInstanceOf[Array[T]]
+      case java.lang.Character.TYPE =>
+        new Array[Char](len).asInstanceOf[Array[T]]
+      case java.lang.Integer.TYPE => new Array[Int](len).asInstanceOf[Array[T]]
+      case java.lang.Long.TYPE => new Array[Long](len).asInstanceOf[Array[T]]
+      case java.lang.Float.TYPE => new Array[Float](len).asInstanceOf[Array[T]]
+      case java.lang.Double.TYPE =>
+        new Array[Double](len).asInstanceOf[Array[T]]
+      case java.lang.Boolean.TYPE =>
+        new Array[Boolean](len).asInstanceOf[Array[T]]
+      case java.lang.Void.TYPE => new Array[Unit](len).asInstanceOf[Array[T]]
+      case _ =>
+        java.lang.reflect.Array
+          .newInstance(runtimeClass, len).asInstanceOf[Array[T]]
     }
 
   /** A ClassTag[T] can serve as an extractor that matches only objects of type T.
@@ -71,34 +77,51 @@ trait ClassTag[T] extends ClassManifestDeprecatedApis[T] with Equals with Serial
    * is uncheckable, but we have an instance of `ClassTag[T]`.
    */
   def unapply(x: Any): Option[T] = unapply_impl(x)
+
   def unapply(x: Byte): Option[T] = unapply_impl(x)
+
   def unapply(x: Short): Option[T] = unapply_impl(x)
+
   def unapply(x: Char): Option[T] = unapply_impl(x)
+
   def unapply(x: Int): Option[T] = unapply_impl(x)
+
   def unapply(x: Long): Option[T] = unapply_impl(x)
+
   def unapply(x: Float): Option[T] = unapply_impl(x)
+
   def unapply(x: Double): Option[T] = unapply_impl(x)
+
   def unapply(x: Boolean): Option[T] = unapply_impl(x)
+
   def unapply(x: Unit): Option[T] = unapply_impl(x)
 
-  private def unapply_impl[U: ClassTag](x: U): Option[T] =
+  private def unapply_impl[U : ClassTag](x: U): Option[T] =
     if (x == null) None
     else {
       val staticClass = classTag[U].runtimeClass
       val conforms =
         if (staticClass.isPrimitive) runtimeClass.isAssignableFrom(staticClass)
         else runtimeClass.isInstance(x)
-      if (conforms) Some(x.asInstanceOf[T]) else None
+      if (conforms) Some(x.asInstanceOf[T])
+      else None
     }
 
   // case class accessories
+
   override def canEqual(x: Any) = x.isInstanceOf[ClassTag[_]]
-  override def equals(x: Any) = x.isInstanceOf[ClassTag[_]] && this.runtimeClass == x.asInstanceOf[ClassTag[_]].runtimeClass
+
+  override def equals(x: Any) =
+    x.isInstanceOf[ClassTag[_]] &&
+    this.runtimeClass == x.asInstanceOf[ClassTag[_]].runtimeClass
+
   override def hashCode = scala.runtime.ScalaRunTime.hash(runtimeClass)
+
   override def toString = {
+
     def prettyprint(clazz: jClass[_]): String =
-      if (clazz.isArray) s"Array[${prettyprint(arrayElementClass(clazz))}]" else
-      clazz.getName
+      if (clazz.isArray) s"Array[${prettyprint(arrayElementClass(clazz))}]"
+      else clazz.getName
     prettyprint(runtimeClass)
   }
 }
@@ -107,47 +130,61 @@ trait ClassTag[T] extends ClassManifestDeprecatedApis[T] with Equals with Serial
  * Class tags corresponding to primitive types and constructor/extractor for ClassTags.
  */
 object ClassTag {
-  def Byte    : ClassTag[scala.Byte]       = ManifestFactory.Byte
-  def Short   : ClassTag[scala.Short]      = ManifestFactory.Short
-  def Char    : ClassTag[scala.Char]       = ManifestFactory.Char
-  def Int     : ClassTag[scala.Int]        = ManifestFactory.Int
-  def Long    : ClassTag[scala.Long]       = ManifestFactory.Long
-  def Float   : ClassTag[scala.Float]      = ManifestFactory.Float
-  def Double  : ClassTag[scala.Double]     = ManifestFactory.Double
-  def Boolean : ClassTag[scala.Boolean]    = ManifestFactory.Boolean
-  def Unit    : ClassTag[scala.Unit]       = ManifestFactory.Unit
-  def Any     : ClassTag[scala.Any]        = ManifestFactory.Any
-  def Object  : ClassTag[java.lang.Object] = ManifestFactory.Object
-  def AnyVal  : ClassTag[scala.AnyVal]     = ManifestFactory.AnyVal
-  def AnyRef  : ClassTag[scala.AnyRef]     = ManifestFactory.AnyRef
-  def Nothing : ClassTag[scala.Nothing]    = ManifestFactory.Nothing
-  def Null    : ClassTag[scala.Null]       = ManifestFactory.Null
+
+  def Byte: ClassTag[scala.Byte] = ManifestFactory.Byte
+
+  def Short: ClassTag[scala.Short] = ManifestFactory.Short
+
+  def Char: ClassTag[scala.Char] = ManifestFactory.Char
+
+  def Int: ClassTag[scala.Int] = ManifestFactory.Int
+
+  def Long: ClassTag[scala.Long] = ManifestFactory.Long
+
+  def Float: ClassTag[scala.Float] = ManifestFactory.Float
+
+  def Double: ClassTag[scala.Double] = ManifestFactory.Double
+
+  def Boolean: ClassTag[scala.Boolean] = ManifestFactory.Boolean
+
+  def Unit: ClassTag[scala.Unit] = ManifestFactory.Unit
+
+  def Any: ClassTag[scala.Any] = ManifestFactory.Any
+
+  def Object: ClassTag[java.lang.Object] = ManifestFactory.Object
+
+  def AnyVal: ClassTag[scala.AnyVal] = ManifestFactory.AnyVal
+
+  def AnyRef: ClassTag[scala.AnyRef] = ManifestFactory.AnyRef
+
+  def Nothing: ClassTag[scala.Nothing] = ManifestFactory.Nothing
+
+  def Null: ClassTag[scala.Null] = ManifestFactory.Null
 
   def apply[T](runtimeClass1: jClass[_]): ClassTag[T] =
     runtimeClass1 match {
-      case java.lang.Byte.TYPE      => ClassTag.Byte.asInstanceOf[ClassTag[T]]
-      case java.lang.Short.TYPE     => ClassTag.Short.asInstanceOf[ClassTag[T]]
+      case java.lang.Byte.TYPE => ClassTag.Byte.asInstanceOf[ClassTag[T]]
+      case java.lang.Short.TYPE => ClassTag.Short.asInstanceOf[ClassTag[T]]
       case java.lang.Character.TYPE => ClassTag.Char.asInstanceOf[ClassTag[T]]
-      case java.lang.Integer.TYPE   => ClassTag.Int.asInstanceOf[ClassTag[T]]
-      case java.lang.Long.TYPE      => ClassTag.Long.asInstanceOf[ClassTag[T]]
-      case java.lang.Float.TYPE     => ClassTag.Float.asInstanceOf[ClassTag[T]]
-      case java.lang.Double.TYPE    => ClassTag.Double.asInstanceOf[ClassTag[T]]
-      case java.lang.Boolean.TYPE   => ClassTag.Boolean.asInstanceOf[ClassTag[T]]
-      case java.lang.Void.TYPE      => ClassTag.Unit.asInstanceOf[ClassTag[T]]
-      case _                        =>
+      case java.lang.Integer.TYPE => ClassTag.Int.asInstanceOf[ClassTag[T]]
+      case java.lang.Long.TYPE => ClassTag.Long.asInstanceOf[ClassTag[T]]
+      case java.lang.Float.TYPE => ClassTag.Float.asInstanceOf[ClassTag[T]]
+      case java.lang.Double.TYPE => ClassTag.Double.asInstanceOf[ClassTag[T]]
+      case java.lang.Boolean.TYPE => ClassTag.Boolean.asInstanceOf[ClassTag[T]]
+      case java.lang.Void.TYPE => ClassTag.Unit.asInstanceOf[ClassTag[T]]
+      case _ =>
         if (classOf[java.lang.Object] == runtimeClass1)
           ClassTag.Object.asInstanceOf[ClassTag[T]]
         else if (classOf[scala.runtime.Nothing$] == runtimeClass1)
           ClassTag.Nothing.asInstanceOf[ClassTag[T]]
         else if (classOf[scala.runtime.Null$] == runtimeClass1)
           ClassTag.Null.asInstanceOf[ClassTag[T]]
-        else
-          new ClassClassTag[T](runtimeClass1)
+        else new ClassClassTag[T](runtimeClass1)
     }
 
   @inline
-  private final class ClassClassTag[T](
-      val runtimeClass: Class[_]) extends ClassTag[T]
+  private final class ClassClassTag[T](val runtimeClass: Class[_])
+      extends ClassTag[T]
 
   def unapply[T](ctag: ClassTag[T]): Option[Class[_]] = Some(ctag.runtimeClass)
 }

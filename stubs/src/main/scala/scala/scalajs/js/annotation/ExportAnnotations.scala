@@ -6,7 +6,6 @@
 **                          |/                                          **
 \*                                                                      */
 
-
 package scala.scalajs.js.annotation
 
 import scala.annotation.Annotation
@@ -15,18 +14,18 @@ class JSExportAll extends scala.annotation.Annotation
 
 class JSExportDescendentObjects(ignoreInvalidDescendants: Boolean)
     extends scala.annotation.Annotation {
-  def this() = this(false)
+  def this () = this(false)
 }
 
 class JSExportDescendentClasses(ignoreInvalidDescendants: Boolean)
     extends scala.annotation.Annotation {
-  def this() = this(false)
+  def this () = this(false)
 }
 
 class JSExportNamed extends scala.annotation.Annotation {
-  def this(name: String) = this()
+  def this (name: String) = this()
 }
 
 class JSExport extends scala.annotation.Annotation {
-  def this(name: String) = this()
+  def this (name: String) = this()
 }

@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.sbtplugin
 
 import scala.collection.mutable
@@ -17,20 +16,20 @@ import sbt.complete._
 import org.scalajs.core.tools.io._
 import org.scalajs.core.tools.jsdep.JSDependencyManifest
 
-private[sbtplugin] object ScalajspUtils {
+private [sbtplugin] object ScalajspUtils {
 
   /** Creates an [[ExampleSource]] with per-directory tab completion. */
   def relPathsExamples(relPaths: Seq[String]): ExampleSource =
     new ScalaJSIRFilesOnClasspathExamples(relPaths)
 
   /** An [[ExampleSource]] showing .sjsir files on a classpath. */
-  private class ScalaJSIRFilesOnClasspathExamples(allRelPaths: Seq[String],
-      prefix: String = "") extends ExampleSource {
+  private class ScalaJSIRFilesOnClasspathExamples(
+      allRelPaths: Seq[String], prefix: String = "")
+      extends ExampleSource {
 
     override def apply(): Iterable[String] = {
       val allExamples = (for {
-        relPath <- allRelPaths
-        if relPath.startsWith(prefix)
+        relPath <- allRelPaths if relPath.startsWith(prefix)
       } yield {
         // Returned examples must not include the prefix
         val remaining = relPath.substring(prefix.length)
@@ -49,7 +48,7 @@ private[sbtplugin] object ScalajspUtils {
          * under the helloworld/ subdirectory.
          */
         val nextSlashPos = remaining.indexOf('/')
-        if (nextSlashPos == -1) remaining
+        if (nextSlashPos == - 1) remaining
         else remaining.substring(0, nextSlashPos + 1)
       }).distinct
 
@@ -60,5 +59,4 @@ private[sbtplugin] object ScalajspUtils {
     override def withAddedPrefix(addedPrefix: String): ExampleSource =
       new ScalaJSIRFilesOnClasspathExamples(allRelPaths, prefix + addedPrefix)
   }
-
 }

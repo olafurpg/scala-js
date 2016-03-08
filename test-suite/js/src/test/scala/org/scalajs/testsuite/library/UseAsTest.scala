@@ -14,10 +14,9 @@ import org.scalajs.jasminetest.JasmineTest
 import org.scalajs.testsuite.Typechecking._
 
 object UseAsTest extends JasmineTest {
-
   describe("js.use(x).as[T] - Scala Types - success cases") {
-
     it("should support basic typechecking") {
+
       class A {
         @JSExport
         def m(a: Int, b: String): js.Object = ???
@@ -27,6 +26,7 @@ object UseAsTest extends JasmineTest {
     }
 
     it("should support covariance in return types") {
+
       class A {
         @JSExport
         def m(a: Int, b: String): js.Array[Int] = ???
@@ -36,6 +36,7 @@ object UseAsTest extends JasmineTest {
     }
 
     it("should support contravariance in argument") {
+
       class A {
         @JSExport
         def m(a: Int, b: Any): js.Object = ???
@@ -45,6 +46,7 @@ object UseAsTest extends JasmineTest {
     }
 
     it("should support explicit names in JSExports") {
+
       class A {
         @JSExport("m")
         def f(a: Int, b: String): js.Object = ???
@@ -54,6 +56,7 @@ object UseAsTest extends JasmineTest {
     }
 
     it("should support JSName") {
+
       class A {
         @JSExport
         def m(a: Int, b: String): js.Object = ???
@@ -71,6 +74,7 @@ object UseAsTest extends JasmineTest {
     it("should support JSExportAll") {
       @JSExportAll
       class A {
+
         def m(a: Int, b: String): js.Object = ???
       }
 
@@ -81,12 +85,14 @@ object UseAsTest extends JasmineTest {
     }
 
     it("should support inherited exports") {
+
       abstract class A {
-        @JSExport
-        def m(a: Int, b: String): js.Object
+        @JSExport def m(a: Int, b: String): js.Object
       }
 
-      class B extends A {
+      class B
+          extends A {
+
         def m(a: Int, b: String): js.Object = ???
       }
 
@@ -99,7 +105,9 @@ object UseAsTest extends JasmineTest {
         def m(a: Int, b: String): js.Object
       }
 
-      class B extends A {
+      class B
+          extends A {
+
         def m(a: Int, b: String): js.Object = ???
       }
 
@@ -120,6 +128,7 @@ object UseAsTest extends JasmineTest {
     }
 
     it("should resolve generics in JSRaw types") {
+
       class A {
         @JSExport
         def arr: js.Array[Int] = ???
@@ -130,6 +139,7 @@ object UseAsTest extends JasmineTest {
     }
 
     it("should resolve type members in JSRaw types") {
+
       class A {
         @JSExport
         def foo(x: Int): Int = ???
@@ -139,6 +149,7 @@ object UseAsTest extends JasmineTest {
     }
 
     it("should resolve exports with class-level type parameter") {
+
       class A[T] {
         @JSExport
         def arr: js.Array[T] = ???
@@ -151,6 +162,7 @@ object UseAsTest extends JasmineTest {
     }
 
     it("should resolve exports with type member") {
+
       class A {
         type T
 
@@ -158,7 +170,8 @@ object UseAsTest extends JasmineTest {
         def arr: js.Array[T] = ???
       }
 
-      class B extends A {
+      class B
+          extends A {
         type T = Int
       }
 
@@ -168,7 +181,9 @@ object UseAsTest extends JasmineTest {
     it("should resolve overloading") {
       @JSExportAll
       class A {
+
         def m(a: Int, b: String): js.Object = ???
+
         def m(b: String): Int = ???
 
         @JSExport("m")
@@ -182,8 +197,10 @@ object UseAsTest extends JasmineTest {
       @JSExportAll
       class A {
         val a: Int = 1
+
         def b: String = ???
         // Test covariance as well
+
         def c: js.Array[Int] = ???
       }
 
@@ -191,6 +208,7 @@ object UseAsTest extends JasmineTest {
     }
 
     it("should support setters") {
+
       class A {
         @JSExport("a")
         def fooA_=(x: Int): Unit = ???
@@ -206,6 +224,7 @@ object UseAsTest extends JasmineTest {
     }
 
     it("should support vars") {
+
       class A {
         @JSExport
         def a: Int = ???
@@ -225,7 +244,10 @@ object UseAsTest extends JasmineTest {
     it("should support basic default arguments") {
       @JSExportAll
       class A {
-        def sum4(a: Int, b: Int = 1, c: Int = 2, d: Int = 3): Int = a + b + c + d
+
+        def sum4(a: Int, b: Int = 1, c: Int = 2, d: Int = 3): Int =
+          a + b + c + d
+
         def sum2(a: Int, b: Int = 1): Int = a + b
       }
 
@@ -233,9 +255,11 @@ object UseAsTest extends JasmineTest {
     }
 
     it("should allow additional default arguments at the end of the params") {
+
       class A {
         @JSExport
-        def m(a: Int, b: String, c: Int = ???, d: String = ???): js.Object = ???
+        def m(a: Int, b: String, c: Int = ???, d: String = ???): js.Object =
+          ???
       }
 
       js.use(new A).as[JSBasic]
@@ -244,8 +268,10 @@ object UseAsTest extends JasmineTest {
     it("should support repeated parameter lists") {
       @JSExportAll
       class A {
-        def rep(a: Int, b: String*): Unit = ???
-        def rep(a: Int*): Unit = ???
+
+        def rep(a: Int, b: String *): Unit = ???
+
+        def rep(a: Int *): Unit = ???
       }
 
       js.use(new A).as[JSRepeated]
@@ -254,6 +280,7 @@ object UseAsTest extends JasmineTest {
     it("should flatten multi parameter lists in raw JS type") {
       @JSExportAll
       class A {
+
         def multi(a: Int, b: String): Int = ???
       }
 
@@ -263,6 +290,7 @@ object UseAsTest extends JasmineTest {
     it("should flatten multi parameter lists in exported method") {
       @JSExportAll
       class B {
+
         def m(a: Int)(b: String): js.Object = ???
       }
 
@@ -270,7 +298,10 @@ object UseAsTest extends JasmineTest {
     }
 
     it("should support anonymous types") {
-      js.use(new { @JSExport def m(a: Int, b: String): js.Object = ??? }).as[JSBasic]
+      js.use(new {
+        @JSExport
+        def m(a: Int, b: String): js.Object = ???
+      }).as[JSBasic]
     }
 
     it("should allow Nothing") {
@@ -282,11 +313,9 @@ object UseAsTest extends JasmineTest {
     it("should allow Null") {
       js.use(null).as[JSBasic]
     }
-
   }
 
   describe("js.use(x).as[T] - Raw JS Types - success cases") {
-
     it("should support basic typechecking") {
       js.use(null: JSBasic).as[JSBasicJSName]
       js.use(null: JSBasicJSName).as[JSBasic]
@@ -308,16 +337,13 @@ object UseAsTest extends JasmineTest {
     it("should support @JSBracketCall") {
       js.use(null: JSBracketCallInt1).as[JSBracketCallInt2]
     }
-
   }
 
   describe("js.use(x).as[T] - general failure cases") {
-
     it("fails with polymorphic methods") {
       typeErrorWithMsg(
           "js.use(new Object).as[JSPolyMethod]",
-          "Polymorphic methods are currently not supported. Offending " +
-          "method: org.scalajs.testsuite.library.UseAsTest.JSPolyMethod.poly")
+          "Polymorphic methods are currently not supported. Offending " + "method: org.scalajs.testsuite.library.UseAsTest.JSPolyMethod.poly")
     }
 
     it("fails with non-type refinements") {
@@ -327,55 +353,44 @@ object UseAsTest extends JasmineTest {
     }
 
     it("fails with non trait") {
-      typeErrorWithMsg(
-          "js.use(???).as[js.Date]",
-          "Only traits can be used with as")
+      typeErrorWithMsg("js.use(???).as[js.Date]",
+                       "Only traits can be used with as")
     }
 
     it("fails with class parents") {
       typeErrorWithMsg(
           "js.use(???).as[JSNonClassParent]",
-          "Supertype scala.scalajs.js.Date of trait JSNonClassParent is a " +
-          "class. Cannot be used with as.")
+          "Supertype scala.scalajs.js.Date of trait JSNonClassParent is a " + "class. Cannot be used with as.")
     }
 
     it("fails gracefully with existential types - #1841") {
       typeErrorWithMsg(
           "js.use(null: JSTypeMember).as[JSTypeMember]",
-          "Methods with existential types are not supported. Offending " +
-          "method: org.scalajs.testsuite.library.UseAsTest.JSTypeMember.foo. " +
-          "This is likely caused by an abstract type in the method signature")
+          "Methods with existential types are not supported. Offending " + "method: org.scalajs.testsuite.library.UseAsTest.JSTypeMember.foo. " + "This is likely caused by an abstract type in the method signature")
     }
-
   }
 
   describe("js.use(x).as[T] - Scala Types - failure cases") {
-
     it("fails with apply in a raw JS type") {
       typeErrorWithMsg(
           "js.use(new Object).as[JSWithApply]",
-          "org.scalajs.testsuite.library.UseAsTest.JSWithApply defines an apply " +
-          "method. This cannot be implemented by any Scala exported type, " +
-          "since it would need to chain Function's prototype.")
+          "org.scalajs.testsuite.library.UseAsTest.JSWithApply defines an apply " + "method. This cannot be implemented by any Scala exported type, " + "since it would need to chain Function's prototype.")
     }
 
     it("fails with @JSBracketAccess in a raw JS type") {
       typeErrorWithMsg(
           "js.use(new Object).as[JSWithBracketAccess]",
-          "org.scalajs.testsuite.library.UseAsTest.JSWithBracketAccess " +
-          "defines a @JSMemberBracketAccess method. Existence of such a " +
-          "method cannot be statically checked for any Scala exported type.")
+          "org.scalajs.testsuite.library.UseAsTest.JSWithBracketAccess " + "defines a @JSMemberBracketAccess method. Existence of such a " + "method cannot be statically checked for any Scala exported type.")
     }
 
     it("fails with @JSBracketCall in a raw JS type") {
       typeErrorWithMsg(
           "js.use(new Object).as[JSWithBracketCall]",
-          "org.scalajs.testsuite.library.UseAsTest.JSWithBracketCall defines " +
-          "a @JSMemberBracketCall method. Existence of such a method cannot " +
-          "be statically checked for any Scala exported type.")
+          "org.scalajs.testsuite.library.UseAsTest.JSWithBracketCall defines " + "a @JSMemberBracketCall method. Existence of such a method cannot " + "be statically checked for any Scala exported type.")
     }
 
     it("fails with a missing method") {
+
       class A {
         @JSExport
         def e(a: Int, b: String): js.Object = ???
@@ -387,6 +402,7 @@ object UseAsTest extends JasmineTest {
     }
 
     it("fails with a missing overload") {
+
       class A {
         @JSExport
         def m(a: Int, b: String): js.Object = ???
@@ -398,6 +414,7 @@ object UseAsTest extends JasmineTest {
     }
 
     it("fails with wrong argument types") {
+
       class A {
         @JSExport
         def m(a: String, b: Int): js.Object = ???
@@ -409,6 +426,7 @@ object UseAsTest extends JasmineTest {
     }
 
     it("fails with wrong return types") {
+
       class A {
         @JSExport
         def m(a: Int, b: String): Any = ???
@@ -422,90 +440,81 @@ object UseAsTest extends JasmineTest {
     it("fails with a missing default argument") {
       @JSExportAll
       class A {
-        def sum4(a: Int, b: Int = 1, c: Int = 2, d: Int = 3): Int = a + b + c + d
+
+        def sum4(a: Int, b: Int = 1, c: Int = 2, d: Int = 3): Int =
+          a + b + c + d
+
         def sum2(a: Int, b: Int): Int = a + b // should have default
       }
 
-      typeErrorWithMsg(
-          "js.use(new A).as[JSDefaultArgs]",
-          "A does not export a method sum2(Int, Int = ???): Int.")
+      typeErrorWithMsg("js.use(new A).as[JSDefaultArgs]",
+                       "A does not export a method sum2(Int, Int = ???): Int.")
     }
 
     it("fails with a mismatching repeated argument") {
       @JSExportAll
       class A {
+
         def rep(a: Int, b: String): Unit = ??? // should be repeated
-        def rep(a: Int*): Unit = ???
+
+        def rep(a: Int *): Unit = ???
       }
 
-      typeErrorWithMsg(
-          "js.use(new A).as[JSRepeated]",
-          "A does not export a method rep(Int, String*): Unit.")
+      typeErrorWithMsg("js.use(new A).as[JSRepeated]",
+                       "A does not export a method rep(Int, String*): Unit.")
 
       class B {
         @JSExport
-        def m(a: Int, b: String*): js.Object = ??? // should not be repeated
+        def m(a: Int, b: String *): js.Object = ??? // should not be repeated
       }
 
       typeErrorWithMsg(
           "js.use(new B).as[JSBasic]",
           "B does not export a method m(Int, String): scala.scalajs.js.Object.")
     }
-
   }
 
   describe("js.use(x).as[T] - Raw JS Types - failure cases") {
-
     it("fails with a missing apply") {
       typeErrorWithMsg(
           "js.use(new js.Object).as[JSWithApply]",
-          "scala.scalajs.js.Object does not have a method " +
-          "<apply>(String): Int. (type is not callable)")
+          "scala.scalajs.js.Object does not have a method " + "<apply>(String): Int. (type is not callable)")
     }
 
     it("fails with a missing @JSBracketAccess") {
       typeErrorWithMsg(
           "js.use(new js.Object).as[JSWithBracketAccess]",
-          "scala.scalajs.js.Object does not have a method " +
-          "<bracketaccess>(String): Int. (type doesn't support member " +
-          "selection via []). Add @JSBracketAccess to use a method for " +
-          "member selection.")
+          "scala.scalajs.js.Object does not have a method " + "<bracketaccess>(String): Int. (type doesn't support member " + "selection via []). Add @JSBracketAccess to use a method for " + "member selection.")
     }
 
     it("fails with a missing @JSBracketCall") {
       typeErrorWithMsg(
           "js.use(new js.Object).as[JSWithBracketCall]",
-          "scala.scalajs.js.Object does not have a method " +
-          "<bracketcall>(String, String): Int. (type doesn't support " +
-          "dynamically calling methods). Add @JSBracketCall to use a method " +
-          "for dynamic calls.")
+          "scala.scalajs.js.Object does not have a method " + "<bracketcall>(String, String): Int. (type doesn't support " + "dynamically calling methods). Add @JSBracketCall to use a method " + "for dynamic calls.")
     }
 
     it("fails with a missing method") {
       typeErrorWithMsg(
           "js.use(new js.Object).as[JSBasic]",
-          "scala.scalajs.js.Object does not have a method " +
-          "m(Int, String): scala.scalajs.js.Object.")
+          "scala.scalajs.js.Object does not have a method " + "m(Int, String): scala.scalajs.js.Object.")
     }
 
     it("fails with a missing overload") {
       typeErrorWithMsg(
           "js.use(null: JSBasic).as[JSOverload]",
-          "org.scalajs.testsuite.library.UseAsTest.JSBasic does not have a " +
-          "method m(Int): scala.scalajs.js.Object.")
+          "org.scalajs.testsuite.library.UseAsTest.JSBasic does not have a " + "method m(Int): scala.scalajs.js.Object.")
     }
 
     it("fails with wrongly typed generic") {
       typeErrorWithMsg(
           "js.use(null: JSGeneric[Int]).as[JSGeneric[String]]",
-          "org.scalajs.testsuite.library.UseAsTest.JSGeneric[Int] does not " +
-          "have a getter arr: scala.scalajs.js.Array[String].")
+          "org.scalajs.testsuite.library.UseAsTest.JSGeneric[Int] does not " + "have a getter arr: scala.scalajs.js.Array[String].")
     }
-
   }
 
   @js.native
   trait JSBasic extends js.Object {
+
     def m(a: Int, b: String): js.Object = js.native
   }
 
@@ -525,6 +534,7 @@ object UseAsTest extends JasmineTest {
 
   @js.native
   trait JSGeneric[T] extends js.Object {
+
     def arr: js.Array[T] = js.native
   }
 
@@ -534,24 +544,30 @@ object UseAsTest extends JasmineTest {
   @js.native
   trait JSTypeMember extends js.Object {
     type R
+
     def foo(x: R): Int = js.native
   }
 
   @js.native
   trait JSOverload extends JSBasic {
+
     def m(b: String): Int = js.native
+
     def m(a: Int): js.Object = js.native
   }
 
   @js.native
   trait JSGetters extends js.Object {
+
     def a: Int = js.native
     val b: String = js.native
+
     def c: js.Object = js.native
   }
 
   @js.native
   trait JSSetters extends js.Object {
+
     def a_=(x: Int): Unit = js.native
 
     @JSName("b")
@@ -564,7 +580,9 @@ object UseAsTest extends JasmineTest {
   @js.native
   trait JSVars extends js.Object {
     var a: Int = js.native
+
     def b: String = js.native
+
     def b_=(x: String): Unit = js.native
 
     @JSName("c")
@@ -573,28 +591,35 @@ object UseAsTest extends JasmineTest {
 
   @js.native
   trait JSDefaultArgs extends js.Object {
+
     def sum4(a: Int, b: Int = ???, c: Int = ???, d: Int = ???): Int = js.native
+
     def sum2(a: Int, b: Int = ???): Int = js.native
   }
 
   @js.native
   trait JSRepeated extends js.Object {
-    def rep(a: Int, b: String*): Unit = js.native
-    def rep(a: Int*): Unit = js.native
+
+    def rep(a: Int, b: String *): Unit = js.native
+
+    def rep(a: Int *): Unit = js.native
   }
 
   @js.native
   trait JSMulti extends js.Object {
+
     def multi(a: Int)(b: String): Int = js.native
   }
 
   @js.native
   trait JSPolyMethod extends js.Object {
+
     def poly[T](a: T): js.Array[T] = js.native
   }
 
   @js.native
   trait JSWithApply extends js.Object {
+
     def apply(a: String): Int = js.native
   }
 
@@ -615,6 +640,7 @@ object UseAsTest extends JasmineTest {
 
   @js.native
   trait JSApplyString extends js.Object {
+
     def apply(): String = js.native
   }
 

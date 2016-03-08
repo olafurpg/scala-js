@@ -19,9 +19,7 @@ import scala.scalajs.js.annotation._
  *  produced by the immensity of the testSuite codebase.
  */
 object ScalaJSDefinedTestEx extends JasmineTest {
-
   describe("Scala.js-defined JS classes ex") {
-
     it("constructor property on the prototype - #1963") {
       @ScalaJSDefined
       class ParentClass extends js.Object
@@ -32,6 +30,5 @@ object ScalaJSDefinedTestEx extends JasmineTest {
       val child = new ChildClass().asInstanceOf[js.Dynamic]
       expect(child.constructor).toBe(js.constructorOf[ChildClass])
     }
-
   }
 }

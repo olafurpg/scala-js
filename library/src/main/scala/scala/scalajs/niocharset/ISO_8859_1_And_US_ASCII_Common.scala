@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package scala.scalajs.niocharset
 
 import scala.annotation.tailrec
@@ -20,30 +19,38 @@ import java.nio.charset._
  *
  *  `maxValue` is therefore either 0xff (ISO_8859_1) or 0x7f (US_ASCII).
  */
-private[niocharset] abstract class ISO_8859_1_And_US_ASCII_Common protected ( // scalastyle:ignore
-    name: String, aliases: Array[String],
+private [niocharset] abstract class ISO_8859_1_And_US_ASCII_Common protected(
+    // scalastyle:ignore
+    name: String,
+    aliases: Array[String],
     private val maxValue: Int) extends Charset(name, aliases) {
 
-  def contains(that: Charset): Boolean = that match {
-    case that: ISO_8859_1_And_US_ASCII_Common => this.maxValue >= that.maxValue
-    case _                                    => false
-  }
+  def contains(that: Charset): Boolean =
+    that match {
+      case that: ISO_8859_1_And_US_ASCII_Common =>
+        this.maxValue >= that.maxValue
+      case _ => false
+    }
 
   def newDecoder(): CharsetDecoder = new Decoder
+
   def newEncoder(): CharsetEncoder = new Encoder
 
   private class Decoder extends CharsetDecoder(
-      ISO_8859_1_And_US_ASCII_Common.this, 1.0f, 1.0f) {
+          ISO_8859_1_And_US_ASCII_Common. this, 1.0f, 1.0f) {
+
     def decodeLoop(in: ByteBuffer, out: CharBuffer): CoderResult = {
       // scalastyle:off return
-      val maxValue = ISO_8859_1_And_US_ASCII_Common.this.maxValue
+      val maxValue = ISO_8859_1_And_US_ASCII_Common. this.maxValue
       val inRemaining = in.remaining
       if (inRemaining == 0) {
         CoderResult.UNDERFLOW
       } else {
         val outRemaining = out.remaining
         val overflow = outRemaining < inRemaining
-        val rem = if (overflow) outRemaining else inRemaining
+        val rem =
+          if (overflow) outRemaining
+          else inRemaining
 
         if (in.hasArray && out.hasArray) {
           val inArr = in.array
@@ -67,7 +74,7 @@ private[niocharset] abstract class ISO_8859_1_And_US_ASCII_Common protected ( //
               return CoderResult.malformedForLength(1)
             }
 
-            outArr(outPos) = c.toChar
+            outArr (outPos) = c.toChar
             inPos += 1
             outPos += 1
           }
@@ -98,11 +105,12 @@ private[niocharset] abstract class ISO_8859_1_And_US_ASCII_Common protected ( //
   }
 
   private class Encoder extends CharsetEncoder(
-      ISO_8859_1_And_US_ASCII_Common.this, 1.0f, 1.0f) {
+          ISO_8859_1_And_US_ASCII_Common. this, 1.0f, 1.0f) {
+
     def encodeLoop(in: CharBuffer, out: ByteBuffer): CoderResult = {
       import java.lang.Character.{MIN_SURROGATE, MAX_SURROGATE}
 
-      val maxValue = ISO_8859_1_And_US_ASCII_Common.this.maxValue
+      val maxValue = ISO_8859_1_And_US_ASCII_Common. this.maxValue
       val inRemaining = in.remaining
       if (inRemaining == 0) {
         CoderResult.UNDERFLOW
@@ -110,7 +118,9 @@ private[niocharset] abstract class ISO_8859_1_And_US_ASCII_Common protected ( //
         if (in.hasArray && out.hasArray) {
           val outRemaining = out.remaining
           val overflow = outRemaining < inRemaining
-          val rem = if (overflow) outRemaining else inRemaining
+          val rem =
+            if (overflow) outRemaining
+            else inRemaining
 
           val inArr = in.array
           val inOffset = in.arrayOffset
@@ -139,19 +149,18 @@ private[niocharset] abstract class ISO_8859_1_And_US_ASCII_Common protected ( //
             } else {
               val c = inArr(inPos)
               if (c <= maxValue) {
-                outArr(outPos) = c.toByte
-                loop(inPos+1, outPos+1)
+                outArr (outPos) = c.toByte
+                loop(inPos + 1, outPos + 1)
               } else {
                 finalize {
                   if (Character.isLowSurrogate(c)) {
                     CoderResult.malformedForLength(1)
                   } else if (Character.isHighSurrogate(c)) {
                     if (inPos + 1 < in.limit) {
-                      val c2 = inArr(inPos+1)
+                      val c2 = inArr(inPos + 1)
                       if (Character.isLowSurrogate(c2))
                         CoderResult.unmappableForLength(2)
-                      else
-                        CoderResult.malformedForLength(1)
+                      else CoderResult.malformedForLength(1)
                     } else {
                       CoderResult.UNDERFLOW
                     }

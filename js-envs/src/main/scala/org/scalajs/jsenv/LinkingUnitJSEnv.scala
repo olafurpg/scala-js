@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.jsenv
 
 import org.scalajs.core.tools.io.VirtualJSFile
@@ -21,8 +20,10 @@ trait LinkingUnitJSEnv extends JSEnv {
   val symbolRequirements: SymbolRequirement
 
   /** Prepare a runner for the code in the virtual file. */
-  def jsRunner(preLibs: Seq[ResolvedJSDependency], linkingUnit: LinkingUnit,
-      postLibs: Seq[ResolvedJSDependency], code: VirtualJSFile): JSRunner
+  def jsRunner(preLibs: Seq[ResolvedJSDependency],
+               linkingUnit: LinkingUnit,
+               postLibs: Seq[ResolvedJSDependency],
+               code: VirtualJSFile): JSRunner
 
   override def loadLibs(libs: Seq[ResolvedJSDependency]): LinkingUnitJSEnv =
     new LinkingUnitLoadedLibs { val loadedLibs = libs }
@@ -49,24 +50,27 @@ trait LinkingUnitJSEnv extends JSEnv {
   def loadLinkingUnit(linkingUnit: LinkingUnit): JSEnv =
     new LoadedUnit { val loadedUnit = linkingUnit }
 
-  private[jsenv] trait LinkingUnitLoadedLibs
-      extends LoadedLibs with LinkingUnitJSEnv {
+  private [jsenv] trait LinkingUnitLoadedLibs extends LoadedLibs
+      with LinkingUnitJSEnv {
     val symbolRequirements: SymbolRequirement =
-      LinkingUnitJSEnv.this.symbolRequirements
+      LinkingUnitJSEnv. this.symbolRequirements
 
-    def jsRunner(preLibs: Seq[ResolvedJSDependency], linkingUnit: LinkingUnit,
-        postLibs: Seq[ResolvedJSDependency], code: VirtualJSFile): JSRunner = {
-      LinkingUnitJSEnv.this.jsRunner(loadedLibs ++ preLibs,
-          linkingUnit, postLibs, code)
+    def jsRunner(preLibs: Seq[ResolvedJSDependency],
+                 linkingUnit: LinkingUnit,
+                 postLibs: Seq[ResolvedJSDependency],
+                 code: VirtualJSFile): JSRunner = {
+      LinkingUnitJSEnv. this
+        .jsRunner(loadedLibs ++ preLibs, linkingUnit, postLibs, code)
     }
   }
 
-  private[jsenv] trait LoadedUnit extends JSEnv {
+  private [jsenv] trait LoadedUnit extends JSEnv {
     val loadedUnit: LinkingUnit
 
-    def name: String = LinkingUnitJSEnv.this.name
+    def name: String = LinkingUnitJSEnv. this.name
 
-    def jsRunner(libs: Seq[ResolvedJSDependency], code: VirtualJSFile): JSRunner =
-      LinkingUnitJSEnv.this.jsRunner(Nil, loadedUnit, libs, code)
+    def jsRunner(
+        libs: Seq[ResolvedJSDependency], code: VirtualJSFile): JSRunner =
+      LinkingUnitJSEnv. this.jsRunner(Nil, loadedUnit, libs, code)
   }
 }

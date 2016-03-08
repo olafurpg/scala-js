@@ -7,6 +7,7 @@
 \*                                                                      */
 
 package scala
+
 package reflect
 
 /** Provides functions to encode and decode Scala symbolic names.
@@ -15,11 +16,11 @@ package reflect
 object NameTransformer {
   // XXX Short term: providing a way to alter these without having to recompile
   // the compiler before recompiling the compiler.
-  val MODULE_SUFFIX_STRING          = "$"
-  val NAME_JOIN_STRING              = "$"
-  val MODULE_INSTANCE_NAME          = "MODULE$"
-  val LOCAL_SUFFIX_STRING           = " "
-  val SETTER_SUFFIX_STRING          = "_$eq"
+  val MODULE_SUFFIX_STRING = "$"
+  val NAME_JOIN_STRING = "$"
+  val MODULE_INSTANCE_NAME = "MODULE$"
+  val LOCAL_SUFFIX_STRING = " "
+  val SETTER_SUFFIX_STRING = "_$eq"
   val TRAIT_SETTER_SEPARATOR_STRING = "$_setter_$"
 
   private val nops = 128
@@ -29,10 +30,11 @@ object NameTransformer {
 
   private val op2code = new Array[String](nops)
   private val code2op = new Array[OpCodes](ncodes)
+
   private def enterOp(op: Char, code: String) = {
-    op2code(op.toInt) = code
+    op2code (op.toInt) = code
     val c = (code.charAt(1) - 'a') * 26 + code.charAt(2) - 'a'
-    code2op(c.toInt) = new OpCodes(op, code, code2op(c))
+    code2op (c.toInt) = new OpCodes(op, code, code2op(c))
   }
 
   /* Note: decoding assumes opcodes are only ever lowercase. */
@@ -72,21 +74,20 @@ object NameTransformer {
           buf.append(name.substring(0, i))
         }
         buf.append(op2code(c.toInt))
-      /* Handle glyphs that are not valid Java/JVM identifiers */
-      }
-      else if (!Character.isJavaIdentifierPart(c)) {
+        /* Handle glyphs that are not valid Java/JVM identifiers */
+      } else if (!Character.isJavaIdentifierPart(c)) {
         if (buf eq null) {
           buf = new StringBuilder()
           buf.append(name.substring(0, i))
         }
         buf.append("$u%04X".format(c.toInt))
-      }
-      else if (buf ne null) {
+      } else if (buf ne null) {
         buf.append(c)
       }
       i += 1
     }
-    if (buf eq null) name else buf.toString()
+    if (buf eq null) name
+    else buf.toString()
   }
 
   /** Replace `\$opname` by corresponding operator symbol.
@@ -96,8 +97,9 @@ object NameTransformer {
    */
   def decode(name0: String): String = {
     //System.out.println("decode: " + name);//DEBUG
-    val name = if (name0.endsWith("<init>")) name0.stripSuffix("<init>") + "this"
-               else name0
+    val name =
+      if (name0.endsWith("<init>")) name0.stripSuffix("<init>") + "this"
+      else name0
     var buf: StringBuilder = null
     val len = name.length()
     var i = 0
@@ -106,12 +108,13 @@ object NameTransformer {
       var unicode = false
       val c = name charAt i
       if (c == '$' && i + 2 < len) {
-        val ch1 = name.charAt(i+1)
+        val ch1 = name.charAt(i + 1)
         if ('a' <= ch1 && ch1 <= 'z') {
-          val ch2 = name.charAt(i+2)
+          val ch2 = name.charAt(i + 2)
           if ('a' <= ch2 && ch2 <= 'z') {
             ops = code2op((ch1 - 'a') * 26 + ch2 - 'a')
-            while ((ops ne null) && !name.startsWith(ops.code, i)) ops = ops.next
+            while ((ops ne null) &&
+            !name.startsWith(ops.code, i)) ops = ops.next
             if (ops ne null) {
               if (buf eq null) {
                 buf = new StringBuilder()
@@ -122,12 +125,12 @@ object NameTransformer {
             }
             /* Handle the decoding of Unicode glyphs that are
              * not valid Java/JVM identifiers */
-          } else if ((len - i) >= 6 && // Check that there are enough characters left
-                     ch1 == 'u' &&
-                     ((Character.isDigit(ch2)) ||
+          } else if ((len - i) >= 6 &&
+                     // Check that there are enough characters left
+                     ch1 == 'u' && ((Character.isDigit(ch2)) ||
                      ('A' <= ch2 && ch2 <= 'F'))) {
             /* Skip past "$u", next four should be hexadecimal */
-            val hex = name.substring(i+2, i+6)
+            val hex = name.substring(i + 2, i + 6)
             try {
               val str = Integer.parseInt(hex, 16).toChar
               if (buf eq null) {
@@ -139,8 +142,8 @@ object NameTransformer {
               i += 6
               unicode = true
             } catch {
-              case _:NumberFormatException =>
-                /* `hex` did not decode to a hexadecimal number, so
+              case _: NumberFormatException =>
+              /* `hex` did not decode to a hexadecimal number, so
                  * do nothing. */
             }
           }
@@ -156,6 +159,7 @@ object NameTransformer {
       }
     }
     //System.out.println("= " + (if (buf == null) name else buf.toString()));//DEBUG
-    if (buf eq null) name else buf.toString()
+    if (buf eq null) name
+    else buf.toString()
   }
 }

@@ -6,7 +6,6 @@
 **                          |/                                          **
 \*                                                                      */
 
-
 /**
  * Core Scala types. They are always available without an explicit import.
  * @contentDiagram hideNodes "scala.Serializable"
@@ -14,52 +13,57 @@
 package object scala {
   type Throwable = java.lang.Throwable
   type Exception = java.lang.Exception
-  type Error     = java.lang.Error
+  type Error = java.lang.Error
 
-  type RuntimeException                = java.lang.RuntimeException
-  type NullPointerException            = java.lang.NullPointerException
-  type ClassCastException              = java.lang.ClassCastException
-  type IndexOutOfBoundsException       = java.lang.IndexOutOfBoundsException
-  type ArrayIndexOutOfBoundsException  = java.lang.ArrayIndexOutOfBoundsException
+  type RuntimeException = java.lang.RuntimeException
+  type NullPointerException = java.lang.NullPointerException
+  type ClassCastException = java.lang.ClassCastException
+  type IndexOutOfBoundsException = java.lang.IndexOutOfBoundsException
+  type ArrayIndexOutOfBoundsException = java.lang.ArrayIndexOutOfBoundsException
   type StringIndexOutOfBoundsException = java.lang.StringIndexOutOfBoundsException
-  type UnsupportedOperationException   = java.lang.UnsupportedOperationException
-  type IllegalArgumentException        = java.lang.IllegalArgumentException
-  type NoSuchElementException          = java.util.NoSuchElementException
-  type NumberFormatException           = java.lang.NumberFormatException
-  type AbstractMethodError             = java.lang.AbstractMethodError
-  type InterruptedException            = java.lang.InterruptedException
+  type UnsupportedOperationException = java.lang.UnsupportedOperationException
+  type IllegalArgumentException = java.lang.IllegalArgumentException
+  type NoSuchElementException = java.util.NoSuchElementException
+  type NumberFormatException = java.lang.NumberFormatException
+  type AbstractMethodError = java.lang.AbstractMethodError
+  type InterruptedException = java.lang.InterruptedException
 
   // A dummy used by the specialization annotation.
   val AnyRef = new Specializable {
+
     override def toString = "object AnyRef"
   }
 
-  @deprecated("instead of `@serializable class C`, use `class C extends Serializable`", "2.9.0")
+  @deprecated(
+      "instead of `@serializable class C`, use `class C extends Serializable`",
+      "2.9.0")
   type serializable = annotation.serializable
 
-  @deprecated("instead of `@cloneable class C`, use `class C extends Cloneable`", "2.10.0")
+  @deprecated(
+      "instead of `@cloneable class C`, use `class C extends Cloneable`",
+      "2.10.0")
   type cloneable = annotation.cloneable
 
-  type TraversableOnce[+A] = scala.collection.TraversableOnce[A]
+  type TraversableOnce[+ A] = scala.collection.TraversableOnce[A]
 
-  type Traversable[+A] = scala.collection.Traversable[A]
+  type Traversable[+ A] = scala.collection.Traversable[A]
   val Traversable = scala.collection.Traversable
 
-  type Iterable[+A] = scala.collection.Iterable[A]
+  type Iterable[+ A] = scala.collection.Iterable[A]
   val Iterable = scala.collection.Iterable
 
-  type Seq[+A] = scala.collection.Seq[A]
+  type Seq[+ A] = scala.collection.Seq[A]
   val Seq = scala.collection.Seq
 
-  type IndexedSeq[+A] = scala.collection.IndexedSeq[A]
+  type IndexedSeq[+ A] = scala.collection.IndexedSeq[A]
   val IndexedSeq = scala.collection.IndexedSeq
 
-  type Iterator[+A] = scala.collection.Iterator[A]
+  type Iterator[+ A] = scala.collection.Iterator[A]
   val Iterator = scala.collection.Iterator
 
-  type BufferedIterator[+A] = scala.collection.BufferedIterator[A]
+  type BufferedIterator[+ A] = scala.collection.BufferedIterator[A]
 
-  type List[+A] = scala.collection.immutable.List[A]
+  type List[+ A] = scala.collection.immutable.List[A]
   val List = scala.collection.immutable.List
 
   val Nil = scala.collection.immutable.Nil
@@ -70,11 +74,11 @@ package object scala {
   val +: = scala.collection.+:
   val :+ = scala.collection.:+
 
-  type Stream[+A] = scala.collection.immutable.Stream[A]
+  type Stream[+ A] = scala.collection.immutable.Stream[A]
   val Stream = scala.collection.immutable.Stream
   val #:: = scala.collection.immutable.Stream.#::
 
-  type Vector[+A] = scala.collection.immutable.Vector[A]
+  type Vector[+ A] = scala.collection.immutable.Vector[A]
   val Vector = scala.collection.immutable.Vector
 
   type StringBuilder = scala.collection.mutable.StringBuilder
@@ -109,17 +113,17 @@ package object scala {
   type PartialOrdering[T] = scala.math.PartialOrdering[T]
   type PartiallyOrdered[T] = scala.math.PartiallyOrdered[T]
 
-  type Either[+A, +B] = scala.util.Either[A, B]
+  type Either[+ A, + B] = scala.util.Either[A, B]
   val Either = scala.util.Either
 
-  type Left[+A, +B] = scala.util.Left[A, B]
+  type Left[+ A, + B] = scala.util.Left[A, B]
   val Left = scala.util.Left
 
-  type Right[+A, +B] = scala.util.Right[A, B]
+  type Right[+ A, + B] = scala.util.Right[A, B]
   val Right = scala.util.Right
 
   // Annotations which we might move to annotation.*
-/*
+  /*
   type SerialVersionUID = annotation.SerialVersionUID
   type cloneable = annotation.cloneable
   type deprecated = annotation.deprecated

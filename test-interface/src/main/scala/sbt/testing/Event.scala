@@ -2,7 +2,6 @@ package sbt.testing
 
 /** An event fired by the test framework during a run. */
 trait Event {
-
   /** The fully qualified name of a class that can rerun the suite or test
    *  about which an event was fired.
    */

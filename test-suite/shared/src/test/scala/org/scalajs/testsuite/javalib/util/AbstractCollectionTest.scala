@@ -10,18 +10,17 @@ package org.scalajs.testsuite.javalib.util
 import java.{util => ju}
 
 class AbstractCollectionTest extends CollectionTest {
+
   def factory: AbstractCollectionFactory = new AbstractCollectionFactory
 }
 
 class AbstractCollectionFactory extends CollectionFactory {
 
-  override def implementationName: String =
-    "java.util.AbstractCollection"
+  override def implementationName: String = "java.util.AbstractCollection"
 
   override def empty[E]: ju.AbstractCollection[E] = {
     // inefficient but simple for debugging implementation of AbstractCollection
     new ju.AbstractCollection[E] {
-
       private val inner = scala.collection.mutable.Set.empty[Box[E]]
 
       override def add(elem: E): Boolean = {
@@ -31,8 +30,7 @@ class AbstractCollectionFactory extends CollectionFactory {
         canAdd
       }
 
-      def size(): Int =
-        inner.size
+      def size(): Int = inner.size
 
       override def iterator(): ju.Iterator[E] = {
         new ju.Iterator[E] {
@@ -51,8 +49,7 @@ class AbstractCollectionFactory extends CollectionFactory {
               case Some(elem) =>
                 inner -= Box(elem)
                 last = None
-              case None =>
-                throw new IllegalStateException()
+              case None => throw new IllegalStateException()
             }
           }
 
@@ -63,5 +60,4 @@ class AbstractCollectionFactory extends CollectionFactory {
       }
     }
   }
-
 }

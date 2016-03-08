@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.tools.linker.backend
 
 import org.scalajs.core.tools.javascript.ESLevel
@@ -21,11 +20,10 @@ object OutputMode {
    *  There are listed in decreasing order of "importance", as judged by
    *  whoever maintains the back-ends.
    */
-  val All = List(
-      ECMAScript51Isolated,
-      ECMAScript6,
-      ECMAScript6StrongMode,
-      ECMAScript51Global)
+  val All = List(ECMAScript51Isolated,
+                 ECMAScript6,
+                 ECMAScript6StrongMode,
+                 ECMAScript51Global)
 
   /** The default output mode. This is always the first element of [[All]] */
   val Default = All.head

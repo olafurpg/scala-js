@@ -49,7 +49,7 @@ package java.math
  *  </ul> All operations are provided in immutable way, and some in both mutable
  *  and immutable.
  */
-private[math] object BitLevel {
+private [math] object BitLevel {
 
   /** @see BigInteger#bitCount()
    *
@@ -113,7 +113,9 @@ private[math] object BitLevel {
    *  @param n the bit to flip
    */
   def flipBit(bi: BigInteger, n: Int): BigInteger = {
-    val resSign = if (bi.sign == 0) 1 else bi.sign
+    val resSign =
+      if (bi.sign == 0) 1
+      else bi.sign
     val intCount = n >> 5
     val bitN = n & 31
     val resLength = Math.max(intCount + 1, bi.numberLength) + 1
@@ -123,26 +125,26 @@ private[math] object BitLevel {
     System.arraycopy(bi.digits, 0, resDigits, 0, bi.numberLength)
     if (bi.sign < 0) {
       if (intCount >= bi.numberLength) {
-        resDigits(intCount) = bitNumber
+        resDigits (intCount) = bitNumber
       } else {
         val firstNonZeroDigit = bi.getFirstNonzeroDigit
         if (intCount > firstNonZeroDigit) {
           resDigits(intCount) ^= bitNumber
         } else if (intCount < firstNonZeroDigit) {
-          resDigits(intCount) = -bitNumber
+          resDigits (intCount) = -bitNumber
           i = intCount + 1
           while (i < firstNonZeroDigit) {
-            resDigits(i) = -1
+            resDigits (i) = -1
             i += 1
           }
           resDigits(i) -= 1
         } else {
           i = intCount
-          resDigits(i) = -((-resDigits(intCount)) ^ bitNumber)
+          resDigits (i) = -((-resDigits(intCount)) ^ bitNumber)
           if (resDigits(i) == 0) {
             i += 1
-            while (resDigits(i) == -1) {
-              resDigits(i) = 0
+            while (resDigits(i) == - 1) {
+              resDigits (i) = 0
               i += 1
             }
             resDigits(i) += 1
@@ -162,7 +164,9 @@ private[math] object BitLevel {
   def inplaceShiftLeft(bi: BigInteger, count: Int): Unit = {
     val intCount = count >> 5
     val numZeros = Integer.numberOfLeadingZeros(bi.digits(bi.numberLength - 1))
-    val offset = if ((numZeros - (count & 31)) >= 0) 0 else 1
+    val offset =
+      if ((numZeros - (count & 31)) >= 0) 0
+      else 1
 
     bi.numberLength += intCount + offset
     shiftLeft(bi.digits, bi.digits, intCount, count & 31)
@@ -171,19 +175,19 @@ private[math] object BitLevel {
   }
 
   /** Performs {@code val >>= count} where {@code val} is a positive number. */
-  def inplaceShiftRight(bi: BigInteger, count: Int): Unit =  {
+  def inplaceShiftRight(bi: BigInteger, count: Int): Unit = {
     val sign = bi.signum()
     if (!(count == 0 || bi.signum() == 0)) {
       val intCount = count >> 5 // count of integers
       bi.numberLength -= intCount
-      val shift =
-        shiftRight(bi.digits, bi.numberLength, bi.digits, intCount, count & 31)
+      val shift = shiftRight(
+          bi.digits, bi.numberLength, bi.digits, intCount, count & 31)
 
       if (!shift && sign < 0) {
         // remainder not zero: add one to the result
         var i = 0
-        while (i < bi.numberLength && (bi.digits(i) == -1)) {
-          bi.digits(i) = 0
+        while (i < bi.numberLength && (bi.digits(i) == - 1)) {
+          bi.digits (i) = 0
           i += 1
         }
         if (i == bi.numberLength)
@@ -220,7 +224,9 @@ private[math] object BitLevel {
   def shiftLeft(source: BigInteger, count: Int): BigInteger = {
     val intCount: Int = count >> 5
     val andCount: Int = count & 31
-    val offset = if (andCount == 0) 0 else 1
+    val offset =
+      if (andCount == 0) 0
+      else 1
     val resLength: Int = source.numberLength + intCount + offset
     val resDigits = new Array[Int](resLength)
     shiftLeft(resDigits, source.digits, intCount, andCount)
@@ -238,22 +244,24 @@ private[math] object BitLevel {
    *  @param intCount the shift distance in integers
    *  @param count an additional shift distance in bits
    */
-  def shiftLeft(result: Array[Int], source: Array[Int],
-        intCount: Int, count: Int): Unit =  {
+  def shiftLeft(result: Array[Int],
+                source: Array[Int],
+                intCount: Int,
+                count: Int): Unit = {
     if (count == 0) {
       System.arraycopy(source, 0, result, intCount, result.length - intCount)
     } else {
       val rightShiftCount: Int = 32 - count
-      result(result.length - 1) = 0
+      result (result.length - 1) = 0
       var i = result.length - 1
       while (i > intCount) {
         result(i) |= (source(i - intCount - 1) >>> rightShiftCount)
-        result(i - 1) = (source(i - intCount - 1) << count)
+        result (i - 1) = (source(i - intCount - 1) << count)
         i -= 1
       }
     }
     for (i <- 0 until intCount) {
-      result(i) = 0
+      result (i) = 0
     }
   }
 
@@ -278,15 +286,16 @@ private[math] object BitLevel {
    *                {@link BigInteger#digits}.
    *  @param srcLen the length of {@code source}; may be less than {@code source.length}
    */
-  def shiftLeftOneBit(result: Array[Int], source: Array[Int], srcLen: Int): Unit =  {
+  def shiftLeftOneBit(
+      result: Array[Int], source: Array[Int], srcLen: Int): Unit = {
     var carry = 0
     for (i <- 0 until srcLen) {
       val iVal = source(i)
-      result(i) = (iVal << 1) | carry
+      result (i) = (iVal << 1) | carry
       carry = iVal >>> 31
     }
     if (carry != 0)
-      result(srcLen) = carry
+      result (srcLen) = carry
   }
 
   /** @see BigInteger#shiftRight(int).
@@ -317,8 +326,8 @@ private[math] object BitLevel {
         val cmp = (source.digits(i) << (32 - andCount)) != 0
         if (i < intCount || (andCount > 0 && cmp)) {
           i = 0
-          while (i < resLength && resDigits(i) == -1) {
-            resDigits(i) = 0
+          while (i < resLength && resDigits(i) == - 1) {
+            resDigits (i) = 0
             i += 1
           }
           if (i == resLength)
@@ -343,8 +352,11 @@ private[math] object BitLevel {
    *  @param count the number of bits to be shifted
    *  @return dropped bit's are all zero (i.e. remaider is zero)
    */
-  def shiftRight(result: Array[Int], resultLen: Int, source: Array[Int],
-        intCount: Int, count: Int): Boolean = {
+  def shiftRight(result: Array[Int],
+                 resultLen: Int,
+                 source: Array[Int],
+                 intCount: Int,
+                 count: Int): Boolean = {
     var i: Int = 0
     var allZero = true
     while (i < intCount) {
@@ -358,10 +370,11 @@ private[math] object BitLevel {
       allZero &= ((source(i) << leftShiftCount) == 0)
       i = 0
       while (i < resultLen - 1) {
-        result(i) = (source(i + intCount) >>> count) | (source(i + intCount + 1) << leftShiftCount)
+        result (i) = (source(i + intCount) >>> count) |
+        (source(i + intCount + 1) << leftShiftCount)
         i += 1
       }
-      result(i) = source(i + intCount) >>> count
+      result (i) = source(i + intCount) >>> count
       i += 1
     }
     allZero

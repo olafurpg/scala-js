@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.jasminetest
 
 import sbt.testing._
@@ -15,13 +14,12 @@ import scala.scalajs.js
 import scala.scalajs.js.annotation.JSExport
 
 final class JasmineRunner(
-    private[jasminetest] val framework: JasmineFramework,
+    private [jasminetest] val framework: JasmineFramework,
     val args: Array[String],
     val remoteArgs: Array[String],
-    private[jasminetest] val classLoader: ClassLoader
-) extends Runner {
-
-  private[this] var isDone = false
+    private [jasminetest] val classLoader: ClassLoader
+    ) extends Runner {
+  private [ this] var isDone = false
 
   // This statement also ensures that
   // [[JasmineRunner.createStackPropertyOnThrowable]] has been called.
@@ -29,8 +27,7 @@ final class JasmineRunner(
 
   def tasks(taskDefs: Array[TaskDef]): Array[Task] = {
     ensureNotDone()
-    for (taskDef <- taskDefs)
-      yield new JasmineTask(this, taskDef)
+    for (taskDef <- taskDefs) yield new JasmineTask(this, taskDef)
   }
 
   def done(): String = {
@@ -75,13 +72,15 @@ object JasmineRunner {
     val ThrowablePrototype = js.Object.getPrototypeOf(
         (new Throwable).asInstanceOf[js.Object]).asInstanceOf[js.Object]
 
-    js.Object.defineProperty(ThrowablePrototype, "stack", js.Dynamic.literal(
-        configurable = false,
-        enumerable = false,
-        get = { (self: js.Dynamic) =>
-          self.stackdata && self.stackdata.stack
-        }: js.ThisFunction
-    ).asInstanceOf[js.PropertyDescriptor])
+    js.Object.defineProperty(ThrowablePrototype,
+                             "stack",
+                             js.Dynamic.literal(
+                                 configurable = false,
+                                 enumerable = false,
+                                 get = { (self: js.Dynamic) =>
+                                   self.stackdata && self.stackdata.stack
+                                 }: js.ThisFunction
+                             ).asInstanceOf[js.PropertyDescriptor])
   }
 
   private def handleArgs(args: Array[String]): Unit = {

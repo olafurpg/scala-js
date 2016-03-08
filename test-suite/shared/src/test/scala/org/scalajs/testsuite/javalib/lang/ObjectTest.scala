@@ -15,8 +15,9 @@ import org.scalajs.testsuite.utils.AssertThrows._
 // scalastyle:off disallow.space.before.token
 
 class ObjectTest {
+  @Test
+  def equals(): Unit = {
 
-  @Test def equals(): Unit = {
     case class XY(x: Int, y: Int)
 
     val l = List(XY(1, 2), XY(2, 1))
@@ -26,42 +27,45 @@ class ObjectTest {
     assertTrue(l.exists(_ == xy12)) // the workaround
   }
 
-  @Test def everything_but_null_should_be_an_Object(): Unit = {
-    assertTrue((()             : Any).isInstanceOf[Object])
-    assertTrue((true           : Any).isInstanceOf[Object])
-    assertTrue(('a'            : Any).isInstanceOf[Object])
-    assertTrue((1.toByte       : Any).isInstanceOf[Object])
-    assertTrue((658.toShort    : Any).isInstanceOf[Object])
-    assertTrue((60000          : Any).isInstanceOf[Object])
+  @Test
+  def everything_but_null_should_be_an_Object(): Unit = {
+    assertTrue(((): Any).isInstanceOf[Object])
+    assertTrue((true: Any).isInstanceOf[Object])
+    assertTrue(('a': Any).isInstanceOf[Object])
+    assertTrue((1.toByte: Any).isInstanceOf[Object])
+    assertTrue((658.toShort: Any).isInstanceOf[Object])
+    assertTrue((60000: Any).isInstanceOf[Object])
     assertTrue((12345678910112L: Any).isInstanceOf[Object])
-    assertTrue((6.5f           : Any).isInstanceOf[Object])
-    assertTrue((12.4           : Any).isInstanceOf[Object])
-    assertTrue((new Object     : Any).isInstanceOf[Object])
-    assertTrue(("hello"        : Any).isInstanceOf[Object])
-    assertTrue((List(1)        : Any).isInstanceOf[Object])
-    assertTrue((Array(1)       : Any).isInstanceOf[Object])
-    assertTrue((Array(Nil)     : Any).isInstanceOf[Object])
+    assertTrue((6.5f: Any).isInstanceOf[Object])
+    assertTrue((12.4: Any).isInstanceOf[Object])
+    assertTrue((new Object: Any).isInstanceOf[Object])
+    assertTrue(("hello": Any).isInstanceOf[Object])
+    assertTrue((List(1): Any).isInstanceOf[Object])
+    assertTrue((Array(1): Any).isInstanceOf[Object])
+    assertTrue((Array(Nil): Any).isInstanceOf[Object])
   }
 
-  @Test def null_should_not_be_an_Object(): Unit = {
+  @Test
+  def null_should_not_be_an_Object(): Unit = {
     assertFalse((null: Any).isInstanceOf[Object])
   }
 
-  @Test def everything_should_cast_to_Object_successfully_including_null(): Unit = {
-    (()             : Any).asInstanceOf[Object]
-    (true           : Any).asInstanceOf[Object]
-    ('a'            : Any).asInstanceOf[Object]
-    (1.toByte       : Any).asInstanceOf[Object]
-    (658.toShort    : Any).asInstanceOf[Object]
-    (60000          : Any).asInstanceOf[Object]
+  @Test
+  def everything_should_cast_to_Object_successfully_including_null(): Unit = {
+    ((): Any).asInstanceOf[Object]
+    (true: Any).asInstanceOf[Object]
+    ('a': Any).asInstanceOf[Object]
+    (1.toByte: Any).asInstanceOf[Object]
+    (658.toShort: Any).asInstanceOf[Object]
+    (60000: Any).asInstanceOf[Object]
     (12345678910112L: Any).asInstanceOf[Object]
-    (6.5f           : Any).asInstanceOf[Object]
-    (12.4           : Any).asInstanceOf[Object]
-    (new Object     : Any).asInstanceOf[Object]
-    ("hello"        : Any).asInstanceOf[Object]
-    (List(1)        : Any).asInstanceOf[Object]
-    (Array(1)       : Any).asInstanceOf[Object]
-    (Array(Nil)     : Any).asInstanceOf[Object]
-    (null           : Any).asInstanceOf[Object]
+    (6.5f: Any).asInstanceOf[Object]
+    (12.4: Any).asInstanceOf[Object]
+    (new Object: Any).asInstanceOf[Object]
+    ("hello": Any).asInstanceOf[Object]
+    (List(1): Any).asInstanceOf[Object]
+    (Array(1): Any).asInstanceOf[Object]
+    (Array(Nil): Any).asInstanceOf[Object]
+    (null: Any).asInstanceOf[Object]
   }
 }

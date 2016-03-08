@@ -13,28 +13,30 @@ import org.junit.Test
 import org.junit.Assert._
 
 class ReflectArrayTest {
-
   @inline
-  private def testBase(clazz: Class[_], length: Int, expectedClazz: Class[_],
-      sampleElem: Any): Unit = {
+  private def testBase(clazz: Class[_],
+                       length: Int,
+                       expectedClazz: Class[_],
+                       sampleElem: Any): Unit = {
     val array =
       java.lang.reflect.Array.newInstance(clazz, length).asInstanceOf[Array[_]]
     assertEquals(expectedClazz, array.getClass)
     assertTrue(array.getClass.isArray)
     assertEquals(length, array.length)
-    for (i <- 0 until array.length)
-      assertEquals(sampleElem, array(i))
+    for (i <- 0 until array.length) assertEquals(sampleElem, array(i))
   }
 
   @noinline
-  private def testNewInstanceNoInline(clazz: Class[_], length: Int, expectedClazz: Class[_],
-      sampleElem: Any): Unit = {
+  private def testNewInstanceNoInline(clazz: Class[_],
+                                      length: Int,
+                                      expectedClazz: Class[_],
+                                      sampleElem: Any): Unit = {
     testBase(clazz, length, expectedClazz, sampleElem)
   }
 
   @inline
-  def testNewInstance(clazz: Class[_], expectedClazz: Class[_],
-      sampleElem: Any): Unit = {
+  def testNewInstance(
+      clazz: Class[_], expectedClazz: Class[_], sampleElem: Any): Unit = {
     testNewInstanceNoInline(clazz, length = 2, expectedClazz, sampleElem)
     testBase(clazz, length = 2, expectedClazz, sampleElem)
 
@@ -42,7 +44,8 @@ class ReflectArrayTest {
     testBase(clazz, length = 0, expectedClazz, sampleElem)
   }
 
-  @Test def newInstance(): Unit = {
+  @Test
+  def newInstance(): Unit = {
     testNewInstance(classOf[Int], classOf[Array[Int]], 0)
     testNewInstance(classOf[Char], classOf[Array[Char]], '\0')
     testNewInstance(classOf[Long], classOf[Array[Long]], 0L)
@@ -53,11 +56,15 @@ class ReflectArrayTest {
     testNewInstance(classOf[Object], classOf[Array[Object]], null)
     testNewInstance(classOf[String], classOf[Array[String]], null)
 
-    testNewInstance(classOf[java.lang.Integer], classOf[Array[java.lang.Integer]], null)
-    testNewInstance(classOf[java.lang.Long], classOf[Array[java.lang.Long]], null)
+    testNewInstance(
+        classOf[java.lang.Integer], classOf[Array[java.lang.Integer]], null)
+    testNewInstance(
+        classOf[java.lang.Long], classOf[Array[java.lang.Long]], null)
 
-    testNewInstance(classOf[Array[Object]], classOf[Array[Array[Object]]], null)
+    testNewInstance(
+        classOf[Array[Object]], classOf[Array[Array[Object]]], null)
     testNewInstance(classOf[Array[Int]], classOf[Array[Array[Int]]], null)
-    testNewInstance(classOf[Array[String]], classOf[Array[Array[String]]], null)
+    testNewInstance(
+        classOf[Array[String]], classOf[Array[Array[String]]], null)
   }
 }

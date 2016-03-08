@@ -11,13 +11,12 @@ import java.{util => ju}
 
 import org.scalajs.testsuite.javalib.util.concurrent.CopyOnWriteArrayListFactory
 
-trait CollectionsSynchronizedListTest
-    extends CollectionsOnListTest {
-
+trait CollectionsSynchronizedListTest extends CollectionsOnListTest {
   def originalFactory: ListFactory
 
   def factory: ListFactory = {
     new ListFactory {
+
       override def implementationName: String =
         s"synchronizedList(${originalFactory.implementationName})"
 
@@ -35,19 +34,24 @@ trait CollectionsSynchronizedListTest
 
 class CollectionsOnSynchronizedListAbstractListTest
     extends CollectionsSynchronizedCollectionTest {
+
   def originalFactory: ListFactory = new AbstractListFactory
 }
 
-class CollectionsOnSynchronizedListArrayListTest extends CollectionsSynchronizedListTest {
+class CollectionsOnSynchronizedListArrayListTest
+    extends CollectionsSynchronizedListTest {
+
   def originalFactory: ListFactory = new ArrayListFactory
 }
 
 class CollectionsOnSynchronizedListLinkedListTest
     extends CollectionsSynchronizedListTest {
+
   def originalFactory: ListFactory = new LinkedListFactory
 }
 
 class CollectionsOnSynchronizedListCopyOnWriteArrayListTest
     extends CollectionsSynchronizedListTest {
+
   def originalFactory: ListFactory = new CopyOnWriteArrayListFactory
 }

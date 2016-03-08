@@ -11,13 +11,13 @@ import scala.scalajs.js.typedarray._
  *  ZipInputStream implementation using
  *  <a href="https://stuk.github.io/jszip/" target="_blank">JSZip</a>
  */
-class ZipInputStream(in: InputStream) extends InflaterInputStream(in) {
-
+class ZipInputStream(in: InputStream)
+    extends InflaterInputStream(in) {
   // Not implemented
   // - All static constant fields (zip internals)
   // - protected def createZipEntry(name: String): ZipEntry
 
-  private[this] val entryIter = {
+  private [ this] val entryIter = {
     import js.Dynamic.{global => g}
 
     val data = in match {
@@ -28,7 +28,7 @@ class ZipInputStream(in: InputStream) extends InflaterInputStream(in) {
       case _ =>
         val arr = new js.Array[Int]
         var x = in.read()
-        while (x != -1) {
+        while (x != - 1) {
           arr.push(x)
           x = in.read()
         }
@@ -41,7 +41,7 @@ class ZipInputStream(in: InputStream) extends InflaterInputStream(in) {
     entries.iterator
   }
 
-  private[this] var inner: ArrayBufferInputStream = null
+  private [ this] var inner: ArrayBufferInputStream = null
 
   override def close(): Unit = {
     closeEntry()
@@ -68,7 +68,7 @@ class ZipInputStream(in: InputStream) extends InflaterInputStream(in) {
       res.setComment(jsEntry.comment.asInstanceOf[String])
 
       inner = new ArrayBufferInputStream(
-        jsEntry.asArrayBuffer().asInstanceOf[ArrayBuffer])
+          jsEntry.asArrayBuffer().asInstanceOf[ArrayBuffer])
 
       res
     } else null
@@ -89,5 +89,4 @@ class ZipInputStream(in: InputStream) extends InflaterInputStream(in) {
     if (inner == null) 0
     else inner.skip(n)
   }
-
 }

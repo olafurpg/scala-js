@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package scala.scalajs.macroimpls
 
 import Compat210._
@@ -21,7 +20,7 @@ import Compat210._
  *
  *  @author Tobias Schlatter
  */
-private[macroimpls] trait JSMembers {
+private [macroimpls] trait JSMembers {
   // Import macros only here, otherwise we collide with Compat210._
   import scala.reflect.macros._
   import blackbox.Context
@@ -39,6 +38,7 @@ private[macroimpls] trait JSMembers {
   }
 
   case class JSMethodParam(info: Type, isDefault: Boolean) {
+
     def conformsTo(that: JSMethodParam): Boolean =
       (!that.isDefault || this.isDefault) && that.info <:< this.info
 
@@ -47,40 +47,44 @@ private[macroimpls] trait JSMembers {
       else info.toString
   }
 
-  case class JSMethod(params: List[JSMethodParam],
-      resultType: Type) extends JSMember {
+  case class JSMethod(params: List[JSMethodParam], resultType: Type)
+      extends JSMember {
 
-    def conformsTo(that: JSMember): Boolean = that match {
-      case JSMethod(thatParams, thatResultType) =>
-        val (used, unused) = params.splitAt(thatParams.size)
+    def conformsTo(that: JSMember): Boolean =
+      that match {
+        case JSMethod(thatParams, thatResultType) =>
+          val (used, unused) = params.splitAt(thatParams.size)
 
-        params.size >= thatParams.size &&
-        resultType <:< thatResultType &&
-        unused.forall(_.isDefault) &&
-        (used zip thatParams).forall { case (x, y) => x.conformsTo(y) }
+          params.size >= thatParams.size && resultType <:< thatResultType &&
+          unused.forall(_.isDefault) && (used zip thatParams).forall {
+            case (x, y) => x.conformsTo(y)
+          }
 
-      case _ =>
-        false
-    }
+        case _ => false
+      }
 
     def displayStr(name: String): String =
       s"method $name(${params.mkString(", ")}): $resultType"
   }
 
   case class JSGetter(tpe: Type) extends JSMember {
-    def conformsTo(that: JSMember): Boolean = that match {
-      case JSGetter(thatTpe) => tpe <:< thatTpe
-      case _                 => false
-    }
+
+    def conformsTo(that: JSMember): Boolean =
+      that match {
+        case JSGetter(thatTpe) => tpe <:< thatTpe
+        case _ => false
+      }
 
     def displayStr(name: String): String = s"getter $name: $tpe"
   }
 
   case class JSSetter(tpe: Type) extends JSMember {
-    def conformsTo(that: JSMember): Boolean = that match {
-      case JSSetter(thatTpe) => thatTpe <:< tpe
-      case _                 => false
-    }
+
+    def conformsTo(that: JSMember): Boolean =
+      that match {
+        case JSSetter(thatTpe) => thatTpe <:< tpe
+        case _ => false
+      }
 
     def displayStr(name: String): String = s"setter $name: $tpe"
   }
@@ -91,7 +95,9 @@ private[macroimpls] trait JSMembers {
    *  In target type position, these members will trigger errors.
    */
   case class UnsupportedMember(sym: Symbol, tpe: Type) extends JSMember {
+
     def conformsTo(that: JSMember): Boolean = false
+
     def displayStr(name: String): String = s"unsupported $name ($sym)"
   }
 }

@@ -15,13 +15,15 @@ import language.reflectiveCalls
 import java.lang.{Float => JFloat, Double => JDouble}
 
 object ReflectiveCallTest extends JasmineTest {
-
   describe("Reflective Calls") {
     it("should allow subtyping in return types") {
+
       class A { def x: Int = 1 }
+
       class B extends A { override def x: Int = 2 }
 
       object Generator {
+
         def generate(): B = new B
       }
 
@@ -31,11 +33,14 @@ object ReflectiveCallTest extends JasmineTest {
     }
 
     it("should allow this.type in return types") {
-      type ValueType = { def value: this.type }
+      type ValueType = { def value: this. type }
+
       def f(x: ValueType): ValueType = x.value
 
       class StringValue(x: String) {
-        def value: this.type = this
+
+        def value: this. type = this
+
         override def toString(): String = s"StringValue($x)"
       }
 
@@ -43,20 +48,23 @@ object ReflectiveCallTest extends JasmineTest {
     }
 
     it("should allow generic return types") {
+
       case class Tata(name: String)
 
       object Rec {
+
         def e(x: Tata): Tata = new Tata("iei")
       }
 
-      def m[T](r: Object { def e(x: Tata): T}): T =
-        r.e(new Tata("foo"))
+      def m[T](r: Object { def e(x: Tata): T }): T = r.e(new Tata("foo"))
 
       expect(m[Tata](Rec).toString).toEqual("Tata(iei)")
     }
 
     it("should work with unary methods on primitive types") {
+
       // scalastyle:off disallow.space.before.token
+
       def fInt(x: Any { def unary_- : Int }): Int = -x
       expect(fInt(1.toByte)).toEqual(-1)
       expect(fInt(1.toShort)).toEqual(-1)
@@ -64,9 +72,9 @@ object ReflectiveCallTest extends JasmineTest {
       expect(fInt(1)).toEqual(-1)
 
       def fLong(x: Any { def unary_- : Long }): Long = -x
-      expect(fLong(1L) == -1L).toBeTruthy
+      expect(fLong(1L) == - 1L).toBeTruthy
 
-      def fFloat(x: Any { def unary_- : Float}): Float = -x
+      def fFloat(x: Any { def unary_- : Float }): Float = -x
       expect(fFloat(1.5f)).toEqual(-1.5f)
 
       def fDouble(x: Any { def unary_- : Double }): Double = -x
@@ -79,6 +87,7 @@ object ReflectiveCallTest extends JasmineTest {
     }
 
     it("should work with binary operators on primitive types") {
+
       def fLong(x: Any { def +(x: Long): Long }): Long = x + 5L
       expect(fLong(5.toByte) == 10L).toBeTruthy
       expect(fLong(10.toShort) == 15L).toBeTruthy
@@ -98,18 +107,20 @@ object ReflectiveCallTest extends JasmineTest {
       expect(fShort(25.toChar)).toEqual(31)
       expect(fShort(-40)).toEqual(-34)
 
-      def fFloat(x: Any { def %(x: Float): Float}): Float = x % 3.4f
+      def fFloat(x: Any { def %(x: Float): Float }): Float = x % 3.4f
       expect(fFloat(5.5f)).toEqual(2.1f)
 
       def fDouble(x: Any { def /(x: Double): Double }): Double = x / 1.4
       expect(fDouble(-1.5)).toEqual(-1.0714285714285714)
 
-      def fBoolean(x: Any { def &&(x: Boolean): Boolean }): Boolean = x && true // scalastyle:ignore
+      def fBoolean(x: Any { def &&(x: Boolean): Boolean }): Boolean =
+        x && true // scalastyle:ignore
       expect(fBoolean(false)).toBeFalsy
       expect(fBoolean(true)).toBeTruthy
     }
 
     it("should work with equality operators on primitive types") {
+
       def fNum(obj: Any { def ==(x: Int): Boolean }): Boolean = obj == 5
       expect(fNum(5.toByte)).toBeTruthy
       expect(fNum(6.toByte)).toBeFalsy
@@ -125,7 +136,9 @@ object ReflectiveCallTest extends JasmineTest {
       expect(fNum(5.6f)).toBeFalsy
       expect(fNum(5.0)).toBeTruthy
       expect(fNum(7.9)).toBeFalsy
-      def fBool(obj: Any { def ==(x: Boolean): Boolean }): Boolean = obj == false // scalastyle:ignore
+
+      def fBool(obj: Any { def ==(x: Boolean): Boolean }): Boolean =
+        obj == false // scalastyle:ignore
       expect(fBool(true)).toBeFalsy
       expect(fBool(false)).toBeTruthy
 
@@ -144,10 +157,11 @@ object ReflectiveCallTest extends JasmineTest {
       expect(fNumN(5.6f)).toBeTruthy
       expect(fNumN(5.0)).toBeFalsy
       expect(fNumN(7.9)).toBeTruthy
-      def fBoolN(obj: Any { def !=(x: Boolean): Boolean }): Boolean = obj != false // scalastyle:ignore
+
+      def fBoolN(obj: Any { def !=(x: Boolean): Boolean }): Boolean =
+        obj != false // scalastyle:ignore
       expect(fBoolN(true)).toBeTruthy
       expect(fBoolN(false)).toBeFalsy
-
     }
 
     it("should work with Arrays") {
@@ -156,43 +170,50 @@ object ReflectiveCallTest extends JasmineTest {
       type LEN = { def length: Int }
       type CLONE = Any { def clone(): Object }
 
-      def upd(obj: UPD, i: Int, x: String): Unit = obj.update(i,x)
+      def upd(obj: UPD, i: Int, x: String): Unit = obj.update(i, x)
+
       def apl(obj: APL, i: Int): String = obj.apply(i)
+
       def len(obj: LEN): Int = obj.length
+
       def clone(obj: CLONE): Object = obj.clone
 
-      val x = Array("asdf","foo","bar")
+      val x = Array("asdf", "foo", "bar")
       val y = clone(x).asInstanceOf[Array[String]]
 
       expect(len(x)).toEqual(3)
-      expect(apl(x,0)).toEqual("asdf")
-      upd(x,1,"2foo")
+      expect(apl(x, 0)).toEqual("asdf")
+      upd(x, 1, "2foo")
       expect(x(1)).toEqual("2foo")
       expect(y(1)).toEqual("foo")
     }
 
     it("should work with Arrays of primitive values") {
       type UPD = { def update(i: Int, x: Int): Unit }
-      type APL = { def apply(i: Int): Int}
+      type APL = { def apply(i: Int): Int }
       type LEN = { def length: Int }
       type CLONE = Any { def clone(): Object }
 
-      def upd(obj: UPD, i: Int, x: Int): Unit = obj.update(i,x)
+      def upd(obj: UPD, i: Int, x: Int): Unit = obj.update(i, x)
+
       def apl(obj: APL, i: Int): Int = obj.apply(i)
+
       def len(obj: LEN): Int = obj.length
+
       def clone(obj: CLONE): Object = obj.clone
 
-      val x = Array(5,2,8)
+      val x = Array(5, 2, 8)
       val y = clone(x).asInstanceOf[Array[Int]]
 
       expect(len(x)).toEqual(3)
-      expect(apl(x,0)).toEqual(5)
-      upd(x,1,1000)
+      expect(apl(x, 0)).toEqual(5)
+      upd(x, 1, 1000)
       expect(x(1)).toEqual(1000)
       expect(y(1)).toEqual(2)
     }
 
     it("should work with Strings") {
+
       def get(obj: { def codePointAt(str: Int): Int }): Int =
         obj.codePointAt(1)
       expect(get("Hi")).toEqual('i'.toInt)
@@ -201,18 +222,22 @@ object ReflectiveCallTest extends JasmineTest {
       expect(sub("asdfasdfasdf") == "sdfasdf").toBeTruthy
 
       type LEN_A = { def length: Any }
+
       def lenA(x: LEN_A): Any = x.length
       expect(lenA("asdf") == 4).toBeTruthy
     }
 
     it("should properly generate forwarders for inherited methods") {
+
       trait A {
         def foo: Int
       }
 
       abstract class B extends A
 
-      class C extends B {
+      class C
+          extends B {
+
         def foo: Int = 1
       }
 
@@ -222,18 +247,23 @@ object ReflectiveCallTest extends JasmineTest {
     }
 
     it("should be bug-compatible with Scala/JVM for inherited overloads") {
+
       class Base {
+
         def foo(x: Option[Int]): String = "a"
       }
 
-      class Sub extends Base {
+      class Sub
+          extends Base {
+
         def foo(x: Option[String]): Int = 1
       }
 
       val sub = new Sub
 
       val x: { def foo(x: Option[Int]): Any } = sub
-      expect(x.foo(Some(1)).asInstanceOf[js.Any]).toEqual(1) // here is the "bug"
+      expect(x.foo(Some(1)).asInstanceOf[js.Any])
+        .toEqual(1) // here is the "bug"
 
       val y: { def foo(x: Option[String]): Any } = sub
       expect(y.foo(Some("hello")).asInstanceOf[js.Any]).toEqual(1)
@@ -244,6 +274,7 @@ object ReflectiveCallTest extends JasmineTest {
         def notify(): Unit
         def notifyAll(): Unit
       }
+
       def objNotifyTest(obj: ObjNotifyLike): Int = {
         obj.notify()
         obj.notifyAll()
@@ -257,9 +288,12 @@ object ReflectiveCallTest extends JasmineTest {
 
     it("should work on java.lang.Object.clone - #303") {
       type ObjCloneLike = Any { def clone(): AnyRef }
+
       def objCloneTest(obj: ObjCloneLike): AnyRef = obj.clone()
 
-      class B(val x: Int) extends Cloneable {
+      class B(val x: Int)
+          extends Cloneable {
+
         override def clone(): AnyRef = super.clone()
       }
 
@@ -275,7 +309,9 @@ object ReflectiveCallTest extends JasmineTest {
         def eq(that: AnyRef): Boolean
         def ne(that: AnyRef): Boolean
       }
+
       def objEqTest(obj: ObjEqLike, that: AnyRef): Boolean = obj eq that
+
       def objNeTest(obj: ObjEqLike, that: AnyRef): Boolean = obj ne that
 
       class A
@@ -283,11 +319,11 @@ object ReflectiveCallTest extends JasmineTest {
       val a1 = new A
       val a2 = new A
 
-      expect(objEqTest(a1,a2)).toBeFalsy
-      expect(objEqTest(a1,a1)).toBeTruthy
+      expect(objEqTest(a1, a2)).toBeFalsy
+      expect(objEqTest(a1, a1)).toBeTruthy
 
-      expect(objNeTest(a1,a2)).toBeTruthy
-      expect(objNeTest(a1,a1)).toBeFalsy
+      expect(objNeTest(a1, a2)).toBeTruthy
+      expect(objNeTest(a1, a1)).toBeFalsy
     }
 
     it("should work on java.lang.{Float,Double}.{isNaN,isInfinite}") {
@@ -295,8 +331,9 @@ object ReflectiveCallTest extends JasmineTest {
         def isNaN(): Boolean
         def isInfinite(): Boolean
       }
-      def test(x: FloatingNumberLike, isNaN: Boolean,
-          isInfinite: Boolean): Unit = {
+
+      def test(
+          x: FloatingNumberLike, isNaN: Boolean, isInfinite: Boolean): Unit = {
         expect(x.isNaN()).toEqual(isNaN)
         expect(x.isInfinite()).toEqual(isInfinite)
       }
@@ -313,21 +350,31 @@ object ReflectiveCallTest extends JasmineTest {
     }
 
     it("should work with default arguments - #390") {
-      def pimpIt(a: Int) = new { // scalastyle:ignore
-        def foo(b: Int, c: Int = 1): Int = a + b + c
-      }
+
+      def pimpIt(a: Int) =
+        new {
+
+          // scalastyle:ignore
+
+          def foo(b: Int, c: Int = 1): Int = a + b + c
+        }
 
       expect(pimpIt(1).foo(2)).toEqual(4)
-      expect(pimpIt(2).foo(2,4)).toEqual(8)
+      expect(pimpIt(2).foo(2, 4)).toEqual(8)
     }
 
     it("should unbox all types of arguments - #899") {
+
       class Foo {
+
         def makeInt: Int = 5
+
         def testInt(x: Int): Unit = expect(x).toEqual(5)
 
         def makeRef: Option[String] = Some("hi")
-        def testRef(x: Option[String]): Unit = expect(x == Some("hi")).toBeTruthy
+
+        def testRef(x: Option[String]): Unit =
+          expect(x == Some("hi")).toBeTruthy
       }
 
       /* Note: we should also test with value classes, except that Scala itself
@@ -336,17 +383,16 @@ object ReflectiveCallTest extends JasmineTest {
        */
 
       def test(foo: {
-        def makeInt: Int
-        def testInt(x: Int): Unit
-        def makeRef: Option[String]
-        def testRef(x: Option[String]): Unit
-      }): Unit = {
+            def makeInt: Int
+            def testInt(x: Int): Unit
+            def makeRef: Option[String]
+            def testRef(x: Option[String]): Unit
+          }): Unit = {
         foo.testInt(foo.makeInt)
         foo.testRef(foo.makeRef)
       }
 
       test(new Foo)
     }
-
   }
 }

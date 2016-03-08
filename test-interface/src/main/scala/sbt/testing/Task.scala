@@ -9,7 +9,6 @@ package sbt.testing
  *  if there's no more work to do.)
  */
 trait Task {
-
   /** A possibly zero-length array of string tags associated with this task.
    *
    *  A task may be tagged, for example, with a string that indicates it
@@ -38,8 +37,9 @@ trait Task {
    *  When running in a JavaScript environment, only this method will be
    *  called.
    */
-  def execute(eventHandler: EventHandler, loggers: Array[Logger],
-      continuation: Array[Task] => Unit): Unit
+  def execute(eventHandler: EventHandler,
+              loggers: Array[Logger],
+              continuation: Array[Task] => Unit): Unit
 
   /** Returns the <code>TaskDef</code> that was used to request this
    *  <code>Task</code>.

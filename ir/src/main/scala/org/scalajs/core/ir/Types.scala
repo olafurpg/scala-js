@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.ir
 
 import scala.annotation.tailrec
@@ -29,6 +28,7 @@ object Types {
    *  respectively.
    */
   abstract sealed class Type {
+
     def show(): String = {
       val writer = new java.io.StringWriter
       val printer = new Printers.IRTreePrinter(writer)
@@ -120,10 +120,12 @@ object Types {
       extends Type with ReferenceType
 
   object ArrayType {
-    def apply(innerType: ReferenceType): ArrayType = innerType match {
-      case ClassType(className)      => ArrayType(className, 1)
-      case ArrayType(className, dim) => ArrayType(className, dim + 1)
-    }
+
+    def apply(innerType: ReferenceType): ArrayType =
+      innerType match {
+        case ClassType(className) => ArrayType(className, 1)
+        case ArrayType(className, dim) => ArrayType(className, dim + 1)
+      }
   }
 
   /** Record type.
@@ -134,29 +136,34 @@ object Types {
    *  The compiler itself never generates record types.
    */
   final case class RecordType(fields: List[RecordType.Field]) extends Type {
+
     def findField(name: String): RecordType.Field =
       fields.find(_.name == name).get
   }
 
   object RecordType {
-    final case class Field(name: String, originalName: Option[String],
-        tpe: Type, mutable: Boolean)
+
+    final case class Field(name: String,
+                           originalName: Option[String],
+                           tpe: Type,
+                           mutable: Boolean)
   }
 
   /** No type. */
   case object NoType extends Type
 
   /** Generates a literal zero of the given type. */
-  def zeroOf(tpe: Type)(implicit pos: Position): Literal = tpe match {
-    case BooleanType => BooleanLiteral(false)
-    case IntType     => IntLiteral(0)
-    case LongType    => LongLiteral(0L)
-    case FloatType   => FloatLiteral(0.0f)
-    case DoubleType  => DoubleLiteral(0.0)
-    case StringType  => StringLiteral("")
-    case UndefType   => Undefined()
-    case _           => Null()
-  }
+  def zeroOf(tpe: Type)(implicit pos: Position): Literal =
+    tpe match {
+      case BooleanType => BooleanLiteral(false)
+      case IntType => IntLiteral(0)
+      case LongType => LongLiteral(0L)
+      case FloatType => FloatLiteral(0.0f)
+      case DoubleType => DoubleLiteral(0.0)
+      case StringType => StringLiteral("")
+      case UndefType => Undefined()
+      case _ => Null()
+    }
 
   /** Tests whether a type `lhs` is a subtype of `rhs` (or equal).
    *  [[NoType]] is never a subtype or supertype of anything (including
@@ -169,37 +176,29 @@ object Types {
     import Definitions._
 
     (lhs != NoType && rhs != NoType) && {
-      (lhs == rhs) ||
-      ((lhs, rhs) match {
-        case (_, AnyType)     => true
+      (lhs == rhs) || ((lhs, rhs) match {
+        case (_, AnyType) => true
         case (NothingType, _) => true
 
         case (ClassType(lhsClass), ClassType(rhsClass)) =>
           isSubclass(lhsClass, rhsClass)
 
-        case (NullType, ClassType(_))    => true
+        case (NullType, ClassType(_)) => true
         case (NullType, ArrayType(_, _)) => true
 
-        case (UndefType, ClassType(cls)) =>
-          isSubclass(BoxedUnitClass, cls)
+        case (UndefType, ClassType(cls)) => isSubclass(BoxedUnitClass, cls)
         case (BooleanType, ClassType(cls)) =>
           isSubclass(BoxedBooleanClass, cls)
         case (IntType, ClassType(cls)) =>
-          isSubclass(BoxedIntegerClass, cls) ||
-          cls == BoxedByteClass ||
-          cls == BoxedShortClass ||
-          cls == BoxedDoubleClass
-        case (LongType, ClassType(cls)) =>
-          isSubclass(BoxedLongClass, cls)
+          isSubclass(BoxedIntegerClass, cls) || cls == BoxedByteClass ||
+          cls == BoxedShortClass || cls == BoxedDoubleClass
+        case (LongType, ClassType(cls)) => isSubclass(BoxedLongClass, cls)
         case (FloatType, ClassType(cls)) =>
-          isSubclass(BoxedFloatClass, cls) ||
-          cls == BoxedDoubleClass
-        case (DoubleType, ClassType(cls)) =>
-          isSubclass(BoxedDoubleClass, cls)
-        case (StringType, ClassType(cls)) =>
-          isSubclass(StringClass, cls)
+          isSubclass(BoxedFloatClass, cls) || cls == BoxedDoubleClass
+        case (DoubleType, ClassType(cls)) => isSubclass(BoxedDoubleClass, cls)
+        case (StringType, ClassType(cls)) => isSubclass(StringClass, cls)
 
-        case (IntType, DoubleType)   => true
+        case (IntType, DoubleType) => true
         case (FloatType, DoubleType) => true
 
         case (ArrayType(lhsBase, lhsDims), ArrayType(rhsBase, rhsDims)) =>
@@ -207,7 +206,8 @@ object Types {
             false // because Array[A] </: Array[Array[A]]
           } else if (lhsDims > rhsDims) {
             rhsBase == ObjectClass // because Array[Array[A]] <: Array[Object]
-          } else { // lhsDims == rhsDims
+          } else {
+            // lhsDims == rhsDims
             // lhsBase must be <: rhsBase
             if (isPrimitiveClass(lhsBase) || isPrimitiveClass(rhsBase)) {
               lhsBase == rhsBase
@@ -223,8 +223,7 @@ object Types {
         case (ArrayType(_, _), ClassType(cls)) =>
           AncestorsOfPseudoArrayClass.contains(cls)
 
-        case _ =>
-          false
+        case _ => false
       })
     }
   }

@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package scala.scalajs.macroimpls
 
 import scala.annotation.tailrec
@@ -22,26 +21,30 @@ import Compat210._
  *  @author Tobias Schlatter
  */
 @deprecated("Not actually deprecated, makes warnings go away", "")
-private[scalajs] object UseAsMacros {
+private [scalajs] object UseAsMacros {
   // Import macros only here, otherwise we collide with Compat210._
   import scala.reflect.macros._
   import blackbox.Context
 
-  def as_impl[A: c.WeakTypeTag, B <: js.Any: c.WeakTypeTag](
-      c: Context { type PrefixType = js.Using[_] }): c.Expr[B] = {
-    (new Macros[c.type](c)).as[A, B]
+  def as_impl[A : c.WeakTypeTag, B <: js.Any : c.WeakTypeTag](c: Context {
+        type PrefixType = js.Using[_]
+      }): c.Expr[B] = {
+    (new Macros[c. type](c)).as[A, B]
   }
 
-  private class Macros[C <: Context { type PrefixType = js.Using[_] }](val c: C)
+  private class Macros[C <: Context { type PrefixType = js.Using[_] }](
+      val c: C)
       extends JSMembers with Compat210Component {
-
     import c.universe._
 
     private val JSNameAnnotation = typeOf[js.annotation.JSName].typeSymbol
-    private val JSBracketAccessAnnotation = typeOf[js.annotation.JSBracketAccess].typeSymbol
-    private val JSBracketCallAnnotation = typeOf[js.annotation.JSBracketCall].typeSymbol
+    private val JSBracketAccessAnnotation =
+      typeOf[js.annotation.JSBracketAccess].typeSymbol
+    private val JSBracketCallAnnotation =
+      typeOf[js.annotation.JSBracketCall].typeSymbol
     private val JSExportAnnotation = typeOf[js.annotation.JSExport].typeSymbol
-    private val JSExportAllAnnotation = typeOf[js.annotation.JSExportAll].typeSymbol
+    private val JSExportAllAnnotation =
+      typeOf[js.annotation.JSExportAll].typeSymbol
 
     /** Base classes that are allowed in a target type.
      *  These are also the classes whose methods do not need to be provided.
@@ -50,7 +53,7 @@ private[scalajs] object UseAsMacros {
 
     type JSMemberSet = Map[JSMemberSelection, List[JSMember]]
 
-    def as[A: WeakTypeTag, B <: js.Any: WeakTypeTag]: Expr[B] = {
+    def as[A : WeakTypeTag, B <: js.Any : WeakTypeTag]: Expr[B] = {
       val trgTpe = verifyTargetType(weakTypeOf[B])
       val srcTpe = weakTypeOf[A]
 
@@ -86,19 +89,15 @@ private[scalajs] object UseAsMacros {
           case UnsupportedMember(sym, tpe) =>
             val msg = tpe match {
               case _: PolyType =>
-                "Polymorphic methods are currently " +
-                s"not supported. Offending method: ${sym.fullName}"
+                "Polymorphic methods are currently " + s"not supported. Offending method: ${sym.fullName}"
 
               case _: ExistentialType =>
-                "Methods with existential types are " +
-                s"not supported. Offending method: ${sym.fullName}. This is " +
-                "likely caused by an abstract type in the method signature"
+                "Methods with existential types are " + s"not supported. Offending method: ${sym.fullName}. This is " + "likely caused by an abstract type in the method signature"
 
               case _ =>
-                sys.error("Unknown type in unsupported member. " +
-                    "Report this as a bug.\n" +
-                     s"Offending method: ${sym.fullName}\n" +
-                     s"Offending type: ${showRaw(tpe)}")
+                sys.error(
+                    "Unknown type in unsupported member. " + "Report this as a bug.\n" + s"Offending method: ${sym.fullName}\n" + s"Offending type: ${showRaw(
+                    tpe)}")
             }
 
             c.error(c.enclosingPosition, msg)
@@ -112,45 +111,37 @@ private[scalajs] object UseAsMacros {
         }
 
         if (!hasConformingMember) {
+
           // Error: A member is missing. Construct an informative error message
 
           def noSuchMember(memberName: String) = {
-            val membershipStr = if (isRawJSType) "have" else "export"
+            val membershipStr =
+              if (isRawJSType) "have"
+              else "export"
             val memberStr = jsMember.displayStr(memberName)
             s"$srcTpe does not $membershipStr a $memberStr."
           }
 
           val errMsg = jsMemberSelection match {
-            case JSNamedMember(name) =>
-              noSuchMember(name)
+            case JSNamedMember(name) => noSuchMember(name)
 
             case JSMemberCall if !isRawJSType =>
-              s"$trgTpe defines an apply method. This cannot be implemented " +
-                  "by any Scala exported type, since it would need to chain " +
-                  "Function's prototype."
+              s"$trgTpe defines an apply method. This cannot be implemented " + "by any Scala exported type, since it would need to chain " + "Function's prototype."
 
             case JSMemberBracketAccess if !isRawJSType =>
-              s"$trgTpe defines a @JSMemberBracketAccess method. Existence " +
-                  "of such a method cannot be statically checked for any " +
-                  "Scala exported type."
+              s"$trgTpe defines a @JSMemberBracketAccess method. Existence " + "of such a method cannot be statically checked for any " + "Scala exported type."
 
             case JSMemberBracketCall if !isRawJSType =>
-              s"$trgTpe defines a @JSMemberBracketCall method. Existence of " +
-                  "such a method cannot be statically checked for any Scala " +
-                  "exported type."
+              s"$trgTpe defines a @JSMemberBracketCall method. Existence of " + "such a method cannot be statically checked for any Scala " + "exported type."
 
             case JSMemberCall =>
               noSuchMember("<apply>") + " (type is not callable)"
 
             case JSMemberBracketAccess =>
-              noSuchMember("<bracketaccess>") + " (type doesn't support " +
-                  "member selection via []). Add @JSBracketAccess to use a " +
-                  "method for member selection."
+              noSuchMember("<bracketaccess>") + " (type doesn't support " + "member selection via []). Add @JSBracketAccess to use a " + "method for member selection."
 
             case JSMemberBracketCall =>
-              noSuchMember("<bracketcall>") + " (type doesn't support " +
-                  "dynamically calling methods). Add @JSBracketCall to use a " +
-                  "method for dynamic calls."
+              noSuchMember("<bracketcall>") + " (type doesn't support " + "dynamically calling methods). Add @JSBracketCall to use a " + "method for dynamic calls."
           }
 
           c.error(c.enclosingPosition, errMsg)
@@ -162,15 +153,12 @@ private[scalajs] object UseAsMacros {
     private def rawJSMembers(tpe: Type): JSMemberSet = {
 
       def isAPIMember(member: Symbol) = {
-        !JSObjectAncestors(member.owner) &&
-        !member.isConstructor &&
-        member.isMethod &&
-        !member.asTerm.isParamWithDefault
+        !JSObjectAncestors(member.owner) && !member.isConstructor &&
+        member.isMethod && !member.asTerm.isParamWithDefault
       }
 
       val tups = for {
-        member <- tpe.members
-        if isAPIMember(member)
+        member <- tpe.members if isAPIMember(member)
       } yield {
         val memberMethod = member.asMethod
         (jsMemberSelection(memberMethod), jsMemberFor(tpe, memberMethod))
@@ -202,7 +190,9 @@ private[scalajs] object UseAsMacros {
           val name = defaultName(sym)
           if (name == "apply") JSMemberCall
           else JSNamedMember(name)
-        } { name => JSNamedMember(name) }
+        } { name =>
+          JSNamedMember(name)
+        }
       }
     }
 
@@ -239,30 +229,28 @@ private[scalajs] object UseAsMacros {
       sym.info.asSeenFrom(origTpe, sym.owner) match {
         case MethodType(List(param), resultType)
             if resultType.typeSymbol == definitions.UnitClass &&
-               sym.name.decodedName.toString.endsWith("_=") =>
+            sym.name.decodedName.toString.endsWith("_=") =>
           JSSetter(param.info)
 
-        case NullaryMethodType(returnType) =>
-          JSGetter(returnType)
+        case NullaryMethodType(returnType) => JSGetter(returnType)
 
         case info: MethodType =>
           @tailrec
           def flatParams(tpe: Type, acc: List[JSMethodParam]): JSMethod = {
             tpe match {
               case MethodType(params, returnTpe) =>
-                val ps = params map { p =>
-                  JSMethodParam(p.info, p.asTerm.isParamWithDefault)
-                }
+                val ps =
+                  params map { p =>
+                    JSMethodParam(p.info, p.asTerm.isParamWithDefault)
+                  }
                 flatParams(returnTpe, ps reverse_::: acc)
-              case tpe =>
-                JSMethod(acc.reverse, tpe)
+              case tpe => JSMethod(acc.reverse, tpe)
             }
           }
 
           flatParams(info, Nil)
 
-        case tpe =>
-          UnsupportedMember(sym, tpe)
+        case tpe => UnsupportedMember(sym, tpe)
       }
     }
 
@@ -271,8 +259,7 @@ private[scalajs] object UseAsMacros {
       lazy val default = defaultName(sym)
 
       val explicitNames = for {
-        annot <- memberAnnotations(sym)
-        if annotIs(annot, JSExportAnnotation)
+        annot <- memberAnnotations(sym) if annotIs(annot, JSExportAnnotation)
       } yield {
         annotStringArg(annot).getOrElse(default)
       }
@@ -292,7 +279,7 @@ private[scalajs] object UseAsMacros {
      */
     private def verifyTargetType(tpe: Type): Type = {
       tpe.dealias match {
-        case tpe @ TypeRef(_, sym0, _) if sym0.isClass =>
+        case tpe@TypeRef(_, sym0, _) if sym0.isClass =>
           val sym = sym0.asClass
 
           if (!sym.isTrait)
@@ -302,18 +289,20 @@ private[scalajs] object UseAsMacros {
             sym.asClass.isTrait || JSObjectAncestors(sym)
 
           for (base <- sym.baseClasses if !allowedParent(base)) {
-            c.abort(c.enclosingPosition, s"Supertype ${base.fullName} of $sym " +
-                "is a class. Cannot be used with as.")
+            c.abort(
+                c.enclosingPosition,
+                s"Supertype ${base.fullName} of $sym " + "is a class. Cannot be used with as.")
           }
 
           tpe
 
-        case tpe @ RefinedType(parents, decls) =>
+        case tpe@RefinedType(parents, decls) =>
           parents.foreach(verifyTargetType)
 
           for (decl <- decls if !decl.isType) {
-            c.abort(c.enclosingPosition, s"Refinement ${decl.name} " +
-                "is not a type. Only types may be refined with as.")
+            c.abort(
+                c.enclosingPosition,
+                s"Refinement ${decl.name} " + "is not a type. Only types may be refined with as.")
           }
 
           tpe
@@ -327,7 +316,9 @@ private[scalajs] object UseAsMacros {
      *  Looks on accessed field if this is an accessor
      */
     private def memberAnnotations(sym: MethodSymbol): List[Annotation] = {
-      val trgSym = if (sym.isAccessor) sym.accessed else sym
+      val trgSym =
+        if (sym.isAccessor) sym.accessed
+        else sym
 
       // Force typeSignature to calculate annotations
       trgSym.typeSignature
@@ -340,14 +331,12 @@ private[scalajs] object UseAsMacros {
       val args = annot.tree.children.tail
       args match {
         case List(Literal(Constant(s: String))) => Some(s)
-        case _                                  => None
+        case _ => None
       }
     }
 
     /** Checks if [[annot]] is of class [[clsSym]] */
     private def annotIs(annot: Annotation, clsSym: Symbol) =
       annot.tree.tpe.typeSymbol == clsSym
-
   }
-
 }

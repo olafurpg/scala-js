@@ -17,7 +17,7 @@ abstract class JSPrimitives {
   val global: Global
 
   type ThisJSGlobalAddons = JSGlobalAddons {
-    val global: JSPrimitives.this.global.type
+    val global: JSPrimitives. this.global. type
   }
 
   val jsAddons: ThisJSGlobalAddons
@@ -31,30 +31,30 @@ abstract class JSPrimitives {
 
   val GETCLASS = 301 // Object.getClass()
 
-  val F2JS = 305     // FunctionN to js.FunctionN
+  val F2JS = 305 // FunctionN to js.FunctionN
   val F2JSTHIS = 306 // FunctionN to js.ThisFunction{N-1}
 
   val DYNNEW = 321 // Instantiate a new JavaScript object
 
-  val DYNLIT = 334    // js.Dynamic.literal.applyDynamic{,Named}
+  val DYNLIT = 334 // js.Dynamic.literal.applyDynamic{,Named}
 
-  val DICT_DEL = 335   // js.Dictionary.delete
+  val DICT_DEL = 335 // js.Dictionary.delete
 
   val ARR_CREATE = 337 // js.Array.apply (array literal syntax)
 
-  val TYPEOF = 344    // typeof x
-  val DEBUGGER = 345  // js.debugger()
-  val HASPROP = 346   // js.Object.hasProperty(o, p), equiv to `p in o` in JS
-  val OBJPROPS = 347  // js.Object.properties(o), equiv to `for (p in o)` in JS
-  val JS_NATIVE = 348 // js.native. Marker method. Fails if tried to be emitted.
+  val TYPEOF = 344 // typeof x
+  val DEBUGGER = 345 // js.debugger()
+  val HASPROP = 346 // js.Object.hasProperty(o, p), equiv to `p in o` in JS
+  val OBJPROPS = 347 // js.Object.properties(o), equiv to `for (p in o)` in JS
+  val JS_NATIVE =
+    348 // js.native. Marker method. Fails if tried to be emitted.
 
-  val UNITVAL = 349  // () value, which is undefined
+  val UNITVAL = 349 // () value, which is undefined
   val UNITTYPE = 350 // BoxedUnit.TYPE (== classOf[Unit])
 
   val CONSTRUCTOROF = 352 // runtime.constructorOf(clazz)
-  val ENV_INFO = 353      // __ScalaJSEnv via helper
-  val LINKING_INFO = 354  // $linkingInfo
-
+  val ENV_INFO = 353 // __ScalaJSEnv via helper
+  val LINKING_INFO = 354 // $linkingInfo
   /** Initialize the map of primitive methods (for GenJSCode) */
   def init(): Unit = initWithPrimitives(addPrimitive)
 
@@ -75,10 +75,8 @@ abstract class JSPrimitives {
   private def initWithPrimitives(addPrimitive: (Symbol, Int) => Unit): Unit = {
     addPrimitive(Object_getClass, GETCLASS)
 
-    for (i <- 0 to 22)
-      addPrimitive(JSAny_fromFunction(i), F2JS)
-    for (i <- 1 to 22)
-      addPrimitive(JSThisFunction_fromFunction(i), F2JSTHIS)
+    for (i <- 0 to 22) addPrimitive(JSAny_fromFunction(i), F2JS)
+    for (i <- 1 to 22) addPrimitive(JSThisFunction_fromFunction(i), F2JSTHIS)
 
     addPrimitive(JSDynamic_newInstance, DYNNEW)
 
@@ -104,6 +102,5 @@ abstract class JSPrimitives {
     addPrimitive(Runtime_linkingInfo, LINKING_INFO)
   }
 
-  def isJavaScriptPrimitive(code: Int): Boolean =
-    code >= 300 && code < 360
+  def isJavaScriptPrimitive(code: Int): Boolean = code >= 300 && code < 360
 }

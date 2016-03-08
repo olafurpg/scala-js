@@ -13,13 +13,12 @@ import scala.util.control.ControlThrowable
  */
 class UndefinedBehaviorError(message: String, cause: Throwable)
     extends java.lang.Error(message, cause) with ControlThrowable {
+  def this (message: String) = this(message, null)
 
-  def this(message: String) = this(message, null)
+  def this (cause: Throwable) = this("An undefined behavior was detected" +
+                                     (if (cause == null) ""
+                                         else ": " + cause.getMessage),
+                                     cause)
 
-  def this(cause: Throwable) =
-    this("An undefined behavior was detected" +
-        (if (cause == null) "" else ": "+cause.getMessage), cause)
-
-  override def fillInStackTrace(): Throwable =
-    super[Error].fillInStackTrace()
+  override def fillInStackTrace(): Throwable = super [Error].fillInStackTrace()
 }

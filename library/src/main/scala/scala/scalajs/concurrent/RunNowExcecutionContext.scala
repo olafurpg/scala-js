@@ -2,8 +2,7 @@ package scala.scalajs.concurrent
 
 import scala.concurrent.ExecutionContextExecutor
 
-private[concurrent] object RunNowExecutionContext
-    extends ExecutionContextExecutor {
+private [concurrent] object RunNowExecutionContext extends ExecutionContextExecutor {
 
   def execute(runnable: Runnable): Unit = {
     try {
@@ -13,7 +12,5 @@ private[concurrent] object RunNowExecutionContext
     }
   }
 
-  def reportFailure(t: Throwable): Unit =
-    t.printStackTrace()
-
+  def reportFailure(t: Throwable): Unit = t.printStackTrace()
 }

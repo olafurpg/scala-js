@@ -13,10 +13,7 @@ import scala.scalajs.js.typedarray._
 import DataViewExt._
 
 object DataViewTest extends JasmineTest {
-
-  when("typedarray").
-  describe("DataView") {
-
+  when("typedarray").describe("DataView") {
     it("should provide an ArrayBuffer only constructor") {
       val buf = new ArrayBuffer(10)
       val view = new DataView(buf)
@@ -314,7 +311,5 @@ object DataViewTest extends JasmineTest {
       expect(view.getFloat64(0, true)).not.toBe(0.5)
       expect(view.getFloat64(1, true)).toBe(0.6)
     }
-
   }
-
 }

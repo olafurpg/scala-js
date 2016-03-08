@@ -33,14 +33,17 @@ object AsyncTest extends JasmineTest {
 
     steps += "prep-map"
 
-    val f2 = f1 map { x =>
-      steps += "map"
-      x * 2
-    }
+    val f2 =
+      f1 map { x =>
+        steps += "map"
+        x * 2
+      }
 
     steps += "prep-foreach"
 
-    f2 foreach { _ => steps += "foreach" }
+    f2 foreach { _ =>
+      steps += "foreach"
+    }
 
     steps += "done"
 
@@ -54,54 +57,44 @@ object AsyncTest extends JasmineTest {
     it("should correctly order future calls") {
       val res = asyncTest
 
-      expect(res).toEqual(js.Array(
-        "prep-future",
-        "prep-map",
-        "prep-foreach",
-        "done"))
+      expect(res)
+        .toEqual(js.Array("prep-future", "prep-map", "prep-foreach", "done"))
 
       jasmine.Clock.tick(1)
 
-      expect(res).toEqual(js.Array(
-        "prep-future",
-        "prep-map",
-        "prep-foreach",
-        "done",
-        "future",
-        "map",
-        "foreach"))
+      expect(res).toEqual(js.Array("prep-future",
+                                   "prep-map",
+                                   "prep-foreach",
+                                   "done",
+                                   "future",
+                                   "map",
+                                   "foreach"))
     }
   }
 
   describe("scala.scalajs.concurrent.JSExecutionContext.queue") {
-
     beforeEach {
       jasmine.Clock.useMock()
     }
 
     queueExecOrderTests(JSExecutionContext.queue)
-
   }
 
   describe("scala.scalajs.concurrent.JSExecutionContext.runNow") {
-
     it("should correctly order future calls") {
       val res = asyncTest(JSExecutionContext.runNow)
 
-      expect(res).toEqual(js.Array(
-          "prep-future",
-          "future",
-          "prep-map",
-          "map",
-          "prep-foreach",
-          "foreach",
-          "done"))
+      expect(res).toEqual(js.Array("prep-future",
+                                   "future",
+                                   "prep-map",
+                                   "map",
+                                   "prep-foreach",
+                                   "foreach",
+                                   "done"))
     }
-
   }
 
   describe("scala.scala.concurrent.ExecutionContext.global") {
-
     beforeEach {
       jasmine.Clock.useMock()
     }
@@ -111,14 +104,12 @@ object AsyncTest extends JasmineTest {
     }
 
     queueExecOrderTests(ExecutionContext.global)
-
   }
 
   describe("scala.concurrent.Future") {
-
     it("should support map") {
       implicit val ec = JSExecutionContext.runNow
-      val f = Future(3).map(x => x*2)
+      val f = Future(3).map(x => x * 2)
       expect(f.value.get.get).toEqual(6)
     }
 
@@ -133,7 +124,5 @@ object AsyncTest extends JasmineTest {
       val f = Future.sequence(Seq(Future(3), Future(5)))
       expect(f.value.get.get.toJSArray).toEqual(js.Array(3, 5))
     }
-
   }
-
 }

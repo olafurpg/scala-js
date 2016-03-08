@@ -6,14 +6,11 @@
 **                          |/                                          **
 \*                                                                      */
 
-
-
 package scala.compat
 
 import java.lang.System
 
 object Platform {
-
   /** Thrown when a stack overflow occurs because a method or function recurses too deeply.
     *
     * On the JVM, this is a type alias for `java.lang.StackOverflowError`, which itself extends `java.lang.Error`.
@@ -48,9 +45,10 @@ object Platform {
     *                after `srcPos` or `destPos` in `src` and `dest` respectively.
     */
   @inline
-  def arraycopy(src: AnyRef, srcPos: Int, dest: AnyRef, destPos: Int, length: Int) {
-    System.arraycopy(src, srcPos, dest, destPos, length)
-  }
+  def arraycopy(
+      src: AnyRef, srcPos: Int, dest: AnyRef, destPos: Int, length: Int) {
+        System.arraycopy(src, srcPos, dest, destPos, length)
+      }
 
   /** Creates a new array of the specified type and given length.
    *

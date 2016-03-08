@@ -14,10 +14,10 @@ object ScalaJSEnvGenerator {
     if (!trg.exists() || trg.lastModified() < env.lastModified() ||
         trg.lastModified() < strongmodeenvFile.lastModified()) {
       val scalajsenv = IO.read(env).replaceAllLiterally("$", "$$")
-      val strongmodeenv = IO.read(strongmodeenvFile).replaceAllLiterally("$", "$$")
+      val strongmodeenv =
+        IO.read(strongmodeenvFile).replaceAllLiterally("$", "$$")
 
-      val scalaCode =
-        s"""
+      val scalaCode = s"""
         package org.scalajs.core.tools.linker.backend.emitter
 
         private[emitter] object ScalaJSEnvHolder {
@@ -32,5 +32,4 @@ object ScalaJSEnvGenerator {
 
     Seq(trg)
   }
-
 }

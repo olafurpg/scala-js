@@ -3,7 +3,8 @@ package java.util.zip
 import java.io._
 
 /** Dummy implementation of InflatorInputStream. Does not do anything. */
-class InflaterInputStream(in: InputStream) extends FilterInputStream(in) {
+class InflaterInputStream(in: InputStream)
+    extends FilterInputStream(in) {
 
   // Not implemented:
   // def this(in: InputStream, inf: Inflater)
@@ -13,7 +14,8 @@ class InflaterInputStream(in: InputStream) extends FilterInputStream(in) {
   // protected var len: Int
 
   override def markSupported(): Boolean = false
-  override def mark(readlimit: Int): Unit = {}
-  override def reset(): Unit = throw new IOException("Reset not supported")
 
+  override def mark(readlimit: Int): Unit = {}
+
+  override def reset(): Unit = throw new IOException("Reset not supported")
 }

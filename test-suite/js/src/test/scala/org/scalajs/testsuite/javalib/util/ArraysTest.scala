@@ -14,7 +14,7 @@ import scala.scalajs.js.JSConverters._
 
 import org.scalajs.jasminetest.JasmineTest
 
-import java.util.{ Arrays, Comparator }
+import java.util.{Arrays, Comparator}
 
 import scala.reflect.ClassTag
 
@@ -26,58 +26,76 @@ object ArraysTest extends ArraysTest
 trait ArraysTest extends JasmineTest {
 
   // Just in here, we allow ourselves to do this
+
   implicit def array2jsArray[T](arr: Array[T]): js.Array[T] = arr.toJSArray
 
   /** Overridden by typedarray tests */
-  def Array[T: ClassTag](v: T*): scala.Array[T] = scala.Array(v: _*)
+  def Array[T : ClassTag](v: T *): scala.Array[T] = scala.Array(v: _ *)
 
   /** Overridden by typedarray tests */
   def testBody(suite: => Unit): Unit = describe("java.util.Arrays")(suite)
 
   val stringComparator = new Comparator[String]() {
+
     def compare(s1: String, s2: String): Int = s1.compareTo(s2)
   }
 
   testBody {
 
-    def testSort[T](typeName: String,  elem: Int => T, newArray: Int => Array[T],
-          sort: Array[T] => Unit, sort2: (Array[T], Int, Int) => Unit): Unit = {
+    def testSort[T](typeName: String,
+                    elem: Int => T,
+                    newArray: Int => Array[T],
+                    sort: Array[T] => Unit,
+                    sort2: (Array[T], Int, Int) => Unit): Unit = {
       it(s"should respond to `sort` for $typeName") {
         val values = Array(5, 3, 6, 1, 2, 4).map(elem)
         val arr = newArray(values.length)
 
-        for (i <- 0 until values.length)
-          arr(i) = values(i)
+        for (i <- 0 until values.length) arr (i) = values(i)
         sort(arr)
-        for ((e, i) <- Array(1, 2, 3, 4, 5, 6).map(elem).zipWithIndex)
-          expect(arr(i) == e).toBeTruthy
+        for ((e, i) <- Array(1, 2, 3, 4, 5, 6).map(elem).zipWithIndex) expect(
+            arr(i) == e).toBeTruthy
 
-        for (i <- 0 until values.length)
-          arr(i) = values(i)
+        for (i <- 0 until values.length) arr (i) = values(i)
         sort2(arr, 0, 3)
-        for ((e, i) <- Array(3, 5, 6, 1, 2, 4).map(elem).zipWithIndex)
-          expect(arr(i) == e).toBeTruthy
+        for ((e, i) <- Array(3, 5, 6, 1, 2, 4).map(elem).zipWithIndex) expect(
+            arr(i) == e).toBeTruthy
 
         sort2(arr, 2, 5)
-        for ((e, i) <- Array(3, 5, 1, 2, 6, 4).map(elem).zipWithIndex)
-          expect(arr(i) == e).toBeTruthy
+        for ((e, i) <- Array(3, 5, 1, 2, 6, 4).map(elem).zipWithIndex) expect(
+            arr(i) == e).toBeTruthy
 
         sort2(arr, 0, 6)
-        for ((e, i) <- Array(1, 2, 3, 4, 5, 6).map(elem).zipWithIndex)
-          expect(arr(i) == e).toBeTruthy
+        for ((e, i) <- Array(1, 2, 3, 4, 5, 6).map(elem).zipWithIndex) expect(
+            arr(i) == e).toBeTruthy
       }
     }
-    testSort[Int]("Int", _.toInt, new Array(_), Arrays.sort(_), Arrays.sort(_, _, _))
-    testSort[Long]("Long", _.toLong, new Array(_), Arrays.sort(_), Arrays.sort(_, _, _))
-    testSort[Short]("Short", _.toShort, new Array(_), Arrays.sort(_), Arrays.sort(_, _, _))
-    testSort[Byte]("Byte", _.toByte, new Array(_), Arrays.sort(_), Arrays.sort(_, _, _))
-    testSort[Char]("Char", _.toChar, new Array(_), Arrays.sort(_), Arrays.sort(_, _, _))
-    testSort[Float]("Float", _.toFloat, new Array(_), Arrays.sort(_), Arrays.sort(_, _, _))
-    testSort[Double]("Double", _.toDouble, new Array(_), Arrays.sort(_), Arrays.sort(_, _, _))
-    testSort[AnyRef]("String", _.toString, new Array(_), Arrays.sort(_), Arrays.sort(_, _, _))
+    testSort[Int](
+        "Int", _.toInt, new Array(_), Arrays.sort(_), Arrays.sort(_, _, _))
+    testSort[Long](
+        "Long", _.toLong, new Array(_), Arrays.sort(_), Arrays.sort(_, _, _))
+    testSort[Short](
+        "Short", _.toShort, new Array(_), Arrays.sort(_), Arrays.sort(_, _, _))
+    testSort[Byte](
+        "Byte", _.toByte, new Array(_), Arrays.sort(_), Arrays.sort(_, _, _))
+    testSort[Char](
+        "Char", _.toChar, new Array(_), Arrays.sort(_), Arrays.sort(_, _, _))
+    testSort[Float](
+        "Float", _.toFloat, new Array(_), Arrays.sort(_), Arrays.sort(_, _, _))
+    testSort[Double]("Double",
+                     _.toDouble,
+                     new Array(_),
+                     Arrays.sort(_),
+                     Arrays.sort(_, _, _))
+    testSort[AnyRef]("String",
+                     _.toString,
+                     new Array(_),
+                     Arrays.sort(_),
+                     Arrays.sort(_, _, _))
 
     it("should respond to `sort` with comparator") {
-      val scalajs: Array[String] = Array("S", "c", "a", "l", "a", ".", "j", "s")
+      val scalajs: Array[String] =
+        Array("S", "c", "a", "l", "a", ".", "j", "s")
       val sorted = Array[String](".", "S", "a", "a", "c", "j", "l", "s")
 
       Arrays.sort(scalajs, stringComparator)
@@ -85,17 +103,24 @@ trait ArraysTest extends JasmineTest {
     }
 
     it("should have a `sort` that is stable") {
+
       case class A(n: Int)
       val cmp = new Comparator[A]() {
+
         def compare(a1: A, a2: A): Int = a1.n.compareTo(a2.n)
       }
       val scalajs: Array[A] = Array(A(1), A(2), A(2), A(3), A(1), A(2), A(3))
-      val sorted = Array[A](scalajs(0), scalajs(4), scalajs(1), scalajs(2),
-          scalajs(5), scalajs(3), scalajs(6))
+      val sorted = Array[A](scalajs(0),
+                            scalajs(4),
+                            scalajs(1),
+                            scalajs(2),
+                            scalajs(5),
+                            scalajs(3),
+                            scalajs(6))
 
       Arrays.sort(scalajs, cmp)
       expect(scalajs).toEqual(sorted)
-      scalajs.zip(sorted).forall(pair => pair ._1 eq pair._2)
+      scalajs.zip(sorted).forall(pair => pair._1 eq pair._2)
     }
 
     it("should respond to `fill` for Boolean") {
@@ -118,7 +143,7 @@ trait ArraysTest extends JasmineTest {
       Arrays.fill(bytes, 42.toByte)
       expect(bytes).toEqual(Array[Byte](42, 42, 42, 42, 42, 42))
 
-      Arrays.fill(bytes, -1.toByte)
+      Arrays.fill(bytes, - 1.toByte)
       expect(bytes).toEqual(Array[Byte](-1, -1, -1, -1, -1, -1))
     }
 
@@ -127,7 +152,7 @@ trait ArraysTest extends JasmineTest {
       Arrays.fill(bytes, 1, 4, 42.toByte)
       expect(bytes).toEqual(Array[Byte](0, 42, 42, 42, 0, 0))
 
-      Arrays.fill(bytes, 2, 5, -1.toByte)
+      Arrays.fill(bytes, 2, 5, - 1.toByte)
       expect(bytes).toEqual(Array[Byte](0, 42, -1, -1, -1, 0))
     }
 
@@ -136,7 +161,7 @@ trait ArraysTest extends JasmineTest {
       Arrays.fill(shorts, 42.toShort)
       expect(shorts).toEqual(Array[Short](42, 42, 42, 42, 42, 42))
 
-      Arrays.fill(shorts, -1.toShort)
+      Arrays.fill(shorts, - 1.toShort)
       expect(shorts).toEqual(Array[Short](-1, -1, -1, -1, -1, -1))
     }
 
@@ -145,7 +170,7 @@ trait ArraysTest extends JasmineTest {
       Arrays.fill(shorts, 1, 4, 42.toShort)
       expect(shorts).toEqual(Array[Short](0, 42, 42, 42, 0, 0))
 
-      Arrays.fill(shorts, 2, 5, -1.toShort)
+      Arrays.fill(shorts, 2, 5, - 1.toShort)
       expect(shorts).toEqual(Array[Short](0, 42, -1, -1, -1, 0))
     }
 
@@ -420,7 +445,8 @@ trait ArraysTest extends JasmineTest {
     }
 
     it("should respond to `binarySearch` with start index, end index and key for AnyRef") {
-      val strings: Array[AnyRef] = Array("aa", "abc", "cc", "zz", "zzzs", "zzzt")
+      val strings: Array[AnyRef] =
+        Array("aa", "abc", "cc", "zz", "zzzs", "zzzt")
       var ret = Arrays.binarySearch(strings, 0, 6, "zz")
       expect(ret).toEqual(3)
 
@@ -435,7 +461,8 @@ trait ArraysTest extends JasmineTest {
     }
 
     it("should respond to `binarySearch` with key for AnyRef") {
-      val strings: Array[AnyRef] = Array("aa", "abc", "cc", "zz", "zzzs", "zzzt")
+      val strings: Array[AnyRef] =
+        Array("aa", "abc", "cc", "zz", "zzzs", "zzzt")
       var ret = Arrays.binarySearch(strings, "zz")
       expect(ret).toEqual(3)
 
@@ -450,7 +477,9 @@ trait ArraysTest extends JasmineTest {
     }
 
     it("should check ranges of input to `binarySearch`") {
-      def expectException(block: => Unit)(expected: PartialFunction[Throwable, Unit]): Unit = {
+
+      def expectException(block: => Unit)(expected: PartialFunction[Throwable,
+                                          Unit]): Unit = {
         val catchAll: PartialFunction[Throwable, Unit] = {
           case e: Throwable => expect(e.getClass.getName).toBe("not thrown")
         }
@@ -530,7 +559,8 @@ trait ArraysTest extends JasmineTest {
     it("should respond to `copyOf` with key for Boolean") {
       val bools: Array[Boolean] = Array(false, true, false)
       val boolscopy = Arrays.copyOf(bools, 5)
-      expect(boolscopy).toEqual(Array[Boolean](false, true, false, false, false))
+      expect(boolscopy)
+        .toEqual(Array[Boolean](false, true, false, false, false))
     }
 
     it("should respond to `copyOf` with key for AnyRef") {
@@ -546,7 +576,9 @@ trait ArraysTest extends JasmineTest {
     }
 
     it("should respond to `copyOf` with key for AnyRef with change of type") {
+
       class A
+
       case class B(x: Int) extends A
 
       val bs: Array[AnyRef] = Array(B(1), B(2), B(3))
@@ -568,7 +600,9 @@ trait ArraysTest extends JasmineTest {
     }
 
     it("should respond to `copyOfRange` for AnyRef with change of type") {
+
       class A
+
       case class B(x: Int) extends A
       val bs: Array[B] = Array(B(1), B(2), B(3), B(4), B(5))
       val bscopyAsA = Arrays.copyOfRange(bs, 2, 4, classOf[Array[A]])
@@ -589,7 +623,8 @@ trait ArraysTest extends JasmineTest {
       expect(Arrays.hashCode(Array[Char]('a'))).toEqual(128)
       expect(Arrays.hashCode(Array[Char]('c', '&'))).toEqual(4068)
       expect(Arrays.hashCode(Array[Char]('-', '5', 'q'))).toEqual(74792)
-      expect(Arrays.hashCode(Array[Char]('.', ' ', '\u4323', 'v', '~'))).toEqual(88584920)
+      expect(Arrays.hashCode(Array[Char]('.', ' ', '\u4323', 'v', '~')))
+        .toEqual(88584920)
     }
 
     it("should respond to `hashCode` for Bytes") {
@@ -616,7 +651,8 @@ trait ArraysTest extends JasmineTest {
       expect(Arrays.hashCode(Array[Int](1))).toEqual(32)
       expect(Arrays.hashCode(Array[Int](7, -125))).toEqual(1053)
       expect(Arrays.hashCode(Array[Int](3, 0, 4534))).toEqual(37208)
-      expect(Arrays.hashCode(Array[Int](0, 45, 100, 1, 1, Int.MaxValue))).toEqual(-1215441431)
+      expect(Arrays.hashCode(Array[Int](0, 45, 100, 1, 1, Int.MaxValue)))
+        .toEqual(-1215441431)
     }
 
     it("should respond to `hashCode` for Longs") {
@@ -625,8 +661,14 @@ trait ArraysTest extends JasmineTest {
       expect(Arrays.hashCode(Array[Long](1L))).toEqual(32)
       expect(Arrays.hashCode(Array[Long](7L, -125L))).toEqual(1302)
       expect(Arrays.hashCode(Array[Long](3L, 0L, 4534L))).toEqual(37208)
-      expect(Arrays.hashCode(Array[Long](0L, 45L, 100L, 1L, 1L, Int.MaxValue))).toEqual(-1215441431)
-      expect(Arrays.hashCode(Array[Long](0L, 34573566354545L, 100L, 1L, 1L, Int.MaxValue))).toEqual(-1952288964)
+      expect(Arrays.hashCode(Array[Long](0L, 45L, 100L, 1L, 1L, Int.MaxValue)))
+        .toEqual(-1215441431)
+      expect(Arrays.hashCode(Array[Long](0L,
+                                         34573566354545L,
+                                         100L,
+                                         1L,
+                                         1L,
+                                         Int.MaxValue))).toEqual(-1952288964)
     }
 
     it("should respond to `hashCode` for Floats") {
@@ -634,8 +676,10 @@ trait ArraysTest extends JasmineTest {
       expect(Arrays.hashCode(Array[Float]())).toEqual(1)
       expect(Arrays.hashCode(Array[Float](1f))).toEqual(32)
       expect(Arrays.hashCode(Array[Float](7.2f, -125.2f))).toEqual(-2082726591)
-      expect(Arrays.hashCode(Array[Float](302.1f, 0.0f, 4534f))).toEqual(-1891539602)
-      expect(Arrays.hashCode(Array[Float](0.0f, 45f, -100f, 1.1f, -1f, 3567f))).toEqual(-1591440133)
+      expect(Arrays.hashCode(Array[Float](302.1f, 0.0f, 4534f)))
+        .toEqual(-1891539602)
+      expect(Arrays.hashCode(Array[Float](0.0f, 45f, -100f, 1.1f, -1f, 3567f)))
+        .toEqual(-1591440133)
     }
 
     it("should respond to `hashCode` for Doubles") {
@@ -643,9 +687,16 @@ trait ArraysTest extends JasmineTest {
       expect(Arrays.hashCode(Array[Double]())).toEqual(1)
       expect(Arrays.hashCode(Array[Double](1.1))).toEqual(-1503133662)
       expect(Arrays.hashCode(Array[Double](7.3, -125.23))).toEqual(-2075734168)
-      expect(Arrays.hashCode(Array[Double](3.9, 0.2, 4534.9))).toEqual(-557562564)
-      expect(Arrays.hashCode(Array[Double](0.1, 45.1, -100.0, 1.1, 1.7))).toEqual(-1750344582)
-      expect(Arrays.hashCode(Array[Double](0.0, 34573566354545.9, 100.2, 1.1, 1.2, Int.MaxValue))).toEqual(-1764602991)
+      expect(Arrays.hashCode(Array[Double](3.9, 0.2, 4534.9)))
+        .toEqual(-557562564)
+      expect(Arrays.hashCode(Array[Double](0.1, 45.1, -100.0, 1.1, 1.7)))
+        .toEqual(-1750344582)
+      expect(Arrays.hashCode(Array[Double](0.0,
+                                           34573566354545.9,
+                                           100.2,
+                                           1.1,
+                                           1.2,
+                                           Int.MaxValue))).toEqual(-1764602991)
     }
 
     it("should respond to `hashCode` for AnyRef") {
@@ -653,22 +704,32 @@ trait ArraysTest extends JasmineTest {
       expect(Arrays.hashCode(Array[AnyRef]())).toEqual(1)
       expect(Arrays.hashCode(Array[AnyRef](null, null))).toEqual(961)
       expect(Arrays.hashCode(Array[AnyRef]("a", "b", null))).toEqual(126046)
-      expect(Arrays.hashCode(Array[AnyRef](null, "a", "b", null, "fooooo"))).toEqual(-1237252983)
+      expect(Arrays.hashCode(Array[AnyRef](null, "a", "b", null, "fooooo")))
+        .toEqual(-1237252983)
     }
 
     it("should respond to `deepHashCode`") {
       expect(Arrays.deepHashCode(null: Array[AnyRef])).toEqual(0)
       expect(Arrays.deepHashCode(Array[AnyRef]())).toEqual(1)
       expect(Arrays.deepHashCode(Array[AnyRef](null, null))).toEqual(961)
-      expect(Arrays.deepHashCode(Array[AnyRef]("a", "b", null))).toEqual(126046)
-      expect(Arrays.deepHashCode(Array[AnyRef](null, "a", "b", null, "fooooo"))).toEqual(-1237252983)
-      expect(Arrays.deepHashCode(Array[AnyRef](null, Array[AnyRef]()))).toEqual(962)
-      expect(Arrays.deepHashCode(Array[AnyRef](Array[AnyRef](), Array[AnyRef]()))).toEqual(993)
-      expect(Arrays.deepHashCode(Array[AnyRef](Array[AnyRef](Array[AnyRef]())))).toEqual(63)
-      expect(Arrays.deepHashCode(Array[AnyRef](Array[AnyRef](Array[Int]())))).toEqual(63)
-      expect(Arrays.deepHashCode(Array[AnyRef](Array[AnyRef](Array[Double]())))).toEqual(63)
-      expect(Arrays.deepHashCode(Array[AnyRef](Array[AnyRef](Array[Int](1))))).toEqual(94)
-      expect(Arrays.deepHashCode(Array[AnyRef](Array[AnyRef](Array[AnyRef](1.asInstanceOf[AnyRef]))))).toEqual(94)
+      expect(Arrays.deepHashCode(Array[AnyRef]("a", "b", null)))
+        .toEqual(126046)
+      expect(Arrays.deepHashCode(
+          Array[AnyRef](null, "a", "b", null, "fooooo"))).toEqual(-1237252983)
+      expect(Arrays.deepHashCode(Array[AnyRef](null, Array[AnyRef]())))
+        .toEqual(962)
+      expect(Arrays.deepHashCode(Array[AnyRef](Array[AnyRef](),
+                                               Array[AnyRef]()))).toEqual(993)
+      expect(Arrays.deepHashCode(
+          Array[AnyRef](Array[AnyRef](Array[AnyRef]())))).toEqual(63)
+      expect(Arrays.deepHashCode(Array[AnyRef](Array[AnyRef](Array[Int]()))))
+        .toEqual(63)
+      expect(Arrays.deepHashCode(
+          Array[AnyRef](Array[AnyRef](Array[Double]())))).toEqual(63)
+      expect(Arrays.deepHashCode(Array[AnyRef](Array[AnyRef](Array[Int](1)))))
+        .toEqual(94)
+      expect(Arrays.deepHashCode(Array[AnyRef](
+          Array[AnyRef](Array[AnyRef](1.asInstanceOf[AnyRef]))))).toEqual(94)
     }
 
     it("should respond to `equals` for Booleans") {
@@ -790,12 +851,16 @@ trait ArraysTest extends JasmineTest {
     }
 
     it("should respond to `equals` for AnyRefs") {
+
       // scalastyle:off equals.hash.code
+
       class A(private val x: Int) {
-        override def equals(that: Any): Boolean = that match {
-          case that: A => this.x == that.x
-          case _ => false
-        }
+
+        override def equals(that: Any): Boolean =
+          that match {
+            case that: A => this.x == that.x
+            case _ => false
+          }
       }
       // scalastyle:on equals.hash.code
 
@@ -816,27 +881,21 @@ trait ArraysTest extends JasmineTest {
     }
 
     it("should respond to `deepEquals`") {
-      expect(Arrays.deepEquals(
-          null: Array[AnyRef],
-          null: Array[AnyRef])).toBeTruthy
-      expect(Arrays.deepEquals(
-          Array[AnyRef](),
-          Array[AnyRef]())).toBeTruthy
-      expect(Arrays.deepEquals(
-          Array[AnyRef](null, null),
-          Array[AnyRef](null, null))).toBeTruthy
-      expect(Arrays.deepEquals(
-          Array[AnyRef]("a", "b", null),
-          Array[AnyRef]("a", "b", null))).toBeTruthy
+      expect(Arrays.deepEquals(null: Array[AnyRef], null: Array[AnyRef])).toBeTruthy
+      expect(Arrays.deepEquals(Array[AnyRef](), Array[AnyRef]())).toBeTruthy
+      expect(Arrays.deepEquals(Array[AnyRef](null, null),
+                               Array[AnyRef](null, null))).toBeTruthy
+      expect(Arrays.deepEquals(Array[AnyRef]("a", "b", null),
+                               Array[AnyRef]("a", "b", null))).toBeTruthy
       expect(Arrays.deepEquals(
           Array[AnyRef](null, "a", "b", null, "fooooo"),
           Array[AnyRef](null, "a", "b", null, "fooooo"))).toBeTruthy
-      expect(Arrays.deepEquals(
-          Array[AnyRef](null, Array[AnyRef]()),
-          Array[AnyRef](null, Array[AnyRef]()))).toBeTruthy
-      expect(Arrays.deepEquals(
-          Array[AnyRef](Array[AnyRef](), Array[AnyRef]()),
-          Array[AnyRef](Array[AnyRef](), Array[AnyRef]()))).toBeTruthy
+      expect(
+          Arrays.deepEquals(Array[AnyRef](null, Array[AnyRef]()),
+                            Array[AnyRef](null, Array[AnyRef]()))).toBeTruthy
+      expect(Arrays.deepEquals(Array[AnyRef](Array[AnyRef](), Array[AnyRef]()),
+                               Array[AnyRef](Array[AnyRef](),
+                                             Array[AnyRef]()))).toBeTruthy
       expect(Arrays.deepEquals(
           Array[AnyRef](Array[AnyRef](Array[AnyRef]())),
           Array[AnyRef](Array[AnyRef](Array[AnyRef]())))).toBeTruthy
@@ -849,34 +908,28 @@ trait ArraysTest extends JasmineTest {
       expect(Arrays.deepEquals(
           Array[AnyRef](Array[AnyRef](Array[Int](1))),
           Array[AnyRef](Array[AnyRef](Array[Int](1))))).toBeTruthy
-      expect(Arrays.deepEquals(
-          Array[AnyRef](Array[AnyRef](Array[AnyRef](1.asInstanceOf[AnyRef]))),
-          Array[AnyRef](Array[AnyRef](Array[AnyRef](1.asInstanceOf[AnyRef]))))).toBeTruthy
+      expect(Arrays.deepEquals(Array[AnyRef](Array[AnyRef](
+                                   Array[AnyRef](1.asInstanceOf[AnyRef]))),
+                               Array[AnyRef](Array[AnyRef](Array[AnyRef](
+                                   1.asInstanceOf[AnyRef]))))).toBeTruthy
 
-      expect(Arrays.deepEquals(
-          null: Array[AnyRef],
-          Array[AnyRef]())).toBeFalsy
-      expect(Arrays.deepEquals(
-          Array[AnyRef](),
-          null: Array[AnyRef])).toBeFalsy
-      expect(Arrays.deepEquals(
-          Array[AnyRef](Array[AnyRef](), null),
-          Array[AnyRef](null, null))).toBeFalsy
-      expect(Arrays.deepEquals(
-          Array[AnyRef](null, Array[AnyRef]()),
-          Array[AnyRef](null, null))).toBeFalsy
-      expect(Arrays.deepEquals(
-          Array[AnyRef]("a", "b", null),
-          Array[AnyRef]("a", "c", null))).toBeFalsy
+      expect(Arrays.deepEquals(null: Array[AnyRef], Array[AnyRef]())).toBeFalsy
+      expect(Arrays.deepEquals(Array[AnyRef](), null: Array[AnyRef])).toBeFalsy
+      expect(Arrays.deepEquals(Array[AnyRef](Array[AnyRef](), null),
+                               Array[AnyRef](null, null))).toBeFalsy
+      expect(Arrays.deepEquals(Array[AnyRef](null, Array[AnyRef]()),
+                               Array[AnyRef](null, null))).toBeFalsy
+      expect(Arrays.deepEquals(Array[AnyRef]("a", "b", null),
+                               Array[AnyRef]("a", "c", null))).toBeFalsy
       expect(Arrays.deepEquals(
           Array[AnyRef](null, "a", "b", null, "fooooo"),
           Array[AnyRef](null, "a", "b", "c", "fooooo"))).toBeFalsy
       expect(Arrays.deepEquals(
           Array[AnyRef](null, Array[AnyRef]()),
           Array[AnyRef](null, Array[AnyRef](null)))).toBeFalsy
-      expect(Arrays.deepEquals(
-          Array[AnyRef](Array[AnyRef](), Array[AnyRef]()),
-          Array[AnyRef](Array[AnyRef](), Array[AnyRef](null)))).toBeFalsy
+      expect(Arrays.deepEquals(Array[AnyRef](Array[AnyRef](), Array[AnyRef]()),
+                               Array[AnyRef](Array[AnyRef](),
+                                             Array[AnyRef](null)))).toBeFalsy
       expect(Arrays.deepEquals(
           Array[AnyRef](Array[AnyRef](Array[AnyRef]())),
           Array[AnyRef](Array[AnyRef](Array[AnyRef](null))))).toBeFalsy
@@ -889,9 +942,10 @@ trait ArraysTest extends JasmineTest {
       expect(Arrays.deepEquals(
           Array[AnyRef](Array[AnyRef](Array[Int](1))),
           Array[AnyRef](Array[AnyRef](Array[Int](2))))).toBeFalsy
-      expect(Arrays.deepEquals(
-          Array[AnyRef](Array[AnyRef](Array[AnyRef](1.asInstanceOf[AnyRef]))),
-          Array[AnyRef](Array[AnyRef](Array[AnyRef](2.asInstanceOf[AnyRef]))))).toBeFalsy
+      expect(Arrays.deepEquals(Array[AnyRef](Array[AnyRef](
+                                   Array[AnyRef](1.asInstanceOf[AnyRef]))),
+                               Array[AnyRef](Array[AnyRef](Array[AnyRef](
+                                   2.asInstanceOf[AnyRef]))))).toBeFalsy
     }
 
     it("should respond to `toString` for Long") {
@@ -900,8 +954,10 @@ trait ArraysTest extends JasmineTest {
       expect(Arrays.toString(Array[Long](0L))).toEqual("[0]")
       expect(Arrays.toString(Array[Long](1L))).toEqual("[1]")
       expect(Arrays.toString(Array[Long](2L, 3))).toEqual("[2, 3]")
-      expect(Arrays.toString(Array[Long](1L, 2L, 3L, 4L, 5L))).toEqual("[1, 2, 3, 4, 5]")
-      expect(Arrays.toString(Array[Long](1L, -2L, 3L, Long.MaxValue))).toEqual("[1, -2, 3, 9223372036854775807]")
+      expect(Arrays.toString(Array[Long](1L, 2L, 3L, 4L, 5L)))
+        .toEqual("[1, 2, 3, 4, 5]")
+      expect(Arrays.toString(Array[Long](1L, -2L, 3L, Long.MaxValue)))
+        .toEqual("[1, -2, 3, 9223372036854775807]")
     }
 
     it("should respond to `toString` for Int") {
@@ -910,8 +966,10 @@ trait ArraysTest extends JasmineTest {
       expect(Arrays.toString(Array[Int](0))).toEqual("[0]")
       expect(Arrays.toString(Array[Int](1))).toEqual("[1]")
       expect(Arrays.toString(Array[Int](2, 3))).toEqual("[2, 3]")
-      expect(Arrays.toString(Array[Int](1, 2, 3, 4, 5))).toEqual("[1, 2, 3, 4, 5]")
-      expect(Arrays.toString(Array[Int](1, -2, 3, Int.MaxValue))).toEqual("[1, -2, 3, 2147483647]")
+      expect(Arrays.toString(Array[Int](1, 2, 3, 4, 5)))
+        .toEqual("[1, 2, 3, 4, 5]")
+      expect(Arrays.toString(Array[Int](1, -2, 3, Int.MaxValue)))
+        .toEqual("[1, -2, 3, 2147483647]")
     }
 
     it("should respond to `toString` for Short") {
@@ -920,8 +978,10 @@ trait ArraysTest extends JasmineTest {
       expect(Arrays.toString(Array[Short](0))).toEqual("[0]")
       expect(Arrays.toString(Array[Short](1))).toEqual("[1]")
       expect(Arrays.toString(Array[Short](2, 3))).toEqual("[2, 3]")
-      expect(Arrays.toString(Array[Short](1, 2, 3, 4, 5))).toEqual("[1, 2, 3, 4, 5]")
-      expect(Arrays.toString(Array[Short](1, -2, 3, Short.MaxValue))).toEqual("[1, -2, 3, 32767]")
+      expect(Arrays.toString(Array[Short](1, 2, 3, 4, 5)))
+        .toEqual("[1, 2, 3, 4, 5]")
+      expect(Arrays.toString(Array[Short](1, -2, 3, Short.MaxValue)))
+        .toEqual("[1, -2, 3, 32767]")
     }
 
     it("should respond to `toString` for Byte") {
@@ -930,8 +990,10 @@ trait ArraysTest extends JasmineTest {
       expect(Arrays.toString(Array[Byte](0))).toEqual("[0]")
       expect(Arrays.toString(Array[Byte](1))).toEqual("[1]")
       expect(Arrays.toString(Array[Byte](2, 3))).toEqual("[2, 3]")
-      expect(Arrays.toString(Array[Byte](1, 2, 3, 4, 5))).toEqual("[1, 2, 3, 4, 5]")
-      expect(Arrays.toString(Array[Byte](1, -2, 3, Byte.MaxValue))).toEqual("[1, -2, 3, 127]")
+      expect(Arrays.toString(Array[Byte](1, 2, 3, 4, 5)))
+        .toEqual("[1, 2, 3, 4, 5]")
+      expect(Arrays.toString(Array[Byte](1, -2, 3, Byte.MaxValue)))
+        .toEqual("[1, -2, 3, 127]")
     }
 
     it("should respond to `toString` for Boolean") {
@@ -939,18 +1001,24 @@ trait ArraysTest extends JasmineTest {
       expect(Arrays.toString(Array[Boolean]())).toEqual("[]")
       expect(Arrays.toString(Array[Boolean](true))).toEqual("[true]")
       expect(Arrays.toString(Array[Boolean](false))).toEqual("[false]")
-      expect(Arrays.toString(Array[Boolean](true, false))).toEqual("[true, false]")
-      expect(Arrays.toString(Array[Boolean](true, true, false, false))).toEqual("[true, true, false, false]")
+      expect(Arrays.toString(Array[Boolean](true, false)))
+        .toEqual("[true, false]")
+      expect(Arrays.toString(Array[Boolean](true, true, false, false)))
+        .toEqual("[true, true, false, false]")
     }
 
     it("should respond to `toString` for Float") {
       expect(Arrays.toString(null: Array[Float])).toEqual("null")
       expect(Arrays.toString(Array[Float]())).toEqual("[]")
       expect(Arrays.toString(Array[Float](0.0f))).toEqual("[0]")
-      expect(Arrays.toString(Array[Float](1.1f))).toEqual("[1.100000023841858]")
-      expect(Arrays.toString(Array[Float](2.2f, 3f))).toEqual("[2.200000047683716, 3]")
-      expect(Arrays.toString(Array[Float](1f, 2f, 3f, 4f, 5f))).toEqual("[1, 2, 3, 4, 5]")
-      expect(Arrays.toString(Array[Float](1f, -2f, 3f, Float.MaxValue))).toEqual("[1, -2, 3, 3.4028234663852886e+38]")
+      expect(Arrays.toString(Array[Float](1.1f)))
+        .toEqual("[1.100000023841858]")
+      expect(Arrays.toString(Array[Float](2.2f, 3f)))
+        .toEqual("[2.200000047683716, 3]")
+      expect(Arrays.toString(Array[Float](1f, 2f, 3f, 4f, 5f)))
+        .toEqual("[1, 2, 3, 4, 5]")
+      expect(Arrays.toString(Array[Float](1f, -2f, 3f, Float.MaxValue)))
+        .toEqual("[1, -2, 3, 3.4028234663852886e+38]")
     }
 
     it("should respond to `toString` for Double") {
@@ -959,43 +1027,57 @@ trait ArraysTest extends JasmineTest {
       expect(Arrays.toString(Array[Double](0.0d))).toEqual("[0]")
       expect(Arrays.toString(Array[Double](1.1d))).toEqual("[1.1]")
       expect(Arrays.toString(Array[Double](2.2d, 3d))).toEqual("[2.2, 3]")
-      expect(Arrays.toString(Array[Double](1d, 2d, 3d, 4d, 5d))).toEqual("[1, 2, 3, 4, 5]")
-      expect(Arrays.toString(Array[Double](1d, -2d, 3d, Double.MaxValue))).toEqual(
-          "[1, -2, 3, 1.7976931348623157e+308]")
+      expect(Arrays.toString(Array[Double](1d, 2d, 3d, 4d, 5d)))
+        .toEqual("[1, 2, 3, 4, 5]")
+      expect(Arrays.toString(Array[Double](1d, -2d, 3d, Double.MaxValue)))
+        .toEqual("[1, -2, 3, 1.7976931348623157e+308]")
     }
 
     it("should respond to `toString` for AnyRef") {
+
       class C(num: Int) {
+
         override def toString: String = s"C($num)"
       }
       expect(Arrays.toString(null: Array[AnyRef])).toEqual("null")
       expect(Arrays.toString(Array[AnyRef]())).toEqual("[]")
       expect(Arrays.toString(Array[AnyRef]("abc"))).toEqual("[abc]")
-      expect(Arrays.toString(Array[AnyRef]("a", "b", "c"))).toEqual("[a, b, c]")
+      expect(Arrays.toString(Array[AnyRef]("a", "b", "c")))
+        .toEqual("[a, b, c]")
       expect(Arrays.toString(Array[AnyRef](new C(1)))).toEqual("[C(1)]")
-      expect(Arrays.toString(Array[AnyRef](new C(1), "abc", Int.box(1), null))).toEqual("[C(1), abc, 1, null]")
+      expect(Arrays.toString(Array[AnyRef](new C(1), "abc", Int.box(1), null)))
+        .toEqual("[C(1), abc, 1, null]")
     }
 
     it("should respond to `deepToString`") {
       expect(Arrays.deepToString(null: Array[AnyRef])).toEqual("null")
       expect(Arrays.deepToString(Array[AnyRef]("abc"))).toEqual("[abc]")
-      expect(Arrays.deepToString(Array[AnyRef]("a", "b", "c"))).toEqual("[a, b, c]")
-      expect(Arrays.deepToString(Array[AnyRef](Array[Int](1, 2, 3)))).toEqual("[[1, 2, 3]]")
+      expect(Arrays.deepToString(Array[AnyRef]("a", "b", "c")))
+        .toEqual("[a, b, c]")
+      expect(Arrays.deepToString(Array[AnyRef](Array[Int](1, 2, 3))))
+        .toEqual("[[1, 2, 3]]")
       expect(Arrays.deepToString(Array[AnyRef](Array[Int](1, 2, 3),
-          Array[Int](4, 5, 6)))).toEqual("[[1, 2, 3], [4, 5, 6]]")
-      expect(Arrays.deepToString(Array[AnyRef](Array[AnyRef]()))).toEqual("[[]]")
-      expect(Arrays.deepToString(Array[AnyRef](Array[AnyRef](Array[AnyRef]())))).toEqual("[[[]]]")
-      expect(Arrays.deepToString(Array[AnyRef](Array[AnyRef](Array[AnyRef](Array[Int](1, 2, 3))),
+                                               Array[Int](4, 5, 6))))
+        .toEqual("[[1, 2, 3], [4, 5, 6]]")
+      expect(Arrays.deepToString(Array[AnyRef](Array[AnyRef]())))
+        .toEqual("[[]]")
+      expect(Arrays.deepToString(
+          Array[AnyRef](Array[AnyRef](Array[AnyRef]())))).toEqual("[[[]]]")
+      expect(Arrays.deepToString(Array[AnyRef](
+          Array[AnyRef](Array[AnyRef](Array[Int](1, 2, 3))),
           Array[Int](4, 5, 6)))).toEqual("[[[[1, 2, 3]]], [4, 5, 6]]")
 
       val recArr = Array[AnyRef](null, null)
-      recArr(0) = recArr
+      recArr (0) = recArr
       expect(Arrays.deepToString(recArr)).toEqual("[[...], null]")
-      expect(Arrays.deepToString(Array[AnyRef](recArr))).toEqual("[[[...], null]]")
-      expect(Arrays.deepToString(Array[AnyRef](recArr))).toEqual("[[[...], null]]")
-      recArr(1) = Array[AnyRef](null, Array[AnyRef](null, recArr, Array[AnyRef](recArr)))
-      expect(Arrays.deepToString(recArr)).toEqual("[[...], [null, [null, [...], [[...]]]]]")
+      expect(Arrays.deepToString(Array[AnyRef](recArr)))
+        .toEqual("[[[...], null]]")
+      expect(Arrays.deepToString(Array[AnyRef](recArr)))
+        .toEqual("[[[...], null]]")
+      recArr (1) = Array[AnyRef](
+          null, Array[AnyRef](null, recArr, Array[AnyRef](recArr)))
+      expect(Arrays.deepToString(recArr))
+        .toEqual("[[...], [null, [null, [...], [[...]]]]]")
     }
-
   }
 }

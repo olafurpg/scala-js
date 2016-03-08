@@ -16,18 +16,17 @@ import scala.annotation.meta
 import scala.scalajs.js.TypeError
 
 object ExportsTest extends JasmineTest with ExpectExceptions {
-
   /** This package in the JS (export) namespace */
   val jsPackage = js.Dynamic.global.org.scalajs.testsuite.jsinterop
 
   describe("@JSExport") {
-
     it("should offer exports for methods with implicit name") {
+
       class Foo {
         @JSExport
         def bar(): Int = 42
         @JSExport
-        def double(x: Int): Int = x*2
+        def double(x: Int): Int = x * 2
       }
 
       val foo = (new Foo).asInstanceOf[js.Dynamic]
@@ -37,11 +36,12 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should offer exports for methods with explicit name") {
+
       class Foo {
         @JSExport("theAnswer")
         def bar(): Int = 42
         @JSExport("doubleTheParam")
-        def double(x: Int): Int = x*2
+        def double(x: Int): Int = x * 2
       }
 
       val foo = (new Foo).asInstanceOf[js.Dynamic]
@@ -52,6 +52,7 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should offer exports for methods with constant folded name") {
+
       class Foo {
         @JSExport(ExportNameHolder.methodName)
         def bar(): Int = 42
@@ -63,6 +64,7 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should offer exports for protected methods") {
+
       class Foo {
         @JSExport
         protected def bar(): Int = 42
@@ -79,14 +81,15 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should offer exports for properties with implicit name") {
+
       class Foo {
-        private[this] var myY: String = "hello"
+        private [ this] var myY: String = "hello"
         @JSExport
         val answer: Int = 42
         @JSExport
         var x: Int = 3
         @JSExport
-        def doubleX: Int = x*2
+        def doubleX: Int = x * 2
         @JSExport
         def y: String = myY + " get"
         @JSExport
@@ -107,14 +110,15 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should offer exports for properties with explicit name") {
+
       class Foo {
-        private[this] var myY: String = "hello"
+        private [ this] var myY: String = "hello"
         @JSExport("answer")
         val answerScala: Int = 42
         @JSExport("x")
         var xScala: Int = 3
         @JSExport("doubleX")
-        def doubleXScala: Int = xScala*2
+        def doubleXScala: Int = xScala * 2
         @JSExport("y")
         def yGetter: String = myY + " get"
         @JSExport("y")
@@ -136,6 +140,7 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should offer exports for protected properties") {
+
       class Foo {
         @JSExport
         protected val x: Int = 42
@@ -149,11 +154,12 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should offer overloaded exports for methods") {
+
       class Foo {
         @JSExport("foobar")
         def foo(): Int = 42
         @JSExport("foobar")
-        def bar(x: Int): Int = x*2
+        def bar(x: Int): Int = x * 2
       }
 
       val foo = (new Foo).asInstanceOf[js.Dynamic]
@@ -163,6 +169,7 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should offer multiple exports for the same method") {
+
       class Foo {
         @JSExport
         @JSExport("b")
@@ -181,16 +188,17 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should inherit exports from traits") {
-      trait Foo {
-        @JSExport
-        def x: Int
 
-        @JSExport
-        def method(x: Int): Int
+      trait Foo {
+        @JSExport def x: Int
+
+        @JSExport def method(x: Int): Int
       }
 
-      class Bar extends Foo {
+      class Bar
+          extends Foo {
         val x = 1
+
         def method(x: Int): Int = 2 * x
       }
 
@@ -201,12 +209,14 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should offer overloading with inherited exports") {
+
       class A {
         @JSExport
-        def foo(x: Int): Int = 2*x
+        def foo(x: Int): Int = 2 * x
       }
 
-      class B extends A{
+      class B
+          extends A {
         @JSExport("foo")
         def bar(x: String): String = s"Hello $x"
       }
@@ -218,6 +228,7 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should offer exports for generic methods") {
+
       class Foo {
         @JSExport
         def gen[T <: AnyRef](x: T): T = x
@@ -231,6 +242,7 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should offer exports for lambda return types") {
+
       class Foo {
         @JSExport
         def lambda(x: Int): Int => Int = (y: Int) => x + y
@@ -239,12 +251,13 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
       val foo = (new Foo).asInstanceOf[js.Dynamic]
       expect(js.typeOf(foo.lambda)).toBe("function")
 
-      val lambda = foo.lambda(5).asInstanceOf[Function1[Int,Int]]
+      val lambda = foo.lambda(5).asInstanceOf[Function1[Int, Int]]
 
       expect(lambda(4)).toEqual(9)
     }
 
     it("should offer exports for multi parameter lists") {
+
       class Foo {
         @JSExport
         def multiParam(x: Int)(y: Int): Int = x + y
@@ -252,10 +265,11 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
 
       val foo = (new Foo).asInstanceOf[js.Dynamic]
       expect(js.typeOf(foo.multiParam)).toBe("function")
-      expect(foo.multiParam(5,6)).toEqual(11)
+      expect(foo.multiParam(5, 6)).toEqual(11)
     }
 
     it("should offer exports for default arguments") {
+
       class Foo {
         @JSExport
         def defArg(x: Int = 1): Int = x
@@ -267,10 +281,11 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should offer exports for weird stuff") {
+
       class UhOh {
         // Something no one should export
         @JSExport
-        def ahem[T: Comparable](x: T)(implicit y: Int): Nothing = ???
+        def ahem[T : Comparable](x: T)(implicit y: Int): Nothing = ???
       }
 
       val x = (new UhOh).asInstanceOf[js.Dynamic]
@@ -278,6 +293,7 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should offer exports with value class return types") {
+
       class Foo {
         @JSExport
         def vc(x: Int): SomeValueClass = new SomeValueClass(x)
@@ -294,11 +310,14 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should allow exports with Any as return type") {
+
       class A
+
       class Foo {
         @JSExport
         def foo(switch: Boolean): Any =
-          if (switch) 1 else new A
+          if (switch) 1
+          else new A
       }
 
       val foo = (new Foo).asInstanceOf[js.Dynamic]
@@ -307,6 +326,7 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should accept boxed value classes as parameter") {
+
       class Foo {
         @JSExport
         def vc(x: SomeValueClass): Int = x.i
@@ -323,6 +343,7 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should overload on boxed value classes as parameters") {
+
       class Foo {
         @JSExport
         def foo(x: String): Int = x.length
@@ -337,7 +358,9 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should offer exports for overridden methods with refined return type") {
+
       class A
+
       class B extends A
 
       class C1 {
@@ -345,7 +368,9 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
         def x: A = new A
       }
 
-      class C2 extends C1 {
+      class C2
+          extends C1 {
+
         override def x: B = new B
       }
 
@@ -354,6 +379,7 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should offer exports for methods with refined types as return type") {
+
       class A {
         @JSExport
         def foo(x: String): js.Object with js.Dynamic =
@@ -365,9 +391,10 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should offer exports for variable argument methods - #393") {
+
       class A {
         @JSExport
-        def foo(i: String*): String = i.mkString("|")
+        def foo(i: String *): String = i.mkString("|")
       }
 
       val a = (new A).asInstanceOf[js.Dynamic]
@@ -378,15 +405,16 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should correctly overload in view of difficult repeated parameter lists") {
+
       class A {
         @JSExport
         def foo(a: String, b: String, i: Int, c: String): Int = 1
 
         @JSExport
-        def foo(a: String*): Int = 2
+        def foo(a: String *): Int = 2
 
         @JSExport
-        def foo(x: Int)(a: Int*): Int = x * 100000 + a.sum
+        def foo(x: Int)(a: Int *): Int = x * 100000 + a.sum
       }
 
       val a = (new A).asInstanceOf[js.Dynamic]
@@ -402,8 +430,10 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should offer exports with default arguments") {
+
       class A {
         var oneCount: Int = 0
+
         def one: Int = {
           oneCount += 1
           1
@@ -422,20 +452,21 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
       expect(jsa.foo(2)).toEqual(9)
       expect(a.oneCount).toEqual(5)
 
-      expect(jsa.foo(2,4)).toEqual(11)
+      expect(jsa.foo(2, 4)).toEqual(11)
       expect(a.oneCount).toEqual(6)
 
-      expect(jsa.foo(2,4,10)).toEqual(16)
+      expect(jsa.foo(2, 4, 10)).toEqual(16)
       expect(a.oneCount).toEqual(6)
 
-      expect(jsa.foo((),4,10)).toEqual(15)
+      expect(jsa.foo((), 4, 10)).toEqual(15)
       expect(a.oneCount).toEqual(7)
 
-      expect(jsa.foo((),4)).toEqual(10)
+      expect(jsa.foo((), 4)).toEqual(10)
       expect(a.oneCount).toEqual(9)
     }
 
     it("should correctly overload methods in presence of default parameters") {
+
       class A {
         @JSExport
         def foo(a: Int)(b: Int = 5)(c: Int = 7): Int = 1000 + a + b + c
@@ -454,10 +485,10 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
       expect(a.foo(1, 4, 5)).toEqual(1010)
       expect(a.foo(1, "foo")).toEqual(2)
       expect(a.foo(1, 2, "foo")).toEqual(3)
-
     }
 
     it("should prefer overloads taking a Unit over methods with default parameters") {
+
       class A {
         @JSExport
         def foo(a: Int)(b: String = "asdf"): String = s"$a $b"
@@ -471,15 +502,15 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
       expect(a.foo(1)).toEqual("1 asdf")
       expect(a.foo(2, "omg")).toEqual("2 omg")
       expect(a.foo(1, ())).toEqual("woot")
-
     }
 
     it("should correctly overload methods in presence of default parameters and repeated parameters") {
+
       class A {
         @JSExport
         def foo(x: Int, y: Int = 1): Int = x + y
         @JSExport
-        def foo(x: String*): String = x.mkString("|")
+        def foo(x: String *): String = x.mkString("|")
       }
 
       val a = (new A).asInstanceOf[js.Dynamic]
@@ -488,12 +519,13 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
       expect(a.foo(1, 2)).toEqual(3)
       expect(a.foo()).toEqual("")
       expect(a.foo("foo")).toEqual("foo")
-      expect(a.foo("foo","bar")).toEqual("foo|bar")
-
+      expect(a.foo("foo", "bar")).toEqual("foo|bar")
     }
 
     it("should correctly overload exports called `toString`") {
+
       class A {
+
         override def toString(): String = "no arg"
         @JSExport
         def toString(x: Int): String = s"with arg: $x"
@@ -505,6 +537,7 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should allow to explicitly export toString") {
+
       class A {
         @JSExport("toString")
         override def toString(): String = "called"
@@ -515,16 +548,18 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should correctly box repeated parameter lists with value classes") {
+
       class A {
         @JSExport
-        def foo(vcs: SomeValueClass*): Int = vcs.map(_.i).sum
+        def foo(vcs: SomeValueClass *): Int = vcs.map(_.i).sum
       }
 
       val vc1 = new SomeValueClass(1)
       val vc2 = new SomeValueClass(2)
       val a = (new A).asInstanceOf[js.Dynamic]
 
-      expect(a.foo(vc1.asInstanceOf[js.Any], vc2.asInstanceOf[js.Any])).toEqual(3)
+      expect(a.foo(vc1.asInstanceOf[js.Any], vc2.asInstanceOf[js.Any]))
+        .toEqual(3)
     }
 
     it("should offer exports for objects with implicit name") {
@@ -640,7 +675,8 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should offer exports for classes with qualified name") {
-      val constr = js.Dynamic.global.qualified.testclass.SJSDefinedExportedClass
+      val constr =
+        js.Dynamic.global.qualified.testclass.SJSDefinedExportedClass
       expect(constr).toBeDefined
       expect(js.typeOf(constr)).toEqual("function")
       val obj = js.Dynamic.newInstance(constr)(5)
@@ -669,15 +705,17 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
       expect(js.Dynamic.newInstance(constr)().result).toEqual("")
       expect(js.Dynamic.newInstance(constr)("a").result).toEqual("a")
       expect(js.Dynamic.newInstance(constr)("a", "b").result).toEqual("a|b")
-      expect(js.Dynamic.newInstance(constr)("a", "b", "c").result).toEqual("a|b|c")
-      expect(js.Dynamic.newInstance(constr)(5, "a").result).toEqual("Number: <5>|a")
+      expect(js.Dynamic.newInstance(constr)("a", "b", "c").result)
+        .toEqual("a|b|c")
+      expect(js.Dynamic.newInstance(constr)(5, "a").result)
+        .toEqual("Number: <5>|a")
     }
 
     it("should offer export for classes with default parameters in ctor") {
       val constr = jsPackage.ExportedDefaultArgClass
-      expect(js.Dynamic.newInstance(constr)(1,2,3).result).toEqual(6)
+      expect(js.Dynamic.newInstance(constr)(1, 2, 3).result).toEqual(6)
       expect(js.Dynamic.newInstance(constr)(1).result).toEqual(106)
-      expect(js.Dynamic.newInstance(constr)(1,2).result).toEqual(103)
+      expect(js.Dynamic.newInstance(constr)(1, 2).result).toEqual(103)
     }
 
     it("should correctly disambiguate overloads involving longs") {
@@ -693,6 +731,7 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
 
       // Create a long factory we can call dynamically to retrieve an unboxed
       // long which is typed as a js.Any
+
       object LongFactory {
         @JSExport
         def aLong: Long = 1L
@@ -704,6 +743,7 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should return boxed Chars") {
+
       class Foo {
         @JSExport
         def bar(x: Int): Char = x.toChar
@@ -722,6 +762,7 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should take boxed Chars as parameter") {
+
       class Foo {
         @JSExport
         def bar(x: Char): Int = x.toInt
@@ -737,11 +778,12 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should be able to disambiguate an Int from a Char") {
+
       class Foo {
         @JSExport
-        def bar(x: Char): String = "char: "+x
+        def bar(x: Char): String = "char: " + x
         @JSExport
-        def bar(x: Int): String = "int: "+x
+        def bar(x: Int): String = "int: " + x
       }
       val foo = (new Foo).asInstanceOf[js.Dynamic]
 
@@ -757,18 +799,21 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should support exporting constructor parameter fields - #970") {
+
       class Foo(@(JSExport @meta.field) val x: Int)
       val foo = (new Foo(1)).asInstanceOf[js.Dynamic]
       expect(foo.x).toEqual(1)
     }
 
     it("should support exporting case class fields - #970") {
+
       case class Foo(@(JSExport @meta.field) x: Int)
       val foo = (new Foo(1)).asInstanceOf[js.Dynamic]
       expect(foo.x).toEqual(1)
     }
 
     it("should support exporting lazy values - #977") {
+
       class Foo {
         @JSExport
         lazy val x = 1
@@ -808,6 +853,7 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should allow mutliple equivalent JSExport annotations") {
+
       class Foo {
         @JSExport
         @JSExport("a")
@@ -843,16 +889,19 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
       expect(foo.bar2(lit(y = 2))).toEqual(5)
       expect(foo.bar2(lit(y = 2, z = 1))).toEqual(4)
       expect(foo.bar(2)).toEqual(6)
-      expect(foo.bar(2,3)).toEqual(8)
+      expect(foo.bar(2, 3)).toEqual(8)
     }
 
     it("should support named constructor exports") {
       import js.Dynamic.{literal => lit}
 
       val constr = jsPackage.ExportedNamedArgClass
-      expect(js.Dynamic.newInstance(constr)(lit(x = 2)).result).toEqual("22true")
-      expect(js.Dynamic.newInstance(constr)(lit(y = "foo")).result).toEqual("1foofalse")
-      expect(js.Dynamic.newInstance(constr)(lit(z = true, y = "foo")).result).toEqual("1footrue")
+      expect(js.Dynamic.newInstance(constr)(lit(x = 2)).result)
+        .toEqual("22true")
+      expect(js.Dynamic.newInstance(constr)(lit(y = "foo")).result)
+        .toEqual("1foofalse")
+      expect(js.Dynamic.newInstance(constr)(lit(z = true, y = "foo")).result)
+        .toEqual("1footrue")
     }
 
     it("should support exporting under 'org' namespace - #364") {
@@ -865,14 +914,24 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     it("should accept null for arguments of primitive value type - #1719") {
       @JSExportAll
       class Foo {
-        def doBool(x: Boolean): Unit = expect((x: Any) == false).toBeTruthy // scalastyle:ignore
+
+        def doBool(x: Boolean): Unit =
+          expect((x: Any) == false).toBeTruthy // scalastyle:ignore
+
         def doChar(x: Char): Unit = expect(x.equals('\0')).toBeTruthy
+
         def doByte(x: Byte): Unit = expect(x).toEqual(0)
+
         def doShort(x: Short): Unit = expect(x).toEqual(0)
+
         def doInt(x: Int): Unit = expect(x).toEqual(0)
+
         def doLong(x: Long): Unit = expect(x.equals(0L)).toBeTruthy
+
         def doFloat(x: Float): Unit = expect(x).toEqual(0.0f)
+
         def doDouble(x: Double): Unit = expect(x).toEqual(0.0)
+
         def doUnit(x: Unit): Unit = expect((x: Any) == null).toBeTruthy
       }
 
@@ -889,18 +948,27 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
       foo.doUnit(null)
     }
 
-    when("compliant-asinstanceofs").
-    it("should reject bad values for arguments of primitive value type") {
+    when("compliant-asinstanceofs")
+      .it("should reject bad values for arguments of primitive value type") {
       @JSExportAll
       class Foo {
+
         def doBool(x: Boolean): Boolean = x
+
         def doChar(x: Char): Char = x
+
         def doByte(x: Byte): Byte = x
+
         def doShort(x: Short): Short = x
+
         def doInt(x: Int): Int = x
+
         def doLong(x: Long): Long = x
+
         def doFloat(x: Float): Float = x
+
         def doDouble(x: Double): Double = x
+
         def doUnit(x: Unit): Unit = x
       }
 
@@ -940,8 +1008,9 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
       expect(() => foo.doFloat("a")).toThrow
     }
 
-    when("compliant-asinstanceofs").
-    it("should reject bad values for arguments of value class type - #613") {
+    when("compliant-asinstanceofs").it(
+        "should reject bad values for arguments of value class type - #613") {
+
       class Foo {
         @JSExport
         def doVC(x: SomeValueClass): SomeValueClass = x
@@ -955,9 +1024,11 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
       expect(() => foo.doVC("a")).toThrow
     }
 
-    when("compliant-asinstanceofs").
-    it("should reject bad values for arguments of class type") {
+    when("compliant-asinstanceofs")
+      .it("should reject bad values for arguments of class type") {
+
       class A
+
       class B
 
       class Foo {
@@ -1020,74 +1091,102 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
         expect(dynObj.checkOriginalY3()).toEqual("y3")
       }
 
-      def getJSObj(): js.Object = new js.Object {
-        val x1 = "x1"
-        var y1 = "y1"
-        def z1() = "z1"
-        private val x2 = "x2"
-        private var y2 = "y2"
-        private def z2() = "z2"
-        private[this] val x3 = "x3"
-        private[this] var y3 = "y3"
-        private[this] def z3() = "z3"
-        def checkOriginalY1() = y1
-        def checkOriginalY2() = y2
-        def checkOriginalY3() = y3
-      }
+      def getJSObj(): js.Object =
+        new js.Object {
+          val x1 = "x1"
+          var y1 = "y1"
+
+          def z1() = "z1"
+          private val x2 = "x2"
+          private var y2 = "y2"
+
+          private def z2() = "z2"
+          private [ this] val x3 = "x3"
+          private [ this] var y3 = "y3"
+
+          private [ this] def z3() = "z3"
+
+          def checkOriginalY1() = y1
+
+          def checkOriginalY2() = y2
+
+          def checkOriginalY3() = y3
+        }
 
       @ScalaJSDefined
       class JSClass extends js.Object
 
-      def getJSObj2(): js.Object = new JSClass {
-        val x1 = "x1"
-        var y1 = "y1"
-        def z1() = "z1"
-        private val x2 = "x2"
-        private var y2 = "y2"
-        private def z2() = "z2"
-        private[this] val x3 = "x3"
-        private[this] var y3 = "y3"
-        private[this] def z3() = "z3"
-        def checkOriginalY1() = y1
-        def checkOriginalY2() = y2
-        def checkOriginalY3() = y3
-      }
+      def getJSObj2(): js.Object =
+        new JSClass {
+          val x1 = "x1"
+          var y1 = "y1"
+
+          def z1() = "z1"
+          private val x2 = "x2"
+          private var y2 = "y2"
+
+          private def z2() = "z2"
+          private [ this] val x3 = "x3"
+          private [ this] var y3 = "y3"
+
+          private [ this] def z3() = "z3"
+
+          def checkOriginalY1() = y1
+
+          def checkOriginalY2() = y2
+
+          def checkOriginalY3() = y3
+        }
 
       @ScalaJSDefined
       abstract class JSAbstractClass extends js.Object
 
-      def getJSObj3(): js.Object = new JSAbstractClass {
-        val x1 = "x1"
-        var y1 = "y1"
-        def z1() = "z1"
-        private val x2 = "x2"
-        private var y2 = "y2"
-        private def z2() = "z2"
-        private[this] val x3 = "x3"
-        private[this] var y3 = "y3"
-        private[this] def z3() = "z3"
-        def checkOriginalY1() = y1
-        def checkOriginalY2() = y2
-        def checkOriginalY3() = y3
-      }
+      def getJSObj3(): js.Object =
+        new JSAbstractClass {
+          val x1 = "x1"
+          var y1 = "y1"
+
+          def z1() = "z1"
+          private val x2 = "x2"
+          private var y2 = "y2"
+
+          private def z2() = "z2"
+          private [ this] val x3 = "x3"
+          private [ this] var y3 = "y3"
+
+          private [ this] def z3() = "z3"
+
+          def checkOriginalY1() = y1
+
+          def checkOriginalY2() = y2
+
+          def checkOriginalY3() = y3
+        }
 
       @ScalaJSDefined
       abstract class JSTrait extends js.Object
 
-      def getJSObj4(): js.Object = new JSTrait {
-        val x1 = "x1"
-        var y1 = "y1"
-        def z1() = "z1"
-        private val x2 = "x2"
-        private var y2 = "y2"
-        private def z2() = "z2"
-        private[this] val x3 = "x3"
-        private[this] var y3 = "y3"
-        private[this] def z3() = "z3"
-        def checkOriginalY1() = y1
-        def checkOriginalY2() = y2
-        def checkOriginalY3() = y3
-      }
+      def getJSObj4(): js.Object =
+        new JSTrait {
+          val x1 = "x1"
+          var y1 = "y1"
+
+          def z1() = "z1"
+          private val x2 = "x2"
+          private var y2 = "y2"
+
+          private def z2() = "z2"
+          private [ this] val x3 = "x3"
+          private [ this] var y3 = "y3"
+
+          private [ this] def z3() = "z3"
+
+          def checkOriginalY1() = y1
+
+          def checkOriginalY2() = y2
+
+          def checkOriginalY3() = y3
+        }
 
       testExposure(getJSObj())
       testExposure(getJSObj2())
@@ -1096,21 +1195,29 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
 
       // Test that non js.Any classes were unaffected by the fix.
 
-      def getObj(): AnyRef = new {
-        val x1 = "x1"
-        var y1 = "y1"
-        def z1() = "z1"
-        private val x2 = "x2"
-        private var y2 = "y2"
-        private def z2() = "z2"
-        private[this] val x3 = "x3"
-        private[this] var y3 = "y3"
-        private[this] def z3() = "z3"
-      }
+      def getObj(): AnyRef =
+        new {
+          val x1 = "x1"
+          var y1 = "y1"
+
+          def z1() = "z1"
+          private val x2 = "x2"
+          private var y2 = "y2"
+
+          private def z2() = "z2"
+          private [ this] val x3 = "x3"
+          private [ this] var y3 = "y3"
+
+          private [ this] def z3() = "z3"
+        }
 
       import scala.language.reflectiveCalls
 
-      val obj2 = getObj().asInstanceOf[{ val x1: String; var y1: String; def z1(): String }]
+      val obj2 = getObj().asInstanceOf[ {
+        val x1: String;
+        var y1: String;
+        def z1(): String
+      }]
 
       expectThrows[Throwable](obj2.x1)
       expectThrows[Throwable](obj2.y1)
@@ -1120,7 +1227,6 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
   } // describe
 
   describe("@JSExportDescendentObjects") {
-
     it("should offer auto exports for objects extending a trait") {
       val accessor =
         js.Dynamic.global.org.scalajs.testsuite.jsinterop.AutoExportedTraitObject
@@ -1181,8 +1287,7 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
       expect(obj).toBe(AutoExportIgnoreClassObject.asInstanceOf[js.Any])
     }
 
-    it("should offer auto exports for Scala.js-defined JS objects extending " +
-        "a class with ignoreInvalidDescendants") {
+    it("should offer auto exports for Scala.js-defined JS objects extending " + "a class with ignoreInvalidDescendants") {
       val accessor =
         js.Dynamic.global.org.scalajs.testsuite.jsinterop.SJSDefinedAutoExportedIgnoreClassObject
       expect(accessor).toBeDefined
@@ -1193,8 +1298,11 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should ignore invalid descendants") {
+
       // This is just to check that everything here compiles
+
       object A extends AutoExportIgnoreTrait { var x = 1 }
+
       object B extends AutoExportIgnoreClass { var x = 2 }
 
       @ScalaJSDefined
@@ -1213,11 +1321,9 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
       expect(B.x).toEqual(4)
       expect(C.x).toEqual(2)
     }
-
   }
 
   describe("@JSExportDescendentClasses") {
-
     it("should offer auto exports for classes extending a trait") {
       val ctor =
         js.Dynamic.global.org.scalajs.testsuite.jsinterop.AutoExportedTraitClass
@@ -1302,8 +1408,7 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
       expect(obj2.x).toBe(100)
     }
 
-    it("should offer auto exports for Scala.js-defined JS classes extending " +
-        "a class with ignoreInvalidDescendants") {
+    it("should offer auto exports for Scala.js-defined JS classes extending " + "a class with ignoreInvalidDescendants") {
       val ctor =
         js.Dynamic.global.org.scalajs.testsuite.jsinterop.SJSDefinedAutoExportedIgnoreClassClass
       expect(ctor).toBeDefined
@@ -1316,13 +1421,16 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
     }
 
     it("should ignore invalid descendants") {
+
       trait HasBar { def bar: Int }
 
       @ScalaJSDefined
       trait SJSDefinedHasBar extends js.Any { def bar: Int }
 
       // This is just to check that everything here compiles
+
       class A extends AutoExportIgnoreTrait { def foo: Int = 1 }
+
       class B extends AutoExportIgnoreClass { def foo: Int = 2 }
 
       @ScalaJSDefined
@@ -1333,7 +1441,10 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
       val c = new C { override def foo: Int = 5 }
       val d = new AutoExportIgnoreClass with HasBar { def bar: Int = 1 }
       val e = new AutoExportIgnoreTrait with HasBar { def bar: Int = 1 }
-      val f = new SJSDefinedAutoExportIgnoreClass with SJSDefinedHasBar { def bar: Int = 1 }
+      val f = new SJSDefinedAutoExportIgnoreClass with SJSDefinedHasBar {
+
+        def bar: Int = 1
+      }
 
       // Check the classes are usable
       expect((new A).foo).toEqual(1)
@@ -1346,9 +1457,7 @@ object ExportsTest extends JasmineTest with ExpectExceptions {
       expect(e.bar).toEqual(1)
       expect(f.bar).toEqual(1)
     }
-
   }
-
 }
 
 object ExportNameHolder {
@@ -1370,6 +1479,7 @@ object ExportedObject {
 @JSExport("TheSJSDefinedExportedObject")
 @ScalaJSDefined
 object SJSDefinedExportedObject extends js.Object {
+
   def witness: String = "witness"
 }
 
@@ -1401,10 +1511,8 @@ protected class ProtectedExportedClass(_x: Int) {
 }
 
 @JSExport
-class ExportedVarArgClass(x: String*) {
-
-  @JSExport
-  def this(x: Int, y: String) = this(s"Number: <$x>", y)
+class ExportedVarArgClass(x: String *) {
+  @JSExport def this (x: Int, y: String) = this(s"Number: <$x>", y)
 
   @JSExport
   def result: String = x.mkString("|")
@@ -1412,9 +1520,7 @@ class ExportedVarArgClass(x: String*) {
 
 @JSExport
 class ExportedDefaultArgClass(x: Int, y: Int, z: Int) {
-
-  @JSExport
-  def this(x: Int, y: Int = 5) = this(x, y, 100)
+  @JSExport def this (x: Int, y: Int = 5) = this(x, y, 100)
 
   @JSExport
   def result: Int = x + y + z
@@ -1428,8 +1534,9 @@ object ExportedUnderOrgObject
 trait AutoExportTrait
 
 object AutoExportedTraitObject extends AutoExportTrait
+
 class AutoExportedTraitClass(_x: Int) extends AutoExportTrait {
-  def this() = this(5)
+  def this () = this(5)
   @JSExport
   def x: Int = _x
 }
@@ -1439,8 +1546,9 @@ class AutoExportedTraitClass(_x: Int) extends AutoExportTrait {
 class AutoExportClass
 
 object AutoExportedClassObject extends AutoExportClass
+
 class AutoExportedClassClass(_x: Int) extends AutoExportTrait {
-  def this() = this(5)
+  def this () = this(5)
   @JSExport
   def x: Int = _x
 }
@@ -1453,7 +1561,8 @@ trait SJSDefinedAutoExportTrait extends js.Object
 @ScalaJSDefined
 object SJSDefinedAutoExportedTraitObject extends SJSDefinedAutoExportTrait
 @ScalaJSDefined
-class SJSDefinedAutoExportedTraitClass(val x: Int) extends SJSDefinedAutoExportTrait
+class SJSDefinedAutoExportedTraitClass(val x: Int)
+    extends SJSDefinedAutoExportTrait
 
 @JSExportDescendentClasses
 @JSExportDescendentObjects
@@ -1463,15 +1572,17 @@ class SJSDefinedAutoExportClass extends js.Object
 @ScalaJSDefined
 object SJSDefinedAutoExportedClassObject extends SJSDefinedAutoExportClass
 @ScalaJSDefined
-class SJSDefinedAutoExportedClassClass(val x: Int) extends SJSDefinedAutoExportClass
+class SJSDefinedAutoExportedClassClass(val x: Int)
+    extends SJSDefinedAutoExportClass
 
 @JSExportDescendentClasses(ignoreInvalidDescendants = true)
 @JSExportDescendentObjects(ignoreInvalidDescendants = true)
 trait AutoExportIgnoreTrait
 
 object AutoExportIgnoreTraitObject extends AutoExportIgnoreTrait
+
 class AutoExportIgnoreTraitClass(_x: Int) extends AutoExportIgnoreTrait {
-  def this() = this(5)
+  def this () = this(5)
   @JSExport
   def x: Int = _x
 }
@@ -1481,8 +1592,9 @@ class AutoExportIgnoreTraitClass(_x: Int) extends AutoExportIgnoreTrait {
 class AutoExportIgnoreClass
 
 object AutoExportIgnoreClassObject extends AutoExportIgnoreClass
+
 class AutoExportIgnoreClassClass(_x: Int) extends AutoExportIgnoreTrait {
-  def this() = this(5)
+  def this () = this(5)
   @JSExport
   def x: Int = _x
 }
@@ -1495,31 +1607,36 @@ class SJSDefinedAutoExportIgnoreClass extends js.Object
 @ScalaJSDefined
 object SJSDefinedAutoExportedIgnoreClassObject extends SJSDefinedAutoExportIgnoreClass
 @ScalaJSDefined
-class SJSDefinedAutoExportedIgnoreClassClass(val x: Int) extends SJSDefinedAutoExportIgnoreClass
+class SJSDefinedAutoExportedIgnoreClassClass(val x: Int)
+    extends SJSDefinedAutoExportIgnoreClass
 
 @js.native
 object NativeInvalidExportObject extends SJSDefinedAutoExportIgnoreClass
 @js.native
 class NativeInvalidExportClass extends SJSDefinedAutoExportIgnoreClass
 @ScalaJSDefined
-class SJSDefinedInvalidExportClass private () extends SJSDefinedAutoExportIgnoreClass
+class SJSDefinedInvalidExportClass private()
+    extends SJSDefinedAutoExportIgnoreClass
 
 class SomeValueClass(val i: Int) extends AnyVal
 
 @JSExportNamed
-class ExportedNamedArgClass(x: Int = 1)(y: String = x.toString)(z: Boolean = y != "foo") {
+class ExportedNamedArgClass(x: Int = 1)(y: String = x.toString)(
+    z: Boolean = y != "foo") {
   @JSExport
   val result = x + y + z
 }
 
 @JSExport
-class ExportClassSetterNamed_= { // scalastyle:ignore
+class ExportClassSetterNamed_= {
+  // scalastyle:ignore
   @JSExport
   val x = 1
 }
 
 @JSExport
-object ExportObjSetterNamed_= { // scalastyle:ignore
+object ExportObjSetterNamed_= {
+  // scalastyle:ignore
   @JSExport
   val x = 1
 }

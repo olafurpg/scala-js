@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.ir
 
 import Trees._
@@ -14,201 +13,178 @@ import Trees._
 object Traversers {
 
   class Traverser {
-    def traverse(tree: Tree): Unit = tree match {
-      // Definitions
 
-      case VarDef(ident, vtpe, mutable, rhs) =>
-        traverse(rhs)
+    def traverse(tree: Tree): Unit =
+      tree match {
+        // Definitions
 
-      // Control flow constructs
+        case VarDef(ident, vtpe, mutable, rhs) => traverse(rhs)
 
-      case Block(stats) =>
-        stats foreach traverse
+        // Control flow constructs
 
-      case Labeled(label, tpe, body) =>
-        traverse(body)
+        case Block(stats) => stats foreach traverse
 
-      case Assign(lhs, rhs) =>
-        traverse(lhs)
-        traverse(rhs)
+        case Labeled(label, tpe, body) => traverse(body)
 
-      case Return(expr, label) =>
-        traverse(expr)
+        case Assign(lhs, rhs) =>
+          traverse(lhs)
+          traverse(rhs)
 
-      case If(cond, thenp, elsep) =>
-        traverse(cond)
-        traverse(thenp)
-        traverse(elsep)
+        case Return(expr, label) => traverse(expr)
 
-      case While(cond, body, label) =>
-        traverse(cond)
-        traverse(body)
+        case If(cond, thenp, elsep) =>
+          traverse(cond)
+          traverse(thenp)
+          traverse(elsep)
 
-      case DoWhile(body, cond, label) =>
-        traverse(body)
-        traverse(cond)
+        case While(cond, body, label) =>
+          traverse(cond)
+          traverse(body)
 
-      case Try(block, errVar, handler, finalizer) =>
-        traverse(block)
-        traverse(handler)
-        traverse(finalizer)
+        case DoWhile(body, cond, label) =>
+          traverse(body)
+          traverse(cond)
 
-      case Throw(expr) =>
-        traverse(expr)
+        case Try(block, errVar, handler, finalizer) =>
+          traverse(block)
+          traverse(handler)
+          traverse(finalizer)
 
-      case Match(selector, cases, default) =>
-        traverse(selector)
-        cases foreach (c => (c._1 map traverse, traverse(c._2)))
-        traverse(default)
+        case Throw(expr) => traverse(expr)
 
-      // Scala expressions
+        case Match(selector, cases, default) =>
+          traverse(selector)
+          cases foreach (c => (c._1 map traverse, traverse(c._2)))
+          traverse(default)
 
-      case New(cls, ctor, args) =>
-        args foreach traverse
+        // Scala expressions
 
-      case StoreModule(cls, value) =>
-        traverse(value)
+        case New(cls, ctor, args) => args foreach traverse
 
-      case Select(qualifier, item) =>
-        traverse(qualifier)
+        case StoreModule(cls, value) => traverse(value)
 
-      case Apply(receiver, method, args) =>
-        traverse(receiver)
-        args foreach traverse
+        case Select(qualifier, item) => traverse(qualifier)
 
-      case ApplyStatically(receiver, cls, method, args) =>
-        traverse(receiver)
-        args foreach traverse
+        case Apply(receiver, method, args) =>
+          traverse(receiver)
+          args foreach traverse
 
-      case ApplyStatic(cls, method, args) =>
-        args foreach traverse
+        case ApplyStatically(receiver, cls, method, args) =>
+          traverse(receiver)
+          args foreach traverse
 
-      case UnaryOp(op, lhs) =>
-        traverse(lhs)
+        case ApplyStatic(cls, method, args) => args foreach traverse
 
-      case BinaryOp(op, lhs, rhs) =>
-        traverse(lhs)
-        traverse(rhs)
+        case UnaryOp(op, lhs) => traverse(lhs)
 
-      case NewArray(tpe, lengths) =>
-        lengths foreach traverse
+        case BinaryOp(op, lhs, rhs) =>
+          traverse(lhs)
+          traverse(rhs)
 
-      case ArrayValue(tpe, elems) =>
-        elems foreach traverse
+        case NewArray(tpe, lengths) => lengths foreach traverse
 
-      case ArrayLength(array) =>
-        traverse(array)
+        case ArrayValue(tpe, elems) => elems foreach traverse
 
-      case ArraySelect(array, index) =>
-        traverse(array)
-        traverse(index)
+        case ArrayLength(array) => traverse(array)
 
-      case RecordValue(tpe, elems) =>
-        elems foreach traverse
+        case ArraySelect(array, index) =>
+          traverse(array)
+          traverse(index)
 
-      case IsInstanceOf(expr, cls) =>
-        traverse(expr)
+        case RecordValue(tpe, elems) => elems foreach traverse
 
-      case AsInstanceOf(expr, cls) =>
-        traverse(expr)
+        case IsInstanceOf(expr, cls) => traverse(expr)
 
-      case Unbox(expr, charCode) =>
-        traverse(expr)
+        case AsInstanceOf(expr, cls) => traverse(expr)
 
-      case GetClass(expr) =>
-        traverse(expr)
+        case Unbox(expr, charCode) => traverse(expr)
 
-      case CallHelper(helper, args) =>
-        args foreach traverse
+        case GetClass(expr) => traverse(expr)
 
-      // JavaScript expressions
+        case CallHelper(helper, args) => args foreach traverse
 
-      case JSNew(ctor, args) =>
-        traverse(ctor)
-        args foreach traverse
+        // JavaScript expressions
 
-      case JSDotSelect(qualifier, item) =>
-        traverse(qualifier)
+        case JSNew(ctor, args) =>
+          traverse(ctor)
+          args foreach traverse
 
-      case JSBracketSelect(qualifier, item) =>
-        traverse(qualifier)
-        traverse(item)
+        case JSDotSelect(qualifier, item) => traverse(qualifier)
 
-      case JSFunctionApply(fun, args) =>
-        traverse(fun)
-        args foreach traverse
+        case JSBracketSelect(qualifier, item) =>
+          traverse(qualifier)
+          traverse(item)
 
-      case JSDotMethodApply(receiver, method, args) =>
-        traverse(receiver)
-        args foreach traverse
+        case JSFunctionApply(fun, args) =>
+          traverse(fun)
+          args foreach traverse
 
-      case JSBracketMethodApply(receiver, method, args) =>
-        traverse(receiver)
-        traverse(method)
-        args foreach traverse
+        case JSDotMethodApply(receiver, method, args) =>
+          traverse(receiver)
+          args foreach traverse
 
-      case JSSuperBracketSelect(cls, qualifier, item) =>
-        traverse(qualifier)
-        traverse(item)
+        case JSBracketMethodApply(receiver, method, args) =>
+          traverse(receiver)
+          traverse(method)
+          args foreach traverse
 
-      case JSSuperBracketCall(cls, receiver, method, args) =>
-        traverse(receiver)
-        traverse(method)
-        args foreach traverse
+        case JSSuperBracketSelect(cls, qualifier, item) =>
+          traverse(qualifier)
+          traverse(item)
 
-      case JSSuperConstructorCall(args) =>
-        args foreach traverse
+        case JSSuperBracketCall(cls, receiver, method, args) =>
+          traverse(receiver)
+          traverse(method)
+          args foreach traverse
 
-      case JSSpread(items) =>
-        traverse(items)
+        case JSSuperConstructorCall(args) => args foreach traverse
 
-      case JSDelete(prop) =>
-        traverse(prop)
+        case JSSpread(items) => traverse(items)
 
-      case JSUnaryOp(op, lhs) =>
-        traverse(lhs)
+        case JSDelete(prop) => traverse(prop)
 
-      case JSBinaryOp(op, lhs, rhs) =>
-        traverse(lhs)
-        traverse(rhs)
+        case JSUnaryOp(op, lhs) => traverse(lhs)
 
-      case JSArrayConstr(items) =>
-        items foreach traverse
+        case JSBinaryOp(op, lhs, rhs) =>
+          traverse(lhs)
+          traverse(rhs)
 
-      case JSObjectConstr(fields) =>
-        fields foreach { f => traverse(f._2) }
+        case JSArrayConstr(items) => items foreach traverse
 
-      // Atomic expressions
+        case JSObjectConstr(fields) =>
+          fields foreach { f =>
+            traverse(f._2)
+          }
 
-      case Closure(captureParams, params, body, captureValues) =>
-        traverse(body)
-        captureValues.foreach(traverse)
+        // Atomic expressions
 
-      // Classes
+        case Closure(captureParams, params, body, captureValues) =>
+          traverse(body)
+          captureValues.foreach(traverse)
 
-      case ClassDef(name, kind, superClass, parents, jsName, defs) =>
-        defs foreach traverse
+        // Classes
 
-      case MethodDef(static, name, args, resultType, body) =>
-        traverse(body)
+        case ClassDef(name, kind, superClass, parents, jsName, defs) =>
+          defs foreach traverse
 
-      case PropertyDef(name, getterBody, setterArg, setterBody) =>
-        traverse(getterBody)
-        traverse(setterBody)
+        case MethodDef(static, name, args, resultType, body) => traverse(body)
 
-      case ConstructorExportDef(fullName, args, body) =>
-        traverse(body)
+        case PropertyDef(name, getterBody, setterArg, setterBody) =>
+          traverse(getterBody)
+          traverse(setterBody)
 
-      // Trees that need not be traversed
+        case ConstructorExportDef(fullName, args, body) => traverse(body)
 
-      case _:Skip | _:Continue | _:Debugger | _:LoadModule |
-          _:LoadJSConstructor | _:LoadJSModule | _:JSEnvInfo | _:JSLinkingInfo |
-          _:Literal | _:UndefinedParam | _:VarRef | _:This | _:FieldDef |
-          _:JSClassExportDef | _:ModuleExportDef | EmptyTree =>
+        // Trees that need not be traversed
 
-      case _ =>
-        sys.error(s"Invalid tree in traverse() of class ${tree.getClass}")
-    }
+        case _: Skip | _: Continue | _: Debugger | _: LoadModule |
+            _: LoadJSConstructor | _: LoadJSModule | _: JSEnvInfo |
+            _: JSLinkingInfo | _: Literal | _: UndefinedParam | _: VarRef |
+            _: This | _: FieldDef | _: JSClassExportDef |
+            _: ModuleExportDef | EmptyTree =>
+
+        case _ =>
+          sys.error(s"Invalid tree in traverse() of class ${tree.getClass}")
+      }
   }
-
 }

@@ -17,8 +17,8 @@ import org.scalajs.testsuite.utils.AssertThrows._
 import org.scalajs.testsuite.utils.Platform._
 
 class ThreadLocalRandomTest {
-
-  @Test def should_throw_exception_on_setSeed(): Unit = {
+  @Test
+  def should_throw_exception_on_setSeed(): Unit = {
     val tlr = ThreadLocalRandom.current()
 
     assertThrows(classOf[UnsupportedOperationException], tlr.setSeed(1))
@@ -29,7 +29,8 @@ class ThreadLocalRandomTest {
     val bound = max(b1, b2)
 
     // In JDK7 nextInt does not support negative arguments.
-    val executeTest = !executingInJVMOnJDK7OrLower || (least >= 0 && least < bound)
+    val executeTest =
+      !executingInJVMOnJDK7OrLower || (least >= 0 && least < bound)
 
     if (executeTest) {
       val next = tlr.nextInt(least, bound)
@@ -37,7 +38,8 @@ class ThreadLocalRandomTest {
     }
   }
 
-  @Test def should_return_nextInt_that_fits_bounds(): Unit = {
+  @Test
+  def should_return_nextInt_that_fits_bounds(): Unit = {
     implicit val tlr = ThreadLocalRandom.current()
 
     checkIntBounds(Int.MinValue, Int.MaxValue)
@@ -152,7 +154,8 @@ class ThreadLocalRandomTest {
     assertTrue(next < bound)
   }
 
-  @Test def should_return_nextLong_under_a_bound(): Unit = {
+  @Test
+  def should_return_nextLong_under_a_bound(): Unit = {
     implicit val tlr = ThreadLocalRandom.current()
 
     checkLongUpperBound(Long.MaxValue)
@@ -259,15 +262,18 @@ class ThreadLocalRandomTest {
 
     assertThrows(classOf[IllegalArgumentException], tlr.nextLong(0L))
     assertThrows(classOf[IllegalArgumentException], tlr.nextLong(-1L))
-    assertThrows(classOf[IllegalArgumentException], tlr.nextLong(Long.MinValue))
+    assertThrows(
+        classOf[IllegalArgumentException], tlr.nextLong(Long.MinValue))
   }
 
-  def checkLongBounds(b1: Long, b2: Long)(implicit tlr: ThreadLocalRandom): Unit = {
+  def checkLongBounds(b1: Long, b2: Long)(
+      implicit tlr: ThreadLocalRandom): Unit = {
     val least = min(b1, b2)
     val bound = max(b1, b2)
 
     // In JDK7 nextLong does not support negative arguments.
-    val executeTest = !executingInJVMOnJDK7OrLower || (least >= 0 && least < bound)
+    val executeTest =
+      !executingInJVMOnJDK7OrLower || (least >= 0 && least < bound)
 
     if (executeTest) {
       val next = tlr.nextLong(least, bound)
@@ -275,7 +281,8 @@ class ThreadLocalRandomTest {
     }
   }
 
-  @Test def should_return_nextLong_that_fits_bounds(): Unit = {
+  @Test
+  def should_return_nextLong_that_fits_bounds(): Unit = {
     implicit val tlr = ThreadLocalRandom.current()
 
     checkLongBounds(Long.MinValue, Long.MaxValue)
@@ -386,13 +393,15 @@ class ThreadLocalRandomTest {
     assertThrows(classOf[IllegalArgumentException], tlr.nextLong(1L, 1L))
   }
 
-  def checkDoubleUpperBound(bound: Double)(implicit tlr: ThreadLocalRandom): Unit = {
+  def checkDoubleUpperBound(bound: Double)(
+      implicit tlr: ThreadLocalRandom): Unit = {
     val next = tlr.nextDouble(bound)
 
     assertTrue(next < bound)
   }
 
-  @Test def should_return_nextDouble_under_a_bound(): Unit = {
+  @Test
+  def should_return_nextDouble_under_a_bound(): Unit = {
     implicit val tlr = ThreadLocalRandom.current()
 
     checkDoubleUpperBound(Double.MaxValue)
@@ -499,15 +508,18 @@ class ThreadLocalRandomTest {
 
     assertThrows(classOf[IllegalArgumentException], tlr.nextDouble(0.0))
     assertThrows(classOf[IllegalArgumentException], tlr.nextDouble(-1.0))
-    assertThrows(classOf[IllegalArgumentException], tlr.nextDouble(Double.MinValue))
+    assertThrows(
+        classOf[IllegalArgumentException], tlr.nextDouble(Double.MinValue))
   }
 
-  def checkDoubleBounds(b1: Double, b2: Double)(implicit tlr: ThreadLocalRandom): Unit = {
+  def checkDoubleBounds(b1: Double, b2: Double)(
+      implicit tlr: ThreadLocalRandom): Unit = {
     val least = min(b1, b2)
     val bound = max(b1, b2)
 
     // In JDK7 nextDouble does not support negative arguments.
-    val executeTest = !executingInJVMOnJDK7OrLower || (least >= 0 && least < bound)
+    val executeTest =
+      !executingInJVMOnJDK7OrLower || (least >= 0 && least < bound)
 
     if (executeTest) {
       val next = tlr.nextDouble(least, bound)
@@ -515,7 +527,8 @@ class ThreadLocalRandomTest {
     }
   }
 
-  @Test def should_return_nextDouble_that_fits_bounds(): Unit = {
+  @Test
+  def should_return_nextDouble_that_fits_bounds(): Unit = {
     implicit val tlr = ThreadLocalRandom.current()
 
     checkDoubleBounds(Double.MinValue, Double.MaxValue)

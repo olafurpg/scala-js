@@ -7,32 +7,28 @@ package java.util
 
 import scalajs.js
 
-class Date private (private val date: js.Date) extends Object
-    with Serializable with Cloneable with Comparable[Date] {
-
+class Date private(private val date: js.Date)
+    extends Object with Serializable with Cloneable with Comparable[Date] {
   import Date._
 
-  def this() = this(new js.Date())
+  def this () = this(new js.Date())
 
-  @Deprecated
-  def this(year: Int, month: Int, date: Int, hrs: Int, min: Int, sec: Int) = {
+  @Deprecated def this (year: Int, month: Int, date: Int, hrs: Int, min: Int,
+  sec: Int) = {
     this(new js.Date())
     this.date.setFullYear(1900 + year, month, date)
     this.date.setHours(hrs, min, sec, 0)
   }
 
-  @Deprecated
-  def this(year: Int, month: Int, date: Int, hrs: Int, min: Int) =
-    this(year, month, date, hrs, min, 0)
+  @Deprecated def this (year: Int, month: Int, date: Int, hrs: Int,
+  min: Int) = this(year, month, date, hrs, min, 0)
 
-  @Deprecated
-  def this(year: Int, month: Int, date: Int) =
-    this(year, month, date, 0, 0, 0)
+  @Deprecated def this (year: Int, month: Int, date: Int) = this(
+      year, month, date, 0, 0, 0)
 
-  def this(date: Long) = this(new js.Date(date))
+  def this (date: Long) = this(new js.Date(date))
 
-  @Deprecated
-  def this(date: String) = this(new js.Date(date))
+  @Deprecated def this (date: String) = this(new js.Date(date))
 
   def after(when: Date): Boolean = date.getTime() > when.date.getTime()
 
@@ -43,10 +39,11 @@ class Date private (private val date: js.Date) extends Object
   override def compareTo(anotherDate: Date): Int =
     date.getTime().compareTo(anotherDate.date.getTime())
 
-  override def equals(obj: Any): Boolean = obj match {
-    case d: Date => d.date.getTime() == date.getTime()
-    case _       => false
-  }
+  override def equals(obj: Any): Boolean =
+    obj match {
+      case d: Date => d.date.getTime() == date.getTime()
+      case _ => false
+    }
 
   override def hashCode(): Int = date.getTime().hashCode()
 
@@ -98,47 +95,56 @@ class Date private (private val date: js.Date) extends Object
 
   @Deprecated
   def toGMTString(): String = {
-    date.getUTCDate() + " " + Months(date.getUTCMonth()) + " " +
-      date.getUTCFullYear() + " " + pad0(date.getUTCHours()) + ":" +
-      pad0(date.getUTCMinutes()) + ":" +
-      pad0(date.getUTCSeconds()) +" GMT"
+    date.getUTCDate() + " " + Months(date.getUTCMonth()) + " " + date
+      .getUTCFullYear() + " " + pad0(date.getUTCHours()) + ":" + pad0(
+        date.getUTCMinutes()) + ":" + pad0(date.getUTCSeconds()) + " GMT"
   }
 
   @Deprecated
   def toLocaleString(): String = {
-    date.getDate() + "-" + Months(date.getMonth()) + "-" +
-      date.getFullYear() + "-" + pad0(date.getHours()) + ":" +
-      pad0(date.getMinutes()) + ":" + pad0(date.getSeconds())
+    date.getDate() + "-" + Months(date.getMonth()) + "-" + date
+      .getFullYear() + "-" + pad0(date.getHours()) + ":" + pad0(
+        date.getMinutes()) + ":" + pad0(date.getSeconds())
   }
 
   override def toString(): String = {
     val offset = -date.getTimezoneOffset()
-    val sign = if (offset < 0) "-" else "+"
+    val sign =
+      if (offset < 0) "-"
+      else "+"
     val hours = pad0(Math.abs(offset) / 60)
     val mins = pad0(Math.abs(offset) % 60)
-    Days(date.getDay()) + " "+ Months(date.getMonth()) + " " +
-      pad0(date.getHours()) + ":" + pad0(date.getMinutes()) + ":" +
-      pad0(date.getSeconds()) + " GMT" + sign + hours + mins + " " +
-      date.getFullYear()
+    Days(date.getDay()) + " " + Months(date.getMonth()) + " " + pad0(
+        date.getHours()) + ":" + pad0(date.getMinutes()) + ":" + pad0(date
+      .getSeconds()) + " GMT" + sign + hours + mins + " " + date.getFullYear()
   }
 }
 
 object Date {
-  private val Days = Array(
-      "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
+  private val Days = Array("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
 
-  private val Months = Array(
-      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+  private val Months = Array("Jan",
+                             "Feb",
+                             "Mar",
+                             "Apr",
+                             "May",
+                             "Jun",
+                             "Jul",
+                             "Aug",
+                             "Sep",
+                             "Oct",
+                             "Nov",
+                             "Dec")
 
   private def pad0(i: Int): String = {
     val str = "" + i
-    if (str.length < 2) "0" + str else str
+    if (str.length < 2) "0" + str
+    else str
   }
 
   @Deprecated
-  def UTC(year: Int, month: Int, date: Int,
-      hrs: Int, min: Int, sec: Int): Long =
+  def UTC(
+      year: Int, month: Int, date: Int, hrs: Int, min: Int, sec: Int): Long =
     js.Date.UTC(year + 1900, month, date, hrs, min, sec).toLong
 
   @Deprecated

@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 /**
  * All doc-comments marked as "MDN" are by Mozilla Contributors,
  * distributed under the Creative Commons Attribution-ShareAlike license from
@@ -28,30 +27,35 @@ object Math extends Object {
    * MDN
    */
   val E: Double = native
+
   /**
    * Natural logarithm of 10, approximately 2.303.
    *
    * MDN
    */
   val LN10: Double = native
+
   /**
    * Natural logarithm of 2, approximately 0.693.
    *
    * MDN
    */
   val LN2: Double = native
+
   /**
    * Base 2 logarithm of E, approximately 1.443.
    *
    * MDN
    */
   val LOG2E: Double = native
+
   /**
    * Base 10 logarithm of E, approximately 0.434.
    *
    * MSN
    */
   val LOG10E: Double = native
+
   /**
    * Ratio of the circumference of a circle to its diameter, approximately 3.14159.
    *
@@ -187,7 +191,7 @@ object Math extends Object {
    *
    * MDN
    */
-  def max(value1: Int, values: Int*): Int = native
+  def max(value1: Int, values: Int *): Int = native
 
   /**
    * The Math.max() function returns the largest of zero or more numbers.
@@ -198,14 +202,14 @@ object Math extends Object {
    *
    * MDN
    */
-  def max(values: Double*): Double = native
+  def max(values: Double *): Double = native
 
   /**
    * The Math.min() function returns the smallest of zero or more numbers.
    *
    * MDN
    */
-  def min(value1: Int, values: Int*): Int = native
+  def min(value1: Int, values: Int *): Int = native
 
   /**
    * The Math.min() function returns the smallest of zero or more numbers.
@@ -216,7 +220,7 @@ object Math extends Object {
    *
    * MDN
    */
-  def min(values: Double*): Double = native
+  def min(values: Double *): Double = native
 
   /**
    * The Math.pow() function returns the base to the exponent Power,  that is, base^^exponent.

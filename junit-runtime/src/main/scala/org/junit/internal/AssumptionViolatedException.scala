@@ -8,11 +8,11 @@ import org.hamcrest.Matcher
 import org.hamcrest.SelfDescribing
 import org.hamcrest.StringDescription
 
-class AssumptionViolatedException protected(
-    fAssumption: String,
-    fValueMatcher: Boolean,
-    fMatcher: Matcher[_],
-    fValue: AnyRef) extends RuntimeException with SelfDescribing {
+class AssumptionViolatedException protected(fAssumption: String,
+                                            fValueMatcher: Boolean,
+                                            fMatcher: Matcher[_],
+                                            fValue: AnyRef)
+    extends RuntimeException with SelfDescribing {
 
   //  @deprecated
   //  def this(assumption: String, hasValue: Boolean, value: AnyRef, matcher: Matcher[AnyRef]) {
@@ -43,8 +43,7 @@ class AssumptionViolatedException protected(
   //    initCause(e)
   //  }
 
-  override def getMessage(): String =
-    StringDescription.asString(this)
+  override def getMessage(): String = StringDescription.asString(this)
 
   def describeTo(description: Description): Unit = {
     if (fAssumption != null)

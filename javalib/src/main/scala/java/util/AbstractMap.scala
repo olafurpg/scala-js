@@ -26,9 +26,8 @@ object AbstractMap {
 
   class SimpleEntry[K, V](private var key: K, private var value: V)
       extends Map.Entry[K, V] with Serializable {
-
-    def this(entry: Map.Entry[_ <: K, _ <: V]) =
-      this(entry.getKey, entry.getValue)
+    def this (entry: Map.Entry[_ <: K, _ <: V]) = this(
+        entry.getKey, entry.getValue)
 
     def getKey(): K = key
 
@@ -40,41 +39,34 @@ object AbstractMap {
       oldValue
     }
 
-    override def equals(o: Any): Boolean =
-      entryEquals(this, o)
+    override def equals(o: Any): Boolean = entryEquals(this, o)
 
-    override def hashCode(): Int =
-      entryHashCode(this)
+    override def hashCode(): Int = entryHashCode(this)
 
-    override def toString(): String =
-      getKey + "=" + getValue
+    override def toString(): String = getKey + "=" + getValue
   }
 
   class SimpleImmutableEntry[K, V](key: K, value: V)
       extends Map.Entry[K, V] with Serializable {
-
-    def this(entry: Map.Entry[_ <: K, _ <: V]) =
-      this(entry.getKey, entry.getValue)
+    def this (entry: Map.Entry[_ <: K, _ <: V]) = this(
+        entry.getKey, entry.getValue)
 
     def getKey(): K = key
 
     def getValue(): V = value
 
-    def setValue(value: V): V =
-      throw new UnsupportedOperationException()
+    def setValue(value: V): V = throw new UnsupportedOperationException()
 
-    override def equals(o: Any): Boolean =
-      entryEquals(this, o)
+    override def equals(o: Any): Boolean = entryEquals(this, o)
 
-    override def hashCode(): Int =
-      entryHashCode(this)
+    override def hashCode(): Int = entryHashCode(this)
 
-    override def toString(): String =
-      getKey + "=" + getValue
+    override def toString(): String = getKey + "=" + getValue
   }
 }
 
-abstract class AbstractMap[K, V] protected () extends java.util.Map[K, V] {
+abstract class AbstractMap[K, V] protected()
+    extends java.util.Map[K, V] {
   self =>
 
   def size(): Int = entrySet.size
@@ -95,8 +87,7 @@ abstract class AbstractMap[K, V] protected () extends java.util.Map[K, V] {
     }
   }
 
-  def put(key: K, value: V): V =
-    throw new UnsupportedOperationException()
+  def put(key: K, value: V): V = throw new UnsupportedOperationException()
 
   def remove(key: Any): V = {
     @tailrec
@@ -106,10 +97,8 @@ abstract class AbstractMap[K, V] protected () extends java.util.Map[K, V] {
         if (key === item.getKey) {
           iter.remove()
           item.getValue
-        } else
-          findAndRemove(iter)
-      } else
-        null.asInstanceOf[V]
+        } else findAndRemove(iter)
+      } else null.asInstanceOf[V]
     }
     findAndRemove(entrySet.iterator)
   }
@@ -117,11 +106,11 @@ abstract class AbstractMap[K, V] protected () extends java.util.Map[K, V] {
   def putAll(m: Map[_ <: K, _ <: V]): Unit =
     m.entrySet.iterator.foreach(e => put(e.getKey, e.getValue))
 
-  def clear(): Unit =
-    entrySet.clear()
+  def clear(): Unit = entrySet.clear()
 
   def keySet(): Set[K] = {
     new AbstractSet[K] {
+
       override def size(): Int = self.size
 
       def iterator(): Iterator[K] = {
@@ -140,6 +129,7 @@ abstract class AbstractMap[K, V] protected () extends java.util.Map[K, V] {
 
   def values(): Collection[V] = {
     new AbstractCollection[V] {
+
       override def size(): Int = self.size
 
       def iterator(): Iterator[V] = {

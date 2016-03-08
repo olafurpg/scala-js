@@ -4,6 +4,7 @@ package scala.runtime
  */
 
 object Statics {
+
   def mix(hash: Int, data: Int): Int = {
     var h = mixLast(hash, data)
     h = Integer.rotateLeft(h, 13)

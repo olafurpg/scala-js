@@ -8,16 +8,16 @@ final class MasterRunner(
     args: Array[String],
     remoteArgs: Array[String],
     testClassLoader: ClassLoader
-) extends BaseRunner(args, remoteArgs, testClassLoader) {
-
+    )
+    extends BaseRunner(args, remoteArgs, testClassLoader) {
   /** Number of tasks registered in the whole system */
-  private[this] val registeredCount = new AtomicInteger(0)
+  private [ this] val registeredCount = new AtomicInteger(0)
 
   /** Number of tasks completed in the whole system */
-  private[this] val doneCount = new AtomicInteger(0)
+  private [ this] val doneCount = new AtomicInteger(0)
 
   /** Number of running slaves in the whole system */
-  private[this] val slaveCount = new AtomicInteger(0)
+  private [ this] val slaveCount = new AtomicInteger(0)
 
   def tasks(taskDefs: Array[TaskDef]): Array[Task] = {
     registeredCount.addAndGet(taskDefs.length)
@@ -37,27 +37,26 @@ final class MasterRunner(
     if (registered != done)
       throw new IllegalStateException(
           s"$registered task(s) were registered, $done were executed")
-    else
-      s"Dummy Test Framework processed $done task(s)"
+    else s"Dummy Test Framework processed $done task(s)"
   }
 
-  private[framework] def taskDone(): Unit = doneCount.incrementAndGet()
+  private [framework] def taskDone(): Unit = doneCount.incrementAndGet()
 
-  def receiveMessage(msg: String): Option[String] = msg(0) match {
-    case 's' =>
-      slaveCount.incrementAndGet()
-      // Send Hello message back
-      Some("Hello")
-    case 't' =>
-      // Slave notifies us of registration of tasks
-      registeredCount.addAndGet(msg.tail.toInt)
-      None
-    case 'd' =>
-      // Slave notifies us of completion of tasks
-      val count = msg.tail.toInt
-      doneCount.addAndGet(count)
-      slaveCount.decrementAndGet()
-      None
-  }
-
+  def receiveMessage(msg: String): Option[String] =
+    msg(0) match {
+      case 's' =>
+        slaveCount.incrementAndGet()
+        // Send Hello message back
+        Some("Hello")
+      case 't' =>
+        // Slave notifies us of registration of tasks
+        registeredCount.addAndGet(msg.tail.toInt)
+        None
+      case 'd' =>
+        // Slave notifies us of completion of tasks
+        val count = msg.tail.toInt
+        doneCount.addAndGet(count)
+        slaveCount.decrementAndGet()
+        None
+    }
 }

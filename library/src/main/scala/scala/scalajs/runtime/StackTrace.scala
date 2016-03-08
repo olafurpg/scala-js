@@ -8,7 +8,6 @@ import js.JSStringOps._
 /** Conversions of JavaScript stack traces to Java stack traces.
  */
 object StackTrace {
-
   /* !!! Note that in this unit, we go to great lengths *not* to use anything
    * from the Scala collections library.
    *
@@ -29,7 +28,8 @@ object StackTrace {
    *  The state is stored as a magic field of the throwable, and will be used
    *  by `extract()` to create an Array[StackTraceElement].
    */
-  @inline def captureState(throwable: Throwable): Unit = {
+  @inline
+  def captureState(throwable: Throwable): Unit = {
     if (js.isUndefined(js.constructorOf[js.Error].captureStackTrace)) {
       captureState(throwable, createException())
     } else {
@@ -40,13 +40,15 @@ object StackTrace {
        * important so that Node.js will show stack traces if the exception
        * is never caught and reaches the global event queue.
        */
-      js.constructorOf[js.Error].captureStackTrace(throwable.asInstanceOf[js.Any])
+      js.constructorOf[js.Error]
+        .captureStackTrace(throwable.asInstanceOf[js.Any])
       captureState(throwable, throwable)
     }
   }
 
   /** Creates a JS Error with the current stack trace state. */
-  @inline private def createException(): Any = {
+  @inline
+  private def createException(): Any = {
     try {
       // Intentionally throw a JavaScript error
       new js.Object().asInstanceOf[js.Dynamic].undef()
@@ -59,7 +61,8 @@ object StackTrace {
    *  The state is stored as a magic field of the throwable, and will be used
    *  by `extract()` to create an Array[StackTraceElement].
    */
-  @inline def captureState(throwable: Throwable, e: Any): Unit =
+  @inline
+  def captureState(throwable: Throwable, e: Any): Unit =
     throwable.asInstanceOf[js.Dynamic].stackdata = e.asInstanceOf[js.Any]
 
   /** Tests whether we're running under Rhino. */
@@ -99,10 +102,12 @@ object StackTrace {
    * In the rest of the function, we convert the non-empty lines into
    * StackTraceElements.
    */
+
   private def normalizedLinesToStackTrace(
       lines: js.Array[String]): Array[StackTraceElement] = {
     val NormalizedFrameLine = """^([^\@]*)\@(.*):([0-9]+)$""".re
-    val NormalizedFrameLineWithColumn = """^([^\@]*)\@(.*):([0-9]+):([0-9]+)$""".re
+    val NormalizedFrameLineWithColumn =
+      """^([^\@]*)\@(.*):([0-9]+):([0-9]+)$""".re
 
     val trace = new js.Array[JSStackTraceElem]
     var i = 0
@@ -112,14 +117,17 @@ object StackTrace {
         val mtch1 = NormalizedFrameLineWithColumn.exec(line)
         if (mtch1 ne null) {
           val (className, methodName) = extractClassMethod(mtch1(1).get)
-          trace.push(JSStackTraceElem(className, methodName, mtch1(2).get,
-              mtch1(3).get.toInt, mtch1(4).get.toInt))
+          trace.push(JSStackTraceElem(className,
+                                      methodName,
+                                      mtch1(2).get,
+                                      mtch1(3).get.toInt,
+                                      mtch1(4).get.toInt))
         } else {
           val mtch2 = NormalizedFrameLine.exec(line)
           if (mtch2 ne null) {
             val (className, methodName) = extractClassMethod(mtch2(1).get)
-            trace.push(JSStackTraceElem(className,
-                methodName, mtch2(2).get, mtch2(3).get.toInt))
+            trace.push(JSStackTraceElem(
+                className, methodName, mtch2(2).get, mtch2(3).get.toInt))
           } else {
             // just in case
             trace.push(JSStackTraceElem("<jscode>", line, null, -1))
@@ -140,10 +148,12 @@ object StackTrace {
     i = 0
     while (i < mappedTrace.length) {
       val jsSte = mappedTrace(i)
-      val ste = new StackTraceElement(jsSte.declaringClass, jsSte.methodName,
-          jsSte.fileName, jsSte.lineNumber)
+      val ste = new StackTraceElement(jsSte.declaringClass,
+                                      jsSte.methodName,
+                                      jsSte.fileName,
+                                      jsSte.lineNumber)
       jsSte.columnNumber.foreach(ste.setColumnNumber)
-      result(i) = ste
+      result (i) = ste
       i += 1
     }
 
@@ -174,9 +184,12 @@ object StackTrace {
    *  display the function name.
    */
   private def extractClassMethod(functionName: String): (String, String) = {
-    val PatC = """^(?:Object\.|\[object Object\]\.)?(?:ScalaJS\.c\.|\$c_)([^\.]+)(?:\.prototype)?\.([^\.]+)$""".re
-    val PatS = """^(?:Object\.|\[object Object\]\.)?(?:ScalaJS\.s\.|\$s_)((?:_[^_]|[^_])+)__([^\.]+)$""".re
-    val PatM = """^(?:Object\.|\[object Object\]\.)?(?:ScalaJS\.m\.|\$m_)([^\.]+)$""".re
+    val PatC =
+      """^(?:Object\.|\[object Object\]\.)?(?:ScalaJS\.c\.|\$c_)([^\.]+)(?:\.prototype)?\.([^\.]+)$""".re
+    val PatS =
+      """^(?:Object\.|\[object Object\]\.)?(?:ScalaJS\.s\.|\$s_)((?:_[^_]|[^_])+)__([^\.]+)$""".re
+    val PatM =
+      """^(?:Object\.|\[object Object\]\.)?(?:ScalaJS\.m\.|\$m_)([^\.]+)$""".re
 
     var isModule = false
     var mtch = PatC.exec(functionName)
@@ -190,10 +203,10 @@ object StackTrace {
 
     if (mtch ne null) {
       val className = decodeClassName(mtch(1).get)
-      val methodName = if (isModule)
-        "<clinit>" // that's how it would be reported on the JVM
-      else
-        decodeMethodName(mtch(2).get)
+      val methodName =
+        if (isModule)
+          "<clinit>" // that's how it would be reported on the JVM
+        else decodeMethodName(mtch(2).get)
       (className, methodName)
     } else {
       ("<jscode>", functionName)
@@ -208,25 +221,25 @@ object StackTrace {
     val encoded =
       if (encodedName.charAt(0) == '$') encodedName.substring(1)
       else encodedName
-    val base = if (decompressedClasses.contains(encoded)) {
-      decompressedClasses(encoded)
-    } else {
-      @tailrec
-      def loop(i: Int): String = {
-        if (i < compressedPrefixes.length) {
-          val prefix = compressedPrefixes(i)
-          if (encoded.startsWith(prefix))
-            decompressedPrefixes(prefix) + encoded.substring(prefix.length)
-          else
-            loop(i+1)
-        } else {
-          // no prefix matches
-          if (encoded.startsWith("L")) encoded.substring(1)
-          else encoded // just in case
+    val base =
+      if (decompressedClasses.contains(encoded)) {
+        decompressedClasses(encoded)
+      } else {
+        @tailrec
+        def loop(i: Int): String = {
+          if (i < compressedPrefixes.length) {
+            val prefix = compressedPrefixes(i)
+            if (encoded.startsWith(prefix))
+              decompressedPrefixes(prefix) + encoded.substring(prefix.length)
+            else loop(i + 1)
+          } else {
+            // no prefix matches
+            if (encoded.startsWith("L")) encoded.substring(1)
+            else encoded // just in case
+          }
         }
+        loop(0)
       }
-      loop(0)
-    }
     base.replace("_", ".").replace("$und", "_")
   }
 
@@ -248,8 +261,8 @@ object StackTrace {
     var index = 0
     while (index <= 22) {
       if (index >= 2)
-        dict("T"+index) = "scala_Tuple"+index
-      dict("F"+index) = "scala_Function"+index
+        dict ("T" + index) = "scala_Tuple" + index
+      dict ("F" + index) = "scala_Function" + index
       index += 1
     }
 
@@ -258,15 +271,15 @@ object StackTrace {
 
   private lazy val decompressedPrefixes = js.Dynamic.literal(
       sjsr_ = "scala_scalajs_runtime_",
-      sjs_  = "scala_scalajs_",
-      sci_  = "scala_collection_immutable_",
-      scm_  = "scala_collection_mutable_",
-      scg_  = "scala_collection_generic_",
-      sc_   = "scala_collection_",
-      sr_   = "scala_runtime_",
-      s_    = "scala_",
-      jl_   = "java_lang_",
-      ju_   = "java_util_"
+      sjs_ = "scala_scalajs_",
+      sci_ = "scala_collection_immutable_",
+      scm_ = "scala_collection_mutable_",
+      scg_ = "scala_collection_generic_",
+      sc_ = "scala_collection_",
+      sr_ = "scala_runtime_",
+      s_ = "scala_",
+      jl_ = "java_lang_",
+      ju_ = "java_util_"
   ).asInstanceOf[js.Dictionary[String]]
 
   private lazy val compressedPrefixes =
@@ -285,7 +298,9 @@ object StackTrace {
   }
 
   private implicit class StringRE(val s: String) extends AnyVal {
+
     def re: js.RegExp = new js.RegExp(s)
+
     def re(mods: String): js.RegExp = new js.RegExp(s, mods)
   }
 
@@ -314,14 +329,22 @@ object StackTrace {
      * So we define inlineable defs for the fields we're interested in.
      * This way we make the compiler happy
      */
-    @inline def arguments = e.arguments
-    @inline def stack = e.stack
-    @inline def sourceURL = e.sourceURL
-    @inline def number = e.number
-    @inline def fileName = e.fileName
-    @inline def message = e.message
-    @inline def `opera#sourceloc` = e.`opera#sourceloc`
-    @inline def stacktrace = e.stacktrace
+    @inline
+    def arguments = e.arguments
+    @inline
+    def stack = e.stack
+    @inline
+    def sourceURL = e.sourceURL
+    @inline
+    def number = e.number
+    @inline
+    def fileName = e.fileName
+    @inline
+    def message = e.message
+    @inline
+    def `opera#sourceloc` = e.`opera#sourceloc`
+    @inline
+    def stacktrace = e.stacktrace
 
     if (!e) {
       js.Array[String]()
@@ -339,11 +362,13 @@ object StackTrace {
       // e.message.indexOf("Backtrace:") > -1 -> opera9
       // 'opera#sourceloc' in e -> opera9, opera10a
       // !e.stacktrace -> opera9
-      @inline def messageIsLongerThanStacktrace =
+      @inline
+      def messageIsLongerThanStacktrace =
         message.split("\n").length > stacktrace.split("\n").length
       if (!stacktrace) {
         extractOpera9(e) // use e.message
-      } else if ((message.indexOf("\n") > -1) && messageIsLongerThanStacktrace) {
+      } else if ((message.indexOf("\n") > - 1) &&
+                 messageIsLongerThanStacktrace) {
         // e.message may have more stack entries than e.stacktrace
         extractOpera9(e) // use e.message
       } else {
@@ -368,20 +393,20 @@ object StackTrace {
   private def extractRhino(e: js.Dynamic): js.Array[String] = {
     (e.stack.asInstanceOf[js.UndefOr[String]]).getOrElse("")
       .jsReplace("""^\s+at\s+""".re("gm"), "") // remove 'at' and indentation
-      .jsReplace("""^(.+?)(?: \((.+)\))?$""".re("gm"), "$2@$1")
-      .jsReplace("""\r\n?""".re("gm"), "\n") // Rhino has platform-dependent EOL's
+      .jsReplace("""^(.+?)(?: \((.+)\))?$""".re("gm"), "$2@$1").jsReplace(
+        """\r\n?""".re("gm"), "\n") // Rhino has platform-dependent EOL's
       .jsSplit("\n")
   }
 
   private def extractChrome(e: js.Dynamic): js.Array[String] = {
-    (e.stack.asInstanceOf[String] + "\n")
-      .jsReplace("""^[\s\S]+?\s+at\s+""".re, " at ") // remove message
+    (e.stack.asInstanceOf[String] + "\n").jsReplace("""^[\s\S]+?\s+at\s+""".re,
+                                                    " at ") // remove message
       .jsReplace("""^\s+(at eval )?at\s+""".re("gm"), "") // remove 'at' and indentation
       .jsReplace("""^([^\(]+?)([\n])""".re("gm"), "{anonymous}() ($1)$2") // see note
-      .jsReplace("""^Object.<anonymous>\s*\(([^\)]+)\)""".re("gm"), "{anonymous}() ($1)")
+      .jsReplace("""^Object.<anonymous>\s*\(([^\)]+)\)""".re("gm"),
+                 "{anonymous}() ($1)")
       .jsReplace("""^([^\(]+|\{anonymous\}\(\)) \((.+)\)$""".re("gm"), "$1@$2")
-      .jsSplit("\n")
-      .jsSlice(0, -1)
+      .jsSplit("\n").jsSlice(0, -1)
 
     /* Note: there was a $ next to the \n here in the original code, but it
      * chokes with method names with $'s, which are generated often by Scala.js.
@@ -389,27 +414,24 @@ object StackTrace {
   }
 
   private def extractFirefox(e: js.Dynamic): js.Array[String] = {
-    (e.stack.asInstanceOf[String])
-      .jsReplace("""(?:\n@:0)?\s+$""".re("m"), "")
+    (e.stack.asInstanceOf[String]).jsReplace("""(?:\n@:0)?\s+$""".re("m"), "")
       .jsReplace("""^(?:\((\S*)\))?@""".re("gm"), "{anonymous}($1)@")
       .jsSplit("\n")
   }
 
   private def extractIE(e: js.Dynamic): js.Array[String] = {
-    (e.stack.asInstanceOf[String])
-      .jsReplace("""^\s*at\s+(.*)$""".re("gm"), "$1")
-      .jsReplace("""^Anonymous function\s+""".re("gm"), "{anonymous}() ")
-      .jsReplace("""^([^\(]+|\{anonymous\}\(\))\s+\((.+)\)$""".re("gm"), "$1@$2")
-      .jsSplit("\n")
-      .jsSlice(1)
+    (e.stack.asInstanceOf[String]).jsReplace("""^\s*at\s+(.*)$""".re("gm"),
+                                             "$1").jsReplace(
+        """^Anonymous function\s+""".re("gm"), "{anonymous}() ").jsReplace(
+        """^([^\(]+|\{anonymous\}\(\))\s+\((.+)\)$""".re("gm"),
+        "$1@$2").jsSplit("\n").jsSlice(1)
   }
 
   private def extractSafari(e: js.Dynamic): js.Array[String] = {
-    (e.stack.asInstanceOf[String])
-      .jsReplace("""\[native code\]\n""".re("m"), "")
-      .jsReplace("""^(?=\w+Error\:).*$\n""".re("m"), "")
-      .jsReplace("""^@""".re("gm"), "{anonymous}()@")
-      .jsSplit("\n")
+    (e.stack.asInstanceOf[String]).jsReplace(
+        """\[native code\]\n""".re("m"),
+        "").jsReplace("""^(?=\w+Error\:).*$\n""".re("m"), "")
+      .jsReplace("""^@""".re("gm"), "{anonymous}()@").jsSplit("\n")
   }
 
   private def extractOpera9(e: js.Dynamic): js.Array[String] = {
@@ -425,7 +447,7 @@ object StackTrace {
       val mtch = lineRE.exec(lines(i))
       if (mtch ne null) {
         result.push("{anonymous}()@" + mtch(2).get + ":" + mtch(1).get
-            /* + " -- " + lines(i+1).replace("""^\s+""".re, "") */)
+        /* + " -- " + lines(i+1).replace("""^\s+""".re, "") */ )
       }
       i += 2
     }
@@ -436,7 +458,8 @@ object StackTrace {
   private def extractOpera10a(e: js.Dynamic): js.Array[String] = {
     // "  Line 27 of linked script file://localhost/G:/js/stacktrace.js\n"
     // "  Line 11 of inline#1 script in file://localhost/G:/js/test/functional/testcase1.html: In function foo\n"
-    val lineRE = """Line (\d+).*script (?:in )?(\S+)(?:: In function (\S+))?$""".re("i")
+    val lineRE =
+      """Line (\d+).*script (?:in )?(\S+)(?:: In function (\S+))?$""".re("i")
     val lines = (e.stacktrace.asInstanceOf[String]).jsSplit("\n")
     val result = new js.Array[String]
 
@@ -447,7 +470,7 @@ object StackTrace {
       if (mtch ne null) {
         val fnName = mtch(3).getOrElse("{anonymous}")
         result.push(fnName + "()@" + mtch(2).get + ":" + mtch(1).get
-            /* + " -- " + lines(i+1).replace("""^\s+""".re, "")*/)
+        /* + " -- " + lines(i+1).replace("""^\s+""".re, "")*/ )
       }
       i += 2
     }
@@ -489,11 +512,11 @@ object StackTrace {
       if (mtch ne null) {
         val location = mtch(4).get + ":" + mtch(1).get + ":" + mtch(2).get
         val fnName0 = mtch(2).getOrElse("global code")
-        val fnName = fnName0
-          .jsReplace("""<anonymous function: (\S+)>""".re, "$1")
-          .jsReplace("""<anonymous function>""".re, "{anonymous}")
+        val fnName =
+          fnName0.jsReplace("""<anonymous function: (\S+)>""".re, "$1")
+            .jsReplace("""<anonymous function>""".re, "{anonymous}")
         result.push(fnName + "@" + location
-            /* + " -- " + lines(i+1).replace("""^\s+""".re, "")*/)
+        /* + " -- " + lines(i+1).replace("""^\s+""".re, "")*/ )
       }
       i += 2
     }
@@ -514,16 +537,21 @@ object StackTrace {
     var declaringClass: String = js.native
     var methodName: String = js.native
     var fileName: String = js.native
+
     /** 1-based line number */
     var lineNumber: Int = js.native
+
     /** 1-based optional columnNumber */
     var columnNumber: js.UndefOr[Int] = js.native
   }
 
   object JSStackTraceElem {
     @inline
-    def apply(declaringClass: String, methodName: String,
-        fileName: String, lineNumber: Int,
+    def apply(
+        declaringClass: String,
+        methodName: String,
+        fileName: String,
+        lineNumber: Int,
         columnNumber: js.UndefOr[Int] = js.undefined): JSStackTraceElem = {
       js.Dynamic.literal(
           declaringClass = declaringClass,
@@ -540,16 +568,18 @@ object StackTrace {
    */
   @deprecated("Use Implicits.StackTraceElementOps instead.", "0.6.3")
   implicit class ColumnStackTraceElement(ste: StackTraceElement) {
+
     def getColumnNumber: Int =
       new Implicits.StackTraceElementOps(ste).getColumnNumber()
   }
 
   object Implicits {
+
     /** Access to the additional methods `getColumnNumber` and `setColumnNumber`
      *  of [[java.lang.StackTraceElement StackTraceElement]].
      */
-    implicit class StackTraceElementOps(
-        val ste: StackTraceElement) extends AnyVal {
+    implicit class StackTraceElementOps(val ste: StackTraceElement)
+        extends AnyVal {
       @inline
       def getColumnNumber(): Int =
         ste.asInstanceOf[js.Dynamic].getColumnNumber().asInstanceOf[Int]
@@ -559,5 +589,4 @@ object StackTrace {
         ste.asInstanceOf[js.Dynamic].setColumnNumber(columnNumber)
     }
   }
-
 }

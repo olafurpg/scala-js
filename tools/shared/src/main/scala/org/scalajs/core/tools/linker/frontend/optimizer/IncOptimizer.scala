@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.tools.linker.frontend.optimizer
 
 import scala.collection.{GenTraversableOnce, GenIterable}
@@ -15,11 +14,11 @@ import scala.collection.mutable
 import org.scalajs.core.tools.sem.Semantics
 import org.scalajs.core.tools.javascript.ESLevel
 
-final class IncOptimizer(semantics: Semantics, esLevel: ESLevel,
-    considerPositions: Boolean)
+final class IncOptimizer(
+    semantics: Semantics, esLevel: ESLevel, considerPositions: Boolean)
     extends GenIncOptimizer(semantics, esLevel, considerPositions) {
 
-  private[optimizer] object CollOps extends GenIncOptimizer.AbsCollOps {
+  private [optimizer] object CollOps extends GenIncOptimizer.AbsCollOps {
     type Map[K, V] = mutable.Map[K, V]
     type ParMap[K, V] = mutable.Map[K, V]
     type AccMap[K, V] = mutable.Map[K, mutable.ListBuffer[V]]
@@ -27,18 +26,24 @@ final class IncOptimizer(semantics: Semantics, esLevel: ESLevel,
     type Addable[V] = mutable.ListBuffer[V]
 
     def emptyAccMap[K, V]: AccMap[K, V] = mutable.Map.empty
+
     def emptyMap[K, V]: Map[K, V] = mutable.Map.empty
+
     def emptyParMap[K, V]: ParMap[K, V] = mutable.Map.empty
+
     def emptyParIterable[V]: ParIterable[V] = mutable.ListBuffer.empty
 
     // Operations on ParMap
+
     def put[K, V](map: ParMap[K, V], k: K, v: V): Unit = map.put(k, v)
+
     def remove[K, V](map: ParMap[K, V], k: K): Option[V] = map.remove(k)
 
     def retain[K, V](map: ParMap[K, V])(p: (K, V) => Boolean): Unit =
       map.retain(p)
 
     // Operations on AccMap
+
     def acc[K, V](map: AccMap[K, V], k: K, v: V): Unit =
       map.getOrElseUpdate(k, mutable.ListBuffer.empty) += v
 
@@ -50,34 +55,43 @@ final class IncOptimizer(semantics: Semantics, esLevel: ESLevel,
       map.keys.flatMap(f).toList
 
     // Operations on ParIterable
+
     def prepAdd[V](it: ParIterable[V]): Addable[V] = it
+
     def add[V](addable: Addable[V], v: V): Unit = addable += v
+
     def finishAdd[V](addable: Addable[V]): ParIterable[V] = addable
   }
 
   private val _interfaces = mutable.Map.empty[String, InterfaceType]
-  private[optimizer] def getInterface(encodedName: String): InterfaceType =
+
+  private [optimizer] def getInterface(encodedName: String): InterfaceType =
     _interfaces.getOrElseUpdate(encodedName, new SeqInterfaceType(encodedName))
 
   private val methodsToProcess = mutable.ListBuffer.empty[MethodImpl]
-  private[optimizer] def scheduleMethod(method: MethodImpl): Unit =
+
+  private [optimizer] def scheduleMethod(method: MethodImpl): Unit =
     methodsToProcess += method
 
-  private[optimizer] def newMethodImpl(owner: MethodContainer,
-      encodedName: String): MethodImpl = new SeqMethodImpl(owner, encodedName)
+  private [optimizer] def newMethodImpl(
+      owner: MethodContainer, encodedName: String): MethodImpl =
+    new SeqMethodImpl(owner, encodedName)
 
-  private[optimizer] def processAllTaggedMethods(): Unit = {
+  private [optimizer] def processAllTaggedMethods(): Unit = {
     logProcessingMethods(methodsToProcess.count(!_.deleted))
-    for (method <- methodsToProcess)
-      method.process()
+    for (method <- methodsToProcess) method.process()
     methodsToProcess.clear()
   }
 
-  private class SeqInterfaceType(encName: String) extends InterfaceType(encName) {
+  private class SeqInterfaceType(encName: String)
+      extends InterfaceType(encName) {
     private val ancestorsAskers = mutable.Set.empty[MethodImpl]
-    private val dynamicCallers = mutable.Map.empty[String, mutable.Set[MethodImpl]]
-    private val staticCallers = mutable.Map.empty[String, mutable.Set[MethodImpl]]
-    private val callersOfStatic = mutable.Map.empty[String, mutable.Set[MethodImpl]]
+    private val dynamicCallers =
+      mutable.Map.empty[String, mutable.Set[MethodImpl]]
+    private val staticCallers =
+      mutable.Map.empty[String, mutable.Set[MethodImpl]]
+    private val callersOfStatic =
+      mutable.Map.empty[String, mutable.Set[MethodImpl]]
 
     private var _ancestors: List[String] = encodedName :: Nil
 
@@ -85,8 +99,7 @@ final class IncOptimizer(semantics: Semantics, esLevel: ESLevel,
 
     def instantiatedSubclasses: Iterable[Class] = _instantiatedSubclasses
 
-    def addInstantiatedSubclass(x: Class): Unit =
-      _instantiatedSubclasses += x
+    def addInstantiatedSubclass(x: Class): Unit = _instantiatedSubclasses += x
 
     def removeInstantiatedSubclass(x: Class): Unit =
       _instantiatedSubclasses -= x
@@ -130,16 +143,13 @@ final class IncOptimizer(semantics: Semantics, esLevel: ESLevel,
       callersOfStatic.remove(methodName).foreach(_.foreach(_.tag()))
   }
 
-  private class SeqMethodImpl(owner: MethodContainer,
-      encodedName: String) extends MethodImpl(owner, encodedName) {
-
+  private class SeqMethodImpl(owner: MethodContainer, encodedName: String)
+      extends MethodImpl(owner, encodedName) {
     private val bodyAskers = mutable.Set.empty[MethodImpl]
 
-    def registerBodyAsker(asker: MethodImpl): Unit =
-      bodyAskers += asker
+    def registerBodyAsker(asker: MethodImpl): Unit = bodyAskers += asker
 
-    def unregisterDependee(dependee: MethodImpl): Unit =
-      bodyAskers -= dependee
+    def unregisterDependee(dependee: MethodImpl): Unit = bodyAskers -= dependee
 
     def tagBodyAskers(): Unit = {
       bodyAskers.foreach(_.tag())
@@ -162,10 +172,9 @@ final class IncOptimizer(semantics: Semantics, esLevel: ESLevel,
       tagged = true
       res
     }
+
     protected def resetTag(): Unit = tagged = false
-
   }
-
 }
 
 object IncOptimizer {

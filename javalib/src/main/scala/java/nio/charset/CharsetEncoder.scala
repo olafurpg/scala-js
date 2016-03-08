@@ -4,26 +4,27 @@ import scala.annotation.{switch, tailrec}
 
 import java.nio._
 
-abstract class CharsetEncoder protected (cs: Charset,
-    _averageBytesPerChar: Float, _maxBytesPerChar: Float,
-    private[this] var _replacement: Array[Byte]) {
-
+abstract class CharsetEncoder protected(
+    cs: Charset,
+    _averageBytesPerChar: Float,
+    _maxBytesPerChar: Float,
+    private [ this] var _replacement: Array[Byte]) {
   import CharsetEncoder._
 
-  protected def this(cs: Charset, _averageBytesPerChar: Float,
-      _maxBytesPerChar: Float) =
-    this(cs, _averageBytesPerChar, _averageBytesPerChar, Array('?'.toByte))
+  protected def this (cs: Charset, _averageBytesPerChar: Float,
+  _maxBytesPerChar: Float) = this(
+      cs, _averageBytesPerChar, _averageBytesPerChar, Array('?'.toByte))
 
   // Config
 
-  private[this] var _malformedInputAction: CodingErrorAction =
+  private [ this] var _malformedInputAction: CodingErrorAction =
     CodingErrorAction.REPORT
-  private[this] var _unmappableCharacterAction: CodingErrorAction =
+  private [ this] var _unmappableCharacterAction: CodingErrorAction =
     CodingErrorAction.REPORT
 
   // Status
 
-  private[this] var status: Int = INIT
+  private [ this] var status: Int = INIT
 
   // Methods
 
@@ -51,7 +52,8 @@ abstract class CharsetEncoder protected (cs: Charset,
     @inline
     @tailrec
     def loop(outBufSize: Int): Boolean = {
-      val result = decoder.decode(replBuf, CharBuffer.allocate(outBufSize), true)
+      val result =
+        decoder.decode(replBuf, CharBuffer.allocate(outBufSize), true)
       if (result.isOverflow) {
         loop(outBufSize * 2)
       } else {
@@ -74,9 +76,11 @@ abstract class CharsetEncoder protected (cs: Charset,
 
   protected def implOnMalformedInput(newAction: CodingErrorAction): Unit = ()
 
-  def unmappableCharacterAction(): CodingErrorAction = _unmappableCharacterAction
+  def unmappableCharacterAction(): CodingErrorAction =
+    _unmappableCharacterAction
 
-  final def onUnmappableCharacter(newAction: CodingErrorAction): CharsetEncoder = {
+  final def onUnmappableCharacter(
+      newAction: CodingErrorAction): CharsetEncoder = {
     if (newAction == null)
       throw new IllegalArgumentException("null CodingErrorAction")
     _unmappableCharacterAction = newAction
@@ -84,18 +88,20 @@ abstract class CharsetEncoder protected (cs: Charset,
     this
   }
 
-  protected def implOnUnmappableCharacter(newAction: CodingErrorAction): Unit = ()
+  protected def implOnUnmappableCharacter(newAction: CodingErrorAction): Unit =
+    ()
 
   final def averageBytesPerChar(): Float = _averageBytesPerChar
+
   final def maxBytesPerChar(): Float = _maxBytesPerChar
 
-  final def encode(in: CharBuffer, out: ByteBuffer,
-      endOfInput: Boolean): CoderResult = {
-
+  final def encode(
+      in: CharBuffer, out: ByteBuffer, endOfInput: Boolean): CoderResult = {
     if (status == FLUSHED || (!endOfInput && status == END))
       throw new IllegalStateException
 
-    status = if (endOfInput) END else ONGOING
+    status = if (endOfInput) END
+    else ONGOING
 
     @inline
     @tailrec
@@ -103,21 +109,20 @@ abstract class CharsetEncoder protected (cs: Charset,
       val result1 = try {
         encodeLoop(in, out)
       } catch {
-        case ex: BufferOverflowException =>
-          throw new CoderMalfunctionError(ex)
+        case ex: BufferOverflowException => throw new CoderMalfunctionError(ex)
         case ex: BufferUnderflowException =>
           throw new CoderMalfunctionError(ex)
       }
 
-      val result2 = if (result1.isUnderflow) {
-        val remaining = in.remaining
-        if (endOfInput && remaining > 0)
-          CoderResult.malformedForLength(remaining)
-        else
+      val result2 =
+        if (result1.isUnderflow) {
+          val remaining = in.remaining
+          if (endOfInput && remaining > 0)
+            CoderResult.malformedForLength(remaining)
+          else result1
+        } else {
           result1
-      } else {
-        result1
-      }
+        }
 
       if (result2.isUnderflow || result2.isOverflow) {
         result2
@@ -135,8 +140,7 @@ abstract class CharsetEncoder protected (cs: Charset,
               in.position(in.position + result2.length)
               loop()
             }
-          case CodingErrorAction.REPORT =>
-            result2
+          case CodingErrorAction.REPORT => result2
           case CodingErrorAction.IGNORE =>
             in.position(in.position + result2.length)
             loop()
@@ -154,15 +158,12 @@ abstract class CharsetEncoder protected (cs: Charset,
         if (result.isUnderflow)
           status = FLUSHED
         result
-      case FLUSHED =>
-        CoderResult.UNDERFLOW
-      case _ =>
-        throw new IllegalStateException
+      case FLUSHED => CoderResult.UNDERFLOW
+      case _ => throw new IllegalStateException
     }
   }
 
-  protected def implFlush(out: ByteBuffer): CoderResult =
-    CoderResult.UNDERFLOW
+  protected def implFlush(out: ByteBuffer): CoderResult = CoderResult.UNDERFLOW
 
   final def reset(): CharsetEncoder = {
     status = INIT
@@ -175,11 +176,12 @@ abstract class CharsetEncoder protected (cs: Charset,
   protected def encodeLoop(arg1: CharBuffer, arg2: ByteBuffer): CoderResult
 
   final def encode(in: CharBuffer): ByteBuffer = {
+
     def grow(out: ByteBuffer): ByteBuffer = {
       if (out.capacity == 0) {
         ByteBuffer.allocate(1)
       } else {
-        val result = ByteBuffer.allocate(out.capacity*2)
+        val result = ByteBuffer.allocate(out.capacity * 2)
         out.flip()
         result.put(out)
         result

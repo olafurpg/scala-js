@@ -7,18 +7,17 @@ import java.util._
 import scala.collection.JavaConversions._
 
 class ConcurrentHashMap[K >: Null, V >: Null]
-    extends AbstractMap[K, V] with ConcurrentMap[K, V] with Serializable { self =>
+    extends AbstractMap[K, V] with ConcurrentMap[K, V] with Serializable {
+  self =>
 
-  def this(initialCapacity: Int) =
-    this()
+  def this (initialCapacity: Int) = this()
 
-  def this(initialCapacity: Int, loadFactor: Float) =
-    this()
+  def this (initialCapacity: Int, loadFactor: Float) = this()
 
-  def this(initialCapacity: Int, loadFactor: Float, concurrencyLevel: Int) =
-    this()
+  def this (initialCapacity: Int, loadFactor: Float,
+  concurrencyLevel: Int) = this()
 
-  def this(initialMap: java.util.Map[_ <: K, _ <: V]) = {
+  def this (initialMap: java.util.Map[_ <: K, _ <: V]) = {
     this()
     putAll(initialMap)
   }
@@ -47,20 +46,17 @@ class ConcurrentHashMap[K >: Null, V >: Null]
   override def put(key: K, value: V): V = {
     if (key != null && value != null)
       inner.put(Box(key), value).getOrElse(null)
-    else
-      throw new NullPointerException()
+    else throw new NullPointerException()
   }
 
   def putIfAbsent(key: K, value: V): V = {
     if (key != null && value != null)
       inner.getOrElseUpdate(Box(key), value)
-    else
-      throw new NullPointerException()
+    else throw new NullPointerException()
   }
 
   override def putAll(m: Map[_ <: K, _ <: V]): Unit = {
-    for (e <- m.entrySet())
-      put(e.getKey, e.getValue)
+    for (e <- m.entrySet()) put(e.getKey, e.getValue)
   }
 
   override def remove(key: Any): V =
@@ -70,8 +66,7 @@ class ConcurrentHashMap[K >: Null, V >: Null]
     val old = inner(Box(key.asInstanceOf[K]))
     if (value === old)
       inner.remove(Box(key.asInstanceOf[K])).isDefined
-    else
-      false
+    else false
   }
 
   override def replace(key: K, oldValue: V, newValue: V): Boolean = {
@@ -97,14 +92,14 @@ class ConcurrentHashMap[K >: Null, V >: Null]
     }
   }
 
-  override def clear(): Unit =
-    inner.clear()
+  override def clear(): Unit = inner.clear()
 
   override def keySet(): ConcurrentHashMap.KeySetView[K, V] =
     new ConcurrentHashMap.KeySetView[K, V](this)
 
   def entrySet(): Set[Map.Entry[K, V]] = {
     new AbstractSet[Map.Entry[K, V]] {
+
       override def size(): Int = self.size
 
       def iterator(): Iterator[Map.Entry[K, V]] = {
@@ -138,13 +133,12 @@ class ConcurrentHashMap[K >: Null, V >: Null]
   def keys(): Enumeration[K] =
     asJavaEnumeration(inner.keys.iterator.map(_.inner))
 
-  def elements(): Enumeration[V] =
-    asJavaEnumeration(inner.values.iterator)
+  def elements(): Enumeration[V] = asJavaEnumeration(inner.values.iterator)
 }
 
 object ConcurrentHashMap {
 
-  class KeySetView[K >: Null, V >: Null] private[ConcurrentHashMap] (
+  class KeySetView[K >: Null, V >: Null] private [ConcurrentHashMap](
       chm: ConcurrentHashMap[K, V]) extends Set[K] with Serializable {
 
     def size(): Int = chm.size
@@ -171,18 +165,19 @@ object ConcurrentHashMap {
     def toArray[T <: AnyRef](a: Array[T]): Array[T] = {
       val toFill: Array[T] =
         if (a.size >= size) a
-        else jlr.Array.newInstance(a.getClass.getComponentType, size).asInstanceOf[Array[T]]
+        else
+          jlr.Array
+            .newInstance(a.getClass.getComponentType, size).asInstanceOf[
+              Array[T]]
 
       val iter = iterator
-      for (i <- 0 until size)
-        toFill(i) = iter.next().asInstanceOf[T]
+      for (i <- 0 until size) toFill (i) = iter.next().asInstanceOf[T]
       if (toFill.size > size)
-        toFill(size) = null.asInstanceOf[T]
+        toFill (size) = null.asInstanceOf[T]
       toFill
     }
 
-    def add(e: K): Boolean =
-      throw new UnsupportedOperationException()
+    def add(e: K): Boolean = throw new UnsupportedOperationException()
 
     def remove(o: Any): Boolean = chm.remove(o) != null
 
@@ -192,11 +187,9 @@ object ConcurrentHashMap {
     def addAll(c: Collection[_ <: K]): Boolean =
       throw new UnsupportedOperationException()
 
-    def removeAll(c: Collection[_]): Boolean =
-      removeWhere(c.contains(_))
+    def removeAll(c: Collection[_]): Boolean = removeWhere(c.contains(_))
 
-    def retainAll(c: Collection[_]): Boolean =
-      removeWhere(!c.contains(_))
+    def retainAll(c: Collection[_]): Boolean = removeWhere(!c.contains(_))
 
     def clear(): Unit = chm.clear()
 
@@ -212,5 +205,4 @@ object ConcurrentHashMap {
       changed
     }
   }
-
 }

@@ -60,12 +60,13 @@ import nsc._
  *
  *  @author Nicolas Stucki
  */
-abstract class PreTyperComponent extends plugins.PluginComponent
-    with transform.Transform with PluginComponent210Compat {
-
+abstract class PreTyperComponent
+    extends plugins.PluginComponent with transform.Transform
+    with PluginComponent210Compat {
   import global._
 
   val phaseName: String = "jspretyper"
+
   override def description: String =
     "capture pre-typer only tree info (for Scala.js)"
 
@@ -73,34 +74,44 @@ abstract class PreTyperComponent extends plugins.PluginComponent
     new PreTyperTransformer(unit)
 
   class PreTyperTransformer(unit: CompilationUnit) extends Transformer {
-    override def transform(tree: Tree): Tree = tree match {
-      case tree: ClassDef if needsAnnotations(tree) =>
-        val newBody = tree.impl.body.map {
-          case vdef: ValDef if needsAnnotations(vdef) =>
-            treeCopy.ValDef(vdef, withWasPublic(vdef.mods), vdef.name,
-                vdef.tpt, transform(vdef.rhs))
 
-          case ddef: DefDef if needsAnnotations(ddef) =>
-            treeCopy.DefDef(ddef, withWasPublic(ddef.mods), ddef.name,
-                ddef.tparams, ddef.vparamss, ddef.tpt, transform(ddef.rhs))
+    override def transform(tree: Tree): Tree =
+      tree match {
+        case tree: ClassDef if needsAnnotations(tree) =>
+          val newBody = tree.impl.body.map {
+            case vdef: ValDef if needsAnnotations(vdef) =>
+              treeCopy.ValDef(vdef,
+                              withWasPublic(vdef.mods),
+                              vdef.name,
+                              vdef.tpt,
+                              transform(vdef.rhs))
 
-          case member => transform(member)
-        }
-        val newImpl =
-          treeCopy.Template(tree.impl, tree.impl.parents, tree.impl.self, newBody)
-        treeCopy.ClassDef(tree, tree.mods, tree.name, tree.tparams, newImpl)
+            case ddef: DefDef if needsAnnotations(ddef) =>
+              treeCopy.DefDef(ddef,
+                              withWasPublic(ddef.mods),
+                              ddef.name,
+                              ddef.tparams,
+                              ddef.vparamss,
+                              ddef.tpt,
+                              transform(ddef.rhs))
 
-      case tree: Template =>
-        /* Avoid filtering out members that are EmptyTree during this transform.
+            case member => transform(member)
+          }
+          val newImpl = treeCopy.Template(
+              tree.impl, tree.impl.parents, tree.impl.self, newBody)
+          treeCopy.ClassDef(tree, tree.mods, tree.name, tree.tparams, newImpl)
+
+        case tree: Template =>
+          /* Avoid filtering out members that are EmptyTree during this transform.
          *
          * run/macro-term-declared-in-trait is an example of code where they
          * should not be cleaned.
          */
-        val newBody = tree.body.map(transform)
-        treeCopy.Template(tree, tree.parents, tree.self, newBody)
+          val newBody = tree.body.map(transform)
+          treeCopy.Template(tree, tree.parents, tree.self, newBody)
 
-      case _ => super.transform(tree)
-    }
+        case _ => super.transform(tree)
+      }
   }
 
   private def needsAnnotations(classDef: ClassDef): Boolean = {
@@ -112,8 +123,7 @@ abstract class PreTyperComponent extends plugins.PluginComponent
     }
   }
 
-  private def needsAnnotations(vdef: ValDef): Boolean =
-    vdef.mods.isPublic
+  private def needsAnnotations(vdef: ValDef): Boolean = vdef.mods.isPublic
 
   private def needsAnnotations(ddef: DefDef): Boolean =
     ddef.mods.isPublic && ddef.name != nme.CONSTRUCTOR
@@ -126,8 +136,9 @@ abstract class PreTyperComponent extends plugins.PluginComponent
   private val wasPublicBeforeTyper = newTypeName("WasPublicBeforeTyper")
 
   private def anonymousClassMethodWasPublicAnnotation: Tree = {
-    val runtimePackage = Select(Select(Select(Select(Ident(nme.ROOTPKG),
-        nme.scala_), scalajs), js), nme.annotation)
+    val runtimePackage = Select(
+        Select(Select(Select(Ident(nme.ROOTPKG), nme.scala_), scalajs), js),
+        nme.annotation)
     val cls = Select(runtimePackage, wasPublicBeforeTyper)
     Apply(Select(New(cls), nme.CONSTRUCTOR), Nil)
   }

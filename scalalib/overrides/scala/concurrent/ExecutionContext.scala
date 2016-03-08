@@ -8,8 +8,7 @@
 
 package scala.concurrent
 
-
-import java.util.concurrent.{ ExecutorService, Executor }
+import java.util.concurrent.{ExecutorService, Executor}
 import scala.annotation.implicitNotFound
 import scala.util.Try
 
@@ -59,7 +58,6 @@ import scala.util.Try
 an (implicit ec: ExecutionContext) parameter to your method
 or import scala.concurrent.ExecutionContext.Implicits.global.""")
 trait ExecutionContext {
-
   /** Runs a block of code on this execution context.
    *
    *  @param runnable  the task to execute
@@ -87,7 +85,6 @@ trait ExecutionContext {
    *  @return the prepared execution context
    */
   def prepare(): ExecutionContext = this
-
 }
 
 /**
@@ -100,12 +97,13 @@ trait ExecutionContextExecutor extends ExecutionContext with Executor
  * An [[ExecutionContext]] that is also a
  * Java [[http://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ExecutorService.html ExecutorService]].
  */
-trait ExecutionContextExecutorService extends ExecutionContextExecutor with ExecutorService
-
+trait ExecutionContextExecutorService extends ExecutionContextExecutor
+    with ExecutorService
 
 /** Contains factory methods for creating execution contexts.
  */
 object ExecutionContext {
+
   /**
    * The explicit global `ExecutionContext`. Invoke `global` when you want to provide the global
    * `ExecutionContext` explicitly.
@@ -137,7 +135,9 @@ object ExecutionContext {
    *  @param reporter  a function for error reporting
    *  @return          the `ExecutionContext` using the given `ExecutorService`
    */
-  def fromExecutorService(e: ExecutorService, reporter: Throwable => Unit): ExecutionContextExecutorService =
+  def fromExecutorService(
+      e: ExecutorService,
+      reporter: Throwable => Unit): ExecutionContextExecutorService =
     impl.ExecutionContextImpl.fromExecutorService(e, reporter)
 
   /** Creates an `ExecutionContext` from the given `ExecutorService` with the [[scala.concurrent.ExecutionContext$.defaultReporter default reporter]].
@@ -153,7 +153,9 @@ object ExecutionContext {
    *  @param e the `ExecutorService` to use. If `null`, a new `ExecutorService` is created with [[http://www.scala-lang.org/api/current/index.html#scala.concurrent.ExecutionContext$@global:scala.concurrent.ExecutionContextExecutor default configuration]].
    *  @return  the `ExecutionContext` using the given `ExecutorService`
    */
-  def fromExecutorService(e: ExecutorService): ExecutionContextExecutorService = fromExecutorService(e, defaultReporter)
+  def fromExecutorService(
+      e: ExecutorService): ExecutionContextExecutorService =
+    fromExecutorService(e, defaultReporter)
 
   /** Creates an `ExecutionContext` from the given `Executor`.
    *
@@ -161,7 +163,8 @@ object ExecutionContext {
    *  @param reporter  a function for error reporting
    *  @return          the `ExecutionContext` using the given `Executor`
    */
-  def fromExecutor(e: Executor, reporter: Throwable => Unit): ExecutionContextExecutor =
+  def fromExecutor(
+      e: Executor, reporter: Throwable => Unit): ExecutionContextExecutor =
     impl.ExecutionContextImpl.fromExecutor(e, reporter)
 
   /** Creates an `ExecutionContext` from the given `Executor` with the [[scala.concurrent.ExecutionContext$.defaultReporter default reporter]].
@@ -169,7 +172,8 @@ object ExecutionContext {
    *  @param e the `Executor` to use. If `null`, a new `Executor` is created with [[http://www.scala-lang.org/api/current/index.html#scala.concurrent.ExecutionContext$@global:scala.concurrent.ExecutionContextExecutor default configuration]].
    *  @return  the `ExecutionContext` using the given `Executor`
    */
-  def fromExecutor(e: Executor): ExecutionContextExecutor = fromExecutor(e, defaultReporter)
+  def fromExecutor(e: Executor): ExecutionContextExecutor =
+    fromExecutor(e, defaultReporter)
 
   /** The default reporter simply prints the stack trace of the `Throwable` to [[http://docs.oracle.com/javase/8/docs/api/java/lang/System.html#err System.err]].
    *
@@ -177,5 +181,3 @@ object ExecutionContext {
    */
   def defaultReporter: Throwable => Unit = _.printStackTrace()
 }
-
-

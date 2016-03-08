@@ -13,8 +13,8 @@ import org.junit.Test
 import org.junit.Assert._
 
 class AtomicTest {
-
-  @Test def atomicLongTest(): Unit = {
+  @Test
+  def atomicLongTest(): Unit = {
     val atomic = new java.util.concurrent.atomic.AtomicLong(10)
     assertEquals(10L, atomic.get())
     atomic.set(20)
@@ -41,7 +41,8 @@ class AtomicTest {
     assertEquals(20L, atomic.get())
   }
 
-  @Test def atomicIntegerTest(): Unit = {
+  @Test
+  def atomicIntegerTest(): Unit = {
     val atomic = new java.util.concurrent.atomic.AtomicInteger(10)
     assertEquals(10, atomic.get())
     atomic.set(20)
@@ -68,7 +69,8 @@ class AtomicTest {
     assertEquals(20, atomic.get())
   }
 
-  @Test def atomicBooleanTest(): Unit = {
+  @Test
+  def atomicBooleanTest(): Unit = {
     val atomic = new java.util.concurrent.atomic.AtomicBoolean(true)
     assertEquals(true, atomic.get())
     atomic.set(false)
@@ -81,7 +83,8 @@ class AtomicTest {
     assertEquals(false, atomic.get())
   }
 
-  @Test def atomicReferenceTest(): Unit = {
+  @Test
+  def atomicReferenceTest(): Unit = {
     val thing1 = Foo(5)
     val thing1bis = Foo(5) // equals(), but not the same reference
     val thing2 = Foo(10)
@@ -106,7 +109,8 @@ class AtomicTest {
     assertSame(thing2, atomic.get())
   }
 
-  @Test def atomicReferenceArrayTest(): Unit = {
+  @Test
+  def atomicReferenceArrayTest(): Unit = {
     val thing1 = Foo(5)
     val thing1bis = Foo(5) // equals(), but not the same reference
     val thing2 = Foo(10)
@@ -126,8 +130,9 @@ class AtomicTest {
     assertSame(thing1, atomic.getAndSet(1, thing2))
     assertSame(thing2, atomic.get(1))
 
-    val initArray = Array(thing1,thing2)
-    val atomic2 = new java.util.concurrent.atomic.AtomicReferenceArray[Foo](initArray)
+    val initArray = Array(thing1, thing2)
+    val atomic2 =
+      new java.util.concurrent.atomic.AtomicReferenceArray[Foo](initArray)
     assertSame(thing1, atomic2.get(0))
     assertSame(thing2, atomic2.get(1))
   }

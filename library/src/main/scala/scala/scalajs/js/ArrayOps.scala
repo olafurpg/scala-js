@@ -15,49 +15,52 @@ import mutable.Builder
 
 /** Equivalent of scm.ArrayOps for js.Array */
 @inline
-final class ArrayOps[A](private[this] val array: Array[A])
-    extends mutable.ArrayLike[A, Array[A]]
-       with Builder[A, Array[A]] {
-
+final class ArrayOps[A](private [ this] val array: Array[A])
+    extends mutable.ArrayLike[A, Array[A]] with Builder[A, Array[A]] {
   import ArrayOps._
 
   /** Creates a new empty [[ArrayOps]]. */
-  def this() = this(Array())
+  def this () = this(Array())
 
   // Implementation of ArrayLike
 
-  @inline def apply(index: Int): A = array(index)
-  @inline def length: Int = array.length
-  @inline def update(index: Int, element: A): Unit = array(index) = element
+  @inline
+  def apply(index: Int): A = array(index)
+  @inline
+  def length: Int = array.length
+  @inline
+  def update(index: Int, element: A): Unit = array (index) = element
 
   def seq: IndexedSeq[A] = new WrappedArray(array)
 
   override def repr: Array[A] = array
 
-  override protected[this] def thisCollection: mutable.IndexedSeq[A] =
+  override protected[ this] def thisCollection: mutable.IndexedSeq[A] =
     toCollection(array)
-  override protected[this] def toCollection(
+
+  override protected[ this] def toCollection(
       repr: Array[A]): mutable.IndexedSeq[A] = new WrappedArray(repr)
 
-  protected[this] def newBuilder: Builder[A, Array[A]] =
-    new ArrayOps[A]
+  protected[ this] def newBuilder: Builder[A, Array[A]] = new ArrayOps[A]
 
   // Implementation of Builder
 
-  @inline def +=(elem: A): this.type = {
+  @inline
+  def +=(elem: A): this. type = {
     array.push(elem)
     this
   }
 
-  @inline def clear(): Unit =
-    array.length = 0
+  @inline
+  def clear(): Unit = array.length = 0
 
-  @inline def result(): Array[A] = array
+  @inline
+  def result(): Array[A] = array
 
   // Scala notation for a fast concat()
 
-  @inline def ++[B >: A](that: Array[_ <: B]): Array[B] =
-    concat(array, that)
+  @inline
+  def ++[B >: A](that: Array[_ <: B]): Array[B] = concat(array, that)
 
   // Methods whose inherited implementations do not play nice with the optimizer
 
@@ -70,7 +73,7 @@ final class ArrayOps[A](private[this] val array: Array[A])
     @tailrec
     def loop(start: Int, z: B): B =
       if (start == length) z
-      else loop(start+1, op(z, this(start)))
+      else loop(start + 1, op(z, this(start)))
 
     loop(1, this(0))
   }
@@ -84,11 +87,10 @@ final class ArrayOps[A](private[this] val array: Array[A])
     @tailrec
     def loop(end: Int, z: B): B =
       if (end == 0) z
-      else loop(end-1, op(this(end-1), z))
+      else loop(end - 1, op(this(end - 1), z))
 
-    loop(length-1, this(length-1))
+    loop(length - 1, this(length - 1))
   }
-
 }
 
 object ArrayOps {
@@ -107,13 +109,12 @@ object ArrayOps {
     @tailrec
     def loop(src: Array[_ <: A], i: Int, len: Int, offset: Int): Unit =
       if (i != len) {
-        result(i+offset) = src(i)
-        loop(src, i+1, len, offset)
+        result (i + offset) = src(i)
+        loop(src, i + 1, len, offset)
       }
 
     loop(left, 0, leftLength, 0)
     loop(right, 0, rightLength, leftLength)
     result
   }
-
 }

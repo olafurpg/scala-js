@@ -10,18 +10,17 @@ package org.scalajs.testsuite.javalib.util
 import java.{util => ju}
 
 class AbstractListTest extends AbstractCollectionTest with ListTest {
+
   override def factory: AbstractListFactory = new AbstractListFactory
 }
 
 class AbstractListFactory extends AbstractCollectionFactory with ListFactory {
 
-  override def implementationName: String =
-    "java.util.AbstractList"
+  override def implementationName: String = "java.util.AbstractList"
 
   override def empty[E]: ju.AbstractList[E] = {
     // inefficient but simple for debugging implementation of AbstractList
     new ju.AbstractList[E] {
-
       private var inner = scala.collection.immutable.List.empty[E]
 
       override def get(index: Int): E = {
@@ -29,8 +28,7 @@ class AbstractListFactory extends AbstractCollectionFactory with ListFactory {
         inner(index)
       }
 
-      override def size(): Int =
-        inner.size
+      override def size(): Int = inner.size
 
       override def add(index: Int, element: E): Unit = {
         checkIndexOnBounds(index)
@@ -52,8 +50,7 @@ class AbstractListFactory extends AbstractCollectionFactory with ListFactory {
         right.head
       }
 
-      override def clear(): Unit =
-        inner = Nil
+      override def clear(): Unit = inner = Nil
 
       private def checkIndexInBounds(index: Int): Unit = {
         if (index < 0 || index >= size)
@@ -66,5 +63,4 @@ class AbstractListFactory extends AbstractCollectionFactory with ListFactory {
       }
     }
   }
-
 }

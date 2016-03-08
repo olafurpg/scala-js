@@ -6,14 +6,14 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.tools.linker.frontend.optimizer
 
 import language.higherKinds
 
 import scala.annotation.{switch, tailrec}
 
-import scala.collection.{GenMap, GenTraversableOnce, GenIterable, GenIterableLike}
+import scala.collection.{GenMap, GenTraversableOnce, GenIterable,
+GenIterableLike}
 import scala.collection.mutable
 
 import org.scalajs.core.ir._
@@ -41,23 +41,23 @@ import org.scalajs.core.tools.linker.backend.emitter.LongImpl
  *  @param considerPositions Should positions be considered when comparing tree
  *                           hashes
  */
-abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
-    esLevel: ESLevel, considerPositions: Boolean) {
-
+abstract class GenIncOptimizer private [optimizer](
+    semantics: Semantics, esLevel: ESLevel, considerPositions: Boolean) {
   import GenIncOptimizer._
 
   val symbolRequirements: SymbolRequirement = {
     val factory = SymbolRequirement.factory("optimizer")
     import factory._
 
-    callMethods(LongImpl.RuntimeLongClass, LongImpl.AllIntrinsicMethods) ++
-    optional(callMethods(LongImpl.RuntimeLongClass, LongImpl.OptionalIntrinsicMethods)) ++
-    callMethods(Definitions.BoxedIntegerClass,
+    callMethods(LongImpl.RuntimeLongClass, LongImpl.AllIntrinsicMethods) ++ optional(
+        callMethods(LongImpl.RuntimeLongClass,
+                    LongImpl.OptionalIntrinsicMethods)) ++ callMethods(
+        Definitions.BoxedIntegerClass,
         Seq("compareTo__jl_Byte__I", "compareTo__jl_Short__I")) ++ // #2184
     instantiateClass("jl_NullPointerException", "init___")
   }
 
-  private[optimizer] val CollOps: AbsCollOps
+  private [optimizer] val CollOps: AbsCollOps
 
   private var logger: Logger = _
 
@@ -72,33 +72,35 @@ abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
   private val statics = CollOps.emptyParMap[String, StaticsNamespace]
   private val defaults = CollOps.emptyParMap[String, Defaults]
 
-  private[optimizer] def getInterface(encodedName: String): InterfaceType
+  private [optimizer] def getInterface(encodedName: String): InterfaceType
 
   /** Schedule a method for processing in the PROCESS PASS */
-  private[optimizer] def scheduleMethod(method: MethodImpl): Unit
+  private [optimizer] def scheduleMethod(method: MethodImpl): Unit
 
-  private[optimizer] def newMethodImpl(owner: MethodContainer,
-      encodedName: String): MethodImpl
+  private [optimizer] def newMethodImpl(
+      owner: MethodContainer, encodedName: String): MethodImpl
 
   private def findStaticsNamespace(encodedName: String): StaticsNamespace =
     statics(encodedName)
-  private def findClass(encodedName: String): Class =
-    classes(encodedName)
+
+  private def findClass(encodedName: String): Class = classes(encodedName)
+
   private def findDefaults(encodedName: String): Defaults =
     defaults(encodedName)
 
-  private def getStaticsNamespace(encodedName: String): Option[StaticsNamespace] =
-    statics.get(encodedName)
+  private def getStaticsNamespace(
+      encodedName: String): Option[StaticsNamespace] = statics.get(encodedName)
+
   private def getClass(encodedName: String): Option[Class] =
     classes.get(encodedName)
+
   private def getDefaults(encodedName: String): Option[Defaults] =
     defaults.get(encodedName)
 
   private def withLogger[A](logger: Logger)(body: => A): A = {
     assert(this.logger == null)
     this.logger = logger
-    try body
-    finally this.logger = null
+    try body finally this.logger = null
   }
 
   /** Update the incremental analyzer with a new run. */
@@ -120,6 +122,7 @@ abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
       }
 
       val newLinkedClasses = for (linkedClass <- unit.classDefs) yield {
+
         def defs(container: Option[MethodContainer]) =
           container.fold[List[LinkedMember[MethodDef]]](Nil) {
             _.optimizedDefs.toList
@@ -176,8 +179,8 @@ abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
     assert(!batchMode || (statics.isEmpty && defaults.isEmpty))
     if (!batchMode) {
       for {
-        (containerMap, neededLinkedClasses) <-
-          Seq((statics, neededStatics), (defaults, neededDefaults))
+        (containerMap, neededLinkedClasses) <- Seq(
+            (statics, neededStatics), (defaults, neededDefaults))
       } {
         CollOps.retain(containerMap) { (namespaceName, namespace) =>
           CollOps.remove(neededLinkedClasses, namespaceName).fold {
@@ -189,15 +192,14 @@ abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
             false
           } { linkedClass =>
             /* Existing static/default context. Update it. */
-            val (added, changed, removed) =
-              namespace.updateWith(linkedClass)
+            val (added, changed, removed) = namespace.updateWith(linkedClass)
 
             if (containerMap eq statics) {
-              for (method <- changed)
-                namespace.myInterface.tagCallersOfStatic(method)
+              for (method <- changed) namespace.myInterface
+                .tagCallersOfStatic(method)
             } else {
-              for (method <- changed)
-                namespace.myInterface.tagStaticCallersOf(method)
+              for (method <- changed) namespace.myInterface
+                .tagStaticCallersOf(method)
             }
 
             true
@@ -267,8 +269,8 @@ abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
       }
     }
 
-    val getNewChildren =
-      (name: String) => CollOps.getAcc(newChildrenByParent, name)
+    val getNewChildren = (name: String) =>
+      CollOps.getAcc(newChildrenByParent, name)
 
     // Walk the tree to add children
     if (batchMode) {
@@ -276,40 +278,37 @@ abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
     } else {
       val existingParents =
         CollOps.parFlatMapKeys(newChildrenByParent)(classes.get)
-      for (parent <- existingParents)
-        parent.walkForAdditions(getNewChildren)
+      for (parent <- existingParents) parent.walkForAdditions(getNewChildren)
     }
-
   }
 
   /** Optimizer part: process all methods that need reoptimizing.
    *  PROCESS PASS ONLY. (This IS the process pass).
    */
-  private[optimizer] def processAllTaggedMethods(): Unit
+  private [optimizer] def processAllTaggedMethods(): Unit
 
-  private[optimizer] def logProcessingMethods(count: Int): Unit =
+  private [optimizer] def logProcessingMethods(count: Int): Unit =
     logger.debug(s"Inc. optimizer: Optimizing $count methods.")
 
   /** Base class for [[GenIncOptimizer.Class]] and
    *  [[GenIncOptimizer.StaticsNamespace]].
    */
-  private[optimizer] abstract class MethodContainer(val encodedName: String,
-      val isStatic: Boolean) {
+  private [optimizer] abstract class MethodContainer(
+      val encodedName: String, val isStatic: Boolean) {
     def thisType: Type
 
     val myInterface = getInterface(encodedName)
 
     val methods = mutable.Map.empty[String, MethodImpl]
 
-    def optimizedDefs = for {
-      method <- methods.values
-      if !method.deleted
-    } yield method.optimizedMethodDef
+    def optimizedDefs =
+      for {
+        method <- methods.values if !method.deleted
+      } yield method.optimizedMethodDef
 
     /** UPDATE PASS ONLY. Global concurrency safe but not on same instance */
-    def updateWith(linkedClass: LinkedClass):
-        (Set[String], Set[String], Set[String]) = {
-
+    def updateWith(linkedClass: LinkedClass): (Set[String], Set[String],
+        Set[String]) = {
       val addedMethods = Set.newBuilder[String]
       val changedMethods = Set.newBuilder[String]
       val deletedMethods = Set.newBuilder[String]
@@ -337,7 +336,7 @@ abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
         case cls: Class =>
           cls.isModuleClass = linkedClass.kind == ClassKind.ModuleClass
           cls.fields = linkedClass.fields
-        case _          =>
+        case _ =>
       }
 
       for (linkedMethodDef <- linkedMethodDefs) {
@@ -348,7 +347,7 @@ abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
           addedMethods += methodName
           val method = newMethodImpl(this, methodName)
           method.updateWith(linkedMethodDef)
-          methods(methodName) = method
+          methods (methodName) = method
           method
         } { method =>
           if (method.updateWith(linkedMethodDef))
@@ -367,9 +366,9 @@ abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
    *  maintains a list of its direct subclasses, so that the instances of
    *  [[Class]] form a tree of the class hierarchy.
    */
-  private[optimizer] class Class(val superClass: Option[Class],
-      _encodedName: String) extends MethodContainer(
-      _encodedName, isStatic = false) {
+  private [optimizer] class Class(
+      val superClass: Option[Class], _encodedName: String)
+      extends MethodContainer(_encodedName, isStatic = false) {
     if (encodedName == Definitions.ObjectClass) {
       assert(superClass.isEmpty)
       assert(objectClass == null)
@@ -382,8 +381,7 @@ abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
       this :: superClass.fold[List[Class]](Nil)(_.parentChain)
 
     /** Reverse parent chain from Object to this. */
-    val reverseParentChain: List[Class] =
-      parentChain.reverse
+    val reverseParentChain: List[Class] = parentChain.reverse
 
     def thisType: Type = ClassType(encodedName)
 
@@ -398,8 +396,7 @@ abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
     var isInlineable: Boolean = false
     var tryNewInlineable: Option[RecordValue] = None
 
-    override def toString(): String =
-      encodedName
+    override def toString(): String = encodedName
 
     /** Walk the class hierarchy tree for deletions.
      *  This includes "deleting" classes that were previously instantiated but
@@ -408,6 +405,7 @@ abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
      */
     def walkClassesForDeletions(
         getLinkedClassIfNeeded: String => Option[LinkedClass]): Boolean = {
+
       def sameSuperClass(linkedClass: LinkedClass): Boolean =
         superClass.map(_.encodedName) == linkedClass.superClass.map(_.name)
 
@@ -429,16 +427,14 @@ abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
     /** Delete this class and all its subclasses. UPDATE PASS ONLY. */
     def deleteSubtree(): Unit = {
       delete()
-      for (subclass <- subclasses)
-        subclass.deleteSubtree()
+      for (subclass <- subclasses) subclass.deleteSubtree()
     }
 
     /** UPDATE PASS ONLY. */
     private def delete(): Unit = {
       if (isInstantiated)
         notInstantiatedAnymore()
-      for (method <- methods.values)
-        method.delete()
+      for (method <- methods.values) method.delete()
       classes -= encodedName
       /* Note: no need to tag methods that call *statically* one of the methods
        * of the deleted classes, since they've got to be invalidated by
@@ -452,34 +448,32 @@ abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
       isInstantiated = false
       for (intf <- interfaces) {
         intf.removeInstantiatedSubclass(this)
-        for (methodName <- allMethods().keys)
-          intf.tagDynamicCallersOf(methodName)
+        for (methodName <- allMethods().keys) intf.tagDynamicCallersOf(
+            methodName)
       }
     }
 
     /** UPDATE PASS ONLY. */
     def walkForChanges(getLinkedClass: String => LinkedClass,
-        parentMethodAttributeChanges: Set[String]): Unit = {
-
+                       parentMethodAttributeChanges: Set[String]): Unit = {
       val linkedClass = getLinkedClass(encodedName)
 
-      val (addedMethods, changedMethods, deletedMethods) =
-        updateWith(linkedClass)
+      val (addedMethods, changedMethods, deletedMethods) = updateWith(
+          linkedClass)
 
       val oldInterfaces = interfaces
       val newInterfaces = linkedClass.ancestors.map(getInterface).toSet
       interfaces = newInterfaces
 
       val methodAttributeChanges =
-        (parentMethodAttributeChanges -- methods.keys ++
-            addedMethods ++ changedMethods ++ deletedMethods)
+        (parentMethodAttributeChanges -- methods.keys ++ addedMethods ++ changedMethods ++ deletedMethods)
 
       // Tag callers with dynamic calls
       val wasInstantiated = isInstantiated
       isInstantiated = linkedClass.hasInstances
-      assert(!(wasInstantiated && !isInstantiated),
-          "(wasInstantiated && !isInstantiated) should have been handled "+
-          "during deletion phase")
+      assert(
+          !(wasInstantiated && !isInstantiated),
+          "(wasInstantiated && !isInstantiated) should have been handled " + "during deletion phase")
 
       if (isInstantiated) {
         if (wasInstantiated) {
@@ -504,34 +498,34 @@ abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
           val allMethodNames = allMethods().keys
           for (intf <- interfaces) {
             intf.addInstantiatedSubclass(this)
-            for (methodName <- allMethodNames)
-              intf.tagDynamicCallersOf(methodName)
+            for (methodName <- allMethodNames) intf.tagDynamicCallersOf(
+                methodName)
           }
         }
       }
 
       // Tag callers with static calls
-      for (methodName <- methodAttributeChanges)
-        myInterface.tagStaticCallersOf(methodName)
+      for (methodName <- methodAttributeChanges) myInterface
+        .tagStaticCallersOf(methodName)
 
       // Module class specifics
       updateHasElidableModuleAccessor()
 
       // Inlineable class
       if (updateIsInlineable(linkedClass)) {
-        for (method <- methods.values; if isConstructorName(method.encodedName))
-          myInterface.tagStaticCallersOf(method.encodedName)
+        for (method <- methods.values; if isConstructorName(
+                          method.encodedName)) myInterface.tagStaticCallersOf(
+            method.encodedName)
       }
 
       // Recurse in subclasses
-      for (cls <- subclasses)
-        cls.walkForChanges(getLinkedClass, methodAttributeChanges)
+      for (cls <- subclasses) cls.walkForChanges(
+          getLinkedClass, methodAttributeChanges)
     }
 
     /** UPDATE PASS ONLY. */
     def walkForAdditions(
         getNewChildren: String => GenIterable[LinkedClass]): Unit = {
-
       val subclassAcc = CollOps.prepAdd(subclasses)
 
       for (linkedClass <- getNewChildren(encodedName)) {
@@ -547,9 +541,9 @@ abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
 
     /** UPDATE PASS ONLY. */
     def updateHasElidableModuleAccessor(): Unit = {
-      hasElidableModuleAccessor =
-        isAdHocElidableModuleAccessor(encodedName) ||
-        (isModuleClass && lookupMethod("init___").exists(isElidableModuleConstructor))
+      hasElidableModuleAccessor = isAdHocElidableModuleAccessor(encodedName) ||
+      (isModuleClass &&
+          lookupMethod("init___").exists(isElidableModuleConstructor))
     }
 
     /** UPDATE PASS ONLY. */
@@ -562,20 +556,19 @@ abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
       } else {
         val allFields = reverseParentChain.flatMap(_.fields)
         val (fieldValues, fieldTypes) = (for {
-          f @ FieldDef(Ident(name, originalName), tpe, mutable) <- allFields
+          f@FieldDef(Ident(name, originalName), tpe, mutable) <- allFields
         } yield {
           (zeroOf(tpe)(f.pos),
-              RecordType.Field(name, originalName, tpe, mutable))
+           RecordType.Field(name, originalName, tpe, mutable))
         }).unzip
-        tryNewInlineable = Some(
-            RecordValue(RecordType(fieldTypes), fieldValues)(Position.NoPosition))
+        tryNewInlineable = Some(RecordValue(RecordType(fieldTypes),
+                                            fieldValues)(Position.NoPosition))
       }
       tryNewInlineable != oldTryNewInlineable
     }
 
     /** UPDATE PASS ONLY. */
     def setupAfterCreation(linkedClass: LinkedClass): Unit = {
-
       updateWith(linkedClass)
       interfaces = linkedClass.ancestors.map(getInterface).toSet
 
@@ -584,8 +577,7 @@ abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
       if (batchMode) {
         if (isInstantiated) {
           /* Only add the class to all its ancestor interfaces */
-          for (intf <- interfaces)
-            intf.addInstantiatedSubclass(this)
+          for (intf <- interfaces) intf.addInstantiatedSubclass(this)
         }
       } else {
         val allMethodNames = allMethods().keys
@@ -599,16 +591,16 @@ abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
            */
           for (intf <- interfaces) {
             intf.addInstantiatedSubclass(this)
-            for (methodName <- allMethodNames)
-              intf.tagDynamicCallersOf(methodName)
+            for (methodName <- allMethodNames) intf.tagDynamicCallersOf(
+                methodName)
           }
         }
 
         /* Tag static callers because the class could have been *moved*,
          * not just added.
          */
-        for (methodName <- allMethodNames)
-          myInterface.tagStaticCallersOf(methodName)
+        for (methodName <- allMethodNames) myInterface.tagStaticCallersOf(
+            methodName)
       }
 
       updateHasElidableModuleAccessor()
@@ -617,32 +609,33 @@ abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
 
     /** UPDATE PASS ONLY. */
     private def isElidableModuleConstructor(impl: MethodImpl): Boolean = {
-      def isTriviallySideEffectFree(tree: Tree): Boolean = tree match {
-        case _:VarRef | _:Literal | _:This | _:Skip => true
-        case _                                      => false
-      }
-      def isElidableStat(tree: Tree): Boolean = tree match {
-        case Block(stats) =>
-          stats.forall(isElidableStat)
-        case Assign(Select(This(), _), rhs) =>
-          isTriviallySideEffectFree(rhs)
-        case ApplyStatic(ClassType(cls), methodName, List(This())) =>
-          statics(cls).methods(methodName.name).originalDef.body match {
-            case Skip() => true
-            case _      => false
-          }
-        case ApplyStatically(This(), ClassType(cls), methodName, args) =>
-          Definitions.isConstructorName(methodName.name) &&
-          args.forall(isTriviallySideEffectFree) &&
-          impl.owner.asInstanceOf[Class].superClass.exists { superCls =>
-            superCls.encodedName == cls &&
-            superCls.lookupMethod(methodName.name).exists(isElidableModuleConstructor)
-          }
-        case StoreModule(_, _) =>
-          true
-        case _ =>
-          isTriviallySideEffectFree(tree)
-      }
+
+      def isTriviallySideEffectFree(tree: Tree): Boolean =
+        tree match {
+          case _: VarRef | _: Literal | _: This | _: Skip => true
+          case _ => false
+        }
+
+      def isElidableStat(tree: Tree): Boolean =
+        tree match {
+          case Block(stats) => stats.forall(isElidableStat)
+          case Assign(Select(This(), _), rhs) => isTriviallySideEffectFree(rhs)
+          case ApplyStatic(ClassType(cls), methodName, List(This())) =>
+            statics(cls).methods(methodName.name).originalDef.body match {
+              case Skip() => true
+              case _ => false
+            }
+          case ApplyStatically(This(), ClassType(cls), methodName, args) =>
+            Definitions.isConstructorName(methodName.name) &&
+            args.forall(isTriviallySideEffectFree) &&
+            impl.owner.asInstanceOf[Class].superClass.exists { superCls =>
+              superCls.encodedName == cls &&
+              superCls.lookupMethod(methodName.name)
+                .exists(isElidableModuleConstructor)
+            }
+          case StoreModule(_, _) => true
+          case _ => isTriviallySideEffectFree(tree)
+        }
       isElidableStat(impl.originalDef.body)
     }
 
@@ -652,8 +645,7 @@ abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
      */
     def allMethods(): scala.collection.Map[String, MethodImpl] = {
       val result = mutable.Map.empty[String, MethodImpl]
-      for (parent <- reverseParentChain)
-        result ++= parent.methods
+      for (parent <- reverseParentChain) result ++= parent.methods
       result
     }
 
@@ -665,35 +657,32 @@ abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
         case none =>
           superClass match {
             case Some(p) => p.lookupMethod(methodName)
-            case none    => None
+            case none => None
           }
       }
     }
   }
 
   /** Namespace for static members of a class. */
-  private[optimizer] class StaticsNamespace(
-      _encodedName: String) extends MethodContainer(
-      _encodedName, isStatic = true) {
+  private [optimizer] class StaticsNamespace(_encodedName: String)
+      extends MethodContainer(_encodedName, isStatic = true) {
 
     def thisType: Type = NoType
 
-    override def toString(): String =
-      s"static $encodedName"
+    override def toString(): String = s"static $encodedName"
   }
 
   /** Default methods of an interface. */
-  private[optimizer] class Defaults(_encodedName: String)
+  private [optimizer] class Defaults(_encodedName: String)
       extends MethodContainer(_encodedName, isStatic = false) {
 
     def thisType: Type = ClassType(encodedName)
 
-    override def toString(): String =
-      s"defaults $encodedName"
+    override def toString(): String = s"defaults $encodedName"
   }
 
   /** Thing from which a [[MethodImpl]] can unregister itself from. */
-  private[optimizer] trait Unregisterable {
+  private [optimizer] trait Unregisterable {
     /** UPDATE PASS ONLY. */
     def unregisterDependee(dependee: MethodImpl): Unit
   }
@@ -704,11 +693,10 @@ abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
    *
    *  Fully concurrency safe unless otherwise noted.
    */
-  private[optimizer] abstract class InterfaceType(
-      val encodedName: String) extends Unregisterable {
+  private [optimizer] abstract class InterfaceType(val encodedName: String)
+      extends Unregisterable {
 
-    override def toString(): String =
-      s"intf $encodedName"
+    override def toString(): String = s"intf $encodedName"
 
     /** PROCESS PASS ONLY. Concurrency safe except with
      *  [[addInstantiatedSubclass]] and [[removeInstantiatedSubclass]]
@@ -773,12 +761,11 @@ abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
    *  a method comment). However, the global state modifications are
    *  concurrency safe.
    */
-  private[optimizer] abstract class MethodImpl(val owner: MethodContainer,
-      val encodedName: String)
+  private [optimizer] abstract class MethodImpl(
+      val owner: MethodContainer, val encodedName: String)
       extends OptimizerCore.MethodImpl with OptimizerCore.AbstractMethodID
       with Unregisterable {
-
-    private[this] var _deleted: Boolean = false
+    private [ this] var _deleted: Boolean = false
 
     var lastInVersion: Option[String] = None
     var lastOutVersion: Int = 0
@@ -788,10 +775,10 @@ abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
     var optimizedMethodDef: LinkedMember[MethodDef] = _
 
     def thisType: Type = owner.thisType
+
     def deleted: Boolean = _deleted
 
-    override def toString(): String =
-      s"$owner.$encodedName"
+    override def toString(): String = s"$owner.$encodedName"
 
     /** PROCESS PASS ONLY. */
     def registerBodyAsker(asker: MethodImpl): Unit
@@ -808,8 +795,8 @@ abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
     /** Register that this method is a dynamic-caller of an instance method.
      *  PROCESS PASS ONLY.
      */
-    private def registerDynamicCall(intf: InterfaceType,
-        methodName: String): Unit = {
+    private def registerDynamicCall(
+        intf: InterfaceType, methodName: String): Unit = {
       intf.registerDynamicCaller(methodName, this)
       registeredTo(intf)
     }
@@ -817,8 +804,8 @@ abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
     /** Register that this method is a static-caller of an instance method.
      *  PROCESS PASS ONLY.
      */
-    private def registerStaticCall(intf: InterfaceType,
-        methodName: String): Unit = {
+    private def registerStaticCall(
+        intf: InterfaceType, methodName: String): Unit = {
       intf.registerStaticCaller(methodName, this)
       registeredTo(intf)
     }
@@ -826,8 +813,8 @@ abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
     /** Register that this method is a caller of a static method.
      *  PROCESS PASS ONLY.
      */
-    private def registerCallStatic(intf: InterfaceType,
-        methodName: String): Unit = {
+    private def registerCallStatic(
+        intf: InterfaceType, methodName: String): Unit = {
       intf.registerCallerOfStatic(methodName, this)
       registeredTo(intf)
     }
@@ -871,8 +858,7 @@ abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
         val methodDef = linkedMethod.tree
 
         val changed = {
-          originalDef == null ||
-          (methodDef.hash zip originalDef.hash).forall {
+          originalDef == null || (methodDef.hash zip originalDef.hash).forall {
             case (h1, h2) => !Hashers.hashesEqual(h1, h2, considerPositions)
           }
         }
@@ -911,56 +897,60 @@ abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
      *
      *  UPDATE PASS ONLY.
      */
-    def tag(): Unit = if (protectTag()) {
-      scheduleMethod(this)
-      unregisterFromEverywhere()
-    }
+    def tag(): Unit =
+      if (protectTag()) {
+        scheduleMethod(this)
+        unregisterFromEverywhere()
+      }
 
     /** PROCESS PASS ONLY. */
-    def process(): Unit = if (!_deleted) {
-      val rawOptimizedDef = new Optimizer().optimize(thisType, originalDef)
-      lastOutVersion += 1
-      optimizedMethodDef = new LinkedMember(rawOptimizedDef.info,
-          rawOptimizedDef.tree, Some(lastOutVersion.toString))
-      resetTag()
-    }
+    def process(): Unit =
+      if (!_deleted) {
+        val rawOptimizedDef = new Optimizer().optimize(thisType, originalDef)
+        lastOutVersion += 1
+        optimizedMethodDef = new LinkedMember(rawOptimizedDef.info,
+                                              rawOptimizedDef.tree,
+                                              Some(lastOutVersion.toString))
+        resetTag()
+      }
 
     /** All methods are PROCESS PASS ONLY */
     private class Optimizer extends OptimizerCore(semantics, esLevel) {
       type MethodID = MethodImpl
 
-      val myself: MethodImpl.this.type = MethodImpl.this
+      val myself: MethodImpl. this. type = MethodImpl. this
 
       protected def getMethodBody(method: MethodID): MethodDef = {
-        MethodImpl.this.registerAskBody(method)
+        MethodImpl. this.registerAskBody(method)
         method.originalDef
       }
 
       /** Look up the targets of a dynamic call to an instance method. */
-      protected def dynamicCall(intfName: String,
-          methodName: String): List[MethodID] = {
+      protected def dynamicCall(
+          intfName: String, methodName: String): List[MethodID] = {
         val intf = getInterface(intfName)
-        MethodImpl.this.registerDynamicCall(intf, methodName)
+        MethodImpl. this.registerDynamicCall(intf, methodName)
         intf.instantiatedSubclasses.flatMap(_.lookupMethod(methodName)).toList
       }
 
       /** Look up the target of a static call to an instance method. */
-      protected def staticCall(className: String,
-          methodName: String): Option[MethodID] = {
+      protected def staticCall(
+          className: String, methodName: String): Option[MethodID] = {
         classes.get(className).fold {
           // If it's not a class, it must be a call to a default intf method
           val defaultsNS = defaults(className)
-          MethodImpl.this.registerStaticCall(defaultsNS.myInterface, methodName)
+          MethodImpl. this
+            .registerStaticCall(defaultsNS.myInterface, methodName)
           defaultsNS.methods.get(methodName)
         } { clazz =>
-          MethodImpl.this.registerStaticCall(clazz.myInterface, methodName)
+          MethodImpl. this.registerStaticCall(clazz.myInterface, methodName)
           clazz.lookupMethod(methodName)
         }
       }
 
       /** Look up the target of a call to a static method. */
-      protected def callStatic(className: String,
-          methodName: String): Option[MethodID] = {
+      protected def callStatic(
+          className: String, methodName: String): Option[MethodID] = {
         val staticsNS = statics(className)
         registerCallStatic(staticsNS.myInterface, methodName)
         staticsNS.methods.get(methodName)
@@ -972,24 +962,23 @@ abstract class GenIncOptimizer private[optimizer] (semantics: Semantics,
         intf.ancestors
       }
 
-      protected def hasElidableModuleAccessor(moduleClassName: String): Boolean =
+      protected def hasElidableModuleAccessor(
+          moduleClassName: String): Boolean =
         classes(moduleClassName).hasElidableModuleAccessor
 
-      protected def tryNewInlineableClass(className: String): Option[RecordValue] =
+      protected def tryNewInlineableClass(
+          className: String): Option[RecordValue] =
         classes(className).tryNewInlineable
     }
   }
-
 }
 
 object GenIncOptimizer {
-
   type OptimizerFactory = (Semantics, ESLevel, Boolean) => GenIncOptimizer
 
-  private val isAdHocElidableModuleAccessor =
-    Set("s_Predef$")
+  private val isAdHocElidableModuleAccessor = Set("s_Predef$")
 
-  private[optimizer] trait AbsCollOps {
+  private [optimizer] trait AbsCollOps {
     type Map[K, V] <: mutable.Map[K, V]
     type ParMap[K, V] <: GenMap[K, V]
     type AccMap[K, V]
@@ -1016,7 +1005,5 @@ object GenIncOptimizer {
     def prepAdd[V](it: ParIterable[V]): Addable[V]
     def add[V](addable: Addable[V], v: V): Unit
     def finishAdd[V](addable: Addable[V]): ParIterable[V]
-
   }
-
 }

@@ -6,15 +6,12 @@
 **                          |/                                          **
 \*                                                                      */
 
-
-
 package scala
 
-import java.io.{BufferedReader, InputStream, InputStreamReader,
-                IOException, OutputStream, PrintStream, Reader}
+import java.io.{BufferedReader, InputStream, InputStreamReader, IOException,
+OutputStream, PrintStream, Reader}
 import java.text.MessageFormat
 import scala.util.DynamicVariable
-
 
 /** Implements functionality for
  *  printing Scala values on the terminal as well as reading specific values.
@@ -24,63 +21,82 @@ import scala.util.DynamicVariable
  *  @version 1.0, 03/09/2003
  */
 object Console {
-
   /** Foreground color for ANSI black */
-  final val BLACK      = "\033[30m"
+  final val BLACK = "\033[30m"
+
   /** Foreground color for ANSI red */
-  final val RED        = "\033[31m"
+  final val RED = "\033[31m"
+
   /** Foreground color for ANSI green */
-  final val GREEN      = "\033[32m"
+  final val GREEN = "\033[32m"
+
   /** Foreground color for ANSI yellow */
-  final val YELLOW     = "\033[33m"
+  final val YELLOW = "\033[33m"
+
   /** Foreground color for ANSI blue */
-  final val BLUE       = "\033[34m"
+  final val BLUE = "\033[34m"
+
   /** Foreground color for ANSI magenta */
-  final val MAGENTA    = "\033[35m"
+  final val MAGENTA = "\033[35m"
+
   /** Foreground color for ANSI cyan */
-  final val CYAN       = "\033[36m"
+  final val CYAN = "\033[36m"
+
   /** Foreground color for ANSI white */
-  final val WHITE      = "\033[37m"
+  final val WHITE = "\033[37m"
 
   /** Background color for ANSI black */
-  final val BLACK_B    = "\033[40m"
+  final val BLACK_B = "\033[40m"
+
   /** Background color for ANSI red */
-  final val RED_B      = "\033[41m"
+  final val RED_B = "\033[41m"
+
   /** Background color for ANSI green */
-  final val GREEN_B    = "\033[42m"
+  final val GREEN_B = "\033[42m"
+
   /** Background color for ANSI yellow */
-  final val YELLOW_B   = "\033[43m"
+  final val YELLOW_B = "\033[43m"
+
   /** Background color for ANSI blue */
-  final val BLUE_B     = "\033[44m"
+  final val BLUE_B = "\033[44m"
+
   /** Background color for ANSI magenta */
-  final val MAGENTA_B  = "\033[45m"
+  final val MAGENTA_B = "\033[45m"
+
   /** Background color for ANSI cyan */
-  final val CYAN_B     = "\033[46m"
+  final val CYAN_B = "\033[46m"
+
   /** Background color for ANSI white */
-  final val WHITE_B    = "\033[47m"
+  final val WHITE_B = "\033[47m"
 
   /** Reset ANSI styles */
-  final val RESET      = "\033[0m"
+  final val RESET = "\033[0m"
+
   /** ANSI bold */
-  final val BOLD       = "\033[1m"
+  final val BOLD = "\033[1m"
+
   /** ANSI underlines */
   final val UNDERLINED = "\033[4m"
+
   /** ANSI blink */
-  final val BLINK      = "\033[5m"
+  final val BLINK = "\033[5m"
+
   /** ANSI reversed */
-  final val REVERSED   = "\033[7m"
+  final val REVERSED = "\033[7m"
+
   /** ANSI invisible */
-  final val INVISIBLE  = "\033[8m"
+  final val INVISIBLE = "\033[8m"
 
   private val outVar = new DynamicVariable[PrintStream](java.lang.System.out)
   private val errVar = new DynamicVariable[PrintStream](java.lang.System.err)
   private val inVar = new DynamicVariable[BufferedReader](null)
-    //new BufferedReader(new InputStreamReader(java.lang.System.in)))
-
+  //new BufferedReader(new InputStreamReader(java.lang.System.in)))
   /** The default output, can be overridden by `setOut` */
   def out = outVar.value
+
   /** The default error, can be overridden by `setErr` */
   def err = errVar.value
+
   /** The default input, can be overridden by `setIn` */
   def in = inVar.value
 
@@ -103,15 +119,14 @@ object Console {
    *  @return the results of `thunk`
    *  @see `withOut[T](out:OutputStream)(thunk: => T)`
    */
-  def withOut[T](out: PrintStream)(thunk: =>T): T =
+  def withOut[T](out: PrintStream)(thunk: => T): T =
     outVar.withValue(out)(thunk)
 
   /** Sets the default output stream.
    *
    *  @param out the new output stream.
    */
-  def setOut(out: OutputStream): Unit =
-    setOut(new PrintStream(out))
+  def setOut(out: OutputStream): Unit = setOut(new PrintStream(out))
 
   /** Sets the default output stream for the duration
    *  of execution of one thunk.
@@ -122,9 +137,8 @@ object Console {
    *  @return the results of `thunk`
    *  @see `withOut[T](out:PrintStream)(thunk: => T)`
    */
-  def withOut[T](out: OutputStream)(thunk: =>T): T =
+  def withOut[T](out: OutputStream)(thunk: => T): T =
     withOut(new PrintStream(out))(thunk)
-
 
   /** Sets the default error stream.
    *
@@ -144,15 +158,14 @@ object Console {
    *  @return the results of `thunk`
    *  @see `withErr[T](err:OutputStream)(thunk: =>T)`
    */
-  def withErr[T](err: PrintStream)(thunk: =>T): T =
+  def withErr[T](err: PrintStream)(thunk: => T): T =
     errVar.withValue(err)(thunk)
 
   /** Sets the default error stream.
    *
    *  @param err the new error stream.
    */
-  def setErr(err: OutputStream): Unit =
-    setErr(new PrintStream(err))
+  def setErr(err: OutputStream): Unit = setErr(new PrintStream(err))
 
   /** Sets the default error stream for the duration
    *  of execution of one thunk.
@@ -163,17 +176,16 @@ object Console {
    *  @return the results of `thunk`
    *  @see `withErr[T](err:PrintStream)(thunk: =>T)`
    */
-  def withErr[T](err: OutputStream)(thunk: =>T): T =
+  def withErr[T](err: OutputStream)(thunk: => T): T =
     withErr(new PrintStream(err))(thunk)
-
 
   /** Sets the default input stream.
    *
    *  @param reader specifies the new input stream.
    */
   def setIn(reader: Reader) {
-    inVar.value = new BufferedReader(reader)
-  }
+        inVar.value = new BufferedReader(reader)
+      }
 
   /** Sets the default input stream for the duration
    *  of execution of one thunk.
@@ -192,7 +204,7 @@ object Console {
    * @return the results of `thunk`
    * @see `withIn[T](in:InputStream)(thunk: =>T)`
    */
-  def withIn[T](reader: Reader)(thunk: =>T): T =
+  def withIn[T](reader: Reader)(thunk: => T): T =
     inVar.withValue(new BufferedReader(reader))(thunk)
 
   /** Sets the default input stream.
@@ -200,8 +212,8 @@ object Console {
    *  @param in the new input stream.
    */
   def setIn(in: InputStream) {
-    setIn(new InputStreamReader(in))
-  }
+        setIn(new InputStreamReader(in))
+      }
 
   /** Sets the default input stream for the duration
    *  of execution of one thunk.
@@ -212,7 +224,7 @@ object Console {
    * @return the results of `thunk`
    * @see `withIn[T](reader:Reader)(thunk: =>T)`
    */
-  def withIn[T](in: InputStream)(thunk: =>T): T =
+  def withIn[T](in: InputStream)(thunk: => T): T =
     withIn(new InputStreamReader(in))(thunk)
 
   /** Prints an object to `out` using its `toString` method.
@@ -220,8 +232,9 @@ object Console {
    *  @param obj the object to print; may be null.
    */
   def print(obj: Any) {
-    out.print(if (null == obj) "null" else obj.toString())
-  }
+        out.print(if (null == obj) "null"
+        else obj.toString())
+      }
 
   /** Flushes the output stream. This function is required when partial
    *  output (i.e. output not terminated by a newline character) has
@@ -250,7 +263,7 @@ object Console {
    *  @param args the arguments used to instantiating the pattern.
    *  @throws java.lang.IllegalArgumentException if there was a problem with the format string or arguments
    */
-  def printf(text: String, args: Any*) { out.print(text format (args : _*)) }
+  def printf(text: String, args: Any *) { out.print(text format (args: _ *)) }
 
   /** Read a full line from the default input.  Returns `null` if the end of the
    * input stream has been reached.
@@ -266,8 +279,8 @@ object Console {
    *  @param args the parameters used to instantiate the format, as in `printf`.
    *  @return the string read from the default input
    */
-  def readLine(text: String, args: Any*): String = {
-    printf(text, args: _*)
+  def readLine(text: String, args: Any *): String = {
+    printf(text, args: _ *)
     readLine()
   }
 
@@ -302,8 +315,7 @@ object Console {
     val s = readLine()
     if (s == null)
       throw new java.io.EOFException("Console has reached end of input")
-    else
-      s.toByte
+    else s.toByte
   }
 
   /** Reads a short value from an entire line of the default input.
@@ -317,8 +329,7 @@ object Console {
     val s = readLine()
     if (s == null)
       throw new java.io.EOFException("Console has reached end of input")
-    else
-      s.toShort
+    else s.toShort
   }
 
   /** Reads a char value from an entire line of the default input.
@@ -332,8 +343,7 @@ object Console {
     val s = readLine()
     if (s == null)
       throw new java.io.EOFException("Console has reached end of input")
-    else
-      s charAt 0
+    else s charAt 0
   }
 
   /** Reads an int value from an entire line of the default input.
@@ -347,8 +357,7 @@ object Console {
     val s = readLine()
     if (s == null)
       throw new java.io.EOFException("Console has reached end of input")
-    else
-      s.toInt
+    else s.toInt
   }
 
   /** Reads an long value from an entire line of the default input.
@@ -362,8 +371,7 @@ object Console {
     val s = readLine()
     if (s == null)
       throw new java.io.EOFException("Console has reached end of input")
-    else
-      s.toLong
+    else s.toLong
   }
 
   /** Reads a float value from an entire line of the default input.
@@ -377,8 +385,7 @@ object Console {
     val s = readLine()
     if (s == null)
       throw new java.io.EOFException("Console has reached end of input")
-    else
-      s.toFloat
+    else s.toFloat
   }
 
   /** Reads a double value from an entire line of the default input.
@@ -392,8 +399,7 @@ object Console {
     val s = readLine()
     if (s == null)
       throw new java.io.EOFException("Console has reached end of input")
-    else
-      s.toDouble
+    else s.toDouble
   }
 
   /** Reads in some structured input (from the default input), specified by
@@ -409,8 +415,7 @@ object Console {
     val s = readLine()
     if (s == null)
       throw new java.io.EOFException("Console has reached end of input")
-    else
-      textComponents(new MessageFormat(format).parse(s))
+    else textComponents(new MessageFormat(format).parse(s))
   }
 
   /** Reads in some structured input (from the default input), specified by
@@ -451,14 +456,14 @@ object Console {
     var res: List[Any] = Nil
     while (i >= 0) {
       res = (a(i) match {
-        case x: java.lang.Boolean   => x.booleanValue()
-        case x: java.lang.Byte      => x.byteValue()
-        case x: java.lang.Short     => x.shortValue()
+        case x: java.lang.Boolean => x.booleanValue()
+        case x: java.lang.Byte => x.byteValue()
+        case x: java.lang.Short => x.shortValue()
         case x: java.lang.Character => x.charValue()
-        case x: java.lang.Integer   => x.intValue()
-        case x: java.lang.Long      => x.longValue()
-        case x: java.lang.Float     => x.floatValue()
-        case x: java.lang.Double    => x.doubleValue()
+        case x: java.lang.Integer => x.intValue()
+        case x: java.lang.Long => x.longValue()
+        case x: java.lang.Float => x.floatValue()
+        case x: java.lang.Double => x.doubleValue()
         case x => x
       }) :: res;
       i -= 1

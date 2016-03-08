@@ -2,42 +2,39 @@ package java.io
 
 import java.util.Formatter
 
-class PrintWriter(protected[io] var out: Writer,
-    autoFlush: Boolean) extends Writer {
+class PrintWriter(protected[io] var out: Writer, autoFlush: Boolean)
+    extends Writer {
+  def this (out: Writer) = this(out, false)
 
-  def this(out: Writer) = this(out, false)
-
-  def this(out: OutputStream, autoFlush: Boolean) =
-    this(new OutputStreamWriter(out), autoFlush)
-  def this(out: OutputStream) =
-    this(out, false)
+  def this (out: OutputStream, autoFlush: Boolean) = this(
+      new OutputStreamWriter(out), autoFlush)
+  def this (out: OutputStream) = this(out, false)
 
   /* The following constructors, although implemented, will not link, since
    * File, FileOutputStream and BufferedOutputStream are not implemented.
    * They're here just in case a third-party library on the classpath
    * implements those.
    */
-  def this(file: File) =
-    this(new BufferedOutputStream(new FileOutputStream(file)))
-  def this(file: File, csn: String) =
-    this(new OutputStreamWriter(new BufferedOutputStream(
-        new FileOutputStream(file)), csn))
-  def this(fileName: String) = this(new File(fileName))
-  def this(fileName: String, csn: String) = this(new File(fileName), csn)
+  def this (file: File) = this(
+      new BufferedOutputStream(new FileOutputStream(file)))
+  def this (file: File, csn: String) = this(new OutputStreamWriter(
+      new BufferedOutputStream(new FileOutputStream(file)), csn))
+  def this (fileName: String) = this(new File(fileName))
+  def this (fileName: String, csn: String) = this(new File(fileName), csn)
 
   private var closed: Boolean = false
   private var errorFlag: Boolean = false
 
-  def flush(): Unit =
-    ensureOpenAndTrapIOExceptions(out.flush())
+  def flush(): Unit = ensureOpenAndTrapIOExceptions(out.flush())
 
-  def close(): Unit = trapIOExceptions {
-    if (!closed) {
-      flush()
-      closed = true
-      out.close()
+  def close(): Unit =
+    trapIOExceptions {
+      if (!closed) {
+        flush()
+        closed = true
+        out.close()
+      }
     }
-  }
 
   def checkError(): Boolean = {
     if (closed) {
@@ -54,13 +51,14 @@ class PrintWriter(protected[io] var out: Writer,
        * but, experimentally, the JDK seems to behave that way.
        */
       errorFlag || (out match {
-        case out: PrintWriter => out.checkError()
-        case _                => false
-      })
+            case out: PrintWriter => out.checkError()
+            case _ => false
+          })
     }
   }
 
   protected[io] def setError(): Unit = errorFlag = true
+
   protected[io] def clearError(): Unit = errorFlag = false
 
   override def write(c: Int): Unit =
@@ -78,15 +76,25 @@ class PrintWriter(protected[io] var out: Writer,
   override def write(s: String): Unit =
     ensureOpenAndTrapIOExceptions(out.write(s))
 
-  def print(b: Boolean): Unit     = write(String.valueOf(b))
-  def print(c: Char): Unit        = write(c)
-  def print(i: Int): Unit         = write(String.valueOf(i))
-  def print(l: Long): Unit        = write(String.valueOf(l))
-  def print(f: Float): Unit       = write(String.valueOf(f))
-  def print(d: Double): Unit      = write(String.valueOf(d))
+  def print(b: Boolean): Unit = write(String.valueOf(b))
+
+  def print(c: Char): Unit = write(c)
+
+  def print(i: Int): Unit = write(String.valueOf(i))
+
+  def print(l: Long): Unit = write(String.valueOf(l))
+
+  def print(f: Float): Unit = write(String.valueOf(f))
+
+  def print(d: Double): Unit = write(String.valueOf(d))
+
   def print(s: Array[Char]): Unit = write(s)
-  def print(s: String): Unit      = write(if (s == null) "null" else s)
-  def print(obj: AnyRef): Unit    = write(String.valueOf(obj))
+
+  def print(s: String): Unit =
+    write(if (s == null) "null"
+    else s)
+
+  def print(obj: AnyRef): Unit = write(String.valueOf(obj))
 
   def println(): Unit = {
     write('\n') // In Scala.js the line separator is always LF
@@ -94,18 +102,52 @@ class PrintWriter(protected[io] var out: Writer,
       flush()
   }
 
-  def println(b: Boolean): Unit     = { print(b); println() }
-  def println(c: Char): Unit        = { print(c); println() }
-  def println(i: Int): Unit         = { print(i); println() }
-  def println(l: Long): Unit        = { print(l); println() }
-  def println(f: Float): Unit       = { print(f); println() }
-  def println(d: Double): Unit      = { print(d); println() }
-  def println(s: Array[Char]): Unit = { print(s); println() }
-  def println(s: String): Unit      = { print(s); println() }
-  def println(obj: AnyRef): Unit    = { print(obj); println() }
+  def println(b: Boolean): Unit = {
+    print(b);
+    println()
+  }
 
-  def printf(fmt: String, args: Array[Object]): PrintWriter =
-    format(fmt, args)
+  def println(c: Char): Unit = {
+    print(c);
+    println()
+  }
+
+  def println(i: Int): Unit = {
+    print(i);
+    println()
+  }
+
+  def println(l: Long): Unit = {
+    print(l);
+    println()
+  }
+
+  def println(f: Float): Unit = {
+    print(f);
+    println()
+  }
+
+  def println(d: Double): Unit = {
+    print(d);
+    println()
+  }
+
+  def println(s: Array[Char]): Unit = {
+    print(s);
+    println()
+  }
+
+  def println(s: String): Unit = {
+    print(s);
+    println()
+  }
+
+  def println(obj: AnyRef): Unit = {
+    print(obj);
+    println()
+  }
+
+  def printf(fmt: String, args: Array[Object]): PrintWriter = format(fmt, args)
 
   // Not implemented:
   //def printf(l: java.util.Locale, fmt: String, args: Array[Object]): PrintWriter = ???
@@ -135,7 +177,8 @@ class PrintWriter(protected[io] var out: Writer,
     this
   }
 
-  @inline private[this] def trapIOExceptions(body: => Unit): Unit = {
+  @inline
+  private [ this] def trapIOExceptions(body: => Unit): Unit = {
     try {
       body
     } catch {
@@ -143,7 +186,8 @@ class PrintWriter(protected[io] var out: Writer,
     }
   }
 
-  @inline private[this] def ensureOpenAndTrapIOExceptions(body: => Unit): Unit = {
+  @inline
+  private [ this] def ensureOpenAndTrapIOExceptions(body: => Unit): Unit = {
     if (closed) setError()
     else trapIOExceptions(body)
   }

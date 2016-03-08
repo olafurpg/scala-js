@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 /**
  * All doc-comments marked as "MDN" are by Mozilla Contributors,
  * distributed under the Creative Commons Attribution-ShareAlike license from
@@ -55,7 +54,7 @@ sealed trait Dictionary[A] extends Any {
    *  This must not be called if the dictionary does not contain the key.
    */
   @JSBracketAccess
-  private[js] def rawApply(key: String): A = native
+  private [js] def rawApply(key: String): A = native
 
   /** Writes a field of this object by its name. */
   @JSBracketAccess
@@ -74,13 +73,13 @@ sealed trait Dictionary[A] extends Any {
 
 /** Factory for [[Dictionary]] instances. */
 object Dictionary {
+
   /** Returns a new empty dictionary */
   def empty[A]: Dictionary[A] = (new Object).asInstanceOf[Dictionary[A]]
 
-  def apply[A](properties: (String, A)*): Dictionary[A] = {
+  def apply[A](properties: (String, A) *): Dictionary[A] = {
     val result = empty[A]
-    for ((key, value) <- properties)
-      result(key) = value
+    for ((key, value) <- properties) result (key) = value
     result
   }
 }

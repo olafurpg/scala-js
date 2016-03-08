@@ -18,8 +18,9 @@ import scala.language.implicitConversions
 
 object ConcurrentSkipListSetJSTest extends JasmineTest {
   describe("ConcurrentSkipListSetTest") {
-    when("compliant-asinstanceofs").
-    it("should throw exception on non comparable objects") {
+    when("compliant-asinstanceofs")
+      .it("should throw exception on non comparable objects") {
+
       case class TestObj(num: Int)
 
       val csls = new ConcurrentSkipListSet[TestObj]()

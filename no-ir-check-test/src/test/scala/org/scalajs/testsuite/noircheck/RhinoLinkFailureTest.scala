@@ -12,12 +12,8 @@ import org.scalajs.jasminetest.JasmineTest
 import scala.scalajs.js
 
 object RhinoLinkFailureTest extends JasmineTest {
-
-  when("rhino").
-  describe("Rhino Linking") {
-
+  when("rhino").describe("Rhino Linking") {
     it("should throw an exception if it fails loading a class") {
-
       // scala.collection.parallel.Splitter$ is not defined
       try {
         val pool = scala.collection.parallel.Splitter.empty
@@ -28,7 +24,5 @@ object RhinoLinkFailureTest extends JasmineTest {
           expect(e.toString).toContain("sc_parallel_Splitter$")
       }
     }
-
   }
-
 }

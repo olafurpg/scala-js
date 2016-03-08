@@ -10,7 +10,6 @@ package sbt.testing
  *  Implementations of this interface must be thread-safe.
  */
 trait Logger {
-
   /** True if ANSI color codes are understood by this instance. */
   def ansiCodesSupported(): Boolean
 

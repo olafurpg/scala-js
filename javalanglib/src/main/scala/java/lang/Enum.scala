@@ -1,6 +1,6 @@
 package java.lang
 
-abstract class Enum[E <: Enum[E]] protected (_name: String, _ordinal: Int)
+abstract class Enum[E <: Enum[E]] protected(_name: String, _ordinal: Int)
     extends Comparable[E] with java.io.Serializable {
 
   final def name(): String = _name

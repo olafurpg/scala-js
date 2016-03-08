@@ -6,12 +6,11 @@
 package org.scalajs.core.compiler
 
 import scala.tools.nsc._
-import scala.tools.nsc.plugins.{
-  Plugin => NscPlugin, PluginComponent => NscPluginComponent
-}
-import scala.collection.{ mutable, immutable }
+import scala.tools.nsc.plugins.{Plugin => NscPlugin,
+PluginComponent => NscPluginComponent}
+import scala.collection.{mutable, immutable}
 
-import java.net.{ URI, URISyntaxException }
+import java.net.{URI, URISyntaxException}
 
 import org.scalajs.core.ir.Trees
 
@@ -28,8 +27,8 @@ class ScalaJSPlugin(val global: Global) extends NscPlugin {
     if (global.forScaladoc) {
       List[NscPluginComponent](PrepInteropComponent)
     } else {
-      List[NscPluginComponent](PreTyperComponentComponent, PrepInteropComponent,
-          GenCodeComponent)
+      List[NscPluginComponent](
+          PreTyperComponentComponent, PrepInteropComponent, GenCodeComponent)
     }
   }
 
@@ -37,18 +36,19 @@ class ScalaJSPlugin(val global: Global) extends NscPlugin {
   def generatedJSAST(clDefs: List[Trees.Tree]): Unit = {}
 
   /** Addons for JavaScript platform */
-  object jsAddons extends { // scalastyle:ignore
-    val global: ScalaJSPlugin.this.global.type = ScalaJSPlugin.this.global
+  object jsAddons extends {
+    // scalastyle:ignore
+    val global: ScalaJSPlugin. this.global. type = ScalaJSPlugin. this.global
   } with JSGlobalAddons with Compat210Component
 
-  object scalaJSOpts extends ScalaJSOptions { // scalastyle:ignore
+  object scalaJSOpts extends ScalaJSOptions {
+    // scalastyle:ignore
     import ScalaJSOptions.URIMap
     var fixClassOf: Boolean = false
     lazy val sourceURIMaps: List[URIMap] = {
       if (_sourceURIMaps.nonEmpty)
         _sourceURIMaps.reverse
-      else
-        relSourceMap.toList.map(URIMap(_, absSourceMap))
+      else relSourceMap.toList.map(URIMap(_, absSourceMap))
     }
     var _sourceURIMaps: List[URIMap] = Nil
     var relSourceMap: Option[URI] = None
@@ -65,39 +65,41 @@ class ScalaJSPlugin(val global: Global) extends NscPlugin {
     PrepInteropComponent.registerModuleExports(sym)
 
   object PreTyperComponentComponent extends {
-    val global: ScalaJSPlugin.this.global.type = ScalaJSPlugin.this.global
+    val global: ScalaJSPlugin. this.global. type = ScalaJSPlugin. this.global
     val runsAfter = List("parser")
     override val runsBefore = List("namer")
   } with PreTyperComponent
 
   object PrepInteropComponent extends {
-    val global: ScalaJSPlugin.this.global.type = ScalaJSPlugin.this.global
-    val jsAddons: ScalaJSPlugin.this.jsAddons.type = ScalaJSPlugin.this.jsAddons
-    val scalaJSOpts = ScalaJSPlugin.this.scalaJSOpts
+    val global: ScalaJSPlugin. this.global. type = ScalaJSPlugin. this.global
+    val jsAddons: ScalaJSPlugin. this.jsAddons. type =
+      ScalaJSPlugin. this.jsAddons
+    val scalaJSOpts = ScalaJSPlugin. this.scalaJSOpts
     override val runsAfter = List("typer")
     override val runsBefore = List("pickle")
   } with PrepJSInterop
 
   object GenCodeComponent extends {
-    val global: ScalaJSPlugin.this.global.type = ScalaJSPlugin.this.global
-    val jsAddons: ScalaJSPlugin.this.jsAddons.type = ScalaJSPlugin.this.jsAddons
-    val scalaJSOpts = ScalaJSPlugin.this.scalaJSOpts
+    val global: ScalaJSPlugin. this.global. type = ScalaJSPlugin. this.global
+    val jsAddons: ScalaJSPlugin. this.jsAddons. type =
+      ScalaJSPlugin. this.jsAddons
+    val scalaJSOpts = ScalaJSPlugin. this.scalaJSOpts
     override val runsAfter = List("mixin")
     override val runsBefore = List("delambdafy", "cleanup", "terminal")
   } with GenJSCode {
+
     def generatedJSAST(clDefs: List[Trees.Tree]): Unit =
-      ScalaJSPlugin.this.generatedJSAST(clDefs)
+      ScalaJSPlugin. this.generatedJSAST(clDefs)
   }
 
-  override def processOptions(options: List[String],
-      error: String => Unit): Unit = {
+  override def processOptions(
+      options: List[String], error: String => Unit): Unit = {
     import ScalaJSOptions.URIMap
     import scalaJSOpts._
 
     for (option <- options) {
       if (option == "fixClassOf") {
         fixClassOf = true
-
       } else if (option.startsWith("mapSourceURI:")) {
         val uris = option.stripPrefix("mapSourceURI:").split("->")
 
@@ -114,17 +116,15 @@ class ScalaJSPlugin(val global: Global) extends NscPlugin {
           }
         }
 
-      // The following options are deprecated (how do we show this to the user?)
+        // The following options are deprecated (how do we show this to the user?)
       } else if (option.startsWith("relSourceMap:")) {
         val uriStr = option.stripPrefix("relSourceMap:")
-        try { relSourceMap = Some(new URI(uriStr)) }
-        catch {
+        try { relSourceMap = Some(new URI(uriStr)) } catch {
           case e: URISyntaxException => error(s"$uriStr is not a valid URI")
         }
       } else if (option.startsWith("absSourceMap:")) {
         val uriStr = option.stripPrefix("absSourceMap:")
-        try { absSourceMap = Some(new URI(uriStr)) }
-        catch {
+        try { absSourceMap = Some(new URI(uriStr)) } catch {
           case e: URISyntaxException => error(s"$uriStr is not a valid URI")
         }
       } else {
@@ -134,11 +134,11 @@ class ScalaJSPlugin(val global: Global) extends NscPlugin {
 
     // Verify constraints
     if (_sourceURIMaps.nonEmpty && relSourceMap.isDefined)
-      error("You may not use mapSourceURI and relSourceMap together. " +
-          "Use another mapSourceURI option without second URI.")
+      error(
+          "You may not use mapSourceURI and relSourceMap together. " + "Use another mapSourceURI option without second URI.")
     else if (_sourceURIMaps.nonEmpty && absSourceMap.isDefined)
-      error("You may not use mapSourceURI and absSourceMap together. " +
-          "Use another mapSourceURI option.")
+      error(
+          "You may not use mapSourceURI and absSourceMap together. " + "Use another mapSourceURI option.")
     else if (absSourceMap.isDefined && relSourceMap.isEmpty)
       error("absSourceMap requires the use of relSourceMap")
   }
@@ -156,5 +156,4 @@ class ScalaJSPlugin(val global: Global) extends NscPlugin {
       |  -P:$name:absSourceMap:<URI>  absolutize emitted source maps with <URI>
       |     This option requires the use of relSourceMap
       """.stripMargin)
-
 }

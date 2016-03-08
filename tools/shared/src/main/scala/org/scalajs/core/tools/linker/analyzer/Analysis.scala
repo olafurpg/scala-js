@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.tools.linker.analyzer
 
 import scala.annotation.tailrec
@@ -52,6 +51,7 @@ object Analysis {
     def nonExistent: Boolean
     def ancestorCount: Int
     def descendentClasses: Seq[ClassInfo]
+
     /** For a Scala class, it is instantiated with a `New`; for a JS class,
      *  its constructor is accessed with a `JSLoadConstructor` or because it
      *  is needed for a subclass.
@@ -95,26 +95,28 @@ object Analysis {
       } else {
         import ir.Types._
 
-        def typeDisplayName(tpe: ReferenceType): String = tpe match {
-          case ClassType(encodedName)      => decodeClassName(encodedName)
-          case ArrayType(base, dimensions) => "[" * dimensions + decodeClassName(base)
-        }
+        def typeDisplayName(tpe: ReferenceType): String =
+          tpe match {
+            case ClassType(encodedName) => decodeClassName(encodedName)
+            case ArrayType(base, dimensions) =>
+              "[" * dimensions + decodeClassName(base)
+          }
 
         val (simpleName, paramTypes, resultType) =
           ir.Definitions.decodeMethodName(encodedName)
 
-        simpleName + "(" + paramTypes.map(typeDisplayName).mkString(",") + ")" +
-        resultType.fold("")(typeDisplayName)
+        simpleName + "(" + paramTypes.map(typeDisplayName)
+          .mkString(",") + ")" + resultType.fold("")(typeDisplayName)
       }
     }
 
-    def fullDisplayName: String =
-      owner.displayName + "." + displayName
+    def fullDisplayName: String = owner.displayName + "." + displayName
   }
 
   sealed trait MethodSyntheticKind
 
   object MethodSyntheticKind {
+
     /** Not a synthetic method. */
     final case object None extends MethodSyntheticKind
 
@@ -150,7 +152,8 @@ object Analysis {
      *  }
      *  }}}
      */
-    final case class ReflectiveProxy(target: String) extends MethodSyntheticKind
+    final case class ReflectiveProxy(target: String)
+        extends MethodSyntheticKind
 
     /** Bridge to a default method.
      *
@@ -166,7 +169,8 @@ object Analysis {
      *  }
      *  }}}
      */
-    final case class DefaultBridge(targetInterface: String) extends MethodSyntheticKind
+    final case class DefaultBridge(targetInterface: String)
+        extends MethodSyntheticKind
   }
 
   sealed trait Error {
@@ -174,15 +178,25 @@ object Analysis {
   }
 
   final case class MissingJavaLangObjectClass(from: From) extends Error
-  final case class CycleInInheritanceChain(cycle: List[ClassInfo], from: From) extends Error
+
+  final case class CycleInInheritanceChain(cycle: List[ClassInfo], from: From)
+      extends Error
+
   final case class MissingClass(info: ClassInfo, from: From) extends Error
+
   final case class NotAModule(info: ClassInfo, from: From) extends Error
+
   final case class MissingMethod(info: MethodInfo, from: From) extends Error
-  final case class ConflictingDefaultMethods(infos: List[MethodInfo], from: From) extends Error
+
+  final case class ConflictingDefaultMethods(
+      infos: List[MethodInfo], from: From) extends Error
 
   sealed trait From
+
   final case class FromMethod(methodInfo: MethodInfo) extends From
+
   final case class FromCore(moduleName: String) extends From
+
   case object FromExports extends From
 
   def logError(error: Error, logger: Logger, level: Level): Unit = {
@@ -190,8 +204,8 @@ object Analysis {
       case MissingJavaLangObjectClass(_) =>
         "Fatal error: java.lang.Object is missing"
       case CycleInInheritanceChain(cycle, _) =>
-        ("Fatal error: cycle in inheritance chain involving " +
-            cycle.map(_.displayName).mkString(", "))
+        ("Fatal error: cycle in inheritance chain involving " + cycle.map(
+                _.displayName).mkString(", "))
       case MissingClass(info, _) =>
         s"Referring to non-existent class ${info.displayName}"
       case NotAModule(info, _) =>
@@ -199,7 +213,8 @@ object Analysis {
       case MissingMethod(info, _) =>
         s"Referring to non-existent method ${info.fullDisplayName}"
       case ConflictingDefaultMethods(infos, _) =>
-        s"Conflicting default methods: ${infos.map(_.fullDisplayName).mkString(" ")}"
+        s"Conflicting default methods: ${infos.map(_.fullDisplayName)
+          .mkString(" ")}"
     }
 
     logger.log(level, headMsg)
@@ -208,8 +223,8 @@ object Analysis {
   }
 
   private class CallStackLogger(logger: Logger) {
-    private[this] val seenInfos = mutable.Set.empty[AnyRef]
-    private[this] var indentation: String = ""
+    private [ this] val seenInfos = mutable.Set.empty[AnyRef]
+    private [ this] var indentation: String = ""
 
     def logCallStack(from: From, level: Level): Unit = {
       logCallStackImpl(level, Some(from))
@@ -217,16 +232,15 @@ object Analysis {
     }
 
     private def log(level: Level, msg: String) =
-      logger.log(level, indentation+msg)
+      logger.log(level, indentation + msg)
 
     private def indented[A](body: => A): A = {
       indentation += "  "
-      try body
-      finally indentation = indentation.substring(2)
+      try body finally indentation = indentation.substring(2)
     }
 
-    private def logCallStackImpl(level: Level, optFrom: Option[From],
-        verb: String = "called"): Unit = {
+    private def logCallStackImpl(
+        level: Level, optFrom: Option[From], verb: String = "called"): Unit = {
       val involvedClasses = new mutable.ListBuffer[ClassInfo]
 
       def onlyOnce(level: Level, info: AnyRef): Boolean = {
@@ -242,7 +256,8 @@ object Analysis {
       def loopTrace(optFrom: Option[From], verb: String = "called"): Unit = {
         optFrom match {
           case None =>
-            log(level, s"$verb from ... er ... nowhere!? (this is a bug in dce)")
+            log(level,
+                s"$verb from ... er ... nowhere!? (this is a bug in dce)")
           case Some(from) =>
             from match {
               case FromMethod(methodInfo) =>
@@ -272,12 +287,12 @@ object Analysis {
             // recurse with Debug log level not to overwhelm the user
             if (onlyOnce(Level.Debug, classInfo)) {
               logCallStackImpl(Level.Debug,
-                  classInfo.instantiatedFrom.headOption, verb = "instantiated")
+                               classInfo.instantiatedFrom.headOption,
+                               verb = "instantiated")
             }
           }
         }
       }
     }
   }
-
 }

@@ -27,14 +27,18 @@ object UUIDTest extends JasmineTest {
 
     it("getLeastSignificantBits") {
       expect(new UUID(0L, 0L).getLeastSignificantBits() == 0L).toBeTruthy
-      expect(new UUID(0L, Long.MinValue).getLeastSignificantBits() == Long.MinValue).toBeTruthy
-      expect(new UUID(0L, Long.MaxValue).getLeastSignificantBits() == Long.MaxValue).toBeTruthy
+      expect(new UUID(0L, Long.MinValue)
+        .getLeastSignificantBits() == Long.MinValue).toBeTruthy
+      expect(new UUID(0L, Long.MaxValue)
+        .getLeastSignificantBits() == Long.MaxValue).toBeTruthy
     }
 
     it("getMostSignificantBits") {
       expect(new UUID(0L, 0L).getMostSignificantBits() == 0L).toBeTruthy
-      expect(new UUID(Long.MinValue, 0L).getMostSignificantBits() == Long.MinValue).toBeTruthy
-      expect(new UUID(Long.MaxValue, 0L).getMostSignificantBits() == Long.MaxValue).toBeTruthy
+      expect(new UUID(Long.MinValue, 0L)
+        .getMostSignificantBits() == Long.MinValue).toBeTruthy
+      expect(new UUID(Long.MaxValue, 0L)
+        .getMostSignificantBits() == Long.MaxValue).toBeTruthy
     }
 
     it("version") {
@@ -59,27 +63,37 @@ object UUIDTest extends JasmineTest {
     }
 
     it("timestamp") {
-      expect(new UUID(0x0000000000001000L,
-          0x8000000000000000L).timestamp() == 0L).toBeTruthy
-      expect(new UUID(0x7777777755551333L,
-          0x8000000000000000L).timestamp() == 0x333555577777777L).toBeTruthy
+      expect(new UUID(0x0000000000001000L, 0x8000000000000000L)
+        .timestamp() == 0L).toBeTruthy
+      expect(new UUID(0x7777777755551333L, 0x8000000000000000L)
+        .timestamp() == 0x333555577777777L).toBeTruthy
 
-      expect(() => new UUID(0x0000000000000000L, 0x8000000000000000L).timestamp()).toThrow
-      expect(() => new UUID(0x0000000000002000L, 0x8000000000000000L).timestamp()).toThrow
+      expect(() =>
+        new UUID(0x0000000000000000L, 0x8000000000000000L).timestamp()).toThrow
+      expect(() =>
+        new UUID(0x0000000000002000L, 0x8000000000000000L).timestamp()).toThrow
     }
 
     it("clockSequence") {
-      expect(new UUID(0x0000000000001000L, 0x8000000000000000L).clockSequence()).toEqual(0)
-      expect(new UUID(0x0000000000001000L, 0x8fff000000000000L).clockSequence()).toEqual(0x0fff)
-      expect(new UUID(0x0000000000001000L, 0xBfff000000000000L).clockSequence()).toEqual(0x3fff)
+      expect(new UUID(0x0000000000001000L, 0x8000000000000000L)
+        .clockSequence()).toEqual(0)
+      expect(new UUID(0x0000000000001000L, 0x8fff000000000000L)
+        .clockSequence()).toEqual(0x0fff)
+      expect(new UUID(0x0000000000001000L, 0xBfff000000000000L)
+        .clockSequence()).toEqual(0x3fff)
 
-      expect(() => new UUID(0x0000000000000000L, 0x8000000000000000L).clockSequence()).toThrow
-      expect(() => new UUID(0x0000000000002000L, 0x8000000000000000L).clockSequence()).toThrow
+      expect(() =>
+        new UUID(0x0000000000000000L, 0x8000000000000000L)
+          .clockSequence()).toThrow
+      expect(() =>
+        new UUID(0x0000000000002000L, 0x8000000000000000L)
+          .clockSequence()).toThrow
     }
 
     it("node") {
       expect(new UUID(0x0000000000001000L, 0x8000000000000000L).node() == 0L).toBeTruthy
-      expect(new UUID(0x0000000000001000L, 0x8000ffffffffffffL).node() == 0xffffffffffffL).toBeTruthy
+      expect(new UUID(0x0000000000001000L, 0x8000ffffffffffffL)
+        .node() == 0xffffffffffffL).toBeTruthy
 
       expect(() => new UUID(0x0000000000000000L, 0x8000000000000000L).node()).toThrow
       expect(() => new UUID(0x0000000000002000L, 0x8000000000000000L).node()).toThrow
@@ -105,7 +119,8 @@ object UUIDTest extends JasmineTest {
 
     it("hashCode") {
       expect(new UUID(0L, 0L).hashCode()).toEqual(0)
-      expect(new UUID(123L, 123L).hashCode()).toEqual(new UUID(123L, 123L).hashCode())
+      expect(new UUID(123L, 123L).hashCode())
+        .toEqual(new UUID(123L, 123L).hashCode())
     }
 
     it("equals") {
@@ -129,10 +144,10 @@ object UUIDTest extends JasmineTest {
     }
 
     it("toString") {
-      expect(new UUID(0xf81d4fae7dec11d0L,
-          0xa76500a0c91e6bf6L).toString()).toEqual("f81d4fae-7dec-11d0-a765-00a0c91e6bf6")
-      expect(new UUID(0x0000000000001000L,
-          0x8000000000000000L).toString()).toEqual("00000000-0000-1000-8000-000000000000")
+      expect(new UUID(0xf81d4fae7dec11d0L, 0xa76500a0c91e6bf6L).toString())
+        .toEqual("f81d4fae-7dec-11d0-a765-00a0c91e6bf6")
+      expect(new UUID(0x0000000000001000L, 0x8000000000000000L).toString())
+        .toEqual("00000000-0000-1000-8000-000000000000")
     }
 
     it("randomUUID") {

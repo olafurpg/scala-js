@@ -27,5 +27,4 @@ object ThrowableSerializer {
         fileName = e.getFileName,
         lineNumber = e.getLineNumber)
   }
-
 }

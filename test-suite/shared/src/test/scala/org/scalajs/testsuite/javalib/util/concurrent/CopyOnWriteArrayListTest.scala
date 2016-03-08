@@ -22,7 +22,8 @@ class CopyOnWriteArrayListTest extends ListTest {
 
   def factory: CopyOnWriteArrayListFactory = new CopyOnWriteArrayListFactory
 
-  @Test def should_implement_addIfAbsent(): Unit = {
+  @Test
+  def should_implement_addIfAbsent(): Unit = {
     val list = factory.empty[Int]
 
     assertTrue(list.addIfAbsent(0))
@@ -39,37 +40,34 @@ class CopyOnWriteArrayListTest extends ListTest {
     assertEquals(1, list.get(1))
   }
 
-  @Test def should_implement_addAllAbsent(): Unit = {
+  @Test
+  def should_implement_addAllAbsent(): Unit = {
     val list = factory.empty[Int]
 
     assertEquals(3, list.addAllAbsent(0 until 3))
     assertEquals(3, list.size)
-    for (i <- 0 until 3)
-      assertEquals(i, list.get(i))
+    for (i <- 0 until 3) assertEquals(i, list.get(i))
 
     assertEquals(0, list.addAllAbsent(0 until 2))
     assertEquals(3, list.size)
-    for (i <- 0 until 3)
-      assertEquals(i, list.get(i))
+    for (i <- 0 until 3) assertEquals(i, list.get(i))
 
     assertEquals(3, list.addAllAbsent(3 until 6))
     assertEquals(6, list.size)
-    for (i <- 0 until 6)
-      assertEquals(i, list.get(i))
+    for (i <- 0 until 6) assertEquals(i, list.get(i))
 
     assertEquals(4, list.addAllAbsent(0 until 10))
     assertEquals(10, list.size)
-    for (i <- 0 until 10)
-      assertEquals(i, list.get(i))
+    for (i <- 0 until 10) assertEquals(i, list.get(i))
 
     assertEquals(1, list.addAllAbsent(Seq(42, 42, 42)))
     assertEquals(11, list.size)
-    for (i <- 0 until 10)
-      assertEquals(i, list.get(i))
+    for (i <- 0 until 10) assertEquals(i, list.get(i))
     assertEquals(42, list.get(10))
   }
 
-  @Test def should_implement_a_snapshot_iterator(): Unit = {
+  @Test
+  def should_implement_a_snapshot_iterator(): Unit = {
     val list = factory.empty[Int]
     list.addAll(0 to 10)
 
@@ -86,12 +84,13 @@ class CopyOnWriteArrayListTest extends ListTest {
     assertFalse(iter2.hasNext)
   }
 
-  @Test def `should_have_accessible_array_constructor_-_#2023`(): Unit = {
+  @Test
+  def `should_have_accessible_array_constructor_-_#2023`(): Unit = {
+
     def test[T <: AnyRef](arr: Array[T]): Unit = {
       val cowal1 = factory.newFrom(arr)
       assertEquals(arr.length, cowal1.length)
-      for (i <- arr.indices)
-        assertTrue(cowal1.get(i) == arr(i))
+      for (i <- arr.indices) assertTrue(cowal1.get(i) == arr(i))
     }
 
     test(Array("a", "", "da", "23"))
@@ -110,10 +109,12 @@ class CopyOnWriteArrayListFactory extends ListFactory {
   override def empty[E]: ju.concurrent.CopyOnWriteArrayList[E] =
     new ju.concurrent.CopyOnWriteArrayList[E]
 
-  def newFrom[E <: AnyRef](arr: Array[E]): ju.concurrent.CopyOnWriteArrayList[E] =
+  def newFrom[E <: AnyRef](
+      arr: Array[E]): ju.concurrent.CopyOnWriteArrayList[E] =
     new ju.concurrent.CopyOnWriteArrayList[E](arr)
 
   // Sorting a CopyOnWriteArrayListFactory was not supported until JDK8.
   // See CollectionsOnCopyOnWriteArrayListTestOnJDK8.
+
   override def sortableUsingCollections: Boolean = false
 }

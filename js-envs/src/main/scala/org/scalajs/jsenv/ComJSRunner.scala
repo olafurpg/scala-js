@@ -3,7 +3,6 @@ package org.scalajs.jsenv
 import scala.concurrent.duration.Duration
 
 trait ComJSRunner extends AsyncJSRunner {
-
   /** Send a message to the JS VM. Throws if the message cannot be sent. */
   def send(msg: String): Unit
 
@@ -37,5 +36,4 @@ trait ComJSRunner extends AsyncJSRunner {
     close()
     super.stop()
   }
-
 }

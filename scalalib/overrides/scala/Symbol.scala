@@ -22,33 +22,39 @@ import scala.scalajs.js
  *  @author  Martin Odersky, Iulian Dragos
  *  @version 1.8
  */
-final class Symbol private (val name: String) extends Serializable {
+final class Symbol private(val name: String)
+    extends Serializable {
+
   /** Converts this symbol to a string.
    */
   override def toString(): String = "'" + name
 
   @throws(classOf[java.io.ObjectStreamException])
   private def readResolve(): Any = Symbol.apply(name)
+
   override def hashCode = name.hashCode()
+
   override def equals(other: Any) = this eq other.asInstanceOf[AnyRef]
 }
 
 // Modified to use Scala.js specific cache
+
 object Symbol extends JSUniquenessCache[Symbol] {
+
   override def apply(name: String): Symbol = super.apply(name)
+
   protected def valueFromKey(name: String): Symbol = new Symbol(name)
+
   protected def keyFromValue(sym: Symbol): Option[String] = Some(sym.name)
 }
 
-private[scala] abstract class JSUniquenessCache[V]
-{
+private [scala] abstract class JSUniquenessCache[V] {
   private val cache = js.Dictionary.empty[V]
 
   protected def valueFromKey(k: String): V
   protected def keyFromValue(v: V): Option[String]
 
-  def apply(name: String): V =
-    cache.getOrElseUpdate(name, valueFromKey(name))
+  def apply(name: String): V = cache.getOrElseUpdate(name, valueFromKey(name))
 
   def unapply(other: V): Option[String] = keyFromValue(other)
 }

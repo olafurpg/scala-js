@@ -13,9 +13,11 @@ import org.junit.Assert._
 import java.{util => ju}
 
 class ComparatorTestOnJDK8 {
+  @Test
+  def reversed(): Unit = {
 
-  @Test def reversed(): Unit = {
     class IntComparator extends ju.Comparator[Int] {
+
       def compare(a: Int, b: Int): Int = {
         /* Using Int.MinValue makes sure that Comparator.reversed() does not
          * use the naive implementation of negating the original comparator's
@@ -34,5 +36,4 @@ class ComparatorTestOnJDK8 {
     assertTrue(reversed.compare(3, 1) < 0)
     assertTrue(reversed.compare(6, 8) > 0)
   }
-
 }

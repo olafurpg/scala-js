@@ -15,10 +15,10 @@ import js.annotation.JSExport
 object UndefOrTest extends JasmineTest {
 
   def some[A](v: A): js.UndefOr[A] = v
+
   def none[A]: js.UndefOr[A] = js.undefined
 
   describe("scala.scalajs.js.UndefOr[A]") {
-
     it("convert A to js.UndefOr[A]") {
       val x: js.UndefOr[Int] = 42
       expect(x.isEmpty).toBeFalsy
@@ -71,7 +71,10 @@ object UndefOrTest extends JasmineTest {
     }
 
     it("flatMap") {
-      def f(x: Int): js.UndefOr[Int] = if (x > 0) x+3 else js.undefined
+
+      def f(x: Int): js.UndefOr[Int] =
+        if (x > 0) x + 3
+        else js.undefined
       expect(some(6).flatMap(f)).toEqual(9)
       expect(some(-6).flatMap(f)).toBeUndefined
       expect(none[Int].flatMap(f)).toBeUndefined
@@ -134,12 +137,13 @@ object UndefOrTest extends JasmineTest {
 
     it("collect should call guard at most once") {
       var witness = 0
+
       def guard(x: String): Boolean = {
         witness += 1
         true
       }
       expect(some("hello") collect {
-        case x @ "hello" if guard(x) => "ok"
+        case x@ "hello" if guard(x) => "ok"
       }).toEqual("ok")
       expect(witness).toEqual(1)
     }
@@ -173,11 +177,9 @@ object UndefOrTest extends JasmineTest {
       expect(some("foo").toOption == Some("foo")).toBeTruthy
       expect(none.toOption == None).toBeTruthy
     }
-
   }
 
   describe("scala.scalajs.js.JSConverters.JSRichOption") {
-
     import js.JSConverters._
 
     it("should provide orUndefined") {
@@ -189,7 +191,5 @@ object UndefOrTest extends JasmineTest {
       // js.Any
       // expect(None.orUndefined).toBeUndefined
     }
-
   }
-
 }

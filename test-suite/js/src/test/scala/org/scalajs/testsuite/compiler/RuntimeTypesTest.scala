@@ -14,10 +14,9 @@ import scala.scalajs.js
 import scala.scalajs.js.annotation.JSName
 import org.scalajs.jasminetest.JasmineTest
 
-import scala.util.{ Try, Failure }
+import scala.util.{Try, Failure}
 
 object RuntimeTypesTest extends JasmineTest {
-
   describe("Scala Arrays") {
     it("are instances of Serializable and Cloneable - #2094") {
       expect((Array(3): Any).isInstanceOf[Serializable]).toBeTruthy
@@ -35,9 +34,8 @@ object RuntimeTypesTest extends JasmineTest {
   }
 
   describe("scala.Nothing") {
+    when("compliant-asinstanceofs").it("casts to scala.Nothing should fail") {
 
-    when("compliant-asinstanceofs").
-    it("casts to scala.Nothing should fail") {
       def test(x: Any): Unit = {
         try {
           x.asInstanceOf[Nothing]
@@ -45,16 +43,17 @@ object RuntimeTypesTest extends JasmineTest {
         } catch {
           case th: Throwable =>
             expect(th.isInstanceOf[ClassCastException]).toBeTruthy
-            expect(th.getMessage).toEqual(
-                x + " is not an instance of scala.runtime.Nothing$")
+            expect(th.getMessage)
+              .toEqual(x + " is not an instance of scala.runtime.Nothing$")
         }
       }
       test("a")
       test(null)
     }
 
-    when("compliant-asinstanceofs").
-    it("reflected casts to scala.Nothing should fail") {
+    when("compliant-asinstanceofs")
+      .it("reflected casts to scala.Nothing should fail") {
+
       def test(x: Any): Unit = {
         try {
           classOf[Nothing].cast(x)
@@ -62,8 +61,8 @@ object RuntimeTypesTest extends JasmineTest {
         } catch {
           case th: Throwable =>
             expect(th.isInstanceOf[ClassCastException]).toBeTruthy
-            expect(th.getMessage).toEqual(
-                x + " is not an instance of scala.runtime.Nothing$")
+            expect(th.getMessage)
+              .toEqual(x + " is not an instance of scala.runtime.Nothing$")
         }
       }
       test("a")
@@ -81,13 +80,11 @@ object RuntimeTypesTest extends JasmineTest {
       // This apparently works too... Dunno why
       arr.asInstanceOf[Array[Nothing]]
     }
-
   }
 
   describe("scala.Null") {
-
-    when("compliant-asinstanceofs").
-    it("casts to scala.Null should fail for everything else but null") {
+    when("compliant-asinstanceofs")
+      .it("casts to scala.Null should fail for everything else but null") {
       val msg = Try("a".asInstanceOf[Null]) match {
         case Failure(thr: ClassCastException) => thr.getMessage
         case _ => "not failed"
@@ -111,16 +108,14 @@ object RuntimeTypesTest extends JasmineTest {
     }
 
     it("Array[Array[Null]] too") {
-      val arr = Array.fill[Null](5,5)(null)
+      val arr = Array.fill[Null](5, 5)(null)
       arr.asInstanceOf[Array[Array[Null]]]
       // This apparently works too... Dunno why
       arr.asInstanceOf[Array[Null]]
     }
-
   }
 
   describe("Raw JS types") {
-
     it("Arrays of raw JS types") {
       val arrayOfParentJSType = new Array[ParentJSType](0)
       val arrayOfJSInterface = new Array[SomeJSInterface](0)
@@ -143,7 +138,6 @@ object RuntimeTypesTest extends JasmineTest {
       expect(arrayOfJSInterface.isInstanceOf[Array[js.Object]]).toBeFalsy
       expect(arrayOfJSClass.isInstanceOf[Array[js.Object]]).toBeTruthy
     }
-
   }
 
   @js.native
@@ -155,5 +149,4 @@ object RuntimeTypesTest extends JasmineTest {
   @JSName("SomeJSClass")
   @js.native
   class SomeJSClass extends ParentJSType
-
 }

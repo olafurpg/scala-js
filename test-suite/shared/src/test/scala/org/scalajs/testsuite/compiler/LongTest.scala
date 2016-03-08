@@ -16,14 +16,16 @@ import org.junit.Assert._
  *  for a test of the implementation itself
  */
 class LongTest {
-  @Test def `should_correctly_handle_literals`(): Unit = {
+  @Test
+  def `should_correctly_handle_literals`(): Unit = {
     assertEquals(105L, 5L + 100L)
     assertEquals(2147483651L, 2147483649L + 2L)
-    assertEquals(-8589934592L, -2147483648L * 4)
+    assertEquals(-8589934592L, - 2147483648L * 4)
     assertEquals(-18014398509482040L, 4503599627370510L * (-4))
   }
 
-  @Test def `should_correctly_dispatch_unary_ops_on_Longs`(): Unit = {
+  @Test
+  def `should_correctly_dispatch_unary_ops_on_Longs`(): Unit = {
     val x = 10L
     assertEquals(-10L, -x)
     val y = 5L
@@ -32,14 +34,18 @@ class LongTest {
     assertEquals(-6L, ~y)
   }
 
-  @Test def `should_correctly_dispatch_binary_ops_on_Longs`(): Unit = {
+  @Test
+  def `should_correctly_dispatch_binary_ops_on_Longs`(): Unit = {
     assertEquals(25F, 5L * 5F, 0F)
     assertEquals(1F, 5L % 4F, 0F)
     assertEquals(20F, 5F * 4L, 0F)
   }
 
-  @Test def `should_support_shifts_with_Longs_#622`(): Unit = {
+  @Test
+  def `should_support_shifts_with_Longs_#622`(): Unit = {
+
     def l(x: Long): Long = x
+
     def i(x: Int): Int = x
 
     assertEquals(268435455L, l(-7L) >>> 100L)
@@ -59,7 +65,8 @@ class LongTest {
     assertEquals(-5, i(-65) >> 4)
   }
 
-  @Test def `primitives_should_convert_to_Long`(): Unit = {
+  @Test
+  def `primitives_should_convert_to_Long`(): Unit = {
     // Byte
     assertEquals(112L, 112.toByte.toLong)
     // Short
@@ -76,7 +83,8 @@ class LongTest {
     assertEquals(100000L, 100000.6.toLong)
   }
 
-  @Test def `should_support_hashCode`(): Unit = {
+  @Test
+  def `should_support_hashCode`(): Unit = {
     assertEquals(0, 0L.hashCode())
     assertEquals(55, 55L.hashCode())
     assertEquals(11, (-12L).hashCode())
@@ -89,7 +97,8 @@ class LongTest {
     assertEquals(-1689438124, 7632147899696541255L.hashCode())
   }
 
-  @Test def `should_support_hash_hash`(): Unit = {
+  @Test
+  def `should_support_hash_hash`(): Unit = {
     assertEquals(0, 0L.##)
     assertEquals(55, 55L.##)
     assertEquals(-12, (-12L).##)
@@ -104,18 +113,21 @@ class LongTest {
     //assertEquals(-1689438124, 7632147899696541255L.##) // xx25 on 2.10
   }
 
-  @Test def `should_correctly_concat_to_string`(): Unit = {
+  @Test
+  def `should_correctly_concat_to_string`(): Unit = {
     val x = 20L
     assertEquals("asdf520hello", "asdf" + 5L + x + "hello")
     assertEquals("20hello", x + "hello")
   }
 
-  @Test def `string_should_convert_to_Long`(): Unit = {
+  @Test
+  def `string_should_convert_to_Long`(): Unit = {
     assertEquals(45678901234567890L, "45678901234567890".toLong)
   }
 
-  @Test def `should_correctly_implement_is/asInstanceOf_Longs`(): Unit = {
-    val dyn:  Any  = 5L
+  @Test
+  def `should_correctly_implement_is/asInstanceOf_Longs`(): Unit = {
+    val dyn: Any = 5L
     val stat: Long = 5L
 
     assertEquals(5L, stat.asInstanceOf[Long])
@@ -131,7 +143,8 @@ class LongTest {
     assertFalse(dyn.isInstanceOf[Int])
   }
 
-  @Test def `should_correctly_compare_to_other_numeric_types`(): Unit = {
+  @Test
+  def `should_correctly_compare_to_other_numeric_types`(): Unit = {
     assertTrue(5L == 5)
     assertTrue(5 == 5L)
     assertTrue(4 != 5L)

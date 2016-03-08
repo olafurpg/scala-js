@@ -34,7 +34,6 @@ trait AnnotatedFingerprint extends Fingerprint {
  *  classes.
  */
 trait SubclassFingerprint extends Fingerprint {
-
   /** Indicates whether modules (singleton objects) that extend the superclass
    *  or supertrait should be considered during discovery, or just classes.
    *

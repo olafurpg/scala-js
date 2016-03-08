@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 /**
  * All doc-comments marked as "MDN" are by Mozilla Contributors,
  * distributed under the Creative Commons Attribution-ShareAlike license from
@@ -37,15 +36,15 @@ import annotation._
  *  @constructor Creates a new array of length 0.
  */
 @native
-class Array[A] extends Object {
+class Array[A]
+    extends Object {
   /** Creates a new array with the given length.
    *  @param arrayLength Initial length of the array.
    */
-  def this(arrayLength: Int) = this()
+  def this (arrayLength: Int) = this()
 
   // Do not expose this one - use js.Array(item1, item2, ...) instead
   // def this(items: A*) = this()
-
   /** Length of the array. */
   def length: Int = native
 
@@ -59,6 +58,7 @@ class Array[A] extends Object {
   /** Access the element at the given index. */
   @JSBracketAccess
   def apply(index: Int): A = native
+
   /** Set the element at the given index. */
   @JSBracketAccess
   def update(index: Int, value: A): Unit = native
@@ -71,7 +71,7 @@ class Array[A] extends Object {
    *
    * MDN
    */
-  def concat[B >: A](items: Array[_ <: B]*): Array[B] = native
+  def concat[B >: A](items: Array[_ <: B] *): Array[B] = native
 
   /**
    * The join() method joins all elements of an array into a string.
@@ -96,7 +96,7 @@ class Array[A] extends Object {
    *
    * MDN
    */
-  def push(items: A*): Int = native
+  def push(items: A *): Int = native
 
   /**
    * The reverse() method reverses an array in place. The first array element
@@ -150,7 +150,7 @@ class Array[A] extends Object {
    *  @param items       Elements to insert at index
    *  @return An array of the elements that were deleted
    */
-  def splice(index: Int, deleteCount: Int, items: A*): Array[A] = native
+  def splice(index: Int, deleteCount: Int, items: A *): Array[A] = native
 
   /**
    * The unshift() method adds one or more elements to the beginning of an array
@@ -158,17 +158,17 @@ class Array[A] extends Object {
    *
    * MDN
    */
-  def unshift(items: A*): Int = native
+  def unshift(items: A *): Int = native
 }
 
 /** Factory for [[js.Array]] objects. */
 @native
 object Array extends Object {
+
   // Do not expose this one - use new Array(len) instead
   // def apply[A](arrayLength: Int): Array[A] = native
-
   /** Creates a new array with the given items. */
-  def apply[A](items: A*): Array[A] = sys.error("stub")
+  def apply[A](items: A *): Array[A] = sys.error("stub")
 
   /** Returns true if the given value is an array. */
   def isArray(arg: Any): Boolean = native

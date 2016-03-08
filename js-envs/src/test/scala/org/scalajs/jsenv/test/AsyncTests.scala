@@ -13,7 +13,6 @@ import scala.concurrent.duration._
 
 /** A couple of tests that test async runners for mix-in into a test suite */
 trait AsyncTests extends BasicJSEnvTests {
-
   protected final val DefaultTimeout: Duration = 10.seconds
 
   protected def newJSEnv: AsyncJSEnv
@@ -46,5 +45,4 @@ trait AsyncTests extends BasicJSEnvTests {
 
     runner.stop() // should do nothing, and not fail
   }
-
 }

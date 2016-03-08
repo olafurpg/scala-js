@@ -10,15 +10,15 @@ package org.scalajs.testsuite.noircheck
 import org.scalajs.jasminetest.JasmineTest
 
 object DummyParentsTest extends JasmineTest {
-
   describe("Linking Stages") {
-
     it("should provide dummy parents if required") {
-
       import scala.concurrent.forkjoin._
 
       // scala.concurrent.forkjoin.ForkJoinWorkerThread is not defined
-      class DummyFJWorkerThread extends ForkJoinWorkerThread(null) {
+
+      class DummyFJWorkerThread
+          extends ForkJoinWorkerThread(null) {
+
         override def onStart(): Unit = { /* something */ }
       }
 
@@ -29,6 +29,5 @@ object DummyParentsTest extends JasmineTest {
         new DummyFJWorkerThread()
       }
     }
-
   }
 }

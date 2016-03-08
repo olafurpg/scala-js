@@ -2,15 +2,16 @@ package java.nio
 
 import scala.scalajs.js.typedarray._
 
-private[nio] final class TypedArrayShortBuffer private (
-    override private[nio] val _typedArray: Int16Array,
-    _initialPosition: Int, _initialLimit: Int, _readOnly: Boolean)
+private [nio] final class TypedArrayShortBuffer private(
+    override private [nio] val _typedArray: Int16Array,
+    _initialPosition: Int,
+    _initialLimit: Int,
+    _readOnly: Boolean)
     extends ShortBuffer(_typedArray.length, null, -1) {
-
   position(_initialPosition)
   limit(_initialLimit)
 
-  private[this] implicit def newTypedArrayShortBuffer =
+  private [ this] implicit def newTypedArrayShortBuffer =
     TypedArrayShortBuffer.NewTypedArrayShortBuffer
 
   def isReadOnly(): Boolean = _readOnly
@@ -18,28 +19,23 @@ private[nio] final class TypedArrayShortBuffer private (
   def isDirect(): Boolean = true
 
   @noinline
-  def slice(): ShortBuffer =
-    GenTypedArrayBuffer(this).generic_slice()
+  def slice(): ShortBuffer = GenTypedArrayBuffer(this).generic_slice()
 
   @noinline
-  def duplicate(): ShortBuffer =
-    GenTypedArrayBuffer(this).generic_duplicate()
+  def duplicate(): ShortBuffer = GenTypedArrayBuffer(this).generic_duplicate()
 
   @noinline
   def asReadOnlyBuffer(): ShortBuffer =
     GenTypedArrayBuffer(this).generic_asReadOnlyBuffer()
 
   @noinline
-  def get(): Short =
-    GenBuffer(this).generic_get()
+  def get(): Short = GenBuffer(this).generic_get()
 
   @noinline
-  def put(c: Short): ShortBuffer =
-    GenBuffer(this).generic_put(c)
+  def put(c: Short): ShortBuffer = GenBuffer(this).generic_put(c)
 
   @noinline
-  def get(index: Int): Short =
-    GenBuffer(this).generic_get(index)
+  def get(index: Int): Short = GenBuffer(this).generic_get(index)
 
   @noinline
   def put(index: Int, c: Short): ShortBuffer =
@@ -54,60 +50,60 @@ private[nio] final class TypedArrayShortBuffer private (
     GenBuffer(this).generic_put(src, offset, length)
 
   @noinline
-  def compact(): ShortBuffer =
-    GenTypedArrayBuffer(this).generic_compact()
+  def compact(): ShortBuffer = GenTypedArrayBuffer(this).generic_compact()
 
-  def order(): ByteOrder =
-    ByteOrder.nativeOrder()
+  def order(): ByteOrder = ByteOrder.nativeOrder()
 
   // Internal API
 
   @inline
-  override private[nio] def _arrayBuffer: ArrayBuffer =
+  override private [nio] def _arrayBuffer: ArrayBuffer =
     GenTypedArrayBuffer(this).generic_arrayBuffer
 
   @inline
-  override private[nio] def _arrayBufferOffset: Int =
+  override private [nio] def _arrayBufferOffset: Int =
     GenTypedArrayBuffer(this).generic_arrayBufferOffset
 
   @inline
-  override private[nio] def _dataView: DataView =
+  override private [nio] def _dataView: DataView =
     GenTypedArrayBuffer(this).generic_dataView
 
   @inline
-  private[nio] def load(index: Int): Short =
-    _typedArray(index)
+  private [nio] def load(index: Int): Short = _typedArray(index)
 
   @inline
-  private[nio] def store(index: Int, elem: Short): Unit =
-    _typedArray(index) = elem
+  private [nio] def store(index: Int, elem: Short): Unit =
+    _typedArray (index) = elem
 
   @inline
-  override private[nio] def load(startIndex: Int,
-      dst: Array[Short], offset: Int, length: Int): Unit =
+  override private [nio] def load(
+      startIndex: Int, dst: Array[Short], offset: Int, length: Int): Unit =
     GenBuffer(this).generic_load(startIndex, dst, offset, length)
 
   @inline
-  override private[nio] def store(startIndex: Int,
-      src: Array[Short], offset: Int, length: Int): Unit =
+  override private [nio] def store(
+      startIndex: Int, src: Array[Short], offset: Int, length: Int): Unit =
     GenBuffer(this).generic_store(startIndex, src, offset, length)
 }
 
-private[nio] object TypedArrayShortBuffer {
-  private[nio] implicit object NewTypedArrayShortBuffer
-      extends GenTypedArrayBuffer.NewTypedArrayBuffer[ShortBuffer] {
+private [nio] object TypedArrayShortBuffer {
+
+  private [nio] implicit object NewTypedArrayShortBuffer extends GenTypedArrayBuffer.NewTypedArrayBuffer[
+          ShortBuffer] {
+
     def bytesPerElem: Int = 2
 
     def apply(typedArray: Int16Array,
-        initialPosition: Int, initialLimit: Int,
-        readOnly: Boolean): TypedArrayShortBuffer = {
-      new TypedArrayShortBuffer(typedArray,
-          initialPosition, initialLimit, readOnly)
+              initialPosition: Int,
+              initialLimit: Int,
+              readOnly: Boolean): TypedArrayShortBuffer = {
+      new TypedArrayShortBuffer(
+          typedArray, initialPosition, initialLimit, readOnly)
     }
 
     @inline
-    def newTypedArray(buffer: ArrayBuffer,
-        byteOffset: Int, length: Int): Int16Array = {
+    def newTypedArray(
+        buffer: ArrayBuffer, byteOffset: Int, length: Int): Int16Array = {
       new Int16Array(buffer, byteOffset, length)
     }
   }

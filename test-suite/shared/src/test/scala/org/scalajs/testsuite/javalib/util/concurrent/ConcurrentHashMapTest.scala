@@ -21,7 +21,8 @@ class ConcurrentHashMapTest extends MapTest {
 
   def factory: ConcurrentHashMapFactory = new ConcurrentHashMapFactory
 
-  @Test def `should give proper Enumerator over elements`(): Unit = {
+  @Test
+  def `should give proper Enumerator over elements`(): Unit = {
     val chm = factory.empty[String, String]
 
     chm.put("ONE", "one")
@@ -31,7 +32,8 @@ class ConcurrentHashMapTest extends MapTest {
     assertFalse(elements.hasNext)
   }
 
-  @Test def `should replace contained items`(): Unit = {
+  @Test
+  def `should replace contained items`(): Unit = {
     val chm = factory.empty[String, String]
 
     chm.put("ONE", "one")
@@ -41,24 +43,27 @@ class ConcurrentHashMapTest extends MapTest {
     assertEquals("two", chm.get("ONE"))
 
     assertFalse(chm.replace("ONE", "one", "two"))
-    expectThrows(classOf[NullPointerException], chm.replace(null, "two", "one"))
-    expectThrows(classOf[NullPointerException], chm.replace("ONE", null, "one"))
-    expectThrows(classOf[NullPointerException], chm.replace("ONE", "two", null))
+    expectThrows(
+        classOf[NullPointerException], chm.replace(null, "two", "one"))
+    expectThrows(
+        classOf[NullPointerException], chm.replace("ONE", null, "one"))
+    expectThrows(
+        classOf[NullPointerException], chm.replace("ONE", "two", null))
 
     assertTrue(chm.replace("ONE", "two", "one"))
     assertEquals("one", chm.get("ONE"))
   }
-
 }
 
 object ConcurrentHashMapFactory extends ConcurrentHashMapFactory {
+
   def allFactories: Iterator[ConcurrentHashMapFactory] =
     Iterator(ConcurrentHashMapFactory)
 }
 
 class ConcurrentHashMapFactory extends ConcurrentMapFactory {
-  def implementationName: String =
-    "java.util.concurrent.ConcurrentHashMap"
+
+  def implementationName: String = "java.util.concurrent.ConcurrentHashMap"
 
   override def empty[K, V]: ju.concurrent.ConcurrentHashMap[K, V] =
     new ju.concurrent.ConcurrentHashMap[K, V]

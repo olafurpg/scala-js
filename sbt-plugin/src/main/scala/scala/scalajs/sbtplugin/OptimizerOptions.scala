@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.sbtplugin
 
 import OptimizerOptions._
@@ -19,7 +18,7 @@ import OptimizerOptions._
  *  Use [[OptimizerOptions.apply]] and the `with` methods to create a configured
  *  instance.
  */
-final class OptimizerOptions private (
+final class OptimizerOptions private(
     /** Whether to only warn if the linker has errors */
     val bypassLinkingErrors: Boolean = false,
     /** Whether to parallelize the optimizer (currently fastOptJS only) **/
@@ -34,8 +33,7 @@ final class OptimizerOptions private (
     val checkScalaJSIR: Boolean = false,
     /** Use Google Closure Backend */
     val useClosureCompiler: Boolean = false
-) {
-
+    ) {
   @deprecated(
       "Bypassing linking errors will not be possible in the next major version.",
       "0.6.6")
@@ -51,7 +49,8 @@ final class OptimizerOptions private (
   def withDisableOptimizer(disableOptimizer: Boolean): OptimizerOptions =
     copy(disableOptimizer = disableOptimizer)
 
-  def withPrettyPrintFullOptJS(prettyPrintFullOptJS: Boolean): OptimizerOptions =
+  def withPrettyPrintFullOptJS(
+      prettyPrintFullOptJS: Boolean): OptimizerOptions =
     copy(prettyPrintFullOptJS = prettyPrintFullOptJS)
 
   def withCheckScalaJSIR(checkScalaJSIR: Boolean): OptimizerOptions =
@@ -61,14 +60,19 @@ final class OptimizerOptions private (
     copy(useClosureCompiler = useClosureCompiler)
 
   private def copy(bypassLinkingErrors: Boolean = bypassLinkingErrors,
-      parallel: Boolean = parallel, batchMode: Boolean = batchMode,
-      disableOptimizer: Boolean = disableOptimizer,
-      prettyPrintFullOptJS: Boolean = prettyPrintFullOptJS,
-      checkScalaJSIR: Boolean = checkScalaJSIR,
-      useClosureCompiler: Boolean = useClosureCompiler) = {
-    new OptimizerOptions(bypassLinkingErrors, parallel, batchMode,
-        disableOptimizer, prettyPrintFullOptJS, checkScalaJSIR,
-        useClosureCompiler)
+                   parallel: Boolean = parallel,
+                   batchMode: Boolean = batchMode,
+                   disableOptimizer: Boolean = disableOptimizer,
+                   prettyPrintFullOptJS: Boolean = prettyPrintFullOptJS,
+                   checkScalaJSIR: Boolean = checkScalaJSIR,
+                   useClosureCompiler: Boolean = useClosureCompiler) = {
+    new OptimizerOptions(bypassLinkingErrors,
+                         parallel,
+                         batchMode,
+                         disableOptimizer,
+                         prettyPrintFullOptJS,
+                         checkScalaJSIR,
+                         useClosureCompiler)
   }
 
   override def toString: String = {
@@ -82,9 +86,9 @@ final class OptimizerOptions private (
        |  useClosureCompiler   = $useClosureCompiler
        |)""".stripMargin
   }
-
 }
 
 object OptimizerOptions {
+
   def apply(): OptimizerOptions = new OptimizerOptions()
 }

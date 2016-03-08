@@ -28,11 +28,10 @@ package sbt.testing
  *  of failures in dependencies, which is also similar to canceled tests in
  *  ScalaTest.
  */
-class Status private (name: String, ordinal: Int)
+class Status private(name: String, ordinal: Int)
     extends Enum[Status](name, ordinal)
 
 object Status {
-
   /** Indicates a test succeeded. */
   final val Success = new Status("Success", 0)
 
@@ -54,8 +53,8 @@ object Status {
   /** Indicates a test was declared as pending. */
   final val Pending = new Status("Pending", 6)
 
-  private[this] val _values: Array[Status] =
-    Array(Success, Error, Failure, Skipped, Ignored, Canceled, Pending)
+  private [ this] val _values: Array[Status] = Array(
+      Success, Error, Failure, Skipped, Ignored, Canceled, Pending)
 
   def values(): Array[Status] = _values.clone()
 

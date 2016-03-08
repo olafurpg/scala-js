@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.ir
 
 final case class Position(
@@ -16,27 +15,33 @@ final case class Position(
     line: Int,
     /** Zero-based column number. */
     column: Int
-) {
+    ) {
+
   def show: String = s"$line:$column"
 
   def isEmpty: Boolean = {
+
     def isEmptySlowPath(): Boolean = {
       source.getScheme == null && source.getRawAuthority == null &&
-        source.getRawQuery == null && source.getRawFragment == null
+      source.getRawQuery == null && source.getRawFragment == null
     }
     source.getRawPath == "" && isEmptySlowPath()
   }
 
   def isDefined: Boolean = !isEmpty
 
-  def orElse(that: => Position): Position = if (isDefined) this else that
+  def orElse(that: => Position): Position =
+    if (isDefined) this
+    else that
 }
 
 object Position {
   type SourceFile = java.net.URI
 
   object SourceFile {
+
     def apply(f: java.io.File): SourceFile = f.toURI
+
     def apply(f: String): SourceFile = new java.net.URI(f)
   }
 

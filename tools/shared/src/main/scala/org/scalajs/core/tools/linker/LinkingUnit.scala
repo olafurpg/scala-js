@@ -12,18 +12,17 @@ final class LinkingUnit(
     val classDefs: List[LinkedClass],
     val infos: Map[String, Infos.ClassInfo],
     val isComplete: Boolean
-) {
-
+    ) {
   import LinkingUnit._
 
   lazy val globalInfo: GlobalInfo = {
     classDefs.find(_.encodedName == Definitions.ClassClass).fold {
-      GlobalInfo(
-          isParentDataAccessed = false)
+      GlobalInfo(isParentDataAccessed = false)
     } { classClassDef =>
-      val methodNames = classClassDef.memberMethods.map(_.info.encodedName).toSet
-      GlobalInfo(
-          isParentDataAccessed = methodNames.contains("getSuperclass__jl_Class"))
+      val methodNames =
+        classClassDef.memberMethods.map(_.info.encodedName).toSet
+      GlobalInfo(isParentDataAccessed = methodNames.contains(
+          "getSuperclass__jl_Class"))
     }
   }
 
@@ -35,20 +34,20 @@ final class LinkingUnit(
 
 object LinkingUnit {
 
-  final class GlobalInfo private (
+  final class GlobalInfo private(
       /** Whether the parent data of class data is accessed.
        *  This is true iff the java.lang.Class.getSuperclass() method exists,
        *  since it is the only one that can do it.
        */
       val isParentDataAccessed: Boolean
-  )
+      )
 
   object GlobalInfo {
-    private[LinkingUnit] def apply(
+
+    private [LinkingUnit] def apply(
         isParentDataAccessed: Boolean
-    ): GlobalInfo = {
+        ): GlobalInfo = {
       new GlobalInfo(isParentDataAccessed)
     }
   }
-
 }

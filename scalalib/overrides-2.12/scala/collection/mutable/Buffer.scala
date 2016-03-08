@@ -6,10 +6,10 @@
 **                          |/                                          **
 \*                                                                      */
 
-
-
 package scala
+
 package collection
+
 package mutable
 
 import generic._
@@ -31,10 +31,9 @@ import scala.scalajs.js
  *  @define Coll `Buffer`
  *  @define coll buffer
  */
-trait Buffer[A] extends Seq[A]
-                   with GenericTraversableTemplate[A, Buffer]
-                   with BufferLike[A, Buffer[A]]
-                   with scala.Cloneable {
+trait Buffer[A] extends Seq[A] with GenericTraversableTemplate[A, Buffer]
+    with BufferLike[A, Buffer[A]] with scala.Cloneable {
+
   override def companion: GenericCompanion[Buffer] = Buffer
 }
 
@@ -43,7 +42,10 @@ trait Buffer[A] extends Seq[A]
  *  @define Coll `Buffer`
  */
 object Buffer extends SeqFactory[Buffer] {
-  implicit def canBuildFrom[A]: CanBuildFrom[Coll, A, Buffer[A]] = ReusableCBF.asInstanceOf[GenericCanBuildFrom[A]]
+
+  implicit def canBuildFrom[A]: CanBuildFrom[Coll, A, Buffer[A]] =
+    ReusableCBF.asInstanceOf[GenericCanBuildFrom[A]]
+
   def newBuilder[A]: Builder[A, Buffer[A]] = new js.WrappedArray
 }
 

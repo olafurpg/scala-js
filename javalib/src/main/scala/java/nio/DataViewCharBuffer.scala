@@ -2,16 +2,17 @@ package java.nio
 
 import scala.scalajs.js.typedarray._
 
-private[nio] final class DataViewCharBuffer private (
-    override private[nio] val _dataView: DataView,
-    _initialPosition: Int, _initialLimit: Int, _readOnly: Boolean,
-    override private[nio] val isBigEndian: Boolean)
+private [nio] final class DataViewCharBuffer private(
+    override private [nio] val _dataView: DataView,
+    _initialPosition: Int,
+    _initialLimit: Int,
+    _readOnly: Boolean,
+    override private [nio] val isBigEndian: Boolean)
     extends CharBuffer(_dataView.byteLength / 2, null, -1) {
-
   position(_initialPosition)
   limit(_initialLimit)
 
-  private[this] implicit def newDataViewCharBuffer =
+  private [ this] implicit def newDataViewCharBuffer =
     DataViewCharBuffer.NewDataViewCharBuffer
 
   def isReadOnly(): Boolean = _readOnly
@@ -19,12 +20,10 @@ private[nio] final class DataViewCharBuffer private (
   def isDirect(): Boolean = true
 
   @noinline
-  def slice(): CharBuffer =
-    GenDataViewBuffer(this).generic_slice()
+  def slice(): CharBuffer = GenDataViewBuffer(this).generic_slice()
 
   @noinline
-  def duplicate(): CharBuffer =
-    GenDataViewBuffer(this).generic_duplicate()
+  def duplicate(): CharBuffer = GenDataViewBuffer(this).generic_duplicate()
 
   @noinline
   def asReadOnlyBuffer(): CharBuffer =
@@ -33,21 +32,18 @@ private[nio] final class DataViewCharBuffer private (
   def subSequence(start: Int, end: Int): CharBuffer = {
     if (start < 0 || end < start || end > remaining)
       throw new IndexOutOfBoundsException
-    new DataViewCharBuffer(_dataView,
-        position + start, position + end, isReadOnly, isBigEndian)
+    new DataViewCharBuffer(
+        _dataView, position + start, position + end, isReadOnly, isBigEndian)
   }
 
   @noinline
-  def get(): Char =
-    GenBuffer(this).generic_get()
+  def get(): Char = GenBuffer(this).generic_get()
 
   @noinline
-  def put(c: Char): CharBuffer =
-    GenBuffer(this).generic_put(c)
+  def put(c: Char): CharBuffer = GenBuffer(this).generic_put(c)
 
   @noinline
-  def get(index: Int): Char =
-    GenBuffer(this).generic_get(index)
+  def get(index: Int): Char = GenBuffer(this).generic_get(index)
 
   @noinline
   def put(index: Int, c: Char): CharBuffer =
@@ -62,51 +58,53 @@ private[nio] final class DataViewCharBuffer private (
     GenBuffer(this).generic_put(src, offset, length)
 
   @noinline
-  def compact(): CharBuffer =
-    GenDataViewBuffer(this).generic_compact()
+  def compact(): CharBuffer = GenDataViewBuffer(this).generic_compact()
 
-  def order(): ByteOrder =
-    GenDataViewBuffer(this).generic_order()
+  def order(): ByteOrder = GenDataViewBuffer(this).generic_order()
 
   // Internal API
 
   @inline
-  override private[nio] def _arrayBuffer: ArrayBuffer =
+  override private [nio] def _arrayBuffer: ArrayBuffer =
     GenDataViewBuffer(this).generic_arrayBuffer
 
   @inline
-  override private[nio] def _arrayBufferOffset: Int =
+  override private [nio] def _arrayBufferOffset: Int =
     GenDataViewBuffer(this).generic_arrayBufferOffset
 
   @inline
-  private[nio] def load(index: Int): Char =
+  private [nio] def load(index: Int): Char =
     _dataView.getUint16(2 * index, !isBigEndian).toChar
 
   @inline
-  private[nio] def store(index: Int, elem: Char): Unit =
+  private [nio] def store(index: Int, elem: Char): Unit =
     _dataView.setUint16(2 * index, elem.toInt, !isBigEndian)
 
   @inline
-  override private[nio] def load(startIndex: Int,
-      dst: Array[Char], offset: Int, length: Int): Unit =
+  override private [nio] def load(
+      startIndex: Int, dst: Array[Char], offset: Int, length: Int): Unit =
     GenBuffer(this).generic_load(startIndex, dst, offset, length)
 
   @inline
-  override private[nio] def store(startIndex: Int,
-      src: Array[Char], offset: Int, length: Int): Unit =
+  override private [nio] def store(
+      startIndex: Int, src: Array[Char], offset: Int, length: Int): Unit =
     GenBuffer(this).generic_store(startIndex, src, offset, length)
 }
 
-private[nio] object DataViewCharBuffer {
-  private[nio] implicit object NewDataViewCharBuffer
-      extends GenDataViewBuffer.NewDataViewBuffer[CharBuffer] {
+private [nio] object DataViewCharBuffer {
+
+  private [nio] implicit object NewDataViewCharBuffer extends GenDataViewBuffer.NewDataViewBuffer[
+          CharBuffer] {
+
     def bytesPerElem: Int = 2
 
     def apply(dataView: DataView,
-        initialPosition: Int, initialLimit: Int,
-        readOnly: Boolean, isBigEndian: Boolean): CharBuffer = {
-      new DataViewCharBuffer(dataView,
-          initialPosition, initialLimit, readOnly, isBigEndian)
+              initialPosition: Int,
+              initialLimit: Int,
+              readOnly: Boolean,
+              isBigEndian: Boolean): CharBuffer = {
+      new DataViewCharBuffer(
+          dataView, initialPosition, initialLimit, readOnly, isBigEndian)
     }
   }
 

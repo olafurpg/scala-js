@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.ir
 
 import java.io.StringWriter
@@ -15,7 +14,6 @@ import java.net.URI
 import scala.annotation.switch
 
 object Utils {
-
   private final val EscapeJSChars = "\\a\\b\\t\\n\\v\\f\\r\\\"\\\\"
 
   /** Relativize target URI w.r.t. base URI */
@@ -25,7 +23,7 @@ object Utils {
 
     if (base.isOpaque || !base.isAbsolute || base.getRawPath == null ||
         trgt.isOpaque || !trgt.isAbsolute || trgt.getRawPath == null ||
-        base.getScheme != trgt.getScheme  ||
+        base.getScheme != trgt.getScheme ||
         base.getRawAuthority != trgt.getRawAuthority)
       trgt
     else {
@@ -59,8 +57,7 @@ object Utils {
       val c = str.charAt(i)
       if (c >= 32 && c <= 126 && c != '\\' && c != '"')
         i += 1
-      else
-        return createEscapeJSString(str)
+      else return createEscapeJSString(str)
     }
     str
     // scalastyle:on return
@@ -97,6 +94,7 @@ object Utils {
 
       // Print next non ASCII printable character
       if (i != end) {
+
         def escapeJSEncoded(c: Int): Unit = {
           if (6 < c && c < 14) {
             val i = 2 * (c - 7)
@@ -122,22 +120,22 @@ object Utils {
    *  - [[jumpBack]]
    *  - [[continue]]
    */
-  private[ir] class JumpBackByteArrayOutputStream
+  private [ir] class JumpBackByteArrayOutputStream
       extends java.io.ByteArrayOutputStream {
     protected var jumpBackPos: Int = -1
     protected var headPos: Int = -1
 
     /** Marks the current location for a jumpback */
     def markJump(): Unit = {
-      assert(jumpBackPos == -1)
-      assert(headPos == -1)
+      assert(jumpBackPos == - 1)
+      assert(headPos == - 1)
       jumpBackPos = count
     }
 
     /** Jumps back to the mark. Returns the number of bytes jumped */
     def jumpBack(): Int = {
       assert(jumpBackPos >= 0)
-      assert(headPos == -1)
+      assert(headPos == - 1)
       val jumped = count - jumpBackPos
       headPos = count
       count = jumpBackPos
@@ -147,11 +145,10 @@ object Utils {
 
     /** Continues to write at the head. */
     def continue(): Unit = {
-      assert(jumpBackPos == -1)
+      assert(jumpBackPos == - 1)
       assert(headPos >= 0)
       count = headPos
       headPos = -1
     }
   }
-
 }

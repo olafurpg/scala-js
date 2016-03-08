@@ -20,14 +20,14 @@ object TypecheckingMacros {
       val error = try {
         c.typecheck(c.parse(s"{ $code }"))
         c.abort(c.enclosingPosition,
-            "Expected type error, type checked successfully.")
+                "Expected type error, type checked successfully.")
       } catch {
         case e: TypecheckException =>
           val errMsg = e.getMessage
           for (msg <- expectedMsg) {
             if (errMsg != msg) {
               c.abort(c.enclosingPosition,
-                  s"Type errors mismatch.\nExpected: $msg\nFound: $errMsg")
+                      s"Type errors mismatch.\nExpected: $msg\nFound: $errMsg")
             }
           }
       }
@@ -35,29 +35,27 @@ object TypecheckingMacros {
       reify(())
     }
 
-    def treeToString(t: Tree): String = t match {
-      case Literal(Constant(str: String)) => str
+    def treeToString(t: Tree): String =
+      t match {
+        case Literal(Constant(str: String)) => str
 
-      case Apply(Select(t1, name), List(t2)) if name.decoded == "+" =>
-        treeToString(t1) + treeToString(t2)
+        case Apply(Select(t1, name), List(t2)) if name.decoded == "+" =>
+          treeToString(t1) + treeToString(t2)
 
-      case _ =>
-        c.abort(t.pos, "Expected literal string.")
-
-    }
+        case _ => c.abort(t.pos, "Expected literal string.")
+      }
   }
 
   def typeError(c: Context)(code: c.Expr[String]): c.Expr[Unit] = {
     import c.universe._
-    val m = new Macros[c.type](c)
+    val m = new Macros[c. type](c)
     m.typeError(m.treeToString(code.tree), None)
   }
 
-  def typeErrorWithMsg(c: Context)(code: c.Expr[String],
-      msg: c.Expr[String]): c.Expr[Unit] = {
+  def typeErrorWithMsg(c: Context)(
+      code: c.Expr[String], msg: c.Expr[String]): c.Expr[Unit] = {
     import c.universe._
-    val m = new Macros[c.type](c)
+    val m = new Macros[c. type](c)
     m.typeError(m.treeToString(code.tree), Some(m.treeToString(msg.tree)))
   }
-
 }

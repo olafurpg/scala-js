@@ -2,20 +2,20 @@ package java.nio
 
 import scala.scalajs.js.typedarray._
 
-abstract class Buffer private[nio] (val _capacity: Int) {
-  private[nio] type ElementType
+abstract class Buffer private [nio](val _capacity: Int) {
+  private [nio] type ElementType
 
-  private[nio] type BufferType >: this.type <: Buffer {
-    type ElementType = Buffer.this.ElementType
+  private [nio] type BufferType >: this. type <: Buffer {
+    type ElementType = Buffer. this.ElementType
   }
 
-  private[nio] type TypedArrayType >: Null <: TypedArray[_, TypedArrayType]
+  private [nio] type TypedArrayType >: Null <: TypedArray[_, TypedArrayType]
 
   // Normal implementation of Buffer
 
   private var _limit: Int = capacity
   private var _position: Int = 0
-  private[nio] var _mark: Int = -1
+  private [nio] var _mark: Int = -1
 
   final def capacity(): Int = _capacity
 
@@ -50,7 +50,7 @@ abstract class Buffer private[nio] (val _capacity: Int) {
   }
 
   final def reset(): Buffer = {
-    if (_mark == -1)
+    if (_mark == - 1)
       throw new InvalidMarkException
     _position = _mark
     this
@@ -76,9 +76,11 @@ abstract class Buffer private[nio] (val _capacity: Int) {
     this
   }
 
-  @inline final def remaining(): Int = limit - position
+  @inline
+  final def remaining(): Int = limit - position
 
-  @inline final def hasRemaining(): Boolean = position != limit
+  @inline
+  final def hasRemaining(): Boolean = position != limit
 
   def isReadOnly(): Boolean
 
@@ -100,8 +102,7 @@ abstract class Buffer private[nio] (val _capacity: Int) {
    * methods.
    */
 
-  def hasArrayBuffer(): Boolean =
-    _arrayBuffer != null && !isReadOnly
+  def hasArrayBuffer(): Boolean = _arrayBuffer != null && !isReadOnly
 
   def arrayBuffer(): ArrayBuffer = {
     val buffer = _arrayBuffer
@@ -112,7 +113,7 @@ abstract class Buffer private[nio] (val _capacity: Int) {
 
   def arrayBufferOffset(): Int = {
     val offset = _arrayBufferOffset
-    if (offset == -1 || isReadOnly)
+    if (offset == - 1 || isReadOnly)
       throw new UnsupportedOperationException
     offset
   }
@@ -124,8 +125,7 @@ abstract class Buffer private[nio] (val _capacity: Int) {
     view
   }
 
-  def hasTypedArray(): Boolean =
-    _typedArray != null && !isReadOnly
+  def hasTypedArray(): Boolean = _typedArray != null && !isReadOnly
 
   def typedArray(): TypedArrayType = {
     val array = _typedArray
@@ -140,52 +140,61 @@ abstract class Buffer private[nio] (val _capacity: Int) {
    * We only declare the methods we need somewhere.
    */
 
-  private[nio] def _array: Array[ElementType]
-  private[nio] def _arrayOffset: Int
+  private [nio] def _array: Array[ElementType]
+  private [nio] def _arrayOffset: Int
 
-  private[nio] def _arrayBuffer: ArrayBuffer = null
-  private[nio] def _arrayBufferOffset: Int = -1
-  private[nio] def _dataView: DataView = null
-  private[nio] def _typedArray: TypedArrayType = null
+  private [nio] def _arrayBuffer: ArrayBuffer = null
+
+  private [nio] def _arrayBufferOffset: Int = -1
+
+  private [nio] def _dataView: DataView = null
+
+  private [nio] def _typedArray: TypedArrayType = null
 
   /** Loads an element at the given absolute, unchecked index. */
-  private[nio] def load(index: Int): ElementType
+  private [nio] def load(index: Int): ElementType
 
   /** Stores an element at the given absolute, unchecked index. */
-  private[nio] def store(index: Int, elem: ElementType): Unit
+  private [nio] def store(index: Int, elem: ElementType): Unit
 
   /** Loads a range of elements with absolute, unchecked indices. */
-  private[nio] def load(startIndex: Int,
-      dst: Array[ElementType], offset: Int, length: Int): Unit
+  private [nio] def load(
+      startIndex: Int, dst: Array[ElementType], offset: Int, length: Int): Unit
 
   /** Stores a range of elements with absolute, unchecked indices. */
-  private[nio] def store(startIndex: Int,
-      src: Array[ElementType], offset: Int, length: Int): Unit
+  private [nio] def store(
+      startIndex: Int, src: Array[ElementType], offset: Int, length: Int): Unit
 
   /* Only for HeapByteBufferViews -- but that's the only place we can put it.
    * For all other types, it will be dce'ed.
    */
-  private[nio] def _byteArray: Array[Byte] =
+
+  private [nio] def _byteArray: Array[Byte] =
     throw new UnsupportedOperationException
-  private[nio] def _byteArrayOffset: Int =
+
+  private [nio] def _byteArrayOffset: Int =
     throw new UnsupportedOperationException
-  private[nio] def isBigEndian: Boolean =
+
+  private [nio] def isBigEndian: Boolean =
     throw new UnsupportedOperationException
 
   // Helpers
 
-  @inline private[nio] def ensureNotReadOnly(): Unit = {
+  @inline
+  private [nio] def ensureNotReadOnly(): Unit = {
     if (isReadOnly)
       throw new ReadOnlyBufferException
   }
 
-  @inline private[nio] def validateArrayIndexRange(
+  @inline
+  private [nio] def validateArrayIndexRange(
       array: Array[_], offset: Int, length: Int): Unit = {
     if (offset < 0 || length < 0 || offset > array.length - length)
       throw new IndexOutOfBoundsException
   }
 
-  @inline private[nio] def getPosAndAdvanceRead(): Int = {
+  @inline
+  private [nio] def getPosAndAdvanceRead(): Int = {
     val p = _position
     if (p == limit)
       throw new BufferUnderflowException
@@ -193,7 +202,8 @@ abstract class Buffer private[nio] (val _capacity: Int) {
     p
   }
 
-  @inline private[nio] def getPosAndAdvanceRead(length: Int): Int = {
+  @inline
+  private [nio] def getPosAndAdvanceRead(length: Int): Int = {
     val p = _position
     val newPos = p + length
     if (newPos > limit)
@@ -202,7 +212,8 @@ abstract class Buffer private[nio] (val _capacity: Int) {
     p
   }
 
-  @inline private[nio] def getPosAndAdvanceWrite(): Int = {
+  @inline
+  private [nio] def getPosAndAdvanceWrite(): Int = {
     val p = _position
     if (p == limit)
       throw new BufferOverflowException
@@ -210,7 +221,8 @@ abstract class Buffer private[nio] (val _capacity: Int) {
     p
   }
 
-  @inline private[nio] def getPosAndAdvanceWrite(length: Int): Int = {
+  @inline
+  private [nio] def getPosAndAdvanceWrite(length: Int): Int = {
     val p = _position
     val newPos = p + length
     if (newPos > limit)
@@ -219,13 +231,15 @@ abstract class Buffer private[nio] (val _capacity: Int) {
     p
   }
 
-  @inline private[nio] def validateIndex(index: Int): Int = {
+  @inline
+  private [nio] def validateIndex(index: Int): Int = {
     if (index < 0 || index >= limit)
       throw new IndexOutOfBoundsException
     index
   }
 
-  @inline private[nio] def validateIndex(index: Int, length: Int): Int = {
+  @inline
+  private [nio] def validateIndex(index: Int, length: Int): Int = {
     if (index < 0 || index + length > limit)
       throw new IndexOutOfBoundsException
     index

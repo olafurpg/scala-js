@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 /**
  * All doc-comments marked as "MDN" are by Mozilla Contributors,
  * distributed under the Creative Commons Attribution-ShareAlike license from
@@ -21,9 +20,10 @@ package scala.scalajs.js
  * MDN
  */
 @native
-class RegExp(pattern: String, flags: String = "") extends Object {
+class RegExp(pattern: String, flags: String = "")
+    extends Object {
   /** Creates a new RegExp with the same pattern and flags as the given one. */
-  def this(pattern: RegExp) = this("", "")
+  def this (pattern: RegExp) = this("", "")
 
   /**
    * The source property returns a String containing the text of the pattern,
@@ -34,6 +34,7 @@ class RegExp(pattern: String, flags: String = "") extends Object {
    * MDN
    */
   val source: String = native
+
   /**
    * The value of global is a Boolean and true if the "g" flag was used;
    * otherwise, false. The "g" flag indicates that the regular expression
@@ -42,6 +43,7 @@ class RegExp(pattern: String, flags: String = "") extends Object {
    * MDN
    */
   val global: Boolean = native
+
   /**
    * The value of ignoreCase is a Boolean and true if the "i" flag was used;
    * otherwise, false. The "i" flag indicates that case should be ignored while
@@ -50,6 +52,7 @@ class RegExp(pattern: String, flags: String = "") extends Object {
    * MDN
    */
   val ignoreCase: Boolean = native
+
   /**
    * The value of multiline is a Boolean and is true if the "m" flag was used;
    * otherwise, false. The "m" flag indicates that a multiline input string
@@ -104,6 +107,7 @@ class RegExp(pattern: String, flags: String = "") extends Object {
 
 @native
 object RegExp extends Object {
+
   def apply(pattern: String, flags: String = ""): RegExp = native
 
   @native

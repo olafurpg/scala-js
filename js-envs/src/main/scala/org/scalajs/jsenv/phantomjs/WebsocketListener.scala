@@ -1,6 +1,6 @@
 package org.scalajs.jsenv.phantomjs
 
-private[phantomjs] trait WebsocketListener {
+private [phantomjs] trait WebsocketListener {
   def onRunning(): Unit
   def onOpen(): Unit
   def onClose(): Unit

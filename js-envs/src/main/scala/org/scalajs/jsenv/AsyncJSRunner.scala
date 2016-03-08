@@ -6,7 +6,6 @@ import scala.concurrent.duration.Duration
 import org.scalajs.core.tools.logging.Logger
 
 trait AsyncJSRunner {
-
   /** A future that completes when the associated run has terminated. */
   def future: Future[Unit]
 
@@ -73,8 +72,6 @@ trait AsyncJSRunner {
    *  }}}
    */
   final def awaitOrStop(atMost: Duration): Unit = {
-    try await(atMost)
-    finally stop()
+    try await(atMost) finally stop()
   }
-
 }

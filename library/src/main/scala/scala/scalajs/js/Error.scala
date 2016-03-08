@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 /**
  * All doc-comments marked as "MDN" are by Mozilla Contributors,
  * distributed under the Creative Commons Attribution-ShareAlike license from
@@ -17,6 +16,7 @@ package scala.scalajs.js
 @native
 class Error(message0: String = "") extends Object {
   val name: String = native
+
   /**
    * Human-readable description of the error
    *
@@ -27,6 +27,7 @@ class Error(message0: String = "") extends Object {
 
 @native
 object Error extends Object {
+
   def apply(message: String = ""): Error = native
 }
 
@@ -41,6 +42,7 @@ class EvalError(message: String = "") extends Error
 
 @native
 object EvalError extends Object {
+
   def apply(message: String = ""): EvalError = native
 }
 
@@ -61,6 +63,7 @@ class RangeError(message: String = "") extends Error
 
 @native
 object RangeError extends Object {
+
   def apply(message: String = ""): RangeError = native
 }
 
@@ -77,6 +80,7 @@ class ReferenceError(message: String = "") extends Error
 
 @native
 object ReferenceError extends Object {
+
   def apply(message: String = ""): ReferenceError = native
 }
 
@@ -93,6 +97,7 @@ class SyntaxError(message: String = "") extends Error
 
 @native
 object SyntaxError extends Object {
+
   def apply(message: String = ""): SyntaxError = native
 }
 
@@ -109,6 +114,7 @@ class TypeError(message: String = "") extends Error
 
 @native
 object TypeError extends Object {
+
   def apply(message: String = ""): TypeError = native
 }
 
@@ -124,5 +130,6 @@ class URIError(message: String = "") extends Error
 
 @native
 object URIError extends Object {
+
   def apply(message: String = ""): URIError = native
 }

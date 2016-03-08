@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.jsenv.rhino
 
 import scala.collection.mutable
@@ -23,7 +22,7 @@ import org.scalajs.core.tools.io._
 import org.scalajs.core.tools.linker.backend.OutputMode.ECMAScript51Global
 import org.scalajs.core.tools.linker.backend.emitter._
 
-private[rhino] class ScalaJSCoreLib(linkingUnit: LinkingUnit) {
+private [rhino] class ScalaJSCoreLib(linkingUnit: LinkingUnit) {
   import ScalaJSCoreLib._
 
   require(linkingUnit.esLevel == ESLevel.ES5, "RhinoJSEnv only supports ES5")
@@ -49,13 +48,13 @@ private[rhino] class ScalaJSCoreLib(linkingUnit: LinkingUnit) {
     // Make sure exported symbols are loaded
     val ScalaJS = Context.toObject(scope.get("ScalaJS", scope), scope)
     val c = Context.toObject(ScalaJS.get("c", ScalaJS), scope)
-    for (encodedName <- exportedSymbols)
-      c.get(encodedName, c)
+    for (encodedName <- exportedSymbols) c.get(encodedName, c)
   }
 
   /** Source maps the given stack trace (where possible) */
   def mapStackTrace(stackTrace: Scriptable,
-      context: Context, scope: Scriptable): Scriptable = {
+                    context: Context,
+                    scope: Scriptable): Scriptable = {
     val count = Context.toNumber(stackTrace.get("length", stackTrace)).toInt
 
     // Maps file -> max line (0-based)
@@ -68,7 +67,6 @@ private[rhino] class ScalaJSCoreLib(linkingUnit: LinkingUnit) {
 
       if (fileName.endsWith(PseudoFileSuffix) &&
           providers.contains(fileName.stripSuffix(PseudoFileSuffix))) {
-
         val curMaxLine = neededMaps.getOrElse(fileName, -1)
         val reqLine = Context.toNumber(elem.get("lineNumber", elem)).toInt - 1
 
@@ -78,9 +76,8 @@ private[rhino] class ScalaJSCoreLib(linkingUnit: LinkingUnit) {
     }
 
     // Map required files
-    val maps =
-      for ((fileName, maxLine) <- neededMaps)
-        yield (fileName, getSourceMapper(fileName, maxLine))
+    val maps = for ((fileName, maxLine) <- neededMaps) yield
+      (fileName, getSourceMapper(fileName, maxLine))
 
     // Create new stack trace to return
     val res = context.newArray(scope, count)
@@ -105,14 +102,16 @@ private[rhino] class ScalaJSCoreLib(linkingUnit: LinkingUnit) {
   private def getSourceMapper(fileName: String, untilLine: Int) = {
     val linked = providers(fileName.stripSuffix(PseudoFileSuffix))
     val mapper = new Printers.ReverseSourceMapPrinter(untilLine)
-    val desugared =
-      new ScalaJSClassEmitter(ECMAScript51Global, linkingUnit).genClassDef(linked)
+    val desugared = new ScalaJSClassEmitter(ECMAScript51Global, linkingUnit)
+      .genClassDef(linked)
     mapper.reverseSourceMap(desugared)
     mapper
   }
 
-  private def newPosElem(scope: Scriptable, context: Context,
-      origElem: Scriptable, pos: ir.Position): Scriptable = {
+  private def newPosElem(scope: Scriptable,
+                         context: Context,
+                         origElem: Scriptable,
+                         pos: ir.Position): Scriptable = {
     assert(pos.isDefined)
 
     val elem = context.newObject(scope)
@@ -126,18 +125,17 @@ private[rhino] class ScalaJSCoreLib(linkingUnit: LinkingUnit) {
     elem
   }
 
-  private val scalaJSLazyFields = Seq(
-      Info("d"),
-      Info("c"),
-      Info("h"),
-      Info("s", isStatics = true),
-      Info("f", isStatics = true),
-      Info("n"),
-      Info("m"),
-      Info("is"),
-      Info("as"),
-      Info("isArrayOf"),
-      Info("asArrayOf"))
+  private val scalaJSLazyFields = Seq(Info("d"),
+                                      Info("c"),
+                                      Info("h"),
+                                      Info("s", isStatics = true),
+                                      Info("f", isStatics = true),
+                                      Info("n"),
+                                      Info("m"),
+                                      Info("is"),
+                                      Info("as"),
+                                      Info("isArrayOf"),
+                                      Info("asArrayOf"))
 
   private def lazifyScalaJSFields(scope: Scriptable) = {
     val ScalaJS = Context.toObject(scope.get("ScalaJS", scope), scope)
@@ -156,12 +154,12 @@ private[rhino] class ScalaJSCoreLib(linkingUnit: LinkingUnit) {
     }
   }
 
-  private[rhino] def load(scope: Scriptable, encodedName: String): Unit = {
-    val linkedClass = providers.getOrElse(encodedName,
-        throw new RhinoJSEnv.ClassNotFoundException(encodedName))
+  private [rhino] def load(scope: Scriptable, encodedName: String): Unit = {
+    val linkedClass = providers.getOrElse(
+        encodedName, throw new RhinoJSEnv.ClassNotFoundException(encodedName))
 
-    val desugared =
-      new ScalaJSClassEmitter(ECMAScript51Global, linkingUnit).genClassDef(linkedClass)
+    val desugared = new ScalaJSClassEmitter(ECMAScript51Global, linkingUnit)
+      .genClassDef(linkedClass)
 
     // Write tree
     val codeWriter = new java.io.StringWriter
@@ -170,12 +168,12 @@ private[rhino] class ScalaJSCoreLib(linkingUnit: LinkingUnit) {
     printer.complete()
     val ctx = Context.getCurrentContext()
     val fakeFileName = encodedName + PseudoFileSuffix
-    ctx.evaluateString(scope, codeWriter.toString(),
-        fakeFileName, 1, null)
+    ctx.evaluateString(scope, codeWriter.toString(), fakeFileName, 1, null)
   }
 }
 
-private[rhino] object ScalaJSCoreLib {
+private [rhino] object ScalaJSCoreLib {
+
   private case class Info(name: String, isStatics: Boolean = false)
 
   private final val PseudoFileSuffix = ".sjsir"

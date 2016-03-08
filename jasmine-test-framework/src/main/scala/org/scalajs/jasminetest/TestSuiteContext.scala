@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.jasminetest
 
 import scala.scalajs.js
@@ -22,11 +21,11 @@ trait TestSuiteContext {
     if (TestSuiteContext.hasTag(tag)) this
     else new TestSuiteContext.IgnoredContext(this)
 
-  def whenAll(tags: String*): TestSuiteContext =
+  def whenAll(tags: String *): TestSuiteContext =
     if (tags.forall(TestSuiteContext.hasTag)) this
     else new TestSuiteContext.IgnoredContext(this)
 
-  def whenAny(tags: String*): TestSuiteContext =
+  def whenAny(tags: String *): TestSuiteContext =
     if (tags.exists(TestSuiteContext.hasTag)) this
     else new TestSuiteContext.IgnoredContext(this)
 
@@ -34,11 +33,11 @@ trait TestSuiteContext {
     if (!TestSuiteContext.hasTag(tag)) this
     else new TestSuiteContext.IgnoredContext(this)
 
-  def unlessAll(tags: String*): TestSuiteContext =
+  def unlessAll(tags: String *): TestSuiteContext =
     if (!tags.forall(TestSuiteContext.hasTag)) this
     else new TestSuiteContext.IgnoredContext(this)
 
-  def unlessAny(tags: String*): TestSuiteContext =
+  def unlessAny(tags: String *): TestSuiteContext =
     if (!tags.exists(TestSuiteContext.hasTag)) this
     else new TestSuiteContext.IgnoredContext(this)
 }
@@ -51,22 +50,24 @@ object TestSuiteContext {
 
   /** Used to set tags from HTML/Ad-hoc test invocation */
   @JSExport
-  protected def setTags(newTags: String*): Unit = setTags(newTags.toSet)
+  protected def setTags(newTags: String *): Unit = setTags(newTags.toSet)
 
-  private[jasminetest] def setTags(newTags: Set[String]): Unit =
+  private [jasminetest] def setTags(newTags: Set[String]): Unit =
     tags = newTags
 
   def hasTag(tag: String): Boolean = tags.contains(tag)
 
-  private class IgnoredContext(
-      baseContext: TestSuiteContext) extends TestSuiteContext {
+  private class IgnoredContext(baseContext: TestSuiteContext)
+      extends TestSuiteContext {
+
     def describe(title: String)(test: => Unit): Unit =
       baseContext.xdescribe(title)(test)
-    def it(title: String)(test: => Unit): Unit =
-      baseContext.xit(title)(test)
+
+    def it(title: String)(test: => Unit): Unit = baseContext.xit(title)(test)
+
     def xdescribe(title: String)(test: => Unit): Unit =
       baseContext.xdescribe(title)(test)
-    def xit(title: String)(test: => Unit): Unit =
-      baseContext.xit(title)(test)
+
+    def xit(title: String)(test: => Unit): Unit = baseContext.xit(title)(test)
   }
 }

@@ -9,11 +9,11 @@
 package scala
 
 import scala.collection.generic._
-import scala.collection.{ mutable, immutable }
-import mutable.{ ArrayBuilder, ArraySeq }
+import scala.collection.{mutable, immutable}
+import mutable.{ArrayBuilder, ArraySeq}
 import scala.compat.Platform.arraycopy
 import scala.reflect.ClassTag
-import scala.runtime.ScalaRunTime.{ array_apply, array_update }
+import scala.runtime.ScalaRunTime.{array_apply, array_update}
 
 /** Contains a fallback builder for arrays when the element type
  *  does not have a class tag. In that case a generic array is built.
@@ -27,9 +27,12 @@ class FallbackArrayBuilding {
    *  implicit search by `Array.canBuildFrom`). We make sure that
    *  implicit search is always successful.
    */
-  implicit def fallbackCanBuildFrom[T](implicit m: DummyImplicit): CanBuildFrom[Array[_], T, ArraySeq[T]] =
+  implicit def fallbackCanBuildFrom[T](
+      implicit m: DummyImplicit): CanBuildFrom[Array[_], T, ArraySeq[T]] =
     new CanBuildFrom[Array[_], T, ArraySeq[T]] {
+
       def apply(from: Array[_]) = ArraySeq.newBuilder[T]
+
       def apply() = ArraySeq.newBuilder[T]
     }
 }
@@ -48,32 +51,44 @@ class FallbackArrayBuilding {
  *  @version 1.0
  */
 object Array extends FallbackArrayBuilding {
+
   def emptyBooleanArray = EmptyArrays.emptyBooleanArray
-  def emptyByteArray    = EmptyArrays.emptyByteArray
-  def emptyCharArray    = EmptyArrays.emptyCharArray
-  def emptyDoubleArray  = EmptyArrays.emptyDoubleArray
-  def emptyFloatArray   = EmptyArrays.emptyFloatArray
-  def emptyIntArray     = EmptyArrays.emptyIntArray
-  def emptyLongArray    = EmptyArrays.emptyLongArray
-  def emptyShortArray   = EmptyArrays.emptyShortArray
-  def emptyObjectArray  = EmptyArrays.emptyObjectArray
+
+  def emptyByteArray = EmptyArrays.emptyByteArray
+
+  def emptyCharArray = EmptyArrays.emptyCharArray
+
+  def emptyDoubleArray = EmptyArrays.emptyDoubleArray
+
+  def emptyFloatArray = EmptyArrays.emptyFloatArray
+
+  def emptyIntArray = EmptyArrays.emptyIntArray
+
+  def emptyLongArray = EmptyArrays.emptyLongArray
+
+  def emptyShortArray = EmptyArrays.emptyShortArray
+
+  def emptyObjectArray = EmptyArrays.emptyObjectArray
 
   private object EmptyArrays {
     val emptyBooleanArray = new Array[Boolean](0)
-    val emptyByteArray    = new Array[Byte](0)
-    val emptyCharArray    = new Array[Char](0)
-    val emptyDoubleArray  = new Array[Double](0)
-    val emptyFloatArray   = new Array[Float](0)
-    val emptyIntArray     = new Array[Int](0)
-    val emptyLongArray    = new Array[Long](0)
-    val emptyShortArray   = new Array[Short](0)
-    val emptyObjectArray  = new Array[Object](0)
+    val emptyByteArray = new Array[Byte](0)
+    val emptyCharArray = new Array[Char](0)
+    val emptyDoubleArray = new Array[Double](0)
+    val emptyFloatArray = new Array[Float](0)
+    val emptyIntArray = new Array[Int](0)
+    val emptyLongArray = new Array[Long](0)
+    val emptyShortArray = new Array[Short](0)
+    val emptyObjectArray = new Array[Object](0)
   }
 
-  implicit def canBuildFrom[T](implicit t: ClassTag[T]): CanBuildFrom[Array[_], T, Array[T]] = {
+  implicit def canBuildFrom[T](implicit t: ClassTag[T]): CanBuildFrom[Array[_],
+      T, Array[T]] = {
     @inline
     class ArrayCanBuildFrom extends CanBuildFrom[Array[_], T, Array[T]] {
+
       def apply(from: Array[_]) = ArrayBuilder.make[T]()(t)
+
       def apply() = ArrayBuilder.make[T]()(t)
     }
     new ArrayCanBuildFrom
@@ -82,22 +97,23 @@ object Array extends FallbackArrayBuilding {
   /**
    * Returns a new [[scala.collection.mutable.ArrayBuilder]].
    */
-  def newBuilder[T](implicit t: ClassTag[T]): ArrayBuilder[T] = ArrayBuilder.make[T]()(t)
+  def newBuilder[T](implicit t: ClassTag[T]): ArrayBuilder[T] =
+    ArrayBuilder.make[T]()(t)
 
-  private def slowcopy(src : AnyRef,
-                       srcPos : Int,
-                       dest : AnyRef,
-                       destPos : Int,
-                       length : Int) {
-    var i = srcPos
-    var j = destPos
-    val srcUntil = srcPos + length
-    while (i < srcUntil) {
-      array_update(dest, j, array_apply(src, i))
-      i += 1
-      j += 1
-    }
-  }
+  private def slowcopy(src: AnyRef,
+                       srcPos: Int,
+                       dest: AnyRef,
+                       destPos: Int,
+                       length: Int) {
+        var i = srcPos
+        var j = destPos
+        val srcUntil = srcPos + length
+        while (i < srcUntil) {
+          array_update(dest, j, array_apply(src, i))
+          i += 1
+          j += 1
+        }
+      }
 
   /** Copy one array to another.
    *  Equivalent to Java's
@@ -115,15 +131,14 @@ object Array extends FallbackArrayBuilding {
    *  @see `java.lang.System#arraycopy`
    */
   def copy(src: AnyRef, srcPos: Int, dest: AnyRef, destPos: Int, length: Int) {
-    val srcClass = src.getClass
-    if (srcClass.isArray && dest.getClass.isAssignableFrom(srcClass))
-      arraycopy(src, srcPos, dest, destPos, length)
-    else
-      slowcopy(src, srcPos, dest, destPos, length)
-  }
+        val srcClass = src.getClass
+        if (srcClass.isArray && dest.getClass.isAssignableFrom(srcClass))
+          arraycopy(src, srcPos, dest, destPos, length)
+        else slowcopy(src, srcPos, dest, destPos, length)
+      }
 
   /** Returns an array of length 0 */
-  def empty[T: ClassTag]: Array[T] = new Array[T](0)
+  def empty[T : ClassTag]: Array[T] = new Array[T](0)
 
   /** Creates an array with given elements.
    *
@@ -132,120 +147,167 @@ object Array extends FallbackArrayBuilding {
    */
   // Subject to a compiler optimization in Cleanup.
   // Array(e0, ..., en) is translated to { val a = new Array(3); a(i) = ei; a }
-  def apply[T: ClassTag](xs: T*): Array[T] = {
+
+  def apply[T : ClassTag](xs: T *): Array[T] = {
     val array = new Array[T](xs.length)
     var i = 0
-    for (x <- xs.iterator) { array(i) = x; i += 1 }
+    for (x <- xs.iterator) {
+      array (i) = x;
+      i += 1
+    }
     array
   }
 
   /** Creates an array of `Boolean` objects */
   // Subject to a compiler optimization in Cleanup, see above.
-  def apply(x: Boolean, xs: Boolean*): Array[Boolean] = {
+
+  def apply(x: Boolean, xs: Boolean *): Array[Boolean] = {
     val array = new Array[Boolean](xs.length + 1)
-    array(0) = x
+    array (0) = x
     var i = 1
-    for (x <- xs.iterator) { array(i) = x; i += 1 }
+    for (x <- xs.iterator) {
+      array (i) = x;
+      i += 1
+    }
     array
   }
 
   /** Creates an array of `Byte` objects */
   // Subject to a compiler optimization in Cleanup, see above.
-  def apply(x: Byte, xs: Byte*): Array[Byte] = {
+
+  def apply(x: Byte, xs: Byte *): Array[Byte] = {
     val array = new Array[Byte](xs.length + 1)
-    array(0) = x
+    array (0) = x
     var i = 1
-    for (x <- xs.iterator) { array(i) = x; i += 1 }
+    for (x <- xs.iterator) {
+      array (i) = x;
+      i += 1
+    }
     array
   }
 
   /** Creates an array of `Short` objects */
   // Subject to a compiler optimization in Cleanup, see above.
-  def apply(x: Short, xs: Short*): Array[Short] = {
+
+  def apply(x: Short, xs: Short *): Array[Short] = {
     val array = new Array[Short](xs.length + 1)
-    array(0) = x
+    array (0) = x
     var i = 1
-    for (x <- xs.iterator) { array(i) = x; i += 1 }
+    for (x <- xs.iterator) {
+      array (i) = x;
+      i += 1
+    }
     array
   }
 
   /** Creates an array of `Char` objects */
   // Subject to a compiler optimization in Cleanup, see above.
-  def apply(x: Char, xs: Char*): Array[Char] = {
+
+  def apply(x: Char, xs: Char *): Array[Char] = {
     val array = new Array[Char](xs.length + 1)
-    array(0) = x
+    array (0) = x
     var i = 1
-    for (x <- xs.iterator) { array(i) = x; i += 1 }
+    for (x <- xs.iterator) {
+      array (i) = x;
+      i += 1
+    }
     array
   }
 
   /** Creates an array of `Int` objects */
   // Subject to a compiler optimization in Cleanup, see above.
-  def apply(x: Int, xs: Int*): Array[Int] = {
+
+  def apply(x: Int, xs: Int *): Array[Int] = {
     val array = new Array[Int](xs.length + 1)
-    array(0) = x
+    array (0) = x
     var i = 1
-    for (x <- xs.iterator) { array(i) = x; i += 1 }
+    for (x <- xs.iterator) {
+      array (i) = x;
+      i += 1
+    }
     array
   }
 
   /** Creates an array of `Long` objects */
   // Subject to a compiler optimization in Cleanup, see above.
-  def apply(x: Long, xs: Long*): Array[Long] = {
+
+  def apply(x: Long, xs: Long *): Array[Long] = {
     val array = new Array[Long](xs.length + 1)
-    array(0) = x
+    array (0) = x
     var i = 1
-    for (x <- xs.iterator) { array(i) = x; i += 1 }
+    for (x <- xs.iterator) {
+      array (i) = x;
+      i += 1
+    }
     array
   }
 
   /** Creates an array of `Float` objects */
   // Subject to a compiler optimization in Cleanup, see above.
-  def apply(x: Float, xs: Float*): Array[Float] = {
+
+  def apply(x: Float, xs: Float *): Array[Float] = {
     val array = new Array[Float](xs.length + 1)
-    array(0) = x
+    array (0) = x
     var i = 1
-    for (x <- xs.iterator) { array(i) = x; i += 1 }
+    for (x <- xs.iterator) {
+      array (i) = x;
+      i += 1
+    }
     array
   }
 
   /** Creates an array of `Double` objects */
   // Subject to a compiler optimization in Cleanup, see above.
-  def apply(x: Double, xs: Double*): Array[Double] = {
+
+  def apply(x: Double, xs: Double *): Array[Double] = {
     val array = new Array[Double](xs.length + 1)
-    array(0) = x
+    array (0) = x
     var i = 1
-    for (x <- xs.iterator) { array(i) = x; i += 1 }
+    for (x <- xs.iterator) {
+      array (i) = x;
+      i += 1
+    }
     array
   }
 
   /** Creates an array of `Unit` objects */
-  def apply(x: Unit, xs: Unit*): Array[Unit] = {
+  def apply(x: Unit, xs: Unit *): Array[Unit] = {
     val array = new Array[Unit](xs.length + 1)
-    array(0) = x
+    array (0) = x
     var i = 1
-    for (x <- xs.iterator) { array(i) = x; i += 1 }
+    for (x <- xs.iterator) {
+      array (i) = x;
+      i += 1
+    }
     array
   }
 
   /** Creates array with given dimensions */
-  def ofDim[T: ClassTag](n1: Int): Array[T] =
-    new Array[T](n1)
+  def ofDim[T : ClassTag](n1: Int): Array[T] = new Array[T](n1)
+
   /** Creates a 2-dimensional array */
-  def ofDim[T: ClassTag](n1: Int, n2: Int): Array[Array[T]] = {
+  def ofDim[T : ClassTag](n1: Int, n2: Int): Array[Array[T]] = {
     val arr: Array[Array[T]] = (new Array[Array[T]](n1): Array[Array[T]])
-    for (i <- 0 until n1) arr(i) = new Array[T](n2)
+    for (i <- 0 until n1) arr (i) = new Array[T](n2)
     arr
     // tabulate(n1)(_ => ofDim[T](n2))
   }
+
   /** Creates a 3-dimensional array */
-  def ofDim[T: ClassTag](n1: Int, n2: Int, n3: Int): Array[Array[Array[T]]] =
+  def ofDim[T : ClassTag](n1: Int, n2: Int, n3: Int): Array[Array[Array[T]]] =
     tabulate(n1)(_ => ofDim[T](n2, n3))
+
   /** Creates a 4-dimensional array */
-  def ofDim[T: ClassTag](n1: Int, n2: Int, n3: Int, n4: Int): Array[Array[Array[Array[T]]]] =
+  def ofDim[T : ClassTag](
+      n1: Int, n2: Int, n3: Int, n4: Int): Array[Array[Array[Array[T]]]] =
     tabulate(n1)(_ => ofDim[T](n2, n3, n4))
+
   /** Creates a 5-dimensional array */
-  def ofDim[T: ClassTag](n1: Int, n2: Int, n3: Int, n4: Int, n5: Int): Array[Array[Array[Array[Array[T]]]]] =
+  def ofDim[T : ClassTag](n1: Int,
+                          n2: Int,
+                          n3: Int,
+                          n4: Int,
+                          n5: Int): Array[Array[Array[Array[Array[T]]]]] =
     tabulate(n1)(_ => ofDim[T](n2, n3, n4, n5))
 
   /** Concatenates all arrays into a single array.
@@ -253,7 +315,7 @@ object Array extends FallbackArrayBuilding {
    *  @param xss the given arrays
    *  @return   the array created from concatenating `xss`
    */
-  def concat[T: ClassTag](xss: Array[T]*): Array[T] = {
+  def concat[T : ClassTag](xss: Array[T] *): Array[T] = {
     val b = newBuilder[T]
     b.sizeHint(xss.map(_.size).sum)
     for (xs <- xss) b ++= xs
@@ -274,7 +336,7 @@ object Array extends FallbackArrayBuilding {
    *  @return an Array of size n, where each element contains the result of computing
    *  `elem`.
    */
-  def fill[T: ClassTag](n: Int)(elem: => T): Array[T] = {
+  def fill[T : ClassTag](n: Int)(elem: => T): Array[T] = {
     val b = newBuilder[T]
     b.sizeHint(n)
     var i = 0
@@ -292,7 +354,7 @@ object Array extends FallbackArrayBuilding {
    *  @param   n2  the number of elements in the 2nd dimension
    *  @param   elem the element computation
    */
-  def fill[T: ClassTag](n1: Int, n2: Int)(elem: => T): Array[Array[T]] =
+  def fill[T : ClassTag](n1: Int, n2: Int)(elem: => T): Array[Array[T]] =
     tabulate(n1)(_ => fill(n2)(elem))
 
   /** Returns a three-dimensional array that contains the results of some element
@@ -303,7 +365,8 @@ object Array extends FallbackArrayBuilding {
    *  @param   n3  the number of elements in the 3nd dimension
    *  @param   elem the element computation
    */
-  def fill[T: ClassTag](n1: Int, n2: Int, n3: Int)(elem: => T): Array[Array[Array[T]]] =
+  def fill[T : ClassTag](n1: Int, n2: Int, n3: Int)(
+      elem: => T): Array[Array[Array[T]]] =
     tabulate(n1)(_ => fill(n2, n3)(elem))
 
   /** Returns a four-dimensional array that contains the results of some element
@@ -315,7 +378,8 @@ object Array extends FallbackArrayBuilding {
    *  @param   n4  the number of elements in the 4th dimension
    *  @param   elem the element computation
    */
-  def fill[T: ClassTag](n1: Int, n2: Int, n3: Int, n4: Int)(elem: => T): Array[Array[Array[Array[T]]]] =
+  def fill[T : ClassTag](n1: Int, n2: Int, n3: Int, n4: Int)(
+      elem: => T): Array[Array[Array[Array[T]]]] =
     tabulate(n1)(_ => fill(n2, n3, n4)(elem))
 
   /** Returns a five-dimensional array that contains the results of some element
@@ -328,7 +392,8 @@ object Array extends FallbackArrayBuilding {
    *  @param   n5  the number of elements in the 5th dimension
    *  @param   elem the element computation
    */
-  def fill[T: ClassTag](n1: Int, n2: Int, n3: Int, n4: Int, n5: Int)(elem: => T): Array[Array[Array[Array[Array[T]]]]] =
+  def fill[T : ClassTag](n1: Int, n2: Int, n3: Int, n4: Int, n5: Int)(
+      elem: => T): Array[Array[Array[Array[Array[T]]]]] =
     tabulate(n1)(_ => fill(n2, n3, n4, n5)(elem))
 
   /** Returns an array containing values of a given function over a range of integer
@@ -338,7 +403,7 @@ object Array extends FallbackArrayBuilding {
    *  @param  f   The function computing element values
    *  @return A traversable consisting of elements `f(0),f(1), ..., f(n - 1)`
    */
-  def tabulate[T: ClassTag](n: Int)(f: Int => T): Array[T] = {
+  def tabulate[T : ClassTag](n: Int)(f: Int => T): Array[T] = {
     val b = newBuilder[T]
     b.sizeHint(n)
     var i = 0
@@ -356,7 +421,8 @@ object Array extends FallbackArrayBuilding {
    *  @param   n2  the number of elements in the 2nd dimension
    *  @param   f   The function computing element values
    */
-  def tabulate[T: ClassTag](n1: Int, n2: Int)(f: (Int, Int) => T): Array[Array[T]] =
+  def tabulate[T : ClassTag](n1: Int, n2: Int)(
+      f: (Int, Int) => T): Array[Array[T]] =
     tabulate(n1)(i1 => tabulate(n2)(f(i1, _)))
 
   /** Returns a three-dimensional array containing values of a given function
@@ -367,7 +433,8 @@ object Array extends FallbackArrayBuilding {
    *  @param   n3  the number of elements in the 3rd dimension
    *  @param   f   The function computing element values
    */
-  def tabulate[T: ClassTag](n1: Int, n2: Int, n3: Int)(f: (Int, Int, Int) => T): Array[Array[Array[T]]] =
+  def tabulate[T : ClassTag](n1: Int, n2: Int, n3: Int)(
+      f: (Int, Int, Int) => T): Array[Array[Array[T]]] =
     tabulate(n1)(i1 => tabulate(n2, n3)(f(i1, _, _)))
 
   /** Returns a four-dimensional array containing values of a given function
@@ -379,7 +446,8 @@ object Array extends FallbackArrayBuilding {
    *  @param   n4  the number of elements in the 4th dimension
    *  @param   f   The function computing element values
    */
-  def tabulate[T: ClassTag](n1: Int, n2: Int, n3: Int, n4: Int)(f: (Int, Int, Int, Int) => T): Array[Array[Array[Array[T]]]] =
+  def tabulate[T : ClassTag](n1: Int, n2: Int, n3: Int, n4: Int)(
+      f: (Int, Int, Int, Int) => T): Array[Array[Array[Array[T]]]] =
     tabulate(n1)(i1 => tabulate(n2, n3, n4)(f(i1, _, _, _)))
 
   /** Returns a five-dimensional array containing values of a given function
@@ -392,7 +460,9 @@ object Array extends FallbackArrayBuilding {
    *  @param   n5  the number of elements in the 5th dimension
    *  @param   f   The function computing element values
    */
-  def tabulate[T: ClassTag](n1: Int, n2: Int, n3: Int, n4: Int, n5: Int)(f: (Int, Int, Int, Int, Int) => T): Array[Array[Array[Array[Array[T]]]]] =
+  def tabulate[T : ClassTag](n1: Int, n2: Int, n3: Int, n4: Int, n5: Int)(
+      f: (Int, Int, Int, Int,
+      Int) => T): Array[Array[Array[Array[Array[T]]]]] =
     tabulate(n1)(i1 => tabulate(n2, n3, n4, n5)(f(i1, _, _, _, _)))
 
   /** Returns an array containing a sequence of increasing integers in a range.
@@ -417,7 +487,8 @@ object Array extends FallbackArrayBuilding {
     b.sizeHint(immutable.Range.count(start, end, step, false))
 
     var i = start
-    while (if (step < 0) end < i else i < end) {
+    while (if (step < 0) end < i
+    else i < end) {
       b += i
       i += step
     }
@@ -431,7 +502,7 @@ object Array extends FallbackArrayBuilding {
    *  @param f     the function that is repeatedly applied
    *  @return      the array returning `len` values in the sequence `start, f(start), f(f(start)), ...`
    */
-  def iterate[T: ClassTag](start: T, len: Int)(f: T => T): Array[T] = {
+  def iterate[T : ClassTag](start: T, len: Int)(f: T => T): Array[T] = {
     val b = newBuilder[T]
 
     if (len > 0) {
@@ -455,9 +526,10 @@ object Array extends FallbackArrayBuilding {
    *  @return  sequence wrapped in a [[scala.Some]], if `x` is a Seq, otherwise `None`
    */
   def unapplySeq[T](x: Array[T]): Option[IndexedSeq[T]] =
-    if (x == null) None else Some(x.toIndexedSeq)
-    // !!! the null check should to be necessary, but without it 2241 fails. Seems to be a bug
-    // in pattern matcher.  @PP: I noted in #4364 I think the behavior is correct.
+    if (x == null) None
+    else Some(x.toIndexedSeq)
+  // !!! the null check should to be necessary, but without it 2241 fails. Seems to be a bug
+  // in pattern matcher.  @PP: I noted in #4364 I think the behavior is correct.
 }
 
 /** Arrays are mutable, indexed collections of values. `Array[T]` is Scala's representation
@@ -515,7 +587,8 @@ object Array extends FallbackArrayBuilding {
  *  @define bfinfo an implicit value of class `CanBuildFrom` which determines the result class `That` from the current
  *    representation type `Repr` and the new element type `B`.
  */
-final class Array[T](_length: Int) extends java.io.Serializable with java.lang.Cloneable {
+final class Array[T](_length: Int)
+    extends java.io.Serializable with java.lang.Cloneable {
 
   /** The length of the array */
   def length: Int = throw new Error()

@@ -12,9 +12,8 @@ import org.scalajs.jasminetest.JasmineTest
 import org.junit.Assert._
 
 object MathJSTest extends JasmineTest {
-
   describe("java.lang.Math") {
-    unless("rhino").// js.Math.round() is buggy on Rhino
+    unless("rhino"). // js.Math.round() is buggy on Rhino
     it("should_respond_to_rint(Double)") {
       import Math.rint
 

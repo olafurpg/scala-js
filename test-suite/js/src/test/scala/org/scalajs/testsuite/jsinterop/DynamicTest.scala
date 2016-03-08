@@ -14,17 +14,17 @@ import org.scalajs.jasminetest.JasmineTest
 import js.annotation.JSExport
 
 object DynamicTest extends JasmineTest {
-
   describe("scala.scalajs.js.Dynamic") {
-
     it("should workaround Scala 2.10 issue with implicit conversion for dynamic fields named x - #8") {
+
       class Point(val x: Int, val y: Int)
 
       def jsonToPoint(json: js.Dynamic): Point = {
         new Point(json.x.toString.toInt, json.y.toString.toInt)
       }
 
-      val json = js.eval("var dynamicTestPoint = { x: 1, y: 2 }; dynamicTestPoint;")
+      val json =
+        js.eval("var dynamicTestPoint = { x: 1, y: 2 }; dynamicTestPoint;")
       val point = jsonToPoint(json.asInstanceOf[js.Dynamic])
 
       expect(point.x).toEqual(1)
@@ -32,13 +32,17 @@ object DynamicTest extends JasmineTest {
     }
 
     it("should allow to call functions with arguments named x") {
+
       class A {
+
         def a: Int = 1
       }
 
-      class B extends A {
+      class B
+          extends A {
         @JSExport
-        def x(par: Int): Int = a + par // make sure `this` is bound correctly in JS
+        def x(par: Int): Int =
+          a + par // make sure `this` is bound correctly in JS
       }
 
       val b = (new B).asInstanceOf[js.Dynamic]
@@ -71,15 +75,15 @@ object DynamicTest extends JasmineTest {
       expect(obj1.count).toEqual(1)
       expect(obj1.elem0).toEqual("Scala.js")
 
-      val obj2 = js.Dynamic.newInstance(DynamicTestClassVarArgs)(
-          "Scala.js", 42, true)
+      val obj2 =
+        js.Dynamic.newInstance(DynamicTestClassVarArgs)("Scala.js", 42, true)
       expect(obj2.count).toEqual(3)
       expect(obj2.elem0).toEqual("Scala.js")
       expect(obj2.elem1).toEqual(42)
       expect(obj2.elem2).toEqual(true)
 
       def obj3Args: Seq[js.Any] = Seq("Scala.js", 42, true)
-      val obj3 = js.Dynamic.newInstance(DynamicTestClassVarArgs)(obj3Args: _*)
+      val obj3 = js.Dynamic.newInstance(DynamicTestClassVarArgs)(obj3Args: _ *)
       expect(obj3.count).toEqual(3)
       expect(obj3.elem0).toEqual("Scala.js")
       expect(obj3.elem1).toEqual(42)
@@ -95,7 +99,7 @@ object DynamicTest extends JasmineTest {
     }
 
     it("should provide an object literal construction") {
-      import js.Dynamic.{ literal => obj }
+      import js.Dynamic.{literal => obj}
       val x = obj(foo = 3, bar = "foobar")
       expect(x.foo).toEqual(3)
       expect(x.bar).toEqual("foobar")
@@ -103,7 +107,9 @@ object DynamicTest extends JasmineTest {
 
       val y = obj(
           inner = obj(name = "inner obj"),
-          fun = { () => 42 }
+          fun = { () =>
+            42
+          }
       )
       expect(y.inner.name).toEqual("inner obj")
       expect(y.fun()).toEqual(42)
@@ -119,7 +125,7 @@ object DynamicTest extends JasmineTest {
     }
 
     it("should provide object literal construction with dynamic naming") {
-      import js.Dynamic.{ literal => obj }
+      import js.Dynamic.{literal => obj}
       val x = obj("foo" -> 3, "bar" -> "foobar")
       expect(x.foo).toEqual(3)
       expect(x.bar).toEqual("foobar")
@@ -133,19 +139,22 @@ object DynamicTest extends JasmineTest {
       expect(y.hello2).toEqual(10)
 
       var count = 0
-      val z = obj({ count += 1; ("foo", "bar")})
+      val z = obj({
+        count += 1;
+        ("foo", "bar")
+      })
       expect(z.foo).toEqual("bar")
       expect(count).toEqual(1)
     }
 
     it("should allow to create an empty object with the literal syntax") {
-      import js.Dynamic.{ literal => obj }
+      import js.Dynamic.{literal => obj}
       val x = obj()
       expect(x.isInstanceOf[js.Object]).toBeTruthy()
     }
 
     it("should properly encode object literal property names") {
-      import js.Dynamic.{ literal => obj }
+      import js.Dynamic.{literal => obj}
 
       val obj0 = obj("3-" -> 42)
       expect(obj0.`3-`).toEqual(42)
@@ -159,8 +168,8 @@ object DynamicTest extends JasmineTest {
         }
         dynamicLiteralNameEncoding_checkEvilProperties
       """).asInstanceOf[js.Function1[js.Any, Boolean]]
-      val obj1 = obj(
-          ".o[3√!|-pr()per7:3$];" -> " such eval ").asInstanceOf[js.Dictionary[js.Any]]
+      val obj1 = obj(".o[3√!|-pr()per7:3$];" -> " such eval ").asInstanceOf[
+          js.Dictionary[js.Any]]
       expect(obj1(".o[3√!|-pr()per7:3$];")).toEqual(" such eval ")
       expect(checkEvilProperties(obj1)).toEqual(true)
 
@@ -174,10 +183,10 @@ object DynamicTest extends JasmineTest {
       val quote = '"'
 
       Seq(
-        obj("'" + quote -> 7357),
-        obj(s"'$quote" -> 7357),
-        obj("'\"" -> 7357),
-        obj("'" + quote -> 7357)
+          obj("'" + quote -> 7357),
+          obj(s"'$quote" -> 7357),
+          obj("'\"" -> 7357),
+          obj("'" + quote -> 7357)
       ).foreach { o =>
         val dict = o.asInstanceOf[js.Dictionary[js.Any]]
         expect(dict("'\"")).toEqual(7357)
@@ -198,11 +207,11 @@ object DynamicTest extends JasmineTest {
        * expanded notation.
        */
 
-      val x = literal.applyDynamic("apply")(fields: _*)
+      val x = literal.applyDynamic("apply")(fields: _ *)
       expect(x.foo).toEqual(42)
       expect(x.bar).toEqual("foobar")
 
-      val y = literal.applyDynamicNamed("apply")(fields: _*)
+      val y = literal.applyDynamicNamed("apply")(fields: _ *)
       expect(y.foo).toEqual(42)
       expect(y.bar).toEqual("foobar")
     }
@@ -217,7 +226,10 @@ object DynamicTest extends JasmineTest {
 
       // Side-effects of overwritten properties are kept
       var counter = 0
-      val b = obj(foo = { counter += 1; "foo" }, bar = "bar", foo = "foobar")
+      val b = obj(foo = {
+        counter += 1;
+        "foo"
+      }, bar = "bar", foo = "foobar")
       expect(counter).toEqual(1)
       expect(b.foo).toEqual("foobar")
       expect(b.bar).toEqual("bar")
@@ -232,7 +244,7 @@ object DynamicTest extends JasmineTest {
     }
 
     it("should return subclasses of js.Object in literal construction - #783") {
-      import js.Dynamic.{ literal => obj }
+      import js.Dynamic.{literal => obj}
 
       val a: js.Object = obj(theValue = 1)
       expect(a.hasOwnProperty("theValue")).toBeTruthy
@@ -241,7 +253,6 @@ object DynamicTest extends JasmineTest {
       val b: js.Object = obj("theValue" -> 2)
       expect(b.hasOwnProperty("theValue")).toBeTruthy
       expect(b.hasOwnProperty("noValue")).toBeFalsy
-
     }
   }
 }

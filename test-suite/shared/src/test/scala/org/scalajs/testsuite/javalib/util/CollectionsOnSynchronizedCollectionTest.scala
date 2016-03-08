@@ -11,13 +11,12 @@ import java.{util => ju}
 
 import org.scalajs.testsuite.javalib.util.concurrent.CopyOnWriteArrayListFactory
 
-trait CollectionsSynchronizedCollectionTest
-    extends CollectionsOnCollectionsTest {
-
+trait CollectionsSynchronizedCollectionTest extends CollectionsOnCollectionsTest {
   def originalFactory: CollectionFactory
 
   def factory: CollectionFactory = {
     new CollectionFactory {
+
       override def implementationName: String =
         s"synchronizedCollection(${originalFactory.implementationName})"
 
@@ -29,42 +28,49 @@ trait CollectionsSynchronizedCollectionTest
 
 class CollectionsOnSynchronizedCollectionAbstractListTest
     extends CollectionsSynchronizedCollectionTest {
+
   def originalFactory: CollectionFactory = new AbstractListFactory
 }
 
-class CollectionsOnSynchronizedCollectionArrayListTest extends CollectionsSynchronizedCollectionTest {
+class CollectionsOnSynchronizedCollectionArrayListTest
+    extends CollectionsSynchronizedCollectionTest {
+
   def originalFactory: CollectionFactory = new ArrayListFactory
 }
 
 class CollectionsOnSynchronizedCollectionLinkedListTest
     extends CollectionsSynchronizedCollectionTest {
+
   def originalFactory: CollectionFactory = new LinkedListFactory
 }
 
 class CollectionsOnSynchronizedCollectionCopyOnWriteArrayListTest
     extends CollectionsSynchronizedCollectionTest {
+
   def originalFactory: CollectionFactory = new CopyOnWriteArrayListFactory
 }
 
 class CollectionsOnSynchronizedCollectionHashSetFactoryTest
     extends CollectionsSynchronizedCollectionTest {
+
   def originalFactory: CollectionFactory = new HashSetFactory
 }
 
 class CollectionsOnSynchronizedCollectionLinkedHashSetTest
     extends CollectionsSynchronizedCollectionTest {
+
   def originalFactory: CollectionFactory = new LinkedHashSetFactory
 }
 
 class CollectionsOnSynchronizedCollectionConcurrentSkipListSetTest
     extends CollectionsSynchronizedCollectionTest {
+
   def originalFactory: CollectionFactory =
     new concurrent.ConcurrentSkipListSetFactory
 }
 
 class CollectionsOnSynchronizedCollectionArrayDequeTest
     extends CollectionsSynchronizedCollectionTest {
-  def originalFactory: CollectionFactory =
-    new ArrayDequeFactory
-}
 
+  def originalFactory: CollectionFactory = new ArrayDequeFactory
+}

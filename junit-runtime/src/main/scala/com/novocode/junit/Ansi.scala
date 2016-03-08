@@ -1,8 +1,7 @@
 package com.novocode.junit
 
 object Ansi {
-
-  private[this] final val NORMAL = "\u001B[0m"
+  private [ this] final val NORMAL = "\u001B[0m"
 
   def c(s: String, colorSequence: String): String =
     if (colorSequence == null) s
@@ -19,8 +18,7 @@ object Ansi {
         val c = s.charAt(i)
         if (c == '\u001B') {
           i += 1
-          while (i < len && s.charAt(i) != 'm')
-            i += 1
+          while (i < len && s.charAt(i) != 'm') i += 1
         } else {
           r += c
         }

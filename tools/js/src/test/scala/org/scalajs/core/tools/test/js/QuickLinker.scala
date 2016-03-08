@@ -11,27 +11,25 @@ import scala.scalajs.js.annotation.JSExport
 
 @JSExport("scalajs.QuickLinker")
 object QuickLinker {
-
   /** Link a Scala.js application on Node.js */
   @JSExport
-  def linkNode(irFilesAndJars: String*): String =
+  def linkNode(irFilesAndJars: String *): String =
     linkNodeInternal(Semantics.Defaults, irFilesAndJars)
 
   /** Link the Scala.js test suite on Node.js */
   @JSExport
-  def linkTestSuiteNode(irFilesAndJars: String*): String = {
+  def linkTestSuiteNode(irFilesAndJars: String *): String = {
     val semantics = Semantics.Defaults.withRuntimeClassName(_.fullName match {
       case "org.scalajs.testsuite.compiler.ReflectionTest$RenamedTestClass" =>
         "renamed.test.Class"
-      case fullName =>
-        fullName
+      case fullName => fullName
     })
     linkNodeInternal(semantics, irFilesAndJars)
   }
 
   /** Link a Scala.js application on Node.js */
-  def linkNodeInternal(semantics: Semantics,
-      irFilesAndJars: Seq[String]): String = {
+  def linkNodeInternal(
+      semantics: Semantics, irFilesAndJars: Seq[String]): String = {
     val cache = (new IRFileCache).newCache
     val linker = Linker(semantics)
 
@@ -41,7 +39,9 @@ object QuickLinker {
         IRContainer.Jar(vf)
       } else if (file.endsWith(".sjsir")) {
         val vf = new NodeVirtualScalaJSIRFile(file) with RelativeVirtualFile {
+
           // The compiler should not use this (only scalajsp does)
+
           def relativePath: String = s"<dummy relative path from $getClass>"
         }
         IRContainer.File(vf)
@@ -57,5 +57,4 @@ object QuickLinker {
 
     out.content
   }
-
 }

@@ -15,9 +15,7 @@ import scala.collection.mutable
 import scala.reflect.ClassTag
 
 object WrappedDictionaryTest extends JasmineTest {
-
   describe("scala.scalajs.js.WrappedDictionary") {
-
     // Methods we actually implement
 
     it("should implement get") {
@@ -57,12 +55,13 @@ object WrappedDictionaryTest extends JasmineTest {
     // Some arbitrary methods to test the builders
 
     it("should implement map") {
-      def ct[A: ClassTag](x: A): ClassTag[A] = implicitly[ClassTag[A]]
+
+      def ct[A : ClassTag](x: A): ClassTag[A] = implicitly[ClassTag[A]]
       val dict = js.Dictionary[Int]()
       dict ++= Seq("one" -> 1, "two" -> 2, "three" -> 3)
 
-      val mapChr = dict.map { case (k,v) => k(0)          -> v * 2 }
-      val mapStr = dict.map { case (k,v) => k(0).toString -> v * 2 }
+      val mapChr = dict.map { case (k, v) => k(0) -> v * 2 }
+      val mapStr = dict.map { case (k, v) => k(0).toString -> v * 2 }
 
       expect(ct(mapChr).runtimeClass == classOf[js.WrappedDictionary[_]]).toBeFalsy
       expect(ct(mapStr).runtimeClass == classOf[js.WrappedDictionary[_]]).toBeTruthy
@@ -73,7 +72,8 @@ object WrappedDictionaryTest extends JasmineTest {
 
     it("should implement withFilter") {
       val dict = js.Dictionary[Int]()
-      val flt = dict.withFilter { case (k,v) => v > 5 || k == "a" }
+      val flt = dict.withFilter { case (k, v) => v > 5 || k == "a" }
+
       def size: Int = flt.map(x => x).size
 
       expect(size).toBe(0)
@@ -100,7 +100,5 @@ object WrappedDictionaryTest extends JasmineTest {
       val list = dict.to[List]
       expect(list.size).toBe(3)
     }
-
   }
-
 }

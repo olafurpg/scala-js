@@ -5,31 +5,38 @@ import scala.scalajs.js
 /* This is a hijacked class. Its instances are primitive numbers.
  * Constructors are not emitted.
  */
-final class Integer private () extends Number with Comparable[Integer] {
 
-  def this(value: scala.Int) = this()
-  def this(s: String) = this()
+final class Integer private() extends Number with Comparable[Integer] {
+  def this (value: scala.Int) = this()
+  def this (s: String) = this()
 
-  @inline def intValue(): scala.Int =
-    this.asInstanceOf[scala.Int]
+  @inline
+  def intValue(): scala.Int = this.asInstanceOf[scala.Int]
 
-  @inline override def byteValue(): scala.Byte = intValue.toByte
-  @inline override def shortValue(): scala.Short = intValue.toShort
-  @inline def longValue(): scala.Long = intValue.toLong
-  @inline def floatValue(): scala.Float = intValue.toFloat
-  @inline def doubleValue(): scala.Double = intValue.toDouble
+  @inline
+  override def byteValue(): scala.Byte = intValue.toByte
+  @inline
+  override def shortValue(): scala.Short = intValue.toShort
+  @inline
+  def longValue(): scala.Long = intValue.toLong
+  @inline
+  def floatValue(): scala.Float = intValue.toFloat
+  @inline
+  def doubleValue(): scala.Double = intValue.toDouble
 
-  @inline override def equals(that: Any): scala.Boolean =
+  @inline
+  override def equals(that: Any): scala.Boolean =
     this eq that.asInstanceOf[AnyRef]
 
-  @inline override def hashCode(): Int =
-    intValue
+  @inline
+  override def hashCode(): Int = intValue
 
-  @inline override def compareTo(that: Integer): Int =
+  @inline
+  override def compareTo(that: Integer): Int =
     Integer.compare(intValue, that.intValue)
 
-  @inline override def toString(): String =
-    Integer.toString(intValue)
+  @inline
+  override def toString(): String = Integer.toString(intValue)
 
   /* Methods of java.lang.Byte and java.lang.Short.
    * When calling a method of j.l.Byte or j.l.Short on a primitive value,
@@ -40,12 +47,11 @@ final class Integer private () extends Number with Comparable[Integer] {
    * are not already in j.l.Integer.
    */
 
-  @inline def compareTo(that: Byte): Int =
-    Integer.compare(intValue, that.intValue)
+  @inline
+  def compareTo(that: Byte): Int = Integer.compare(intValue, that.intValue)
 
-  @inline def compareTo(that: Short): Int =
-    Integer.compare(intValue, that.intValue)
-
+  @inline
+  def compareTo(that: Short): Int = Integer.compare(intValue, that.intValue)
 }
 
 object Integer {
@@ -55,33 +61,41 @@ object Integer {
   final val SIZE = 32
   final val BYTES = 4
 
-  @inline def valueOf(intValue: scala.Int): Integer = new Integer(intValue)
-  @inline def valueOf(s: String): Integer = valueOf(parseInt(s))
+  @inline
+  def valueOf(intValue: scala.Int): Integer = new Integer(intValue)
+  @inline
+  def valueOf(s: String): Integer = valueOf(parseInt(s))
 
-  @inline def valueOf(s: String, radix: Int): Integer =
-    valueOf(parseInt(s, radix))
+  @inline
+  def valueOf(s: String, radix: Int): Integer = valueOf(parseInt(s, radix))
 
-  @inline def parseInt(s: String): scala.Int = parseInt(s, 10)
+  @inline
+  def parseInt(s: String): scala.Int = parseInt(s, 10)
 
-  @noinline def parseInt(s: String, radix: scala.Int): scala.Int =
+  @noinline
+  def parseInt(s: String, radix: scala.Int): scala.Int =
     parseIntImpl(s, radix, signed = true)
 
-  @inline def parseUnsignedInt(s: String): scala.Int = parseUnsignedInt(s, 10)
+  @inline
+  def parseUnsignedInt(s: String): scala.Int = parseUnsignedInt(s, 10)
 
-  @noinline def parseUnsignedInt(s: String, radix: scala.Int): scala.Int =
+  @noinline
+  def parseUnsignedInt(s: String, radix: scala.Int): scala.Int =
     parseIntImpl(s, radix, signed = false)
 
   @inline
-  private def parseIntImpl(s: String, radix: scala.Int,
-      signed: scala.Boolean): scala.Int = {
+  private def parseIntImpl(
+      s: String, radix: scala.Int, signed: scala.Boolean): scala.Int = {
+
     def fail = throw new NumberFormatException(s"""For input string: "$s"""")
 
-    if (s == null || s.size == 0 ||
-        radix < Character.MIN_RADIX ||
+    if (s == null || s.size == 0 || radix < Character.MIN_RADIX ||
         radix > Character.MAX_RADIX)
       fail
     else {
-      var i = if ((signed && s(0) == '-') || s(0) == '+') 1 else 0
+      var i =
+        if ((signed && s(0) == '-') || s(0) == '+') 1
+        else 0
       // JavaDoc says: We need at least one digit
       if (s.size <= i) fail
       else {
@@ -90,9 +104,11 @@ object Integer {
           if (Character.digit(s(i), radix) < 0) fail
           i += 1
         }
-        val res = js.Dynamic.global.parseInt(s, radix).asInstanceOf[scala.Double]
+        val res =
+          js.Dynamic.global.parseInt(s, radix).asInstanceOf[scala.Double]
 
-        @inline def isOutOfBounds: scala.Boolean = {
+        @inline
+        def isOutOfBounds: scala.Boolean = {
           if (signed) res > MAX_VALUE || res < MIN_VALUE
           else res > 0xFFFFFFFFL || res < 0
         }
@@ -108,23 +124,28 @@ object Integer {
     }
   }
 
-  @inline def toString(i: scala.Int): String = "" + i
+  @inline
+  def toString(i: scala.Int): String = "" + i
 
-  @inline def toUnsignedString(i: Int, radix: Int): String =
-    toStringBase(i, radix)
+  @inline
+  def toUnsignedString(i: Int, radix: Int): String = toStringBase(i, radix)
 
-  @inline def compare(x: scala.Int, y: scala.Int): scala.Int =
-    if (x == y) 0 else if (x < y) -1 else 1
+  @inline
+  def compare(x: scala.Int, y: scala.Int): scala.Int =
+    if (x == y) 0
+    else if (x < y) -1
+    else 1
 
-  @inline def compareUnsigned(x: scala.Int, y: scala.Int): scala.Int = {
+  @inline
+  def compareUnsigned(x: scala.Int, y: scala.Int): scala.Int = {
     import js.JSNumberOps._
     if (x == y) 0
     else if (x.toUint > y.toUint) 1
     else -1
   }
 
-  @inline def toUnsignedLong(x: Int): scala.Long =
-    x.toLong & 0xffffffffL
+  @inline
+  def toUnsignedLong(x: Int): scala.Long = x.toLong & 0xffffffffL
 
   def bitCount(i: scala.Int): scala.Int = {
     /* See http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetParallel
@@ -147,22 +168,25 @@ object Integer {
     (((t2 + (t2 >> 4)) & 0xF0F0F0F) * 0x1010101) >> 24
   }
 
-  @inline def divideUnsigned(dividend: Int, divisor: Int): Int = {
+  @inline
+  def divideUnsigned(dividend: Int, divisor: Int): Int = {
     import js.JSNumberOps._
     asInt(dividend.toUint / divisor.toUint)
   }
 
-  @inline def remainderUnsigned(dividend: Int, divisor: Int): Int = {
+  @inline
+  def remainderUnsigned(dividend: Int, divisor: Int): Int = {
     import js.JSNumberOps._
     asInt(dividend.toUint % divisor.toUint)
   }
 
-  @inline def highestOneBit(i: Int): Int =
+  @inline
+  def highestOneBit(i: Int): Int =
     if (i == 0) 0
     else (1 << 31) >>> numberOfLeadingZeros(i)
 
-  @inline def lowestOneBit(i: Int): Int =
-    i & -i
+  @inline
+  def lowestOneBit(i: Int): Int = i & -i
 
   def reverseBytes(i: scala.Int): scala.Int = {
     val byte3 = i >>> 24
@@ -172,16 +196,22 @@ object Integer {
     byte0 | byte1 | byte2 | byte3
   }
 
-  @inline def rotateLeft(i: scala.Int, distance: scala.Int): scala.Int =
+  @inline
+  def rotateLeft(i: scala.Int, distance: scala.Int): scala.Int =
     (i << distance) | (i >>> -distance)
 
-  @inline def rotateRight(i: scala.Int, distance: scala.Int): scala.Int =
+  @inline
+  def rotateRight(i: scala.Int, distance: scala.Int): scala.Int =
     (i >>> distance) | (i << -distance)
 
-  @inline def signum(i: scala.Int): scala.Int =
-    if (i == 0) 0 else if (i < 0) -1 else 1
+  @inline
+  def signum(i: scala.Int): scala.Int =
+    if (i == 0) 0
+    else if (i < 0) -1
+    else 1
 
   // Intrinsic
+
   def numberOfLeadingZeros(i: scala.Int): scala.Int = {
     // See Hacker's Delight, Section 5-3
     var x = i
@@ -189,25 +219,41 @@ object Integer {
       32
     } else {
       var r = 1
-      if ((x & 0xffff0000) == 0) { x <<= 16; r += 16 }
-      if ((x & 0xff000000) == 0) { x <<= 8; r += 8 }
-      if ((x & 0xf0000000) == 0) { x <<= 4; r += 4 }
-      if ((x & 0xc0000000) == 0) { x <<= 2; r += 2 }
+      if ((x & 0xffff0000) == 0) {
+        x <<= 16;
+        r += 16
+      }
+      if ((x & 0xff000000) == 0) {
+        x <<= 8;
+        r += 8
+      }
+      if ((x & 0xf0000000) == 0) {
+        x <<= 4;
+        r += 4
+      }
+      if ((x & 0xc0000000) == 0) {
+        x <<= 2;
+        r += 2
+      }
       r + (x >> 31)
     }
   }
 
-  @inline def numberOfTrailingZeros(i: scala.Int): scala.Int =
+  @inline
+  def numberOfTrailingZeros(i: scala.Int): scala.Int =
     if (i == 0) 32
     else 31 - numberOfLeadingZeros(i & -i)
 
   def toBinaryString(i: scala.Int): String = toStringBase(i, 2)
+
   def toHexString(i: scala.Int): String = toStringBase(i, 16)
+
   def toOctalString(i: scala.Int): String = toStringBase(i, 8)
 
   @inline // because radix is almost certainly constant at call site
   def toString(i: Int, radix: Int): String = {
-    if (radix == 10 || radix < Character.MIN_RADIX || radix > Character.MAX_RADIX) {
+    if (radix == 10 || radix < Character.MIN_RADIX ||
+        radix > Character.MAX_RADIX) {
       Integer.toString(i)
     } else {
       import js.JSNumberOps.enableJSNumberOps
@@ -215,19 +261,26 @@ object Integer {
     }
   }
 
-  @inline def toUnsignedString(i: scala.Int): String = toUnsignedString(i, 10)
+  @inline
+  def toUnsignedString(i: scala.Int): String = toUnsignedString(i, 10)
 
-  @inline def hashCode(value: Int): Int = value.hashCode
+  @inline
+  def hashCode(value: Int): Int = value.hashCode
 
-  @inline def sum(a: Int, b: Int): Int = a + b
-  @inline def max(a: Int, b: Int): Int = Math.max(a, b)
-  @inline def min(a: Int, b: Int): Int = Math.min(a, b)
+  @inline
+  def sum(a: Int, b: Int): Int = a + b
+  @inline
+  def max(a: Int, b: Int): Int = Math.max(a, b)
+  @inline
+  def min(a: Int, b: Int): Int = Math.min(a, b)
 
-  @inline private[this] def toStringBase(i: scala.Int, base: scala.Int): String = {
+  @inline
+  private [ this] def toStringBase(i: scala.Int, base: scala.Int): String = {
     import js.JSNumberOps._
     i.toUint.toString(base)
   }
 
-  @inline private def asInt(n: scala.Double): scala.Int =
+  @inline
+  private def asInt(n: scala.Double): scala.Int =
     (n.asInstanceOf[js.Dynamic] | 0.asInstanceOf[js.Dynamic]).asInstanceOf[Int]
 }

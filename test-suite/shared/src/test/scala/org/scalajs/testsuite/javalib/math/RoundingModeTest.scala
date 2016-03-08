@@ -13,9 +13,8 @@ import org.junit.Test
 import org.junit.Assert._
 
 class RoundingModeTest {
-
-  @Test def testValues(): Unit = {
-
+  @Test
+  def testValues(): Unit = {
     val values = RoundingMode.values
     assertEquals(8, values.size)
 

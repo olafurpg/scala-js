@@ -22,18 +22,21 @@ import java.io.File
 import java.net.URL
 import scala.io.Source
 
-import Properties.{ versionString, copyrightString }
+import Properties.{versionString, copyrightString}
 import GenericRunnerCommand._
 
 class ScalaConsoleJSConsole extends JSConsole {
+
   def log(msg: Any) = scala.Console.out.println(msg.toString)
 }
 
 class MainGenericRunner {
+
   def errorFn(ex: Throwable): Boolean = {
     ex.printStackTrace()
     false
   }
+
   def errorFn(str: String): Boolean = {
     scala.Console.err println str
     false
@@ -50,10 +53,13 @@ class MainGenericRunner {
   }
 
   def process(args: Array[String]): Boolean = {
-    val command = new GenericRunnerCommand(args.toList, (x: String) => errorFn(x))
+    val command = new GenericRunnerCommand(
+        args.toList, (x: String) => errorFn(x))
 
     if (!command.ok) return errorFn("\n" + command.shortUsageMsg)
-    else if (command.settings.version) return errorFn("Scala code runner %s -- %s".format(versionString, copyrightString))
+    else if (command.settings.version)
+      return errorFn(
+          "Scala code runner %s -- %s".format(versionString, copyrightString))
     else if (command.shouldStopWithInfo) return errorFn("shouldStopWithInfo")
 
     if (command.howToRun != AsObject)
@@ -62,16 +68,16 @@ class MainGenericRunner {
     val logger = new ScalaConsoleLogger(Level.Warn)
     val jsConsole = new ScalaConsoleJSConsole
     val semantics = readSemantics()
-    val ir = (
-        loadIR(command.settings.classpathURLs) :+
-        runnerIR(command.thingToRun, command.arguments)
-    )
+    val ir =
+      (loadIR(command.settings.classpathURLs) :+ runnerIR(
+              command.thingToRun, command.arguments))
 
     val jsRunner = new MemVirtualJSFile("launcher.js")
       .withContent(s"PartestLauncher().launch();")
 
-    val linker = Linker(semantics, withSourceMap = false,
-        useClosureCompiler = optMode == FullOpt)
+    val linker = Linker(semantics,
+                        withSourceMap = false,
+                        useClosureCompiler = optMode == FullOpt)
 
     val libJSEnv = {
       /* Historically, we used Rhino in NoOpt and NodeJS in FastOpt and FullOpt.
@@ -95,8 +101,7 @@ class MainGenericRunner {
   }
 
   private def loadIR(classpathURLs: Seq[URL]) = {
-    val irContainers =
-      IRContainer.fromClasspath(classpathURLs.map(urlToFile))
+    val irContainers = IRContainer.fromClasspath(classpathURLs.map(urlToFile))
     val cache = (new IRFileCache).newCache
     cache.cached(irContainers)
   }
@@ -107,7 +112,7 @@ class MainGenericRunner {
     import ir.Trees._
     import ir.Types._
 
-    val mainModuleClassName = ir.Definitions.encodeClassName(mainObj  + "$")
+    val mainModuleClassName = ir.Definitions.encodeClassName(mainObj + "$")
     val className = "PartestLauncher$"
     val exportName = "PartestLauncher"
     val encodedClassName = ir.Definitions.encodeClassName(className)
@@ -115,27 +120,28 @@ class MainGenericRunner {
     val definition = {
       implicit val DummyPos = ir.Position.NoPosition
       ClassDef(
-        Ident(encodedClassName, Some(className)),
-        ClassKind.ModuleClass,
-        Some(Ident("O", Some("java.lang.Object"))),
-        Nil,
-        None,
-        List(
-          MethodDef(
-            static = false,
-            StringLiteral("launch"),
-            Nil,
-            AnyType,
-            Block(
-              Apply(LoadModule(ClassType(mainModuleClassName)),
-                Ident("main__AT__V"),
-                List(ArrayValue(ArrayType("T", 1), args.map(StringLiteral(_))))
-              )(NoType),
-              Undefined()
-            )
-          )(OptimizerHints.empty, None),
-          ModuleExportDef(exportName)
-        )
+          Ident(encodedClassName, Some(className)),
+          ClassKind.ModuleClass,
+          Some(Ident("O", Some("java.lang.Object"))),
+          Nil,
+          None,
+          List(
+              MethodDef(
+                  static = false,
+                  StringLiteral("launch"),
+                  Nil,
+                  AnyType,
+                  Block(
+                      Apply(LoadModule(ClassType(mainModuleClassName)),
+                            Ident("main__AT__V"),
+                            List(ArrayValue(
+                                ArrayType("T", 1),
+                                args.map(StringLiteral(_)))))(NoType),
+                      Undefined()
+                  )
+              )(OptimizerHints.empty, None),
+              ModuleExportDef(exportName)
+          )
       )(OptimizerHints.empty)
     }
 
@@ -144,8 +150,11 @@ class MainGenericRunner {
     val infoAndDefinition = (info, definition)
 
     new VirtualScalaJSIRFile {
+
       def exists: Boolean = true
+
       def path: String = "PartestLauncher$.sjsir"
+
       def infoAndTree: (ClassInfo, ClassDef) = infoAndDefinition
     }
   }
@@ -160,8 +169,9 @@ class MainGenericRunner {
 }
 
 object MainGenericRunner extends MainGenericRunner {
+
   def main(args: Array[String]) {
-    if (!process(args))
-      sys.exit(1)
-  }
+        if (!process(args))
+          sys.exit(1)
+      }
 }

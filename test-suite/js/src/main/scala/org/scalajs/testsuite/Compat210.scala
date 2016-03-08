@@ -7,15 +7,17 @@
 \*                                                                      */
 package org.scalajs.testsuite
 
-private[testsuite] object Compat210 {
-  object blackbox { // scalastyle:ignore
+private [testsuite] object Compat210 {
+
+  object blackbox {
+    // scalastyle:ignore
     type Context = scala.reflect.macros.Context
   }
 }
 
 import Compat210._
 
-private[testsuite] trait Compat210Component {
+private [testsuite] trait Compat210Component {
   // Import macros only here, otherwise we collide with the above
   import scala.reflect.macros._
   import blackbox.Context
@@ -24,7 +26,8 @@ private[testsuite] trait Compat210Component {
 
   import c.universe._
 
-  implicit final class ContextCompat(self: c.type) {
+  implicit final class ContextCompat(self: c. type) {
+
     def typecheck(tree: Tree): Tree = c.typeCheck(tree)
   }
 }

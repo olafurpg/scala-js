@@ -20,7 +20,8 @@
 
 package java.lang
 
-private[java] object MathJDK8Bridge {
+private [java] object MathJDK8Bridge {
+
   def addExact(a: scala.Int, b: scala.Int): scala.Int = sys.error("stub")
 
   def addExact(a: scala.Long, b: scala.Long): scala.Long = sys.error("stub")

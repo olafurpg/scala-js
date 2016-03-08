@@ -13,8 +13,7 @@ import scala.collection.mutable
  *
  *  @author Sébastien Doeraene
  */
-trait JSGlobalAddons extends JSDefinitions
-                        with Compat210Component {
+trait JSGlobalAddons extends JSDefinitions with Compat210Component {
   val global: Global
 
   import global._
@@ -22,20 +21,21 @@ trait JSGlobalAddons extends JSDefinitions
   import definitions._
 
   /** JavaScript primitives, used in jscode */
-  object jsPrimitives extends JSPrimitives { // scalastyle:ignore
-    val global: JSGlobalAddons.this.global.type = JSGlobalAddons.this.global
+  object jsPrimitives extends JSPrimitives {
+    // scalastyle:ignore
+    val global: JSGlobalAddons. this.global. type = JSGlobalAddons. this.global
     val jsAddons: ThisJSGlobalAddons =
-      JSGlobalAddons.this.asInstanceOf[ThisJSGlobalAddons]
+      JSGlobalAddons. this.asInstanceOf[ThisJSGlobalAddons]
   }
 
   /** global javascript interop related helpers */
-  object jsInterop { // scalastyle:ignore
+  object jsInterop {
+    // scalastyle:ignore
     import scala.reflect.NameTransformer
     import scala.reflect.internal.Flags
 
     /** Symbols of constructors and modules that are to be exported */
-    private val exportedSymbols =
-      mutable.Map.empty[Symbol, List[ExportInfo]]
+    private val exportedSymbols = mutable.Map.empty[Symbol, List[ExportInfo]]
 
     private val exportPrefix = "$js$exported$"
     private val methodExportPrefix = exportPrefix + "meth$"
@@ -49,11 +49,10 @@ trait JSGlobalAddons extends JSDefinitions
 
     private def assertValidForRegistration(sym: Symbol): Unit = {
       assert(sym.isConstructor || sym.isClass,
-          "Can only register constructors or classes for export")
+             "Can only register constructors or classes for export")
     }
 
-    def clearRegisteredExports(): Unit =
-      exportedSymbols.clear()
+    def clearRegisteredExports(): Unit = exportedSymbols.clear()
 
     def registerForExport(sym: Symbol, infos: List[ExportInfo]): Unit = {
       assert(!exportedSymbols.contains(sym), "Same symbol exported twice")
@@ -68,7 +67,9 @@ trait JSGlobalAddons extends JSDefinitions
 
     /** creates a name for an export specification */
     def scalaExportName(jsName: String, isProp: Boolean): TermName = {
-      val pref = if (isProp) propExportPrefix else methodExportPrefix
+      val pref =
+        if (isProp) propExportPrefix
+        else methodExportPrefix
       val encname = NameTransformer.encode(jsName)
       newTermName(pref + encname)
     }
@@ -82,7 +83,8 @@ trait JSGlobalAddons extends JSDefinitions
      *  is a property
      */
     def jsExportInfo(name: Name): (String, Boolean) = {
-      def dropPrefix(prefix: String) ={
+
+      def dropPrefix(prefix: String) = {
         if (name.startsWith(prefix)) {
           // We can't decode right away due to $ separators
           val enc = name.encoded.substring(prefix.length)
@@ -90,14 +92,15 @@ trait JSGlobalAddons extends JSDefinitions
         } else None
       }
 
-      dropPrefix(methodExportPrefix).map((_,false)) orElse
-      dropPrefix(propExportPrefix).map((_,true)) getOrElse
-      sys.error("non-exported name passed to jsInfoSpec")
+      dropPrefix(methodExportPrefix).map((_, false)) orElse dropPrefix(
+          propExportPrefix).map((_, true)) getOrElse sys.error(
+          "non-exported name passed to jsInfoSpec")
     }
 
     def isJSProperty(sym: Symbol): Boolean = isJSGetter(sym) || isJSSetter(sym)
 
-    @inline private def enteringUncurryIfAtPhaseAfter[A](op: => A): A = {
+    @inline
+    private def enteringUncurryIfAtPhaseAfter[A](op: => A): A = {
       if (currentRun.uncurryPhase != NoPhase &&
           isAtPhaseAfter(currentRun.uncurryPhase)) {
         enteringPhase(currentRun.uncurryPhase)(op)
@@ -145,11 +148,10 @@ trait JSGlobalAddons extends JSDefinitions
      */
     def fullJSNameOf(sym: Symbol): String = {
       assert(sym.isClass, s"fullJSNameOf called for non-class symbol $sym")
-      sym.getAnnotation(JSFullNameAnnotation).flatMap(_.stringArg(0)) getOrElse {
+      sym.getAnnotation(JSFullNameAnnotation)
+        .flatMap(_.stringArg(0)) getOrElse {
         jsNameOf(sym)
       }
     }
-
   }
-
 }

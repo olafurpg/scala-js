@@ -2,20 +2,20 @@ package java.util
 
 import scala.scalajs._
 
-class ArrayList[E] private (private[ArrayList] val inner: js.Array[E])
-    extends AbstractList[E] with RandomAccess with Cloneable with Serializable {
+class ArrayList[E] private(private [ArrayList] val inner: js.Array[E])
+    extends AbstractList[E] with RandomAccess with Cloneable
+    with Serializable {
   self =>
 
-  def this(initialCapacity: Int) = {
+  def this (initialCapacity: Int) = {
     this(new js.Array[E])
     if (initialCapacity < 0)
       throw new IllegalArgumentException
   }
 
-  def this() =
-    this(new js.Array[E])
+  def this () = this(new js.Array[E])
 
-  def this(c: Collection[_ <: E]) = {
+  def this (c: Collection[_ <: E]) = {
     this()
     addAll(c)
   }
@@ -28,11 +28,9 @@ class ArrayList[E] private (private[ArrayList] val inner: js.Array[E])
     // We ignore this as js.Array doesn't support explicit pre-allocation
   }
 
-  def size(): Int =
-    inner.length
+  def size(): Int = inner.length
 
-  override def clone(): AnyRef =
-    new ArrayList(inner.jsSlice(0))
+  override def clone(): AnyRef = new ArrayList(inner.jsSlice(0))
 
   def get(index: Int): E = {
     checkIndexInBounds(index)
@@ -41,7 +39,7 @@ class ArrayList[E] private (private[ArrayList] val inner: js.Array[E])
 
   override def set(index: Int, element: E): E = {
     val e = get(index)
-    inner(index) = element
+    inner (index) = element
     e
   }
 
@@ -60,13 +58,12 @@ class ArrayList[E] private (private[ArrayList] val inner: js.Array[E])
     inner.remove(index)
   }
 
-  override def clear(): Unit =
-    inner.clear()
+  override def clear(): Unit = inner.clear()
 
   override def addAll(index: Int, c: Collection[_ <: E]): Boolean = {
     c match {
       case other: ArrayList[_] =>
-        inner.splice(index, 0, other.inner: _*)
+        inner.splice(index, 0, other.inner: _ *)
         other.size > 0
       case _ => super.addAll(index, c)
     }
@@ -74,5 +71,4 @@ class ArrayList[E] private (private[ArrayList] val inner: js.Array[E])
 
   override protected def removeRange(fromIndex: Int, toIndex: Int): Unit =
     inner.splice(fromIndex, toIndex - fromIndex)
-
 }

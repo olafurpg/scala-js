@@ -10,6 +10,7 @@ object ByteBufferJSFactories {
 
   class WrappedTypedArrayByteBufferFactory
       extends ByteBufferFactory with WrappedTypedArrayBufferFactory {
+
     def baseWrap(array: Array[Byte]): ByteBuffer = {
       val buf = TypedArrayBuffer.wrap(new Int8Array(array.toJSArray))
       buf.order(ByteOrder.BIG_ENDIAN)

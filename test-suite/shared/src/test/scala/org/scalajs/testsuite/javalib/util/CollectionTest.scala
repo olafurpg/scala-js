@@ -17,7 +17,6 @@ import scala.collection.JavaConversions._
 import org.scalajs.testsuite.utils.AssertThrows._
 
 trait CollectionTest {
-
   def factory: CollectionFactory
 
   def testCollectionApi(): Unit = {
@@ -33,7 +32,8 @@ trait CollectionTest {
     shouldGiveProperIteratorOverElements()
   }
 
-  @Test def shouldStoreStrings(): Unit = {
+  @Test
+  def shouldStoreStrings(): Unit = {
     val coll = factory.empty[String]
 
     assertEquals(0, coll.size())
@@ -53,7 +53,8 @@ trait CollectionTest {
     assertTrue(coll.size() >= 1)
   }
 
-  @Test def shouldStoreIntegers(): Unit = {
+  @Test
+  def shouldStoreIntegers(): Unit = {
     val coll = factory.empty[Int]
 
     assertEquals(0, coll.size())
@@ -73,7 +74,8 @@ trait CollectionTest {
     assertTrue(coll.size() >= 1)
   }
 
-  @Test def shouldStoreDoubles(): Unit = {
+  @Test
+  def shouldStoreDoubles(): Unit = {
     val coll = factory.empty[Double]
 
     assertEquals(0, coll.size())
@@ -108,10 +110,12 @@ trait CollectionTest {
     assertTrue(coll.contains(Double.NaN))
   }
 
-  @Test def shouldStoreCustomObjects(): Unit = {
+  @Test
+  def shouldStoreCustomObjects(): Unit = {
+
     case class TestObj(num: Int) extends jl.Comparable[TestObj] {
-      def compareTo(o: TestObj): Int =
-        o.num.compareTo(num)
+
+      def compareTo(o: TestObj): Int = o.num.compareTo(num)
     }
 
     val coll = factory.empty[TestObj]
@@ -122,7 +126,8 @@ trait CollectionTest {
     assertFalse(coll.contains(TestObj(200)))
   }
 
-  @Test def shouldRemoveStoredElements(): Unit = {
+  @Test
+  def shouldRemoveStoredElements(): Unit = {
     val coll = factory.empty[String]
 
     coll.add("one")
@@ -139,7 +144,8 @@ trait CollectionTest {
     assertEquals(initialSize - 2, coll.size())
   }
 
-  @Test def shouldRemoveStoredElementsOnDoubleCornerCases(): Unit = {
+  @Test
+  def shouldRemoveStoredElementsOnDoubleCornerCases(): Unit = {
     val coll = factory.empty[Double]
 
     coll.add(1.234)
@@ -167,7 +173,8 @@ trait CollectionTest {
     assertTrue(coll.isEmpty)
   }
 
-  @Test def shouldBeClearedWithOneOperation(): Unit = {
+  @Test
+  def shouldBeClearedWithOneOperation(): Unit = {
     val coll = factory.empty[String]
 
     coll.add("one")
@@ -177,7 +184,8 @@ trait CollectionTest {
     assertEquals(0, coll.size)
   }
 
-  @Test def shouldCheckContainedPresence(): Unit = {
+  @Test
+  def shouldCheckContainedPresence(): Unit = {
     val coll = factory.empty[String]
 
     coll.add("one")
@@ -190,7 +198,8 @@ trait CollectionTest {
     }
   }
 
-  @Test def shouldCheckContainedPresenceForDoubleCornerCases(): Unit = {
+  @Test
+  def shouldCheckContainedPresenceForDoubleCornerCases(): Unit = {
     val coll = factory.empty[Double]
 
     coll.add(-0.0)
@@ -204,7 +213,8 @@ trait CollectionTest {
     assertTrue(coll.contains(+0.0))
   }
 
-  @Test def shouldGiveProperIteratorOverElements(): Unit = {
+  @Test
+  def shouldGiveProperIteratorOverElements(): Unit = {
     val coll = factory.empty[String]
     coll.add("one")
     coll.add("two")
@@ -217,6 +227,7 @@ trait CollectionTest {
 }
 
 object CollectionFactory {
+
   def allFactories: Iterator[CollectionFactory] =
     ListFactory.allFactories ++ SetFactory.allFactories
 }
@@ -224,6 +235,8 @@ object CollectionFactory {
 trait CollectionFactory {
   def implementationName: String
   def empty[E]: ju.Collection[E]
+
   def allowsMutationThroughIterator: Boolean = true
+
   def allowsNullElementQuery: Boolean = true
 }

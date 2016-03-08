@@ -6,8 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
-
 package scala.scalajs
 
 // Can't link to Null - #1969
@@ -64,11 +62,12 @@ package scala.scalajs
  */
 package object js {
   /** The undefined value. */
-  @inline def undefined: js.UndefOr[Nothing] =
-    ().asInstanceOf[js.UndefOr[Nothing]]
+  @inline
+  def undefined: js.UndefOr[Nothing] = ().asInstanceOf[js.UndefOr[Nothing]]
 
   /** Tests whether the given value is undefined. */
-  @inline def isUndefined(v: scala.Any): Boolean =
+  @inline
+  def isUndefined(v: scala.Any): Boolean =
     v.asInstanceOf[scala.AnyRef] eq undefined
 
   /** Returns the type of `x` as identified by `typeof x` in JavaScript. */
@@ -83,8 +82,8 @@ package object js {
   def constructorOf[T <: js.Any]: js.Dynamic = sys.error("stub")
 
   /** Makes explicit an implicitly available `ConstructorTag[T]`. */
-  def constructorTag[T <: js.Any](implicit tag: ConstructorTag[T]): ConstructorTag[T] =
-    tag
+  def constructorTag[T <: js.Any](
+      implicit tag: ConstructorTag[T]): ConstructorTag[T] = tag
 
   /** Invokes any available debugging functionality.
    *  If no debugging functionality is available, this statement has no effect.
@@ -99,8 +98,8 @@ package object js {
   def debugger(): Unit = sys.error("stub")
 
   /** Evaluates JavaScript code and returns the result. */
-  @inline def eval(x: String): Any =
-    js.Dynamic.global.eval(x)
+  @inline
+  def eval(x: String): Any = js.Dynamic.global.eval(x)
 
   /** Marks the annotated class, trait or object as a native JS entity.
    *
@@ -116,7 +115,6 @@ package object js {
    *  must be `= js.native`.
    */
   class native extends scala.annotation.StaticAnnotation // scalastyle:ignore
-
   /** Denotes a method body as native JavaScript. For use in facade types:
    *
    *  {{{
@@ -125,10 +123,9 @@ package object js {
    *  }
    *  }}}
    */
-  def native: Nothing = sys.error("A method defined in a JavaScript raw " +
-      "type of a Scala.js library has been called. This is most likely " +
-      "because you tried to run Scala.js binaries on the JVM. Make sure you " +
-      "are using the JVM version of the libraries.")
+  def native: Nothing =
+    sys.error(
+        "A method defined in a JavaScript raw " + "type of a Scala.js library has been called. This is most likely " + "because you tried to run Scala.js binaries on the JVM. Make sure you " + "are using the JVM version of the libraries.")
 
   /** Allows to cast a value to a facade trait in a type-safe way.
    *
@@ -232,5 +229,4 @@ package object js {
    *    restriction).
    */
   def use[A](x: A): Using[A] = new Using[A](x)
-
 }

@@ -4,6 +4,7 @@
 package org.hamcrest
 
 object MatcherAssert {
+
   def assertThat[T](actual: T, matcher: Matcher[T]): Unit =
     assertThat("", actual, matcher)
 
@@ -11,10 +12,8 @@ object MatcherAssert {
     val _actual = actual.asInstanceOf[AnyRef]
     if (!matcher.matches(_actual)) {
       val description = new StringDescription
-      description
-        .appendText(s"$reason\nExpected: ")
-        .appendDescriptionOf(matcher)
-        .appendText("\n     but: ")
+      description.appendText(s"$reason\nExpected: ")
+        .appendDescriptionOf(matcher).appendText("\n     but: ")
       matcher.describeMismatch(_actual, description)
 
       throw new AssertionError(description.toString)

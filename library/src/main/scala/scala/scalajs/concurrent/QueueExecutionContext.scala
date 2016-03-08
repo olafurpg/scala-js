@@ -3,8 +3,7 @@ package scala.scalajs.concurrent
 import scala.concurrent.ExecutionContextExecutor
 import scalajs.js
 
-private[concurrent] object QueueExecutionContext
-    extends ExecutionContextExecutor {
+private [concurrent] object QueueExecutionContext extends ExecutionContextExecutor {
 
   def execute(runnable: Runnable): Unit = {
     js.timers.setTimeout(0) {
@@ -16,7 +15,5 @@ private[concurrent] object QueueExecutionContext
     }
   }
 
-  def reportFailure(t: Throwable): Unit =
-    t.printStackTrace()
-
+  def reportFailure(t: Throwable): Unit = t.printStackTrace()
 }

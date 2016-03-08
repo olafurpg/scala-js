@@ -6,8 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
-
 package scala.scalajs.js
 
 /** Marker trait for top-level objects representing the JS global scope.

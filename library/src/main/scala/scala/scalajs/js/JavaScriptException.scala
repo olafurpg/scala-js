@@ -6,11 +6,10 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
-
 package scala.scalajs.js
 
 case class JavaScriptException(exception: scala.Any) extends RuntimeException {
+
   override def toString(): String = exception.toString()
 
   override def fillInStackTrace(): Throwable = {

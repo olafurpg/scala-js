@@ -5,12 +5,12 @@ import org.scalajs.core.tools.io._
 /** A dependency on a native JavaScript library that has been successfully
  *  resolved
  */
-final class ResolvedJSDependency(
-    val lib: VirtualJSFile,
-    val minifiedLib: Option[VirtualJSFile],
-    val info: ResolutionInfo)
+final class ResolvedJSDependency(val lib: VirtualJSFile,
+                                 val minifiedLib: Option[VirtualJSFile],
+                                 val info: ResolutionInfo)
 
 object ResolvedJSDependency {
+
   /** Absolute minimum for a [[ResolvedJSDependency]]:
    *
    *  - The library itself

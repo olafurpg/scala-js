@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.testadapter
 
 import org.scalajs.core.tools.io._
@@ -18,34 +17,34 @@ import org.scalajs.jsenv._
 import sbt.testing.{Logger => _, _}
 
 final class ScalaJSFramework(
-    private[testadapter] val frameworkName: String,
-    private[testadapter] val libEnv: ComJSEnv,
-    private[testadapter] val logger: Logger,
-    private[testadapter] val jsConsole: JSConsole
-) extends Framework {
+    private [testadapter] val frameworkName: String,
+    private [testadapter] val libEnv: ComJSEnv,
+    private [testadapter] val logger: Logger,
+    private [testadapter] val jsConsole: JSConsole
+    ) extends Framework {
+  private [ this] val frameworkInfo = fetchFrameworkInfo()
 
-  private[this] val frameworkInfo = fetchFrameworkInfo()
-
-  private[this] var _isRunning = false
+  private [ this] var _isRunning = false
 
   val name: String = frameworkInfo.name
 
   def fingerprints: Array[Fingerprint] = frameworkInfo.fingerprints.toArray
 
-  def runner(args: Array[String], remoteArgs: Array[String],
-      testClassLoader: ClassLoader): Runner = synchronized {
+  def runner(args: Array[String],
+             remoteArgs: Array[String],
+             testClassLoader: ClassLoader): Runner =
+    synchronized {
+      if (_isRunning) {
+        throw new IllegalStateException(
+            "Scala.js test frameworks do not support concurrent runs")
+      }
 
-    if (_isRunning) {
-      throw new IllegalStateException(
-        "Scala.js test frameworks do not support concurrent runs")
+      _isRunning = true
+
+      new ScalaJSRunner(this, args, remoteArgs)
     }
 
-    _isRunning = true
-
-    new ScalaJSRunner(this, args, remoteArgs)
-  }
-
-  private[testadapter] def runDone(): Unit = synchronized(_isRunning = false)
+  private [testadapter] def runDone(): Unit = synchronized(_isRunning = false)
 
   private def fetchFrameworkInfo() = {
     val runner = libEnv.comRunner(frameworkInfoLauncher)

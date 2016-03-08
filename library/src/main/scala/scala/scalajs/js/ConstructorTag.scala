@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package scala.scalajs.js
 
 /** Stores the JS constructor function of a JS class.
@@ -17,19 +16,23 @@ package scala.scalajs.js
  *  materialized when `T` is statically known to be a JS class, i.e., a valid
  *  type argument to `js.constructorOf`.
  */
-final class ConstructorTag[T <: Any] private[scalajs] (
-    val constructor: Dynamic) extends AnyVal {
+final class ConstructorTag[T <: Any] private [scalajs](
+    val constructor: Dynamic)
+    extends AnyVal {
 
   /** Instantiates the class `T` with the specified arguments.
    *
    *  Note that, unlike [[Dynamic.newInstance js.Dynamic.newInstance]], this
    *  method accepts `scala.Any`s as parameters.
    */
-  def newInstance(args: scala.Any*): T =
-    Dynamic.newInstance(constructor)(args.asInstanceOf[Seq[Any]]: _*).asInstanceOf[T]
+  def newInstance(args: scala.Any *): T =
+    Dynamic
+      .newInstance(constructor)(args.asInstanceOf[Seq[Any]]: _ *).asInstanceOf[
+        T]
 }
 
 object ConstructorTag {
+
   /** Implicitly materializes a [[ConstructorTag]].
    *
    *  This method has the same preconditions as

@@ -6,8 +6,6 @@
 **                          |/                                          **
 \*                                                                      */
 
-
-
 package scala.scalajs.js.annotation
 
 /** Exports the given method to JavaScript with named parameters.
@@ -34,5 +32,5 @@ package scala.scalajs.js.annotation
  *  @see [[http://www.scala-js.org/doc/export-to-javascript.html Export Scala.js APIs to JavaScript]]
  */
 class JSExportNamed extends scala.annotation.StaticAnnotation {
-  def this(name: String) = this()
+  def this (name: String) = this()
 }

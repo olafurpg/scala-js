@@ -6,21 +6,20 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package scala.scalajs.macroimpls
 
 /** Represents the way a member of a JS object is selected */
-private[macroimpls] sealed abstract class JSMemberSelection
+private [macroimpls] sealed abstract class JSMemberSelection
 
 /** A member with statically known name */
-private[macroimpls] final case class JSNamedMember(name: String)
+private [macroimpls] final case class JSNamedMember(name: String)
     extends JSMemberSelection
 
 /** Calling the object */
-private[macroimpls] case object JSMemberCall extends JSMemberSelection
+private [macroimpls] case object JSMemberCall extends JSMemberSelection
 
 /** Accessing via brackets (array-like access) */
-private[macroimpls] case object JSMemberBracketAccess extends JSMemberSelection
+private [macroimpls] case object JSMemberBracketAccess extends JSMemberSelection
 
 /** Accessing and calling a member via brackets (with dynamic name) */
-private[macroimpls] case object JSMemberBracketCall extends JSMemberSelection
+private [macroimpls] case object JSMemberBracketCall extends JSMemberSelection

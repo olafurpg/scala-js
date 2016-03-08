@@ -2,14 +2,14 @@ package java.util
 
 import scala.collection.mutable
 
-class LinkedHashMap[K, V] private (inner: mutable.LinkedHashMap[Box[K], V],
-    accessOrder: Boolean) extends HashMap[K, V](inner) {
+class LinkedHashMap[K, V] private(
+    inner: mutable.LinkedHashMap[Box[K], V], accessOrder: Boolean)
+    extends HashMap[K, V](inner) {
   self =>
 
-  def this() =
-    this(mutable.LinkedHashMap.empty[Box[K], V], false)
+  def this () = this(mutable.LinkedHashMap.empty[Box[K], V], false)
 
-  def this(initialCapacity: Int, loadFactor: Float, accessOrder: Boolean) = {
+  def this (initialCapacity: Int, loadFactor: Float, accessOrder: Boolean) = {
     this(mutable.LinkedHashMap.empty[Box[K], V], accessOrder)
     if (initialCapacity < 0)
       throw new IllegalArgumentException("initialCapacity < 0")
@@ -17,13 +17,13 @@ class LinkedHashMap[K, V] private (inner: mutable.LinkedHashMap[Box[K], V],
       throw new IllegalArgumentException("loadFactor <= 0.0")
   }
 
-  def this(initialCapacity: Int, loadFactor: Float) =
-    this(initialCapacity, loadFactor, false)
+  def this (initialCapacity: Int, loadFactor: Float) = this(
+      initialCapacity, loadFactor, false)
 
-  def this(initialCapacity: Int) =
-    this(initialCapacity, LinkedHashMap.DEFAULT_LOAD_FACTOR)
+  def this (initialCapacity: Int) = this(
+      initialCapacity, LinkedHashMap.DEFAULT_LOAD_FACTOR)
 
-  def this(m: Map[_ <: K, _ <: V]) = {
+  def this (m: Map[_ <: K, _ <: V]) = {
     this()
     putAll(m)
   }
@@ -34,7 +34,7 @@ class LinkedHashMap[K, V] private (inner: mutable.LinkedHashMap[Box[K], V],
       val boxedKey = Box(key.asInstanceOf[K])
       if (value != null || containsKey(boxedKey)) {
         inner.remove(boxedKey)
-        inner(boxedKey) = value
+        inner (boxedKey) = value
       }
     }
     value
@@ -64,8 +64,6 @@ class LinkedHashMap[K, V] private (inner: mutable.LinkedHashMap[Box[K], V],
 }
 
 object LinkedHashMap {
-
-  private[LinkedHashMap] final val DEFAULT_INITIAL_CAPACITY = 16
-  private[LinkedHashMap] final val DEFAULT_LOAD_FACTOR = 0.75f
-
+  private [LinkedHashMap] final val DEFAULT_INITIAL_CAPACITY = 16
+  private [LinkedHashMap] final val DEFAULT_LOAD_FACTOR = 0.75f
 }

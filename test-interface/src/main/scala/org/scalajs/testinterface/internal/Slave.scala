@@ -13,29 +13,29 @@ import scala.util.{Try, Success, Failure}
 import org.scalajs.testinterface.ScalaJSClassLoader
 
 @JSExport
-final class Slave(frameworkName: String, args: js.Array[String],
-    remoteArgs: js.Array[String]) extends BridgeBase(frameworkName) {
-
+final class Slave(frameworkName: String,
+                  args: js.Array[String],
+                  remoteArgs: js.Array[String])
+    extends BridgeBase(frameworkName) {
   // State
 
-  private[this] var canSendRunnerMessage = false
+  private [ this] var canSendRunnerMessage = false
 
   /** Queue for messages from the slave runner to the master runner */
-  private[this] val messageQueue = mutable.Queue.empty[String]
+  private [ this] val messageQueue = mutable.Queue.empty[String]
 
-  private[this] var runner: Runner = _
+  private [ this] var runner: Runner = _
 
   protected def handleMsgImpl(cmd: String, strArg: => String): Unit = {
+
     def jsonArg = js.JSON.parse(strArg)
     allowSendRunnerMessage {
       cmd match {
-        case "newRunner" =>
-          reply(newRunner())
+        case "newRunner" => reply(newRunner())
         case "execute" =>
           // No reply here. execute is async
           execute(jsonArg)
-        case "stopSlave" =>
-          reply(stopSlave())
+        case "stopSlave" => reply(stopSlave())
         case "msg" =>
           val res = incomingRunnerMessage(strArg)
           // Only reply if something failed
@@ -63,8 +63,8 @@ final class Slave(frameworkName: String, args: js.Array[String],
       canSendRunnerMessage = true
 
       // Flush the queue
-      while (!messageQueue.isEmpty)
-        sendOutboundRunnerMessage(messageQueue.dequeue)
+      while (!messageQueue.isEmpty) sendOutboundRunnerMessage(
+          messageQueue.dequeue)
 
       body
     } finally {
@@ -76,16 +76,16 @@ final class Slave(frameworkName: String, args: js.Array[String],
 
   private def newRunner(): Try[Unit] = {
     val loader = new ScalaJSClassLoader(js.Dynamic.global)
-    Try(runner = framework.slaveRunner(args.toArray, remoteArgs.toArray,
-        loader, outboundRunnerMessage))
+    Try(runner = framework.slaveRunner(
+        args.toArray, remoteArgs.toArray, loader, outboundRunnerMessage))
   }
 
   private def execute(data: js.Dynamic): Unit = {
     ensureRunnerExists()
 
     val sTask = data.serializedTask.asInstanceOf[String]
-    val task = runner.deserializeTask(sTask, str =>
-      TaskDefSerializer.deserialize(js.JSON.parse(str)))
+    val task = runner.deserializeTask(
+        sTask, str => TaskDefSerializer.deserialize(js.JSON.parse(str)))
 
     val eventHandler = new RemoteEventHandler
 
@@ -109,28 +109,36 @@ final class Slave(frameworkName: String, args: js.Array[String],
 
   private def stopSlave(): Try[Unit] = {
     ensureRunnerExists()
-    val res = Try { runner.done(); () }
+    val res = Try {
+      runner.done();
+      ()
+    }
     runner = null
     res
   }
 
   private def incomingRunnerMessage(msg: String): Try[Unit] = {
     ensureRunnerExists()
-    Try { runner.receiveMessage(msg); () }
+    Try {
+      runner.receiveMessage(msg);
+      ()
+    }
   }
 
   // Private helper classes
 
   private abstract class Invalidatable {
-    private[this] var valid = true
+    private [ this] var valid = true
 
-    private[Slave] def invalidate(): Unit = valid = false
+    private [Slave] def invalidate(): Unit = valid = false
 
     protected def ensureValid(): Unit =
-      if (!valid) throw new IllegalStateException(s"$this has been invalidated")
+      if (!valid)
+        throw new IllegalStateException(s"$this has been invalidated")
   }
 
   private class RemoteEventHandler extends Invalidatable with EventHandler {
+
     def handle(event: Event): Unit = {
       ensureValid()
       val serEvent = EventSerializer.serialize(event)
@@ -138,12 +146,15 @@ final class Slave(frameworkName: String, args: js.Array[String],
     }
   }
 
-  private class RemoteLogger(index: Int,
-      val ansiCodesSupported: Boolean) extends Invalidatable with Logger {
+  private class RemoteLogger(index: Int, val ansiCodesSupported: Boolean)
+      extends Invalidatable with Logger {
 
     def error(msg: String): Unit = send("error", msg)
+
     def warn(msg: String): Unit = send("warn", msg)
+
     def info(msg: String): Unit = send("info", msg)
+
     def debug(msg: String): Unit = send("debug", msg)
 
     def trace(t: Throwable): Unit =
@@ -161,5 +172,4 @@ final class Slave(frameworkName: String, args: js.Array[String],
     if (runner == null)
       throw new IllegalStateException("No runner created")
   }
-
 }

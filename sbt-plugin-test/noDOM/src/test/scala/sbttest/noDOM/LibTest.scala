@@ -3,7 +3,6 @@ package sbttest.noDOM
 import org.scalajs.jasminetest.JasmineTest
 
 object LibTest extends JasmineTest {
-
   describe("Dummy Library") {
     it("should provide `foo`") {
       expect(Lib.foo("")).toEqual("foo")
@@ -15,5 +14,4 @@ object LibTest extends JasmineTest {
       expect(Lib.sq(10)).toEqual(100)
     }
   }
-
 }

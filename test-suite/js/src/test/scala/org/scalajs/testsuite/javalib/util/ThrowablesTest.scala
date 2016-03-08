@@ -11,7 +11,6 @@ import org.scalajs.jasminetest.JasmineTest
 
 object ThrowablesTest extends JasmineTest {
   describe("java.util.Throwables") {
-
     it("should define all java.util Errors/Exceptions") {
       import java.util._
       new ServiceConfigurationError("")

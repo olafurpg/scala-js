@@ -7,7 +7,6 @@ import js.JSConverters._
 /** An ad-hoc but centralized way to detect tests in this test suite */
 @JSExport("scalajs.TestDetector")
 object TestDetector {
-
   private final val basePackage = "org.scalajs.testsuite"
 
   /** Exported Scala.js-defined JS classes cannot be distinguished from
@@ -28,14 +27,16 @@ object TestDetector {
   def loadDetectedTests(): Unit = detectTestsInternal().foreach(_._1())
 
   private def detectTestsInternal(): List[(js.Dynamic, String)] = {
+
     def isExportedModule(item: js.Dynamic): Boolean = {
       /* We make sure to use only select exported modules (not classes) by
        * checking .prototype of the exporters.
        */
       (js.typeOf(item) == "function") && {
         js.isUndefined(item.prototype) || // happens for static methods
-        (js.Object.getPrototypeOf(item.prototype.asInstanceOf[js.Object]) eq
-            js.Object.asInstanceOf[js.Dynamic].prototype)
+        (js.Object
+              .getPrototypeOf(item.prototype.asInstanceOf[js.Object]) eq js.Object.asInstanceOf[
+                js.Dynamic].prototype)
       }
     }
 
@@ -57,5 +58,4 @@ object TestDetector {
     val base = parts.foldLeft(js.Dynamic.global)(_.selectDynamic(_))
     rec(base, basePackage)
   }
-
 }

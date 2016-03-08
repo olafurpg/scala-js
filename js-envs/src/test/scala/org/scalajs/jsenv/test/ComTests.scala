@@ -12,7 +12,6 @@ import scala.concurrent.Await
 
 /** A couple of tests that test communication for mix-in into a test suite */
 trait ComTests extends AsyncTests {
-
   protected def newJSEnv: ComJSEnv
 
   protected def comRunner(code: String): ComJSRunner = {
@@ -25,8 +24,7 @@ trait ComTests extends AsyncTests {
       body
       false
     } catch {
-      case _: ComJSEnv.ComClosedException =>
-        true
+      case _: ComJSEnv.ComClosedException => true
     }
 
     assertTrue(msg, thrown)
@@ -66,11 +64,10 @@ trait ComTests extends AsyncTests {
 
     Thread.sleep(timeout)
 
-    for (i <- 0 until 10)
-      assertEquals(s"msg: $i", com.receive())
+    for (i <- 0 until 10) assertEquals(s"msg: $i", com.receive())
 
-    assertThrowClosed("Expect receive to throw after closing of channel",
-        com.receive())
+    assertThrowClosed(
+        "Expect receive to throw after closing of channel", com.receive())
 
     com.close()
     com.await(DefaultTimeout)
@@ -113,9 +110,9 @@ trait ComTests extends AsyncTests {
     )
 
     for {
-      i   <- 0 until n
+      i <- 0 until n
       env <- envs
-      op  <- ops
+      op <- ops
     } op(env)
 
     envs.foreach(_.close())
@@ -161,8 +158,8 @@ trait ComTests extends AsyncTests {
 
       assertEquals(baseLen * factor, reply.length)
 
-      for (j <- 0 until factor)
-        assertEquals(baseMsg, reply.substring(j * baseLen, (j + 1) * baseLen))
+      for (j <- 0 until factor) assertEquals(
+          baseMsg, reply.substring(j * baseLen, (j + 1) * baseLen))
 
       com.send(reply + reply)
     }
@@ -175,7 +172,8 @@ trait ComTests extends AsyncTests {
   }
 
   @Test
-  def highCharTest: Unit = { // #1536
+  def highCharTest: Unit = {
+    // #1536
     val com = comRunner("""
       scalajsCom.init(scalajsCom.send);
     """)
@@ -244,5 +242,4 @@ trait ComTests extends AsyncTests {
       case _: Throwable =>
     }
   }
-
 }

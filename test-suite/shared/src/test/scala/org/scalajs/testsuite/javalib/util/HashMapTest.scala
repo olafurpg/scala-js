@@ -10,21 +10,23 @@ package org.scalajs.testsuite.javalib.util
 import java.{util => ju}
 
 class HashMapTest extends MapTest {
+
   def factory(): HashMapFactory = new HashMapFactory
 }
 
 object HashMapFactory {
+
   def allFactories: Iterator[MapFactory] =
     Iterator(new HashMapFactory) ++ LinkedHashMapFactory.allFactories
 }
 
 class HashMapFactory extends AbstractMapFactory {
-  override def implementationName: String =
-    "java.util.HashMap"
 
-  override def empty[K, V]: ju.HashMap[K, V] =
-    new ju.HashMap[K, V]
+  override def implementationName: String = "java.util.HashMap"
+
+  override def empty[K, V]: ju.HashMap[K, V] = new ju.HashMap[K, V]
 
   def allowsNullKeys: Boolean = true
+
   def allowsNullValues: Boolean = true
 }

@@ -8,29 +8,26 @@ import LinkingInfo.Semantics._
  *  configuration.
  */
 object SemanticsUtils {
-
   @inline
-  private def asInstanceOfs: Int =
-    linkingInfo.semantics.asInstanceOfs
+  private def asInstanceOfs: Int = linkingInfo.semantics.asInstanceOfs
 
   /** Tests for an erroneous condition governed by the `asInstanceOfs`
    *  semantics.
    */
   @inline
-  def asInstanceOfCheck(shouldThrow: => Boolean,
-      exception: => Throwable): Unit = {
+  def asInstanceOfCheck(
+      shouldThrow: => Boolean, exception: => Throwable): Unit = {
     genericCheck(asInstanceOfs, shouldThrow, exception)
   }
 
   @inline
-  private def genericCheck(complianceLevel: Int, shouldThrow: => Boolean,
-      exception: => Throwable): Unit = {
+  private def genericCheck(complianceLevel: Int,
+                           shouldThrow: => Boolean,
+                           exception: => Throwable): Unit = {
     if (complianceLevel != Unchecked && shouldThrow) {
       if (complianceLevel == Compliant)
         throw exception
-      else
-        throw new UndefinedBehaviorError(exception)
+      else throw new UndefinedBehaviorError(exception)
     }
   }
-
 }

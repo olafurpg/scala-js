@@ -1,20 +1,19 @@
 package java.io
 
 class BufferedReader(in: Reader, sz: Int) extends Reader {
+  def this (in: Reader) = this(in, 4096)
 
-  def this(in: Reader) = this(in, 4096)
-
-  private[this] var buf = new Array[Char](sz)
+  private [ this] var buf = new Array[Char](sz)
 
   /** Last valid value in the buffer (exclusive) */
-  private[this] var end = 0
+  private [ this] var end = 0
 
   /** Next position to read from buffer */
-  private[this] var pos = 0
+  private [ this] var pos = 0
 
-  private[this] var closed = false
+  private [ this] var closed = false
 
-  private[this] var validMark = false
+  private [ this] var validMark = false
 
   override def close(): Unit = {
     closed = true
@@ -85,7 +84,7 @@ class BufferedReader(in: Reader, sz: Int) extends Reader {
       // Check whether we have a \r\n. This may overrun the buffer
       // and then push a value back which may unnecessarily invalidate
       // the mark. This mimics java behavior
-      if (buf(pos-1) == '\r' && prepareRead() && buf(pos) == '\n')
+      if (buf(pos - 1) == '\r' && prepareRead() && buf(pos) == '\n')
         pos += 1 // consume '\n'
 
       res
@@ -117,8 +116,7 @@ class BufferedReader(in: Reader, sz: Int) extends Reader {
   }
 
   /** Prepare the buffer for reading. Returns false if EOF */
-  private def prepareRead(): Boolean =
-    pos < end || fillBuffer()
+  private def prepareRead(): Boolean = pos < end || fillBuffer()
 
   /** Tries to fill the buffer. Returns false if EOF */
   private def fillBuffer(): Boolean = {
@@ -141,5 +139,4 @@ class BufferedReader(in: Reader, sz: Int) extends Reader {
     if (closed)
       throw new IOException("Operation on closed stream")
   }
-
 }

@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 /**
  * All doc-comments marked as "MDN" are by Mozilla Contributors,
  * distributed under the Creative Commons Attribution-ShareAlike license from
@@ -23,16 +22,18 @@ package scala.scalajs.js
  */
 @native
 class Date extends Object {
+  def this (value: Double) = this()
+  def this (value: String) = this()
 
-  def this(value: Double) = this()
-  def this(value: String) = this()
-
-  def this(year: Int, month: Int, date: Int = 1, hours: Int = 0,
-      minutes: Int = 0, seconds: Int = 0, ms: Int = 0) = this()
+  def this (year: Int, month: Int, date: Int = 1, hours: Int = 0,
+  minutes: Int = 0, seconds: Int = 0, ms: Int = 0) = this()
 
   def toDateString(): String = native
+
   def toTimeString(): String = native
+
   def toLocaleDateString(): String = native
+
   def toLocaleTimeString(): String = native
 
   override def valueOf(): Double = native
@@ -158,37 +159,60 @@ class Date extends Object {
   def getTimezoneOffset(): Int = native
 
   def setTime(time: Double): Unit = native
+
   def setMilliseconds(ms: Int): Unit = native
+
   def setUTCMilliseconds(ms: Int): Unit = native
+
   def setSeconds(sec: Int, ms: Int = getMilliseconds()): Unit = native
+
   def setUTCSeconds(sec: Int, ms: Int = getMilliseconds()): Unit = native
-  def setMinutes(min: Int, sec: Int = getSeconds(),
-      ms: Int = getMilliseconds()): Unit = native
-  def setUTCMinutes(min: Int, sec: Int = getSeconds(),
-      ms: Int = getMilliseconds()): Unit = native
-  def setHours(hours: Int, min: Int = getMinutes(),
-      sec: Int = getSeconds(), ms: Int = getMilliseconds()): Unit = native
-  def setUTCHours(hours: Int, min: Int = getMinutes(),
-      sec: Int = getSeconds(), ms: Int = getMilliseconds()): Unit = native
+
+  def setMinutes(
+      min: Int, sec: Int = getSeconds(), ms: Int = getMilliseconds()): Unit =
+    native
+
+  def setUTCMinutes(
+      min: Int, sec: Int = getSeconds(), ms: Int = getMilliseconds()): Unit =
+    native
+
+  def setHours(hours: Int,
+               min: Int = getMinutes(),
+               sec: Int = getSeconds(),
+               ms: Int = getMilliseconds()): Unit = native
+
+  def setUTCHours(hours: Int,
+                  min: Int = getMinutes(),
+                  sec: Int = getSeconds(),
+                  ms: Int = getMilliseconds()): Unit = native
 
   def setDate(date: Int): Unit = native
+
   def setUTCDate(date: Int): Unit = native
+
   def setMonth(month: Int, date: Int = getDate()): Unit = native
+
   def setUTCMonth(month: Int, date: Int = getDate()): Unit = native
-  def setFullYear(year: Int, month: Int = getMonth(),
-      date: Int = getDate()): Unit = native
-  def setUTCFullYear(year: Int, month: Int = getMonth(),
-      date: Int = getDate()): Unit = native
+
+  def setFullYear(
+      year: Int, month: Int = getMonth(), date: Int = getDate()): Unit = native
+
+  def setUTCFullYear(
+      year: Int, month: Int = getMonth(), date: Int = getDate()): Unit = native
 
   def toUTCString(): String = native
+
   def toISOString(): String = native
+
   def toJSON(key: Any): String = native
+
   def toJSON(): String = native
 }
 
 /** Factory for [[js.Date]] objects. */
 @native
 object Date extends Object {
+
   def apply(): String = native
 
   /**
@@ -214,8 +238,13 @@ object Date extends Object {
    */
   def parse(s: String): Double = native
 
-  def UTC(year: Int, month: Int, date: Int = 1, hours: Int = 0,
-      minutes: Int = 0, seconds: Int = 0, ms: Int = 0): Double = native
+  def UTC(year: Int,
+          month: Int,
+          date: Int = 1,
+          hours: Int = 0,
+          minutes: Int = 0,
+          seconds: Int = 0,
+          ms: Int = 0): Double = native
 
   /**
    * Returns the numeric value corresponding to the current time - the number

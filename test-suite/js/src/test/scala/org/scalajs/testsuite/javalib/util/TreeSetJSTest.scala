@@ -22,19 +22,19 @@ object TreeSetJSTest extends TreeSetJSTest(new TreeSetFactory)
 object TreeSetWithNullJSTest extends TreeSetJSTest(new TreeSetWithNullFactory)
 
 class TreeSetJSTest(treeSetTestFactory: TreeSetFactory) extends JasmineTest {
+
   class TestObj(num: Int)
 
   describe(treeSetTestFactory.implementationName) {
-
-    when("compliant-asinstanceofs").
-    it("should throw exception on non comparable objects") {
+    when("compliant-asinstanceofs")
+      .it("should throw exception on non comparable objects") {
       val ts1 = treeSetTestFactory.empty[TestObj]
       assertEquals(0, ts1.size())
       expectThrows(classOf[ClassCastException], ts1.add(new TestObj(111)))
     }
 
-    when("compliant-asinstanceofs").
-    it("should throw exceptions on access outside bound on views") {
+    when("compliant-asinstanceofs")
+      .it("should throw exceptions on access outside bound on views") {
       val l = asJavaCollection(Set(2, 3, 6))
       val ts = treeSetTestFactory.empty[Int]
       ts.addAll(l)

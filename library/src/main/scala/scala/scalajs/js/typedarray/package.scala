@@ -10,11 +10,11 @@ import JSConverters._
 package object typedarray {
 
   // Implicit classes scala.Array -> TypedArray
-
   /** <span class="badge badge-ecma6" style="float: right;">ECMAScript 6</span>
    *  Adds `toTypedArray` conversion to an `Array[Byte]`
    */
   implicit class AB2TA(val array: scala.Array[Byte]) extends AnyVal {
+
     def toTypedArray: Int8Array = byteArray2Int8Array(array)
   }
 
@@ -22,6 +22,7 @@ package object typedarray {
    *  Adds `toTypedArray` conversion to an `Array[Short]`
    */
   implicit class AS2TA(val array: scala.Array[Short]) extends AnyVal {
+
     def toTypedArray: Int16Array = shortArray2Int16Array(array)
   }
 
@@ -29,6 +30,7 @@ package object typedarray {
    *  Adds `toTypedArray` conversion to an `Array[Char]`
    */
   implicit class AC2TA(val array: scala.Array[Char]) extends AnyVal {
+
     def toTypedArray: Uint16Array = charArray2Uint16Array(array)
   }
 
@@ -36,6 +38,7 @@ package object typedarray {
    *  Adds `toTypedArray` conversion to an `Array[Int]`
    */
   implicit class AI2TA(val array: scala.Array[Int]) extends AnyVal {
+
     def toTypedArray: Int32Array = intArray2Int32Array(array)
   }
 
@@ -43,6 +46,7 @@ package object typedarray {
    *  Adds `toTypedArray` conversion to an `Array[Float]`
    */
   implicit class AF2TA(val array: scala.Array[Float]) extends AnyVal {
+
     def toTypedArray: Float32Array = floatArray2Float32Array(array)
   }
 
@@ -50,15 +54,16 @@ package object typedarray {
    *  Adds `toTypedArray` conversion to an `Array[Double]`
    */
   implicit class AD2TA(val array: scala.Array[Double]) extends AnyVal {
+
     def toTypedArray: Float64Array = doubleArray2Float64Array(array)
   }
 
   // Implicit classes TypedArray -> scala.Array
-
   /** <span class="badge badge-ecma6" style="float: right;">ECMAScript 6</span>
    *  Adds `toArray` conversion to a [[Int8Array]]
    */
   implicit class TA2AB(val array: Int8Array) extends AnyVal {
+
     def toArray: scala.Array[Byte] = int8Array2ByteArray(array)
   }
 
@@ -66,6 +71,7 @@ package object typedarray {
    *  Adds `toArray` conversion to a [[Int16Array]]
    */
   implicit class TA2AS(val array: Int16Array) extends AnyVal {
+
     def toArray: scala.Array[Short] = int16Array2ShortArray(array)
   }
 
@@ -73,6 +79,7 @@ package object typedarray {
    *  Adds `toArray` conversion to a [[Uint16Array]]
    */
   implicit class TA2AC(val array: Uint16Array) extends AnyVal {
+
     def toArray: scala.Array[Char] = uint16Array2CharArray(array)
   }
 
@@ -80,6 +87,7 @@ package object typedarray {
    *  Adds `toArray` conversion to a [[Int32Array]]
    */
   implicit class TA2AI(val array: Int32Array) extends AnyVal {
+
     def toArray: scala.Array[Int] = int32Array2IntArray(array)
   }
 
@@ -87,6 +95,7 @@ package object typedarray {
    *  Adds `toArray` conversion to a [[Float32Array]]
    */
   implicit class TA2AF(val array: Float32Array) extends AnyVal {
+
     def toArray: scala.Array[Float] = float32Array2FloatArray(array)
   }
 
@@ -94,6 +103,7 @@ package object typedarray {
    *  Adds `toArray` conversion to a [[Float64Array]]
    */
   implicit class TA2AD(val array: Float64Array) extends AnyVal {
+
     def toArray: scala.Array[Double] = float64Array2DoubleArray(array)
   }
 
@@ -111,7 +121,7 @@ package object typedarray {
     val dest = new Uint16Array(len)
     var i = 0
     while (i < len) {
-      dest(i) = array(i).toInt
+      dest (i) = array(i).toInt
       i += 1
     }
     dest
@@ -126,14 +136,15 @@ package object typedarray {
   def doubleArray2Float64Array(array: scala.Array[Double]): Float64Array =
     array2typedArrayImpl(array, new Float64Array(array.length))
 
-  @inline private def array2typedArrayImpl[ // scalastyle:ignore
+  @inline
+  private def array2typedArrayImpl[
+      // scalastyle:ignore
       @specialized(Byte, Short, Int, Float, Double) T,
-      Repr <: TypedArray[T, Repr]](
-      array: scala.Array[T], dest: Repr): Repr = {
+      Repr <: TypedArray[T, Repr]](array: scala.Array[T], dest: Repr): Repr = {
     val len = array.length
     var i = 0
     while (i < len) {
-      dest(i) = array(i)
+      dest (i) = array(i)
       i += 1
     }
     dest
@@ -153,7 +164,7 @@ package object typedarray {
     val dest = new scala.Array[Char](len)
     var i = 0
     while (i < len) {
-      dest(i) = array(i).toChar
+      dest (i) = array(i).toChar
       i += 1
     }
     dest
@@ -168,17 +179,18 @@ package object typedarray {
   def float64Array2DoubleArray(array: Float64Array): scala.Array[Double] =
     typedArray2arrayImpl(array, new scala.Array(array.length))
 
-  @inline private def typedArray2arrayImpl[ // scalastyle:ignore
+  @inline
+  private def typedArray2arrayImpl[
+      // scalastyle:ignore
       @specialized(Byte, Short, Int, Float, Double) T,
       Repr <: TypedArray[T, Repr]](
       array: Repr, dest: scala.Array[T]): scala.Array[T] = {
     val len = dest.length
     var i = 0
     while (i < len) {
-      dest(i) = array(i)
+      dest (i) = array(i)
       i += 1
     }
     dest
   }
-
 }

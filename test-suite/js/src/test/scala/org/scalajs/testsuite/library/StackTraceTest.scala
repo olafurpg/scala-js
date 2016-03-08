@@ -24,8 +24,7 @@ object StackTraceTest extends JasmineTest {
     def f(x: Int): Int = {
       if (x > 10)
         throw new IllegalArgumentException(x.toString)
-      else
-        x + 4
+      else x + 4
     }
   }
 
@@ -42,8 +41,8 @@ object StackTraceTest extends JasmineTest {
     val z = new Bar().g(7)
   }
 
-  private def verifyClassMethodNames(
-      places: (String, String)*)(body: => Any): Unit = {
+  private def verifyClassMethodNames(places: (String, String) *)(
+      body: => Any): Unit = {
     try {
       body
       throw new AssertionError("body should have thrown an exception")
@@ -65,10 +64,8 @@ object StackTraceTest extends JasmineTest {
   }
 
   describe("scala.scalajs.runtime.StackTrace") {
-
-    when("nodejs").
-    unlessAny("fullopt-stage", "strong-mode").
-    it("decode class name and method name") {
+    when("nodejs").unlessAny("fullopt-stage", "strong-mode")
+      .it("decode class name and method name") {
       val Error = js.constructorOf[js.Error]
       val oldStackTraceLimit = Error.stackTraceLimit
       Error.stackTraceLimit = 20
@@ -86,20 +83,21 @@ object StackTraceTest extends JasmineTest {
           new Foo().h(78)
         }
 
-        verifyClassMethodNames("Foo" -> "f", "FooTrait$class" -> "h",
-            "Baz" -> "<init>") {
+        verifyClassMethodNames("Foo" -> "f",
+                               "FooTrait$class" -> "h",
+                               "Baz" -> "<init>") {
           new Baz()
         }
 
-        verifyClassMethodNames("Foo" -> "f", "Bar" -> "g",
-            "Foobar$" -> "<clinit>", "Foobar$" -> "<init>") {
+        verifyClassMethodNames("Foo" -> "f",
+                               "Bar" -> "g",
+                               "Foobar$" -> "<clinit>",
+                               "Foobar$" -> "<init>") {
           Foobar.z
         }
       } finally {
         Error.stackTraceLimit = oldStackTraceLimit
       }
     }
-
   }
-
 }

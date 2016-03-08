@@ -7,7 +7,6 @@ import js.annotation.JSExport
 
 @JSExport
 final class InfoSender(frameworkName: String) {
-
   @JSExport
   def initAndSend(): Unit = {
     Com.init((_: String) => ())
@@ -19,10 +18,7 @@ final class InfoSender(frameworkName: String) {
     val framework = FrameworkLoader.loadFramework(frameworkName)
     val fingerprints =
       framework.fingerprints.map(FingerprintSerializer.serialize).toJSArray
-    val data = lit(
-        name = framework.name,
-        fingerprints = fingerprints)
+    val data = lit(name = framework.name, fingerprints = fingerprints)
     Com.send(js.JSON.stringify(data))
   }
-
 }

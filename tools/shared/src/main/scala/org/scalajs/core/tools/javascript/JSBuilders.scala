@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.tools.javascript
 
 import scala.annotation.tailrec
@@ -15,7 +14,7 @@ import scala.collection.mutable
 
 import java.io._
 import java.util.regex.Pattern
-import java.net.{ URI, URISyntaxException }
+import java.net.{URI, URISyntaxException}
 
 import org.scalajs.core.ir.Position
 import org.scalajs.core.tools.io._
@@ -32,22 +31,21 @@ trait JSTreeBuilder {
   def complete(): Unit = ()
 }
 
-class JSFileBuilder(val name: String,
-    protected val outputWriter: Writer) extends JSTreeBuilder {
+class JSFileBuilder(val name: String, protected val outputWriter: Writer)
+    extends JSTreeBuilder {
+
   def addLine(line: String): Unit = {
     outputWriter.write(line)
     outputWriter.write('\n')
   }
 
-  def addLines(lines: Seq[String]): Unit =
-    lines.foreach(addLine)
+  def addLines(lines: Seq[String]): Unit = lines.foreach(addLine)
 
   def addFile(file: VirtualJSFile): Unit =
     addPartsOfFile(file)(!_.startsWith("//# sourceMappingURL="))
 
   def addPartsOfFile(file: VirtualJSFile)(selector: String => Boolean): Unit = {
-    for (line <- file.readLines() if selector(line))
-      addLine(line)
+    for (line <- file.readLines() if selector(line)) addLine(line)
   }
 
   /** Add a JavaScript tree representing a statement.
@@ -67,8 +65,8 @@ class JSFileBuilder(val name: String,
   }
 }
 
-class JSFileBuilderWithSourceMapWriter(n: String, ow: Writer,
-    protected val sourceMapWriter: SourceMapWriter)
+class JSFileBuilderWithSourceMapWriter(
+    n: String, ow: Writer, protected val sourceMapWriter: SourceMapWriter)
     extends JSFileBuilder(n, ow) {
 
   override def addLine(line: String): Unit = {
@@ -121,8 +119,8 @@ class JSFileBuilderWithSourceMapWriter(n: String, ow: Writer,
   }
 
   override def addJSTree(tree: Trees.Tree): Unit = {
-    val printer = new Printers.JSTreePrinterWithSourceMap(
-        outputWriter, sourceMapWriter)
+    val printer =
+      new Printers.JSTreePrinterWithSourceMap(outputWriter, sourceMapWriter)
     printer.printTopLevelTree(tree)
     // Do not close the printer: we do not have ownership of the writers
   }
@@ -131,16 +129,18 @@ class JSFileBuilderWithSourceMapWriter(n: String, ow: Writer,
     super.complete()
     sourceMapWriter.complete()
   }
-
 }
 
-class JSFileBuilderWithSourceMap(n: String, ow: Writer,
+class JSFileBuilderWithSourceMap(
+    n: String,
+    ow: Writer,
     sourceMapOutputWriter: Writer,
     relativizeSourceMapBasePath: Option[URI] = None)
     extends JSFileBuilderWithSourceMapWriter(
-        n, ow,
-        new SourceMapWriter(sourceMapOutputWriter, n,
-            relativizeSourceMapBasePath)) {
+        n,
+        ow,
+        new SourceMapWriter(
+            sourceMapOutputWriter, n, relativizeSourceMapBasePath)) {
 
   override def complete(): Unit = {
     addLine("//# sourceMappingURL=" + name + ".map")

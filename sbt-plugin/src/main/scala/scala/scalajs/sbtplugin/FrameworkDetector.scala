@@ -10,8 +10,7 @@ import org.scalajs.jsenv._
 
 import scala.collection.mutable
 
-private[sbtplugin] final class FrameworkDetector(jsEnv: JSEnv) {
-
+private [sbtplugin] final class FrameworkDetector(jsEnv: JSEnv) {
   import FrameworkDetector._
 
   /**
@@ -66,21 +65,23 @@ private[sbtplugin] final class FrameworkDetector(jsEnv: JSEnv) {
     runner.run(NullLogger, console)
 
     // Filter jsDependencies unexpected output
-    val results = console.buf collect {
-      case s if s.startsWith(ConsoleFrameworkPrefix) =>
-        s.stripPrefix(ConsoleFrameworkPrefix)
-    }
+    val results =
+      console.buf collect {
+        case s if s.startsWith(ConsoleFrameworkPrefix) =>
+          s.stripPrefix(ConsoleFrameworkPrefix)
+      }
 
     assert(results.size == frameworks.size)
 
     (frameworks zip results).filter(_._2.nonEmpty).toMap
   }
-
 }
 
 object FrameworkDetector {
+
   private class StoreConsole extends JSConsole {
     val buf = mutable.Buffer.empty[String]
+
     def log(msg: Any): Unit = buf += msg.toString
   }
 

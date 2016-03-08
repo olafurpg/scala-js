@@ -11,14 +11,12 @@ import scala.scalajs.js
 import org.scalajs.jasminetest.JasmineTest
 
 object ThisFunctionTest extends JasmineTest {
-
   describe("scala.scalajs.js.ThisFunctionN") {
-
     it("should provide an implicit conversion from Scala function to js.ThisFunction") {
       val g = js.eval("""
           var g = function(f, x) { return f.call(x, 42, x.foo); }; g;
       """).asInstanceOf[js.Function2[js.ThisFunction2[ // scalastyle:ignore
-          js.Dynamic, Int, String, String], js.Dynamic, String]]
+      js.Dynamic, Int, String, String], js.Dynamic, String]]
 
       val f = { (thiz: js.Dynamic, v: Int, u: String) =>
         expect(thiz).toBeTruthy()
@@ -35,7 +33,7 @@ object ThisFunctionTest extends JasmineTest {
       val g = js.eval("""
           var g = function(f, x) { return f.call(x, 42, x.foo); }; g;
       """).asInstanceOf[js.Function2[js.ThisFunction2[ // scalastyle:ignore
-          js.Dynamic, Int, String, String], js.Dynamic, String]]
+      js.Dynamic, Int, String, String], js.Dynamic, String]]
 
       val obj = js.Object().asInstanceOf[js.Dynamic]
       obj.foo = "foo"
@@ -65,6 +63,5 @@ object ThisFunctionTest extends JasmineTest {
       obj.foo = "foo"
       expect(f(obj, 42)).toEqual("foo:42")
     }
-
   }
 }

@@ -2,7 +2,7 @@ package org.scalajs.core.compiler.test.util
 
 import scala.tools.nsc._
 import reporters.{Reporter, ConsoleReporter}
-import scala.reflect.internal.util.{ SourceFile, BatchSourceFile }
+import scala.reflect.internal.util.{SourceFile, BatchSourceFile}
 
 import org.scalajs.core.compiler.ScalaJSPlugin
 
@@ -21,13 +21,14 @@ abstract class DirectTest {
     s
   }
 
-  def newScalaJSCompiler(args: String*): Global = {
+  def newScalaJSCompiler(args: String *): Global = {
     val settings = newSettings(
-        List(
-            "-d", testOutputPath,
-            "-bootclasspath", scalaLibPath,
-            "-classpath", scalaJSLibPath) ++
-        extraArgs ++ args.toList)
+        List("-d",
+             testOutputPath,
+             "-bootclasspath",
+             scalaLibPath,
+             "-classpath",
+             scalaJSLibPath) ++ extraArgs ++ args.toList)
 
     lazy val global: Global = new Global(settings, newReporter(settings)) {
       override lazy val plugins = newScalaJSPlugin(global) :: Nil
@@ -41,22 +42,23 @@ abstract class DirectTest {
 
   def newReporter(settings: Settings): Reporter = new ConsoleReporter(settings)
 
-  private def newSources(codes: String*) = codes.toList.zipWithIndex map {
-    case (src, idx) => new BatchSourceFile(s"newSource${idx + 1}.scala", src)
-  }
+  private def newSources(codes: String *) =
+    codes.toList.zipWithIndex map {
+      case (src, idx) => new BatchSourceFile(s"newSource${idx + 1}.scala", src)
+    }
 
   def withRun[T](global: Global)(f: global.Run => T): T = {
     global.reporter.reset()
     f(new global.Run)
   }
 
-  def compileSources(global: Global)(sources: SourceFile*): Boolean = {
+  def compileSources(global: Global)(sources: SourceFile *): Boolean = {
     withRun(global)(_ compileSources sources.toList)
     !global.reporter.hasErrors
   }
 
   def compileString(global: Global)(sourceCode: String): Boolean =
-    compileSources(global)(newSources(sourceCode): _*)
+    compileSources(global)(newSources(sourceCode): _ *)
 
   def compileString(sourceCode: String): Boolean =
     compileString(defaultGlobal)(sourceCode)
@@ -66,10 +68,13 @@ abstract class DirectTest {
   // - org.scalajs.core.compiler.test.JSExportTest
   // - org.scalajs.core.compiler.test.JSDynamicLiteralTest
   // Filed as #1443
+
   def defaultGlobal: Global = newScalaJSCompiler()
 
   def testOutputPath: String = sys.props("scala.scalajs.compiler.test.output")
-  def scalaJSLibPath: String = sys.props("scala.scalajs.compiler.test.scalajslib")
-  def scalaLibPath: String   = sys.props("scala.scalajs.compiler.test.scalalib")
 
+  def scalaJSLibPath: String =
+    sys.props("scala.scalajs.compiler.test.scalajslib")
+
+  def scalaLibPath: String = sys.props("scala.scalajs.compiler.test.scalalib")
 }

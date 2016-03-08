@@ -11,9 +11,7 @@ import scala.scalajs.js
 import org.scalajs.jasminetest.JasmineTest
 
 object ArrayTest extends JasmineTest {
-
   describe("scala.scalajs.js.Array") {
-
     it("should provide implicit conversion from js.Array to ArrayOps - String") {
       var propCount = 0
       var propString = ""
@@ -69,11 +67,9 @@ object ArrayTest extends JasmineTest {
       expect(propCount).toEqual(2)
       expect(propString).toEqual("VC(5)VC(-4)")
     }
-
   }
 
   describe("scala.scalajs.js.JSConverters.JSRichGenTraversableOnce") {
-
     import js.JSConverters._
 
     it("should provide toJSArray") {
@@ -84,11 +80,10 @@ object ArrayTest extends JasmineTest {
       // The following fails on 2.10.x
       //expect(Some("Hello World").toJSArray).toEqual(js.Array("Hello World"))
     }
-
   }
 
   private class VC(val x: Int) extends AnyVal {
+
     override def toString(): String = s"VC($x)"
   }
-
 }

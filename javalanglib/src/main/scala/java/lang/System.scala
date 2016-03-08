@@ -11,45 +11,44 @@ object System {
   var err: PrintStream = new JSConsoleBasedPrintStream(isErr = true)
   var in: InputStream = null
 
-  def setIn(in: InputStream): Unit =
-    this.in = in
+  def setIn(in: InputStream): Unit = this.in = in
 
-  def setOut(out: PrintStream): Unit =
-    this.out = out
+  def setOut(out: PrintStream): Unit = this.out = out
 
-  def setErr(err: PrintStream): Unit =
-    this.err = err
+  def setErr(err: PrintStream): Unit = this.err = err
 
   def currentTimeMillis(): scala.Long = {
     (new js.Date).getTime().toLong
   }
 
-  private[this] val getHighPrecisionTime: js.Function0[scala.Double] = {
+  private [ this] val getHighPrecisionTime: js.Function0[scala.Double] = {
     import js.DynamicImplicits.truthValue
 
     // We've got to use selectDynamic explicitly not to crash Scala 2.10
     if (global.selectDynamic("performance")) {
-      if (global.performance.selectDynamic("now")) {
-        () => global.performance.now().asInstanceOf[scala.Double]
-      } else if (global.performance.selectDynamic("webkitNow")) {
-        () => global.performance.webkitNow().asInstanceOf[scala.Double]
-      } else {
-        () => new js.Date().getTime()
+      if (global.performance.selectDynamic("now")) { () =>
+        global.performance.now().asInstanceOf[scala.Double]
+      } else if (global.performance.selectDynamic("webkitNow")) { () =>
+        global.performance.webkitNow().asInstanceOf[scala.Double]
+      } else { () =>
+        new js.Date().getTime()
       }
-    } else {
-      () => new js.Date().getTime()
+    } else { () =>
+      new js.Date().getTime()
     }
   }
 
-  def nanoTime(): scala.Long =
-    (getHighPrecisionTime() * 1000000).toLong
+  def nanoTime(): scala.Long = (getHighPrecisionTime() * 1000000).toLong
 
-  def arraycopy(src: Object, srcPos: scala.Int, dest: Object,
-      destPos: scala.Int, length: scala.Int): Unit = {
-
+  def arraycopy(src: Object,
+                srcPos: scala.Int,
+                dest: Object,
+                destPos: scala.Int,
+                length: scala.Int): Unit = {
     import scala.{Boolean, Char, Byte, Short, Int, Long, Float, Double}
 
-    @inline def checkIndices(srcLen: Int, destLen: Int): Unit = {
+    @inline
+    def checkIndices(srcLen: Int, destLen: Int): Unit = {
       if (srcPos < 0 || destPos < 0 || length < 0 ||
           srcPos + length > srcLen || destPos + length > destLen)
         throw new ArrayIndexOutOfBoundsException("Array index out of bounds")
@@ -58,20 +57,21 @@ object System {
     def mismatch(): Nothing =
       throw new ArrayStoreException("Incompatible array types")
 
-    val forward = (src ne dest) || destPos < srcPos || srcPos + length < destPos
+    val forward =
+      (src ne dest) || destPos < srcPos || srcPos + length < destPos
 
     def copyPrim[@specialized T](src: Array[T], dest: Array[T]): Unit = {
       checkIndices(src.length, dest.length)
       if (forward) {
         var i = 0
         while (i < length) {
-          dest(i+destPos) = src(i+srcPos)
+          dest (i + destPos) = src(i + srcPos)
           i += 1
         }
       } else {
-        var i = length-1
+        var i = length - 1
         while (i >= 0) {
-          dest(i+destPos) = src(i+srcPos)
+          dest (i + destPos) = src(i + srcPos)
           i -= 1
         }
       }
@@ -82,13 +82,13 @@ object System {
       if (forward) {
         var i = 0
         while (i < length) {
-          dest(i+destPos) = src(i+srcPos)
+          dest (i + destPos) = src(i + srcPos)
           i += 1
         }
       } else {
-        var i = length-1
+        var i = length - 1
         while (i >= 0) {
-          dest(i+destPos) = src(i+srcPos)
+          dest (i + destPos) = src(i + srcPos)
           i -= 1
         }
       }
@@ -96,62 +96,61 @@ object System {
 
     if (src == null || dest == null) {
       throw new NullPointerException()
-    } else (src match {
-      case src: Array[AnyRef] =>
-        dest match {
-          case dest: Array[AnyRef] => copyRef(src, dest)
-          case _                   => mismatch()
-        }
-      case src: Array[Boolean] =>
-        dest match {
-          case dest: Array[Boolean] => copyPrim(src, dest)
-          case _                    => mismatch()
-        }
-      case src: Array[Char] =>
-        dest match {
-          case dest: Array[Char] => copyPrim(src, dest)
-          case _                 => mismatch()
-        }
-      case src: Array[Byte] =>
-        dest match {
-          case dest: Array[Byte] => copyPrim(src, dest)
-          case _                 => mismatch()
-        }
-      case src: Array[Short] =>
-        dest match {
-          case dest: Array[Short] => copyPrim(src, dest)
-          case _                  => mismatch()
-        }
-      case src: Array[Int] =>
-        dest match {
-          case dest: Array[Int] => copyPrim(src, dest)
-          case _                => mismatch()
-        }
-      case src: Array[Long] =>
-        dest match {
-          case dest: Array[Long] => copyPrim(src, dest)
-          case _                 => mismatch()
-        }
-      case src: Array[Float] =>
-        dest match {
-          case dest: Array[Float] => copyPrim(src, dest)
-          case _                  => mismatch()
-        }
-      case src: Array[Double] =>
-        dest match {
-          case dest: Array[Double] => copyPrim(src, dest)
-          case _                   => mismatch()
-        }
-      case _ =>
-        mismatch()
-    })
+    } else
+      (src match {
+        case src: Array[AnyRef] =>
+          dest match {
+            case dest: Array[AnyRef] => copyRef(src, dest)
+            case _ => mismatch()
+          }
+        case src: Array[Boolean] =>
+          dest match {
+            case dest: Array[Boolean] => copyPrim(src, dest)
+            case _ => mismatch()
+          }
+        case src: Array[Char] =>
+          dest match {
+            case dest: Array[Char] => copyPrim(src, dest)
+            case _ => mismatch()
+          }
+        case src: Array[Byte] =>
+          dest match {
+            case dest: Array[Byte] => copyPrim(src, dest)
+            case _ => mismatch()
+          }
+        case src: Array[Short] =>
+          dest match {
+            case dest: Array[Short] => copyPrim(src, dest)
+            case _ => mismatch()
+          }
+        case src: Array[Int] =>
+          dest match {
+            case dest: Array[Int] => copyPrim(src, dest)
+            case _ => mismatch()
+          }
+        case src: Array[Long] =>
+          dest match {
+            case dest: Array[Long] => copyPrim(src, dest)
+            case _ => mismatch()
+          }
+        case src: Array[Float] =>
+          dest match {
+            case dest: Array[Float] => copyPrim(src, dest)
+            case _ => mismatch()
+          }
+        case src: Array[Double] =>
+          dest match {
+            case dest: Array[Double] => copyPrim(src, dest)
+            case _ => mismatch()
+          }
+        case _ => mismatch()
+      })
   }
 
   def identityHashCode(x: Object): scala.Int = {
     (x: Any) match {
       case null => 0
-      case _:scala.Boolean | _:scala.Double | _:String | () =>
-        x.hashCode()
+      case _: scala.Boolean | _: scala.Double | _: String | () => x.hashCode()
       case _ =>
         import IDHashCode._
         if (x.getClass == null) {
@@ -197,8 +196,7 @@ object System {
     val idHashCodeMap =
       if (assumingES6 || !js.isUndefined(global.WeakMap))
         js.Dynamic.newInstance(global.WeakMap)()
-      else
-        null
+      else null
 
     def nextIDHashCode(): Int = {
       val r = lastIDHashCode + 1
@@ -217,12 +215,12 @@ object System {
   //def getenv(name: String): String
 
   def exit(status: scala.Int): Unit = Runtime.getRuntime().exit(status)
+
   def gc(): Unit = Runtime.getRuntime().gc()
 }
 
-private[lang] final class JSConsoleBasedPrintStream(isErr: Boolean)
+private [lang] final class JSConsoleBasedPrintStream(isErr: Boolean)
     extends PrintStream(new JSConsoleBasedPrintStream.DummyOutputStream) {
-
   import JSConsoleBasedPrintStream._
 
   /** Whether the buffer is flushed.
@@ -232,8 +230,7 @@ private[lang] final class JSConsoleBasedPrintStream(isErr: Boolean)
   private var flushed: scala.Boolean = true
   private var buffer: String = ""
 
-  override def write(b: Int): Unit =
-    write(Array(b.toByte), 0, 1)
+  override def write(b: Int): Unit = write(Array(b.toByte), 0, 1)
 
   override def write(buf: Array[scala.Byte], off: Int, len: Int): Unit = {
     /* This does *not* decode buf as a sequence of UTF-8 code units.
@@ -251,15 +248,26 @@ private[lang] final class JSConsoleBasedPrintStream(isErr: Boolean)
     }
   }
 
-  override def print(b: scala.Boolean): Unit     = printString(String.valueOf(b))
-  override def print(c: scala.Char): Unit        = printString(String.valueOf(c))
-  override def print(i: scala.Int): Unit         = printString(String.valueOf(i))
-  override def print(l: scala.Long): Unit        = printString(String.valueOf(l))
-  override def print(f: scala.Float): Unit       = printString(String.valueOf(f))
-  override def print(d: scala.Double): Unit      = printString(String.valueOf(d))
-  override def print(s: Array[scala.Char]): Unit = printString(String.valueOf(s))
-  override def print(s: String): Unit            = printString(if (s == null) "null" else s)
-  override def print(obj: AnyRef): Unit          = printString(String.valueOf(obj))
+  override def print(b: scala.Boolean): Unit = printString(String.valueOf(b))
+
+  override def print(c: scala.Char): Unit = printString(String.valueOf(c))
+
+  override def print(i: scala.Int): Unit = printString(String.valueOf(i))
+
+  override def print(l: scala.Long): Unit = printString(String.valueOf(l))
+
+  override def print(f: scala.Float): Unit = printString(String.valueOf(f))
+
+  override def print(d: scala.Double): Unit = printString(String.valueOf(d))
+
+  override def print(s: Array[scala.Char]): Unit =
+    printString(String.valueOf(s))
+
+  override def print(s: String): Unit =
+    printString(if (s == null) "null"
+    else s)
+
+  override def print(obj: AnyRef): Unit = printString(String.valueOf(obj))
 
   override def println(): Unit = printString("\n")
 
@@ -279,7 +287,7 @@ private[lang] final class JSConsoleBasedPrintStream(isErr: Boolean)
         doWriteLine(buffer + rest.substring(0, nlPos))
         buffer = ""
         flushed = true
-        rest = rest.substring(nlPos+1)
+        rest = rest.substring(nlPos + 1)
       }
     }
   }
@@ -289,11 +297,12 @@ private[lang] final class JSConsoleBasedPrintStream(isErr: Boolean)
    * line with continuation symbol at the end and schedule a line continuation
    * symbol for the new line if the buffer is flushed.
    */
-  override def flush(): Unit = if (!flushed) {
-    doWriteLine(buffer + LineContEnd)
-    buffer = LineContStart
-    flushed = true
-  }
+  override def flush(): Unit =
+    if (!flushed) {
+      doWriteLine(buffer + LineContEnd)
+      buffer = LineContStart
+      flushed = true
+    }
 
   override def close(): Unit = ()
 
@@ -304,17 +313,17 @@ private[lang] final class JSConsoleBasedPrintStream(isErr: Boolean)
     if (global.selectDynamic("console")) {
       if (isErr && global.console.selectDynamic("error"))
         global.console.error(line)
-      else
-        global.console.log(line)
+      else global.console.log(line)
     }
   }
 }
 
-private[lang] object JSConsoleBasedPrintStream {
+private [lang] object JSConsoleBasedPrintStream {
   private final val LineContEnd: String = "\u21A9"
   private final val LineContStart: String = "\u21AA"
 
   class DummyOutputStream extends OutputStream {
+
     def write(c: Int): Unit =
       throw new AssertionError(
           "Should not get in JSConsoleBasedPrintStream.DummyOutputStream")

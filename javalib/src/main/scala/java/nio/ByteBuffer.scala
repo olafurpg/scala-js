@@ -5,8 +5,7 @@ import scala.scalajs.js.typedarray._
 object ByteBuffer {
   private final val HashSeed = -547316498 // "java.nio.ByteBuffer".##
 
-  def allocate(capacity: Int): ByteBuffer =
-    wrap(new Array[Byte](capacity))
+  def allocate(capacity: Int): ByteBuffer = wrap(new Array[Byte](capacity))
 
   def allocateDirect(capacity: Int): ByteBuffer =
     TypedArrayByteBuffer.allocate(capacity)
@@ -14,33 +13,29 @@ object ByteBuffer {
   def wrap(array: Array[Byte], offset: Int, length: Int): ByteBuffer =
     HeapByteBuffer.wrap(array, 0, array.length, offset, length, false)
 
-  def wrap(array: Array[Byte]): ByteBuffer =
-    wrap(array, 0, array.length)
+  def wrap(array: Array[Byte]): ByteBuffer = wrap(array, 0, array.length)
 
   // Extended API
 
-  def wrap(array: ArrayBuffer): ByteBuffer =
-    TypedArrayByteBuffer.wrap(array)
+  def wrap(array: ArrayBuffer): ByteBuffer = TypedArrayByteBuffer.wrap(array)
 
   def wrap(array: ArrayBuffer, byteOffset: Int, length: Int): ByteBuffer =
     TypedArrayByteBuffer.wrap(array, byteOffset, length)
 
-  def wrap(array: Int8Array): ByteBuffer =
-    TypedArrayByteBuffer.wrap(array)
+  def wrap(array: Int8Array): ByteBuffer = TypedArrayByteBuffer.wrap(array)
 }
 
-abstract class ByteBuffer private[nio] (
-    _capacity: Int, private[nio] val _array: Array[Byte],
-    private[nio] val _arrayOffset: Int)
+abstract class ByteBuffer private [nio](_capacity: Int,
+                                        private [nio] val _array: Array[Byte],
+                                        private [nio] val _arrayOffset: Int)
     extends Buffer(_capacity) with Comparable[ByteBuffer] {
+  private [nio] type ElementType = Byte
+  private [nio] type BufferType = ByteBuffer
+  private [nio] type TypedArrayType = Int8Array
 
-  private[nio] type ElementType = Byte
-  private[nio] type BufferType = ByteBuffer
-  private[nio] type TypedArrayType = Int8Array
+  def this (_capacity: Int) = this(_capacity, null, -1)
 
-  def this(_capacity: Int) = this(_capacity, null, -1)
-
-  private[nio] var _isBigEndian: Boolean = true
+  private [nio] var _isBigEndian: Boolean = true
 
   def slice(): ByteBuffer
 
@@ -60,28 +55,25 @@ abstract class ByteBuffer private[nio] (
   def get(dst: Array[Byte], offset: Int, length: Int): ByteBuffer =
     GenBuffer(this).generic_get(dst, offset, length)
 
-  def get(dst: Array[Byte]): ByteBuffer =
-    get(dst, 0, dst.length)
+  def get(dst: Array[Byte]): ByteBuffer = get(dst, 0, dst.length)
 
   @noinline
-  def put(src: ByteBuffer): ByteBuffer =
-    GenBuffer(this).generic_put(src)
+  def put(src: ByteBuffer): ByteBuffer = GenBuffer(this).generic_put(src)
 
   @noinline
   def put(src: Array[Byte], offset: Int, length: Int): ByteBuffer =
     GenBuffer(this).generic_put(src, offset, length)
 
-  final def put(src: Array[Byte]): ByteBuffer =
-    put(src, 0, src.length)
+  final def put(src: Array[Byte]): ByteBuffer = put(src, 0, src.length)
 
-  @inline final def hasArray(): Boolean =
-    GenBuffer(this).generic_hasArray()
+  @inline
+  final def hasArray(): Boolean = GenBuffer(this).generic_hasArray()
 
-  @inline final def array(): Array[Byte] =
-    GenBuffer(this).generic_array()
+  @inline
+  final def array(): Array[Byte] = GenBuffer(this).generic_array()
 
-  @inline final def arrayOffset(): Int =
-    GenBuffer(this).generic_arrayOffset()
+  @inline
+  final def arrayOffset(): Int = GenBuffer(this).generic_arrayOffset()
 
   def compact(): ByteBuffer
 
@@ -93,10 +85,11 @@ abstract class ByteBuffer private[nio] (
   override def hashCode(): Int =
     GenBuffer(this).generic_hashCode(ByteBuffer.HashSeed)
 
-  override def equals(that: Any): Boolean = that match {
-    case that: ByteBuffer => compareTo(that) == 0
-    case _                => false
-  }
+  override def equals(that: Any): Boolean =
+    that match {
+      case that: ByteBuffer => compareTo(that) == 0
+      case _ => false
+    }
 
   @noinline
   def compareTo(that: ByteBuffer): Int =
@@ -104,7 +97,7 @@ abstract class ByteBuffer private[nio] (
 
   final def order(): ByteOrder =
     if (_isBigEndian) ByteOrder.BIG_ENDIAN
-    else              ByteOrder.LITTLE_ENDIAN
+    else ByteOrder.LITTLE_ENDIAN
 
   final def order(bo: ByteOrder): ByteBuffer = {
     if (bo == null)
@@ -157,20 +150,19 @@ abstract class ByteBuffer private[nio] (
 
   // Internal API
 
-  override private[nio] def isBigEndian: Boolean =
-    _isBigEndian
+  override private [nio] def isBigEndian: Boolean = _isBigEndian
 
-  private[nio] def load(index: Int): Byte
+  private [nio] def load(index: Int): Byte
 
-  private[nio] def store(index: Int, elem: Byte): Unit
+  private [nio] def store(index: Int, elem: Byte): Unit
 
   @inline
-  private[nio] def load(startIndex: Int,
-      dst: Array[Byte], offset: Int, length: Int): Unit =
+  private [nio] def load(
+      startIndex: Int, dst: Array[Byte], offset: Int, length: Int): Unit =
     GenBuffer(this).generic_load(startIndex, dst, offset, length)
 
   @inline
-  private[nio] def store(startIndex: Int,
-      src: Array[Byte], offset: Int, length: Int): Unit =
+  private [nio] def store(
+      startIndex: Int, src: Array[Byte], offset: Int, length: Int): Unit =
     GenBuffer(this).generic_store(startIndex, src, offset, length)
 }

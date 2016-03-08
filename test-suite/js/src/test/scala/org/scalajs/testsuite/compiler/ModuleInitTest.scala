@@ -11,10 +11,9 @@ import org.scalajs.jasminetest.JasmineTest
 import scala.scalajs.js
 
 object ModuleInitTest extends JasmineTest {
-
   describe("Scala Modules") {
-    when("compliant-moduleinit").
-    it("Should only execute module initializers once") {
+    when("compliant-moduleinit")
+      .it("Should only execute module initializers once") {
       val x = A.Y
       val y = A.cs.head
       expect(x ne null).toBeTruthy
@@ -29,9 +28,11 @@ object ModuleInitTest extends JasmineTest {
   }
 
   object A {
+
     private def blankSym = ""
 
     sealed abstract class C(symbol: String)
+
     object Y extends C(blankSym) {
       Counter.c += 1
     }

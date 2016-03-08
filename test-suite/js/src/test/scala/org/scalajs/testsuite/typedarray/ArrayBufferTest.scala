@@ -12,10 +12,7 @@ import org.scalajs.jasminetest.JasmineTest
 import scala.scalajs.js.typedarray._
 
 object ArrayBufferTest extends JasmineTest {
-
-  when("typedarry").
-  describe("ArrayBuffer") {
-
+  when("typedarry").describe("ArrayBuffer") {
     it("should provide a length constructor") {
       val x = new ArrayBuffer(100)
       expect(x.isInstanceOf[ArrayBuffer]).toBeTruthy
@@ -33,7 +30,5 @@ object ArrayBufferTest extends JasmineTest {
       val y = x.slice(10, 20)
       expect(y.byteLength).toBe(10)
     }
-
   }
-
 }

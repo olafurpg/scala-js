@@ -13,9 +13,7 @@ import scala.scalajs.js
 import js.typedarray._
 
 object TypedArrayConversionTest extends JasmineTest {
-
-  when("typedarray").
-  describe("TypedArray to scala.Array conversions") {
+  when("typedarray").describe("TypedArray to scala.Array conversions") {
 
     def data(factor: Double): js.Array[Double] =
       js.Array(-1, 1, 2, 3, 4, 5, 6, 7, 8).map((_: Int) * factor)
@@ -30,7 +28,7 @@ object TypedArrayConversionTest extends JasmineTest {
       expect(y.sum).toEqual(sum(1))
 
       // Ensure its a copy
-      x(0) = 0
+      x (0) = 0
       expect(y.sum).toEqual(sum(1))
     }
 
@@ -42,13 +40,13 @@ object TypedArrayConversionTest extends JasmineTest {
       expect(y.sum).toEqual(sum(100))
 
       // Ensure its a copy
-      x(0) = 0
+      x (0) = 0
       expect(y.sum).toEqual(sum(100))
     }
 
     it("should convert an Uint16Array to a scala.Array[Char]") {
-      val data = js.Array((1 to 6).map(_ * 10000): _*)
-      val sum = (6*7/2*10000).toChar
+      val data = js.Array((1 to 6).map(_ * 10000): _ *)
+      val sum = (6 * 7 / 2 * 10000).toChar
 
       val x = new Uint16Array(data)
       val y = x.toArray
@@ -57,7 +55,7 @@ object TypedArrayConversionTest extends JasmineTest {
       expect(y.sum).toEqual(sum)
 
       // Ensure its a copy
-      x(0) = 0
+      x (0) = 0
       expect(y.sum).toEqual(sum)
     }
 
@@ -69,7 +67,7 @@ object TypedArrayConversionTest extends JasmineTest {
       expect(y.sum).toEqual(sum(10000))
 
       // Ensure its a copy
-      x(0) = 0
+      x (0) = 0
       expect(y.sum).toEqual(sum(10000))
     }
 
@@ -81,7 +79,7 @@ object TypedArrayConversionTest extends JasmineTest {
       expect(y.sum).toBeCloseTo(sum(0.2), 6)
 
       // Ensure its a copy
-      x(0) = 0
+      x (0) = 0
       expect(y.sum).toBeCloseTo(sum(0.2), 6)
     }
 
@@ -93,15 +91,12 @@ object TypedArrayConversionTest extends JasmineTest {
       expect(y.sum).toEqual(sum(0.2))
 
       // Ensure its a copy
-      x(0) = 0
+      x (0) = 0
       expect(y.sum).toEqual(sum(0.2))
     }
-
   }
 
-  when("typedarray").
-  describe("scala.Array to TypedArray conversions") {
-
+  when("typedarray").describe("scala.Array to TypedArray conversions") {
     it("should convert a scala.Array[Byte] to an Int8Array") {
       val x = (Byte.MinValue to Byte.MaxValue).map(_.toByte).toArray
       val y = x.toTypedArray
@@ -109,27 +104,25 @@ object TypedArrayConversionTest extends JasmineTest {
       expect(y.isInstanceOf[Int8Array]).toBeTruthy
       expect(y.length).toBe(x.length)
 
-      for (i <- 0 until y.length)
-        expect(y(i)).toBe(x(i))
+      for (i <- 0 until y.length) expect(y(i)).toBe(x(i))
 
       // Ensure its a copy
-      x(0) = 0
+      x (0) = 0
       expect(y(0)).toBe(Byte.MinValue)
     }
 
     it("should convert a scala.Array[Short] to an Int16Array") {
       val x = ((Short.MinValue to (Short.MinValue + 1000)) ++
-              ((Short.MaxValue - 1000) to Short.MaxValue)).map(_.toShort).toArray
+      ((Short.MaxValue - 1000) to Short.MaxValue)).map(_.toShort).toArray
       val y = x.toTypedArray
 
       expect(y.isInstanceOf[Int16Array]).toBeTruthy
       expect(y.length).toBe(x.length)
 
-      for (i <- 0 until y.length)
-        expect(y(i)).toBe(x(i))
+      for (i <- 0 until y.length) expect(y(i)).toBe(x(i))
 
       // Ensure its a copy
-      x(0) = 0
+      x (0) = 0
       expect(y(0)).toBe(Short.MinValue)
     }
 
@@ -140,27 +133,25 @@ object TypedArrayConversionTest extends JasmineTest {
       expect(y.isInstanceOf[Uint16Array]).toBeTruthy
       expect(y.length).toBe(x.length)
 
-      for (i <- 0 until y.length)
-        expect(y(i)).toBe(x(i).toInt)
+      for (i <- 0 until y.length) expect(y(i)).toBe(x(i).toInt)
 
       // Ensure its a copy
-      x(0) = 0
+      x (0) = 0
       expect(y(0)).toBe(Char.MaxValue - 1000)
     }
 
     it("should convert a scala.Array[Int] to an Int32Array") {
       val x = ((Int.MinValue to (Int.MinValue + 1000)) ++
-              ((Int.MaxValue - 1000) to Int.MaxValue)).toArray
+      ((Int.MaxValue - 1000) to Int.MaxValue)).toArray
       val y = x.toTypedArray
 
       expect(y.isInstanceOf[Int32Array]).toBeTruthy
       expect(y.length).toBe(x.length)
 
-      for (i <- 0 until y.length)
-        expect(y(i)).toBe(x(i))
+      for (i <- 0 until y.length) expect(y(i)).toBe(x(i))
 
       // Ensure its a copy
-      x(0) = 0
+      x (0) = 0
       expect(y(0)).toBe(Int.MinValue)
     }
 
@@ -171,11 +162,10 @@ object TypedArrayConversionTest extends JasmineTest {
       expect(y.isInstanceOf[Float32Array]).toBeTruthy
       expect(y.length).toBe(x.length)
 
-      for (i <- 0 until y.length)
-        expect(y(i)).toBe(x(i))
+      for (i <- 0 until y.length) expect(y(i)).toBe(x(i))
 
       // Ensure its a copy
-      x(0) = 0
+      x (0) = 0
       expect(y(0)).toBe(1.0f)
     }
 
@@ -186,14 +176,11 @@ object TypedArrayConversionTest extends JasmineTest {
       expect(y.isInstanceOf[Float64Array]).toBeTruthy
       expect(y.length).toBe(x.length)
 
-      for (i <- 0 until y.length)
-        expect(y(i)).toBe(x(i))
+      for (i <- 0 until y.length) expect(y(i)).toBe(x(i))
 
       // Ensure its a copy
-      x(0) = 0
+      x (0) = 0
       expect(y(0)).toBe(1.0)
     }
-
   }
-
 }

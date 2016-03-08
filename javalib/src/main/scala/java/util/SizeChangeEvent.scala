@@ -1,6 +1,6 @@
 package java.util
 
-private[util] trait SizeChangeEvent {
+private [util] trait SizeChangeEvent {
   protected var end: Int
 
   @inline

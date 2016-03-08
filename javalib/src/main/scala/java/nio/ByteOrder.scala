@@ -1,6 +1,7 @@
 package java.nio
 
-final class ByteOrder private (name: String) {
+final class ByteOrder private(name: String) {
+
   override def toString(): String = name
 }
 

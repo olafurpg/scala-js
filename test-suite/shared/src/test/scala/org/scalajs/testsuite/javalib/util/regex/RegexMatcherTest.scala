@@ -16,9 +16,9 @@ import org.junit.Assert._
 
 import org.scalajs.testsuite.utils.Platform._
 
-class RegexMatcherTest  {
-
-  @Test def find(): Unit = {
+class RegexMatcherTest {
+  @Test
+  def find(): Unit = {
     val matcher = Pattern.compile("a").matcher("Scala.js")
 
     assertTrue(matcher.find())
@@ -28,8 +28,10 @@ class RegexMatcherTest  {
     assertFalse(matcher.find())
   }
 
-  @Test def start_end_group_and_toMatchResult(): Unit = {
-    val matcher = Pattern.compile("\\s(([A-Za-z]{5}(hum)?).js)\\s").matcher("Write Scala.js everyday!")
+  @Test
+  def start_end_group_and_toMatchResult(): Unit = {
+    val matcher = Pattern.compile("\\s(([A-Za-z]{5}(hum)?).js)\\s")
+      .matcher("Write Scala.js everyday!")
 
     def checkGroup0(start: Int, end: Int, group: String): Unit =
       checkGroup(start, 5, end, 15, group, " Scala.js ")
@@ -43,8 +45,12 @@ class RegexMatcherTest  {
     def checkGroup3(start: Int, end: Int, group: String): Unit =
       checkGroup(start, -1, end, -1, group, null)
 
-    def checkGroup(start: Int, startExpected: Int, end: Int, endExpected: Int,
-                   group: String, groupExpected: String): Unit = {
+    def checkGroup(start: Int,
+                   startExpected: Int,
+                   end: Int,
+                   endExpected: Int,
+                   group: String,
+                   groupExpected: String): Unit = {
       assertEquals(startExpected, start)
       assertEquals(endExpected, end)
       assertEquals(groupExpected, group)
@@ -67,7 +73,8 @@ class RegexMatcherTest  {
     checkGroup3(matchResult.start(3), matchResult.end(3), matchResult.group(3))
   }
 
-  @Test def matches(): Unit = {
+  @Test
+  def matches(): Unit = {
     val matcher0 = Pattern.compile("S[a-z]+").matcher("Scala")
     val matcher1 = Pattern.compile("S[a-z]+").matcher("Scala.js")
 
@@ -75,7 +82,8 @@ class RegexMatcherTest  {
     assertFalse(matcher1.matches())
   }
 
-  @Test def several_matches_from_the_same_pattern_should_be_independent(): Unit = {
+  @Test
+  def several_matches_from_the_same_pattern_should_be_independent(): Unit = {
     val pattern = Pattern.compile("S[a-z]+")
     val matcher0 = pattern.matcher("Scalable")
     val matcher1 = pattern.matcher("Scalable")
@@ -87,7 +95,8 @@ class RegexMatcherTest  {
     assertFalse(matcher1.find())
   }
 
-  @Test def reset(): Unit = {
+  @Test
+  def reset(): Unit = {
     val matcher = Pattern.compile("S[a-z]+").matcher("Scalable")
 
     assertTrue(matcher.find())
@@ -96,7 +105,8 @@ class RegexMatcherTest  {
     assertTrue(matcher.find())
   }
 
-  @Test def reset_string(): Unit = {
+  @Test
+  def reset_string(): Unit = {
     val matcher = Pattern.compile("S[a-z]+").matcher("Scalable")
 
     assertTrue(matcher.matches())
@@ -104,7 +114,8 @@ class RegexMatcherTest  {
     assertFalse(matcher.matches())
   }
 
-  @Test def usePattern(): Unit = {
+  @Test
+  def usePattern(): Unit = {
     val patternNoDots = Pattern.compile("S[a-z]+")
     val patternWithDots = Pattern.compile("S[a-z.]+")
 
@@ -119,7 +130,8 @@ class RegexMatcherTest  {
     assertFalse(matcher1.matches())
   }
 
-  @Test def lookingAt(): Unit = {
+  @Test
+  def lookingAt(): Unit = {
     val matcher0 = Pattern.compile("S[a-z]+").matcher("Scala")
     val matcher1 = Pattern.compile("S[a-z]+").matcher("Scala.js")
     val matcher2 = Pattern.compile("[a-z]+").matcher("Scala.js")
@@ -133,7 +145,8 @@ class RegexMatcherTest  {
     assertTrue(matcher3.lookingAt())
   }
 
-  @Test def hitEnd(): Unit = {
+  @Test
+  def hitEnd(): Unit = {
     val matcher0 = Pattern.compile("S[a-z]*").matcher("Scala.js")
     assertTrue(matcher0.find())
     assertFalse(matcher0.hitEnd)
@@ -152,7 +165,8 @@ class RegexMatcherTest  {
     assertFalse(matcher1.hitEnd)
   }
 
-  @Test def region(): Unit = {
+  @Test
+  def region(): Unit = {
     val matcher0 = Pattern.compile("S[a-z]+").matcher("A Scalable Solution")
 
     val region0to3 = matcher0.region(0, 3)
@@ -180,7 +194,8 @@ class RegexMatcherTest  {
       assertEquals("Solution", region5toEnd.group)
     }
 
-    val matcher1 = Pattern.compile("0[xX][A-Fa-f0-9]{3}$").matcher("In CSS, 0xc4fe is not a color")
+    val matcher1 = Pattern.compile("0[xX][A-Fa-f0-9]{3}$")
+      .matcher("In CSS, 0xc4fe is not a color")
 
     val region5to13 = matcher1.region(5, 13)
     assertEquals(5, region5to13.regionStart)
@@ -194,9 +209,11 @@ class RegexMatcherTest  {
     assertFalse(region5to20.find())
   }
 
-  @Test def appendReplacement_and_appendTail(): Unit = {
+  @Test
+  def appendReplacement_and_appendTail(): Unit = {
     // From the JavaDoc
-    val matcher = Pattern.compile("cat").matcher("one cat two cats in the yard")
+    val matcher =
+      Pattern.compile("cat").matcher("one cat two cats in the yard")
     val sb = new StringBuffer
 
     while (matcher.find()) {
@@ -207,19 +224,24 @@ class RegexMatcherTest  {
     assertEquals("one dog two dogs in the yard", sb.toString)
   }
 
-  @Test def replaceAll(): Unit = {
+  @Test
+  def replaceAll(): Unit = {
     // From the JavaDoc
     val matcher = Pattern.compile("a*b").matcher("aabfooaabfooabfoob")
     assertEquals("-foo-foo-foo-", matcher.replaceAll("-"))
   }
 
-  @Test def replaceFirst(): Unit = {
+  @Test
+  def replaceFirst(): Unit = {
     // From the JavaDoc
     val matcher = Pattern.compile("dog").matcher("zzzdogzzzdogzzz")
     assertEquals("zzzcatzzzdogzzz", matcher.replaceFirst("cat"))
   }
 
-  @Test def should_throw_exception_if_match_accessors_are_called_before_find(): Unit = {
+  @Test
+  def should_throw_exception_if_match_accessors_are_called_before_find(
+      ): Unit = {
+
     def checkInvalidAccess(block: => Unit): Unit = {
       val exception: Throwable = try {
         block
@@ -228,7 +250,8 @@ class RegexMatcherTest  {
         case e: Throwable => e
       }
 
-      assertEquals("java.lang.IllegalStateException", exception.getClass.getName)
+      assertEquals(
+          "java.lang.IllegalStateException", exception.getClass.getName)
       if (!executingInJVM) // On JVM the message is "No match found"
         assertEquals("No match available", exception.getMessage)
     }
@@ -248,7 +271,8 @@ class RegexMatcherTest  {
     checkInvalidAccess { matchResult.group(42) }
   }
 
-  @Test def should_correctly_handle_zero_length_matches(): Unit = {
+  @Test
+  def should_correctly_handle_zero_length_matches(): Unit = {
     val pat = Pattern.compile("a*?")
     val mat = pat.matcher("aaaaa")
     for (i <- 0 to 5) {
@@ -263,7 +287,8 @@ class RegexMatcherTest  {
     }
   }
 
-  @Test def should_support_in_pattern_flags_issue_997(): Unit = {
+  @Test
+  def should_support_in_pattern_flags_issue_997(): Unit = {
     val p0 = Pattern.compile("(?i)abc")
 
     assertNotEquals(0, p0.flags() & Pattern.CASE_INSENSITIVE)
