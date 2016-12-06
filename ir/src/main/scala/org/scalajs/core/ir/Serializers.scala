@@ -894,7 +894,7 @@ object Serializers {
       readTrees().map(_.asInstanceOf[ParamDef])
 
     def readIdent(): Ident = {
-      implicit val pos = readPosition()
+      implicit val pos: Position = readPosition()
       val name = readString()
       val originalName = readString()
       Ident(name, if (originalName.isEmpty) None else Some(originalName))
@@ -1073,7 +1073,7 @@ object Serializers {
 
     override def transform(tree: Tree, isStat: Boolean): Tree = tree match {
       case VarRef(Ident(name, origName)) =>
-        implicit val pos = tree.pos
+        implicit val pos: Position = tree.pos
         paramToIndex.get(name).fold {
           if (name == "arguments") argumentsRef
           else tree

@@ -21,7 +21,7 @@ object Transformers {
       transform(tree, isStat = false)
 
     def transform(tree: Tree, isStat: Boolean): Tree = {
-      implicit val pos = tree.pos
+      implicit val pos: Position = tree.pos
 
       tree match {
         // Definitions
@@ -206,7 +206,7 @@ object Transformers {
     }
 
     def transformDef(tree: Tree): Tree = {
-      implicit val pos = tree.pos
+      implicit val pos: Position = tree.pos
 
       tree match {
         case FieldDef(_, _, _) =>

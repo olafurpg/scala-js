@@ -275,7 +275,7 @@ abstract class GenJSCode extends plugins.PluginComponent
         /* Finally, we emit true code for the remaining class defs. */
         for (cd <- fullClassDefs) {
           val sym = cd.symbol
-          implicit val pos = sym.pos
+          implicit val pos: global.Position = sym.pos
 
           /* Do not actually emit code for primitive types nor scala.Array. */
           val isPrimitive =
@@ -332,7 +332,7 @@ abstract class GenJSCode extends plugins.PluginComponent
     def genClass(cd: ClassDef): js.ClassDef = {
       val ClassDef(mods, name, _, impl) = cd
       val sym = cd.symbol
-      implicit val pos = sym.pos
+      implicit val pos: global.Position = sym.pos
 
       assert(!sym.isTraitOrInterface && !sym.isImplClass,
           "genClass() must be called only for normal classes: "+sym)
@@ -435,7 +435,7 @@ abstract class GenJSCode extends plugins.PluginComponent
     /** Gen the IR ClassDef for a Scala.js-defined JS class. */
     def genScalaJSDefinedJSClass(cd: ClassDef): js.ClassDef = {
       val sym = cd.symbol
-      implicit val pos = sym.pos
+      implicit val pos: global.Position = sym.pos
 
       assert(isScalaJSDefinedJSClass(sym),
           "genScalaJSDefinedJSClass() must be called only for " +
@@ -574,7 +574,7 @@ abstract class GenJSCode extends plugins.PluginComponent
 
       // Make new class def with static members only
       val newClassDef = {
-        implicit val pos = origJsClass.pos
+        implicit val pos: org.scalajs.core.ir.Position = origJsClass.pos
         val parent = js.Ident(ir.Definitions.ObjectClass)
         js.ClassDef(origJsClass.name, ClassKind.AbstractJSType,
             Some(parent), interfaces = Nil, jsNativeLoadSpec = None,
@@ -598,7 +598,7 @@ abstract class GenJSCode extends plugins.PluginComponent
 
       val memberDefinitions = classMembers.toList.map {
         case fdef: js.FieldDef =>
-          implicit val pos = fdef.pos
+          implicit val pos: org.scalajs.core.ir.Position = fdef.pos
           val select = fdef.name match {
             case lit: js.StringLiteral => js.JSBracketSelect(selfRef, lit)
             case ident: js.Ident       => js.JSDotSelect(selfRef, ident)
@@ -606,14 +606,14 @@ abstract class GenJSCode extends plugins.PluginComponent
           js.Assign(select, jstpe.zeroOf(fdef.tpe))
 
         case mdef: js.MethodDef =>
-          implicit val pos = mdef.pos
+          implicit val pos: org.scalajs.core.ir.Position = mdef.pos
           val name = mdef.name.asInstanceOf[js.StringLiteral]
           val impl = lambda(mdef.args, mdef.body.getOrElse(
               throw new AssertionError("Got anon SJS class with abstract method")))
           js.Assign(js.JSBracketSelect(selfRef, name), impl)
 
         case pdef: js.PropertyDef =>
-          implicit val pos = pdef.pos
+          implicit val pos: org.scalajs.core.ir.Position = pdef.pos
           val name = pdef.name.asInstanceOf[js.StringLiteral]
           val jsObject =
             js.JSBracketSelect(genLoadGlobal(), js.StringLiteral("Object"))
@@ -650,7 +650,7 @@ abstract class GenJSCode extends plugins.PluginComponent
         override def transform(tree: js.Tree, isStat: Boolean): js.Tree = tree match {
           // The super constructor call. Transform this into a simple new call.
           case js.JSSuperConstructorCall(args) =>
-            implicit val pos = tree.pos
+            implicit val pos: org.scalajs.core.ir.Position = tree.pos
 
             val ident =
               origJsClass.superClass.getOrElse(sys.error("No superclass"))
@@ -674,7 +674,7 @@ abstract class GenJSCode extends plugins.PluginComponent
       }.transform(ctorBody, isStat = true)
 
       val invocation = {
-        implicit val invocationPosition = pos
+        implicit val invocationPosition: global.Position = pos
 
         val closure =
           js.Closure(Nil, ctorParams, js.Block(inlinedCtorStats, selfRef), Nil)
@@ -691,7 +691,7 @@ abstract class GenJSCode extends plugins.PluginComponent
      */
     def genRawJSClassData(cd: ClassDef): js.ClassDef = {
       val sym = cd.symbol
-      implicit val pos = sym.pos
+      implicit val pos: global.Position = sym.pos
 
       val classIdent = encodeClassFullNameIdent(sym)
       val kind = {
@@ -717,7 +717,7 @@ abstract class GenJSCode extends plugins.PluginComponent
      */
     def genInterface(cd: ClassDef): js.ClassDef = {
       val sym = cd.symbol
-      implicit val pos = sym.pos
+      implicit val pos: global.Position = sym.pos
 
       val classIdent = encodeClassFullNameIdent(sym)
 
@@ -755,7 +755,7 @@ abstract class GenJSCode extends plugins.PluginComponent
     def genImplClass(cd: ClassDef): js.ClassDef = {
       val ClassDef(mods, name, _, impl) = cd
       val sym = cd.symbol
-      implicit val pos = sym.pos
+      implicit val pos: global.Position = sym.pos
 
       def gen(tree: Tree): List[js.MethodDef] = {
         tree match {
@@ -812,7 +812,7 @@ abstract class GenJSCode extends plugins.PluginComponent
         f <- classSym.info.decls
         if !f.isMethod && f.isTerm && !f.isModule
       } yield {
-        implicit val pos = f.pos
+        implicit val pos: global.Position = f.pos
 
         val mutable =
           suspectFieldMutable(f) || unexpectedMutatedFields.contains(f)
@@ -862,7 +862,7 @@ abstract class GenJSCode extends plugins.PluginComponent
 
     def genJSClassConstructor(classSym: Symbol,
         constructorTrees: List[DefDef]): js.Tree = {
-      implicit val pos = classSym.pos
+      implicit val pos: global.Position = classSym.pos
 
       if (hasDefaultCtorArgsAndRawJSModule(classSym)) {
         reporter.error(pos,
@@ -1226,7 +1226,7 @@ abstract class GenJSCode extends plugins.PluginComponent
      *  Other (normal) methods are emitted with `genMethodBody()`.
      */
     def genMethodWithCurrentLocalNameScope(dd: DefDef): Option[js.MethodDef] = {
-      implicit val pos = dd.pos
+      implicit val pos: global.Position = dd.pos
       val DefDef(mods, name, _, vparamss, _, rhs) = dd
       val sym = dd.symbol
 
@@ -1249,7 +1249,7 @@ abstract class GenJSCode extends plugins.PluginComponent
         val methodName: js.PropertyName = encodeMethodSym(sym)
 
         def jsParams = for (param <- params) yield {
-          implicit val pos = param.pos
+          implicit val pos: global.Position = param.pos
           js.ParamDef(encodeLocalSym(param), toIRType(param.tpe),
               mutable = false, rest = false)
         }
@@ -1458,10 +1458,10 @@ abstract class GenJSCode extends plugins.PluginComponent
     def genMethodDef(static: Boolean, methodName: js.PropertyName,
         paramsSyms: List[Symbol], resultIRType: jstpe.Type,
         tree: Tree, optimizerHints: OptimizerHints): js.MethodDef = {
-      implicit val pos = tree.pos
+      implicit val pos: global.Position = tree.pos
 
       val jsParams = for (param <- paramsSyms) yield {
-        implicit val pos = param.pos
+        implicit val pos: global.Position = param.pos
         js.ParamDef(encodeLocalSym(param), toIRType(param.tpe),
             mutable = false, rest = false)
       }
@@ -1546,7 +1546,7 @@ abstract class GenJSCode extends plugins.PluginComponent
       /* Any JavaScript expression is also a statement, but at least we get rid
        * of some pure expressions that come from our own codegen.
        */
-      implicit val pos = tree.pos
+      implicit val pos: org.scalajs.core.ir.Position = tree.pos
       tree match {
         case js.Block(stats :+ expr)  => js.Block(stats :+ exprToStat(expr))
         case _:js.Literal | js.This() => js.Skip()
@@ -1569,7 +1569,7 @@ abstract class GenJSCode extends plugins.PluginComponent
      *  is transformed into an equivalent portion of the JS AST.
      */
     def genStatOrExpr(tree: Tree, isStat: Boolean): js.Tree = {
-      implicit val pos = tree.pos
+      implicit val pos: global.Position = tree.pos
 
       tree match {
         /** LabelDefs (for while and do..while loops) */
@@ -1804,7 +1804,7 @@ abstract class GenJSCode extends plugins.PluginComponent
      *  to JS.
      */
     def genLabelDef(tree: LabelDef): js.Tree = {
-      implicit val pos = tree.pos
+      implicit val pos: global.Position = tree.pos
       val sym = tree.symbol
 
       tree match {
@@ -1905,7 +1905,7 @@ abstract class GenJSCode extends plugins.PluginComponent
      *  }
      */
     def genTry(tree: Try, isStat: Boolean): js.Tree = {
-      implicit val pos = tree.pos
+      implicit val pos: global.Position = tree.pos
       val Try(block, catches, finalizer) = tree
 
       val blockAST = genStatOrExpr(block, isStat)
@@ -1954,7 +1954,7 @@ abstract class GenJSCode extends plugins.PluginComponent
       val elseHandler: js.Tree = js.Throw(origExceptVar)
 
       val handler = catches.foldRight(elseHandler) { (caseDef, elsep) =>
-        implicit val pos = caseDef.pos
+        implicit val pos: global.Position = caseDef.pos
         val CaseDef(pat, _, body) = caseDef
 
         // Extract exception type and variable
@@ -1998,7 +1998,7 @@ abstract class GenJSCode extends plugins.PluginComponent
      *  primitives, JS calls, etc. They are further dispatched in here.
      */
     def genApply(tree: Apply, isStat: Boolean): js.Tree = {
-      implicit val pos = tree.pos
+      implicit val pos: global.Position = tree.pos
       val Apply(fun, args) = tree
       val sym = fun.symbol
 
@@ -2068,7 +2068,7 @@ abstract class GenJSCode extends plugins.PluginComponent
      *  does so too.
      */
     private def genApplyTypeApply(tree: Apply, isStat: Boolean): js.Tree = {
-      implicit val pos = tree.pos
+      implicit val pos: global.Position = tree.pos
       val Apply(TypeApply(fun @ Select(obj, _), targs), args) = tree
       val sym = fun.symbol
 
@@ -2128,7 +2128,7 @@ abstract class GenJSCode extends plugins.PluginComponent
      *  irrelevant.
      */
     private def genSuperCall(tree: Apply, isStat: Boolean): js.Tree = {
-      implicit val pos = tree.pos
+      implicit val pos: global.Position = tree.pos
       val Apply(fun @ Select(sup @ Super(_, mix), _), args) = tree
       val sym = fun.symbol
 
@@ -2161,7 +2161,7 @@ abstract class GenJSCode extends plugins.PluginComponent
      *  * regular new
      */
     private def genApplyNew(tree: Apply): js.Tree = {
-      implicit val pos = tree.pos
+      implicit val pos: global.Position = tree.pos
       val Apply(fun @ Select(New(tpt), nme.CONSTRUCTOR), args) = tree
       val ctor = fun.symbol
       val tpe = tpt.tpe
@@ -2206,7 +2206,7 @@ abstract class GenJSCode extends plugins.PluginComponent
      *  * Jump to the end of a pattern match
      */
     private def genLabelApply(tree: Apply): js.Tree = {
-      implicit val pos = tree.pos
+      implicit val pos: global.Position = tree.pos
       val Apply(fun, args) = tree
       val sym = fun.symbol
 
@@ -2249,7 +2249,7 @@ abstract class GenJSCode extends plugins.PluginComponent
      *  remains, then we do not use a temporary variable for this one.
      */
     private def genEnclosingLabelApply(tree: Apply): js.Tree = {
-      implicit val pos = tree.pos
+      implicit val pos: global.Position = tree.pos
       val Apply(fun, args) = tree
       val sym = fun.symbol
 
@@ -2306,7 +2306,7 @@ abstract class GenJSCode extends plugins.PluginComponent
      *  * Regular method call
      */
     private def genNormalApply(tree: Apply, isStat: Boolean): js.Tree = {
-      implicit val pos = tree.pos
+      implicit val pos: global.Position = tree.pos
       val Apply(fun @ Select(receiver, _), args) = tree
       val sym = fun.symbol
 
@@ -2518,7 +2518,7 @@ abstract class GenJSCode extends plugins.PluginComponent
     /** Gen JS code for an array literal.
      */
     def genArrayValue(tree: Tree): js.Tree = {
-      implicit val pos = tree.pos
+      implicit val pos: global.Position = tree.pos
       val ArrayValue(tpt @ TypeTree(), elems) = tree
 
       val arrType = toReferenceType(tree.tpe).asInstanceOf[jstpe.ArrayType]
@@ -2579,7 +2579,7 @@ abstract class GenJSCode extends plugins.PluginComponent
      *  }}}
      */
     def genMatch(tree: Tree, isStat: Boolean): js.Tree = {
-      implicit val pos = tree.pos
+      implicit val pos: global.Position = tree.pos
       val Match(selector, cases) = tree
 
       val expr = genExpr(selector)
@@ -2679,7 +2679,7 @@ abstract class GenJSCode extends plugins.PluginComponent
       } { elseClauseLabel =>
         val matchResultLabel = freshLocalIdent("matchResult")
         val patchedClauses = for ((alts, body) <- clauses) yield {
-          implicit val pos = body.pos
+          implicit val pos: org.scalajs.core.ir.Position = body.pos
           val lab = Some(matchResultLabel)
           val newBody =
             if (isStat) js.Block(body, js.Return(js.Undefined(), lab))
@@ -2696,7 +2696,7 @@ abstract class GenJSCode extends plugins.PluginComponent
     }
 
     private def genBlock(tree: Block, isStat: Boolean): js.Tree = {
-      implicit val pos = tree.pos
+      implicit val pos: global.Position = tree.pos
       val Block(stats, expr) = tree
 
       /** Predicate satisfied by LabelDefs produced by the pattern matcher */
@@ -2784,7 +2784,7 @@ abstract class GenJSCode extends plugins.PluginComponent
         (LabelDef(_, Nil, rhs), nextCaseSym) <- cases zip nextCaseSyms
       } yield {
         def genCaseBody(tree: Tree): js.Tree = {
-          implicit val pos = tree.pos
+          implicit val pos: global.Position = tree.pos
           tree match {
             case If(cond, thenp, elsep) =>
               js.If(genExpr(cond), genCaseBody(thenp), genCaseBody(elsep))(
@@ -2897,7 +2897,7 @@ abstract class GenJSCode extends plugins.PluginComponent
     private def genPrimitiveOp(tree: Apply, isStat: Boolean): js.Tree = {
       import scalaPrimitives._
 
-      implicit val pos = tree.pos
+      implicit val pos: global.Position = tree.pos
 
       val sym = tree.symbol
       val Apply(fun @ Select(receiver, _), args) = tree
@@ -2927,7 +2927,7 @@ abstract class GenJSCode extends plugins.PluginComponent
     private def genSimpleOp(tree: Apply, args: List[Tree], code: Int): js.Tree = {
       import scalaPrimitives._
 
-      implicit val pos = tree.pos
+      implicit val pos: global.Position = tree.pos
 
       val isShift = isShiftOp(code)
 
@@ -3193,7 +3193,7 @@ abstract class GenJSCode extends plugins.PluginComponent
      */
     private def genStringConcat(tree: Apply, receiver: Tree,
         args: List[Tree]): js.Tree = {
-      implicit val pos = tree.pos
+      implicit val pos: global.Position = tree.pos
 
       /* Primitive number types such as scala.Int have a
        *   def +(s: String): String
@@ -3224,7 +3224,7 @@ abstract class GenJSCode extends plugins.PluginComponent
      *  is always consistent with `ScalaRunTime.hash`, we always use it.
      */
     private def genScalaHash(tree: Apply, receiver: Tree): js.Tree = {
-      implicit val pos = tree.pos
+      implicit val pos: global.Position = tree.pos
 
       val instance = genLoadModule(RuntimeStaticsModule)
       val arguments = List(genExpr(receiver))
@@ -3237,7 +3237,7 @@ abstract class GenJSCode extends plugins.PluginComponent
     private def genArrayOp(tree: Tree, code: Int): js.Tree = {
       import scalaPrimitives._
 
-      implicit val pos = tree.pos
+      implicit val pos: global.Position = tree.pos
 
       val Apply(Select(arrayObj, _), args) = tree
       val arrayValue = genExpr(arrayObj)
@@ -3292,7 +3292,7 @@ abstract class GenJSCode extends plugins.PluginComponent
     private def genCoercion(tree: Apply, receiver: Tree, code: Int): js.Tree = {
       import scalaPrimitives._
 
-      implicit val pos = tree.pos
+      implicit val pos: global.Position = tree.pos
 
       val source = genExpr(receiver)
 
@@ -3375,7 +3375,7 @@ abstract class GenJSCode extends plugins.PluginComponent
      *  arguments.
      */
     private def genApplyDynamic(tree: ApplyDynamic): js.Tree = {
-      implicit val pos = tree.pos
+      implicit val pos: global.Position = tree.pos
 
       val sym = tree.symbol
       val params = sym.tpe.params
@@ -3653,7 +3653,7 @@ abstract class GenJSCode extends plugins.PluginComponent
         args: List[Tree], code: Int): js.Tree = {
       import jsPrimitives._
 
-      implicit val pos = tree.pos
+      implicit val pos: global.Position = tree.pos
 
       def receiver = genExpr(receiver0)
       def genArgs = genPrimitiveJSArgs(tree.symbol, args)
@@ -3898,7 +3898,7 @@ abstract class GenJSCode extends plugins.PluginComponent
      *  * Setters are translated to Assigns of Selects
      */
     private def genPrimitiveJSCall(tree: Apply, isStat: Boolean): js.Tree = {
-      implicit val pos = tree.pos
+      implicit val pos: global.Position = tree.pos
 
       val sym = tree.symbol
       val Apply(fun @ Select(receiver0, _), args0) = tree
@@ -3910,7 +3910,7 @@ abstract class GenJSCode extends plugins.PluginComponent
     }
 
     private def genJSSuperCall(tree: Apply, isStat: Boolean): js.Tree = {
-      implicit val pos = tree.pos
+      implicit val pos: global.Position = tree.pos
       val Apply(fun @ Select(sup @ Super(_, _), _), args) = tree
       val sym = fun.symbol
 
@@ -4093,7 +4093,7 @@ abstract class GenJSCode extends plugins.PluginComponent
      *  scala.scalajs.runtime.RuntimeString with proper arguments
      */
     private def genNewString(tree: Apply): js.Tree = {
-      implicit val pos = tree.pos
+      implicit val pos: global.Position = tree.pos
       val Apply(fun @ Select(_, _), args0) = tree
 
       val ctor = fun.symbol
@@ -4129,7 +4129,7 @@ abstract class GenJSCode extends plugins.PluginComponent
      *  scala.scalajs.runtime.RuntimeString.
      */
     private def genStringCall(tree: Apply): js.Tree = {
-      implicit val pos = tree.pos
+      implicit val pos: global.Position = tree.pos
 
       val sym = tree.symbol
 
@@ -4149,7 +4149,7 @@ abstract class GenJSCode extends plugins.PluginComponent
 
     /** Gen JS code for a new of a raw JS class (subclass of js.Any) */
     private def genPrimitiveJSNew(tree: Apply): js.Tree = {
-      implicit val pos = tree.pos
+      implicit val pos: global.Position = tree.pos
 
       val Apply(fun @ Select(New(tpt), _), args0) = tree
       val cls = tpt.tpe.typeSymbol
@@ -4307,7 +4307,7 @@ abstract class GenJSCode extends plugins.PluginComponent
          * to perform the conversion to js.Array, then wrap in a Spread
          * operator.
          */
-        implicit val pos = arg.pos
+        implicit val pos: global.Position = arg.pos
         val jsArrayArg = genApplyMethod(
             genLoadModule(RuntimePackageModule),
             Runtime_genTraversableOnce2jsArray,
@@ -4324,7 +4324,7 @@ abstract class GenJSCode extends plugins.PluginComponent
      */
     private def tryGenRepeatedParamAsJSArray(arg: Tree,
         handleNil: Boolean): Option[List[js.Tree]] = {
-      implicit val pos = arg.pos
+      implicit val pos: global.Position = arg.pos
 
       // Given a method `def foo(args: T*)`
       arg match {
@@ -4424,7 +4424,7 @@ abstract class GenJSCode extends plugins.PluginComponent
     private def tryGenAnonFunctionClass(cd: ClassDef,
         capturedArgs: List[js.Tree]): Option[js.Tree] = {
       // scalastyle:off return
-      implicit val pos = cd.pos
+      implicit val pos: global.Position = cd.pos
       val sym = cd.symbol
       assert(sym.isAnonymousFunction,
           s"tryGenAndRecordAnonFunctionClass called with non-anonymous function $cd")
@@ -4526,7 +4526,7 @@ abstract class GenJSCode extends plugins.PluginComponent
     private def tryGenAnonFunctionClassGeneric(cd: ClassDef,
         initialCapturedArgs: List[js.Tree])(
         fail: (=> String) => Nothing): (js.Tree, Int) = {
-      implicit val pos = cd.pos
+      implicit val pos: global.Position = cd.pos
       val sym = cd.symbol
 
       // First checks
@@ -4700,7 +4700,7 @@ abstract class GenJSCode extends plugins.PluginComponent
      *  }}}
      */
     private def genAnonFunction(originalFunction: Function): js.Tree = {
-      implicit val pos = originalFunction.pos
+      implicit val pos: global.Position = originalFunction.pos
       val Function(paramTrees, Apply(
           targetTree @ Select(receiver, _), allArgs0)) = originalFunction
 

@@ -80,7 +80,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
           val namedCtors = for {
             (exp, ctor) <- namedExports
           } yield {
-            implicit val pos = exp.pos
+            implicit val pos: jsAddons.global.Position = exp.pos
             ExportedBody(List(JSAnyTpe),
               genNamedExporterBody(ctor, genFormalArg(1).ref),
               nme.CONSTRUCTOR.toString, pos)
@@ -88,7 +88,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
 
           val ctors = normalCtors ++ namedCtors
 
-          implicit val pos = ctors.head.pos
+          implicit val pos: global.Position = ctors.head.pos
 
           val js.MethodDef(_, _, args, _, body) =
             withNewLocalNameScope(genExportMethod(ctors, jsName))
@@ -104,7 +104,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
       for {
         exp <- jsInterop.registeredExportsOf(classSym)
       } yield {
-        implicit val pos = exp.pos
+        implicit val pos: jsAddons.global.Position = exp.pos
         assert(!exp.isNamed, "Class cannot be exported named")
         js.JSClassExportDef(exp.jsName)
       }
@@ -114,7 +114,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
       for {
         exp <- jsInterop.registeredExportsOf(classSym)
       } yield {
-        implicit val pos = exp.pos
+        implicit val pos: jsAddons.global.Position = exp.pos
         assert(!exp.isNamed, "Module cannot be exported named")
         js.ModuleExportDef(exp.jsName)
       }
@@ -133,7 +133,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
       val result = for {
         (jsName, tups) <- allTopLevelExports.groupBy(_._1.jsName)
       } yield {
-        implicit val pos = tups.head._1.pos
+        implicit val pos: jsAddons.global.Position = tups.head._1.pos
 
         val alts = tups.map(t => ExportedSymbol(t._2)).toList
 
@@ -153,7 +153,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
 
     /** Generate the exporter proxy for a named export */
     def genNamedExporterDef(dd: DefDef): Option[js.MethodDef] = {
-      implicit val pos = dd.pos
+      implicit val pos: global.Position = dd.pos
 
       if (isAbstractMethod(dd)) {
         None
@@ -268,7 +268,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
 
     private def genExportProperty(alts: List[Symbol], jsName: String) = {
       assert(!alts.isEmpty)
-      implicit val pos = alts.head.pos
+      implicit val pos: global.Position = alts.head.pos
 
       // Separate getters and setters. Somehow isJSGetter doesn't work here. Hence
       // we just check the parameter list length.
@@ -303,7 +303,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
       assert(alts0.nonEmpty,
           "need at least one alternative to generate exporter method")
 
-      implicit val pos = alts0.head.pos
+      implicit val pos: global.Position = alts0.head.pos
 
       val alts = {
         // toString() is always exported. We might need to add it here
@@ -436,7 +436,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
         alts: List[Exported], paramIndex: Int, static: Boolean,
         maxArgc: Option[Int] = None): js.Tree = {
 
-      implicit val pos = alts.head.pos
+      implicit val pos: global.Position = alts.head.pos
 
       if (alts.size == 1)
         alts.head.genBody(minArgc, hasRestParam, static)
@@ -475,7 +475,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
 
           sortedAltsByTypeTest.foldRight[js.Tree](defaultCase) { (elem, elsep) =>
             val (typeTest, subAlts) = elem
-            implicit val pos = subAlts.head.pos
+            implicit val pos: global.Position = subAlts.head.pos
 
             val paramRef = genFormalArgRef(paramIndex+1, minArgc)
             val genSubAlts = genExportSameArgc(minArgc, hasRestParam,
@@ -581,7 +581,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
 
     private def genApplyForSymJSSuperCall(minArgc: Int, hasRestParam: Boolean,
         sym: Symbol): js.Tree = {
-      implicit val pos = sym.pos
+      implicit val pos: global.Position = sym.pos
 
       val restArg =
         if (hasRestParam) js.JSSpread(genRestArgRef()) :: Nil
@@ -608,7 +608,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
 
     private def genApplyForSymNonJSSuperCall(minArgc: Int,
         sym: Symbol, static: Boolean): js.Tree = {
-      implicit val pos = sym.pos
+      implicit val pos: global.Position = sym.pos
 
       // the (single) type of the repeated parameter if any
       val repeatedTpe = enteringPhase(currentRun.uncurryPhase) {
