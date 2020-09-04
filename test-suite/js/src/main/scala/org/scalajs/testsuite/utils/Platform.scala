@@ -74,3 +74,18 @@ object Platform {
     script.runInThisContext()
   }
 }
+
+private[utils] object BuildInfo {
+  final val scalaVersion = ""
+  final val hasSourceMaps = false
+  final val isNoModule = false
+  final val isESModule = false
+  final val isCommonJSModule = false
+  final val isFullOpt = false
+  final val compliantAsInstanceOfs = false
+  final val compliantArrayIndexOutOfBounds = false
+  final val compliantModuleInit = false
+  final val strictFloats = false
+  final val productionMode = false
+  final val es2015 = false
+}
