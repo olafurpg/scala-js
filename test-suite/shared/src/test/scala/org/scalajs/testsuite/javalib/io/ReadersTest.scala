@@ -261,27 +261,27 @@ class BufferedReaderTest {
   @Test def should_provide_readLine(): Unit = {
     val r = newReader
 
-    assertEquals("line1", r.readLine())
-    assertEquals("line2", r.readLine())
-    assertEquals("", r.readLine())
-    assertEquals("line4", r.readLine())
-    assertEquals("line5", r.readLine())
-    assertEquals(null, r.readLine())
+    assertEquals(r.readLine(), "line1")
+    assertEquals(r.readLine(), "line2")
+    assertEquals(r.readLine(), "")
+    assertEquals(r.readLine(), "line4")
+    assertEquals(r.readLine(), "line5")
+    assertEquals(r.readLine(), null)
   }
 
   @Test def should_readLine_on_an_empty_stream(): Unit = {
     val r = new BufferedReader(new StringReader(""))
 
-    assertEquals(null, r.readLine())
+    assertEquals(r.readLine(), null)
   }
 
   @Test def should_readline_with_empty_lines_only(): Unit = {
     val r = new BufferedReader(new StringReader("\n\r\n\r\r\n"), 1)
 
     for (_ <- 1 to 4)
-      assertEquals("", r.readLine())
+      assertEquals(r.readLine(), "")
 
-    assertEquals(null, r.readLine())
+    assertEquals(r.readLine(), null)
   }
 
   @Test def skip_should_always_return_0_after_reaching_end(): Unit = {
@@ -326,7 +326,7 @@ class InputStreamReaderTest {
         }
       }
       assertEquals(str.length, readAll(0))
-      assertEquals(str, new String(buf))
+      assertEquals(new String(buf), str)
     }
 
     expectRead("Hello World.")

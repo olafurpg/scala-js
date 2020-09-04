@@ -92,7 +92,7 @@ class AtomicTest {
     val thing2 = Foo(10)
 
     // sanity
-    assertEquals(thing1bis, thing1)
+    assertEquals(thing1, thing1bis)
     assertNotEquals(thing1, thing2)
     assertSame(thing1, thing1)
     assertNotSame(thing1bis, thing1)

@@ -32,15 +32,15 @@ class SymbolTest {
   val opaqueSymbolWithoutDesc = js.Symbol()
 
   @Test def typeOf(): Unit = {
-    assertEquals("symbol", js.typeOf(namedSymbol))
-    assertEquals("symbol", js.typeOf(opaqueSymbolWithDesc))
-    assertEquals("symbol", js.typeOf(opaqueSymbolWithoutDesc))
+    assertEquals(js.typeOf(namedSymbol), "symbol")
+    assertEquals(js.typeOf(opaqueSymbolWithDesc), "symbol")
+    assertEquals(js.typeOf(opaqueSymbolWithoutDesc), "symbol")
   }
 
   @Test def keyFor(): Unit = {
-    assertEquals("namedsym", js.Symbol.keyFor(namedSymbol))
-    assertEquals(js.undefined, js.Symbol.keyFor(opaqueSymbolWithDesc))
-    assertEquals(js.undefined, js.Symbol.keyFor(opaqueSymbolWithoutDesc))
+    assertEquals(js.Symbol.keyFor(namedSymbol), "namedsym")
+    assertEquals(js.Symbol.keyFor(opaqueSymbolWithDesc), js.undefined)
+    assertEquals(js.Symbol.keyFor(opaqueSymbolWithoutDesc), js.undefined)
   }
 
   @Test def identity(): Unit = {
@@ -51,16 +51,16 @@ class SymbolTest {
   }
 
   @Test def testToString(): Unit = {
-    assertEquals("Symbol(namedsym)", namedSymbol.toString())
-    assertEquals("Symbol(opaqueSymbolWithDesc)", opaqueSymbolWithDesc.toString())
-    assertEquals("Symbol()", opaqueSymbolWithoutDesc.toString())
+    assertEquals(namedSymbol.toString(), "Symbol(namedsym)")
+    assertEquals(opaqueSymbolWithDesc.toString(), "Symbol(opaqueSymbolWithDesc)")
+    assertEquals(opaqueSymbolWithoutDesc.toString(), "Symbol()")
   }
 
   @Test def wellKnownSymbolIterator(): Unit = {
     val sym = js.Symbol.iterator
-    assertEquals("symbol", js.typeOf(sym))
-    assertEquals(js.undefined, js.Symbol.keyFor(sym))
-    assertEquals("Symbol(Symbol.iterator)", sym.toString())
+    assertEquals(js.typeOf(sym), "symbol")
+    assertEquals(js.Symbol.keyFor(sym), js.undefined)
+    assertEquals(sym.toString(), "Symbol(Symbol.iterator)")
   }
 
 }

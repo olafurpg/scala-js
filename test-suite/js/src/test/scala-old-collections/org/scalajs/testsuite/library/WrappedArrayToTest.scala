@@ -22,7 +22,7 @@ class WrappedArrayToTest {
   @Test def to_T(): Unit = {
     val seq: collection.Seq[Int] = js.Array(1, 2, 1, 3, 1, 10, 9)
     val list = seq.to[List]
-    assertEquals(List(1, 2, 1, 3, 1, 10, 9), list)
+    assertEquals(list, List(1, 2, 1, 3, 1, 10, 9))
   }
 
 }

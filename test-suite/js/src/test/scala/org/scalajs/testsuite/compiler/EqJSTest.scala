@@ -24,14 +24,14 @@ class EqJSTest {
   @Test
   def testEqNe(): Unit = {
     @noinline def testNoInline(expected: Boolean, x: Any, y: Any): Unit = {
-      assertEquals(expected, x.asInstanceOf[AnyRef] eq y.asInstanceOf[AnyRef])
-      assertEquals(!expected, x.asInstanceOf[AnyRef] ne y.asInstanceOf[AnyRef])
+      assertEquals(x.asInstanceOf[AnyRef] eq (y.asInstanceOf[AnyRef]), expected)
+      assertEquals(x.asInstanceOf[AnyRef] ne (y.asInstanceOf[AnyRef]), !expected)
     }
 
     @inline def test(expected: Boolean, x: Any, y: Any): Unit = {
       testNoInline(expected, x, y)
-      assertEquals(expected, x.asInstanceOf[AnyRef] eq y.asInstanceOf[AnyRef])
-      assertEquals(!expected, x.asInstanceOf[AnyRef] ne y.asInstanceOf[AnyRef])
+      assertEquals(x.asInstanceOf[AnyRef] eq (y.asInstanceOf[AnyRef]), expected)
+      assertEquals(x.asInstanceOf[AnyRef] ne (y.asInstanceOf[AnyRef]), !expected)
     }
 
     val o1 = new Object

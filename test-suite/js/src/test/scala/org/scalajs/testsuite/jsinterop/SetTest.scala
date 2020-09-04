@@ -39,7 +39,7 @@ class SetTest {
   @Test def testIterator(): Unit = {
     val obj = js.Set("foo", "bar", "babar")
     val elems: List[String] = obj.iterator.toList
-    assertEquals(List("foo", "bar", "babar"), elems)
+    assertEquals(elems, List("foo", "bar", "babar"))
   }
 
   @Test def testToJSSet(): Unit = {

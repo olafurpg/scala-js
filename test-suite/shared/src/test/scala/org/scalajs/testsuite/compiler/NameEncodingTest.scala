@@ -106,7 +106,7 @@ class NameEncodingTest {
     val eval = 5
     assertEquals(5, eval)
     val arguments = "hello"
-    assertEquals("hello", arguments)
+    assertEquals(arguments, "hello")
   }
 
 }

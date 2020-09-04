@@ -33,7 +33,7 @@ class ThrowableJSTest {
     val str = js.constructorOf[js.Object].prototype
       .selectDynamic("toString")
       .call(t.asInstanceOf[js.Any])
-    assertEquals("[object Error]", str)
+    assertEquals(str, "[object Error]")
   }
 
 }

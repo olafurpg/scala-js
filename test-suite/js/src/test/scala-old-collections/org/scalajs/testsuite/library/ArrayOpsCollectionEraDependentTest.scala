@@ -56,7 +56,7 @@ class ArrayOpsCollectionEraDependentTest {
     val ops: js.ArrayOps[Int] = array
     val seq = ops.seq
 
-    assertEquals(List(3, 4, 5, 6, 3, 4), seq.toList)
+    assertEquals(seq.toList, List(3, 4, 5, 6, 3, 4))
   }
 
   @Test def to_T_issue_843(): Unit = {

@@ -22,34 +22,34 @@ class BigDecimalToStringTest {
   @Test def testToStringWithCornerCaseScales(): Unit = {
     val bigIntOne = BigInteger.valueOf(1)
 
-    assertEquals("1", new BigDecimal(bigIntOne, 0).toString())
+    assertEquals(new BigDecimal(bigIntOne, 0).toString(), "1")
 
-    assertEquals("0.01", new BigDecimal(bigIntOne, 2).toString())
-    assertEquals("0.000001", new BigDecimal(bigIntOne, 6).toString())
-    assertEquals("1E-7", new BigDecimal(bigIntOne, 7).toString())
-    assertEquals("1E-2147483647", new BigDecimal(bigIntOne, 2147483647).toString())
+    assertEquals(new BigDecimal(bigIntOne, 2).toString(), "0.01")
+    assertEquals(new BigDecimal(bigIntOne, 6).toString(), "0.000001")
+    assertEquals(new BigDecimal(bigIntOne, 7).toString(), "1E-7")
+    assertEquals(new BigDecimal(bigIntOne, 2147483647).toString(), "1E-2147483647")
 
-    assertEquals("1E+1", new BigDecimal(bigIntOne, -1).toString())
-    assertEquals("1E+2", new BigDecimal(bigIntOne, -2).toString())
-    assertEquals("1E+15", new BigDecimal(bigIntOne, -15).toString())
-    assertEquals("1E+2147483647", new BigDecimal(bigIntOne, -2147483647).toString())
-    assertEquals("1E+2147483648", new BigDecimal(bigIntOne, -2147483648).toString()) // #4088
+    assertEquals(new BigDecimal(bigIntOne, -1).toString(), "1E+1")
+    assertEquals(new BigDecimal(bigIntOne, -2).toString(), "1E+2")
+    assertEquals(new BigDecimal(bigIntOne, -15).toString(), "1E+15")
+    assertEquals(new BigDecimal(bigIntOne, -2147483647).toString(), "1E+2147483647")
+    assertEquals(new BigDecimal(bigIntOne, -2147483648).toString(), "1E+2147483648") // #4088
 
     val bigInt123 = BigInteger.valueOf(123)
 
-    assertEquals("123", new BigDecimal(bigInt123, 0).toString())
+    assertEquals(new BigDecimal(bigInt123, 0).toString(), "123")
 
-    assertEquals("1.23", new BigDecimal(bigInt123, 2).toString())
-    assertEquals("0.000123", new BigDecimal(bigInt123, 6).toString())
-    assertEquals("0.00000123", new BigDecimal(bigInt123, 8).toString())
-    assertEquals("1.23E-7", new BigDecimal(bigInt123, 9).toString())
-    assertEquals("1.23E-2147483645", new BigDecimal(bigInt123, 2147483647).toString())
+    assertEquals(new BigDecimal(bigInt123, 2).toString(), "1.23")
+    assertEquals(new BigDecimal(bigInt123, 6).toString(), "0.000123")
+    assertEquals(new BigDecimal(bigInt123, 8).toString(), "0.00000123")
+    assertEquals(new BigDecimal(bigInt123, 9).toString(), "1.23E-7")
+    assertEquals(new BigDecimal(bigInt123, 2147483647).toString(), "1.23E-2147483645")
 
-    assertEquals("1.23E+3", new BigDecimal(bigInt123, -1).toString())
-    assertEquals("1.23E+4", new BigDecimal(bigInt123, -2).toString())
-    assertEquals("1.23E+17", new BigDecimal(bigInt123, -15).toString())
-    assertEquals("1.23E+2147483649", new BigDecimal(bigInt123, -2147483647).toString()) // #4088
-    assertEquals("1.23E+2147483650", new BigDecimal(bigInt123, -2147483648).toString()) // #4088
+    assertEquals(new BigDecimal(bigInt123, -1).toString(), "1.23E+3")
+    assertEquals(new BigDecimal(bigInt123, -2).toString(), "1.23E+4")
+    assertEquals(new BigDecimal(bigInt123, -15).toString(), "1.23E+17")
+    assertEquals(new BigDecimal(bigInt123, -2147483647).toString(), "1.23E+2147483649") // #4088
+    assertEquals(new BigDecimal(bigInt123, -2147483648).toString(), "1.23E+2147483650") // #4088
   }
 
 }

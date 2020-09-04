@@ -22,12 +22,12 @@ class ClassJSTest {
   @Test def getComponentType(): Unit = {
     @noinline
     def testNoInline(clazz: Class[_], componentType: Class[_]): Unit =
-      assertEquals(componentType, clazz.getComponentType)
+      assertEquals(clazz.getComponentType, componentType)
 
     @inline
     def test(clazz: Class[_], componentType: Class[_]): Unit = {
       testNoInline(clazz, componentType)
-      assertEquals(componentType, clazz.getComponentType)
+      assertEquals(clazz.getComponentType, componentType)
     }
 
     test(classOf[Array[js.Date]], classOf[js.Date])

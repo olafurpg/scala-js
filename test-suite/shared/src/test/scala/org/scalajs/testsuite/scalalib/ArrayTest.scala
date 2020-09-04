@@ -19,7 +19,7 @@ class ArrayTest {
   @Test def unapplySeq_issue_3445(): Unit = {
     val args: Array[String] = Array("foo", "bar", "foobar")
     val Array(x, xs @ _*) = args
-    assertEquals("foo", x)
-    assertEquals(Seq("bar", "foobar"), xs)
+    assertEquals(x, "foo")
+    assertEquals(xs, Seq("bar", "foobar"))
   }
 }

@@ -27,7 +27,7 @@ class URLDecoderTest {
   @Test
   def decodeTest(): Unit = {
     def test(encoded: String, expected: String, enc: String = utf8): Unit =
-      assertEquals(URLDecoder.decode(encoded, enc), expected)
+      assertEquals(expected, URLDecoder.decode(encoded, enc))
 
     def illegalArgumentOrReplacement(encoded: String, enc: String = utf8): Unit = {
       val thrown = {

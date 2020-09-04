@@ -27,7 +27,7 @@ class FormatterTest {
     val fmt = new Formatter()
     val res = fmt.format(format, args.asInstanceOf[Seq[AnyRef]]: _*).toString()
     fmt.close()
-    assertEquals(expected, res)
+    assertEquals(res, expected)
   }
 
   def testWithInfinityAndNaN(conversion: Char, acceptSharp: Boolean = true,
@@ -117,7 +117,7 @@ class FormatterTest {
       val e = expectFormatterThrows(
           classOf[FormatFlagsConversionMismatchException],
           "%" + flag + conversion, arg)
-      assertEquals(flag.toString, e.getFlags)
+      assertEquals(e.getFlags, flag.toString)
       assertEquals(conversion, e.getConversion)
     }
   }
@@ -126,7 +126,7 @@ class FormatterTest {
       arg: Any): Unit = {
     val e = expectFormatterThrows(classOf[IllegalFormatFlagsException],
         format, arg)
-    assertEquals(flags, e.getFlags)
+    assertEquals(e.getFlags, flags)
   }
 
   def expectIllegalFormatPrecision(conversion: Char, arg: Any): Unit = {
@@ -145,13 +145,13 @@ class FormatterTest {
     val e = expectFormatterThrows(classOf[IllegalFormatConversionException],
         "%" + conversion, arg)
     assertEquals(conversion, e.getConversion)
-    assertEquals(arg.getClass, e.getArgumentClass)
+    assertEquals(e.getArgumentClass, arg.getClass)
   }
 
   def expectUnknownFormatConversion(format: String, conversion: Char): Unit = {
     val e = expectFormatterThrows(classOf[UnknownFormatConversionException],
         format, 1, 2, 3)
-    assertEquals(conversion.toString, e.getConversion)
+    assertEquals(e.getConversion, conversion.toString)
   }
 
   @Test def `should_provide_b_conversion`(): Unit = {

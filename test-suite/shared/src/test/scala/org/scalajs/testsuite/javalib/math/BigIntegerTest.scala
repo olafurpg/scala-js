@@ -158,7 +158,7 @@ class BigIntegerTest {
     val eBytesSignum = Array[Byte](-28, 14, -66, -39)
     val expSignum = new BigInteger(eBytesSignum)
 
-    assertEquals(exp.toString, expSignum.toString)
+    assertEquals(expSignum.toString, exp.toString)
     assertTrue(Arrays.equals(eRes, exp.toByteArray))
     assertTrue(Arrays.equals(eBytesSignum, expSignum.toByteArray))
     assertTrue(Arrays.equals(exp.toByteArray, expSignum.toByteArray))

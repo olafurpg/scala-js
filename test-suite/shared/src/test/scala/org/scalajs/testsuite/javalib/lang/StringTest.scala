@@ -31,7 +31,7 @@ class StringTest {
 
   @Test def intern(): Unit = {
     val s = "Scala.js"
-    assertEquals(s, s.intern)
+    assertEquals(s.intern, s)
   }
 
   @Test def equalsTest(): Unit = {
@@ -117,11 +117,11 @@ class StringTest {
   }
 
   @Test def toUpperCase(): Unit = {
-    assertEquals("SCALA.JS", "Scala.js".toUpperCase())
+    assertEquals("Scala.js".toUpperCase(), "SCALA.JS")
   }
 
   @Test def toLowerCase(): Unit = {
-    assertEquals("scala.js", "Scala.js".toLowerCase())
+    assertEquals("Scala.js".toLowerCase(), "scala.js")
   }
 
   @Test def charAt(): Unit = {
@@ -237,16 +237,16 @@ class StringTest {
   }
 
   @Test def subSequence(): Unit = {
-    assertEquals("Scala", "Scala.js".subSequence(0, 5))
-    assertEquals("js", "Scala.js".subSequence(6, 8))
-    assertEquals("la", "Scala.js".subSequence(3, 5))
-    assertEquals("", "Scala.js".subSequence(3, 3))
+    assertEquals("Scala.js".subSequence(0, 5), "Scala")
+    assertEquals("Scala.js".subSequence(6, 8), "js")
+    assertEquals("Scala.js".subSequence(3, 5), "la")
+    assertEquals("Scala.js".subSequence(3, 3), "")
   }
 
   @Test def replace(): Unit = {
-    assertEquals("Scala", "Scala.js".replace(".js", ""))
-    assertEquals("Scala.js", "Scala.js".replace("JS", ""))
-    assertEquals("bb", "aa".replace('a', 'b')) // #25
+    assertEquals("Scala.js".replace(".js", ""), "Scala")
+    assertEquals("Scala.js".replace("JS", ""), "Scala.js")
+    assertEquals("aa".replace('a', 'b'), "bb") // #25
   }
 
   @Test def matches(): Unit = {
@@ -310,7 +310,7 @@ class StringTest {
 
 
   @Test def concat(): Unit = {
-    assertEquals("asdffdsa", "asdf".concat("fdsa"))
+    assertEquals("asdf".concat("fdsa"), "asdffdsa")
   }
 
   @Test def constructors(): Unit = {
@@ -319,26 +319,26 @@ class StringTest {
     val codePointArray =
       Array(65, 0x1D306, 67, 68, 0xD834, 69, 72, 0xDF06)
 
-    assertEquals("", new String())
-    assertEquals("abcd\uD834\uDF06efghi", new String(charArray))
-    assertEquals("d\uD834\uDF06ef", new String(charArray, 3, 5))
-    assertEquals("\uD834\uDF06CD\uD834E", new String(codePointArray, 1, 5))
-    assertEquals("foo", new String("foo"))
-    assertEquals("buffer-foo", new String(new StringBuffer("buffer-foo")))
-    assertEquals(new String(new java.lang.StringBuilder("builder-foo")), "builder-foo")
+    assertEquals(new String(), "")
+    assertEquals(new String(charArray), "abcd𝌆efghi")
+    assertEquals(new String(charArray, 3, 5), "d𝌆ef")
+    assertEquals(new String(codePointArray, 1, 5), "𝌆CD?E")
+    assertEquals(new String("foo"), "foo")
+    assertEquals(new String(new StringBuffer("buffer-foo")), "buffer-foo")
+    assertEquals("builder-foo", new String(new java.lang.StringBuilder("builder-foo")))
   }
 
   @Test def format(): Unit = {
-    assertEquals("5", String.format("%d", new Integer(5)))
-    assertEquals("00005", String.format("%05d", new Integer(5)))
-    assertEquals("0x005", String.format("%0#5x", new Integer(5)))
-    assertEquals("  0x5", String.format("%#5x", new Integer(5)))
-    assertEquals("  0X5", String.format("%#5X", new Integer(5)))
-    assertEquals("  -10", String.format("%5d", new Integer(-10)))
-    assertEquals("-0010", String.format("%05d", new Integer(-10)))
-    assertEquals("fffffffd", String.format("%x", new Integer(-3)))
+    assertEquals(String.format("%d", new Integer(5)), "5")
+    assertEquals(String.format("%05d", new Integer(5)), "00005")
+    assertEquals(String.format("%0#5x", new Integer(5)), "0x005")
+    assertEquals(String.format("%#5x", new Integer(5)), "  0x5")
+    assertEquals(String.format("%#5X", new Integer(5)), "  0X5")
+    assertEquals(String.format("%5d", new Integer(-10)), "  -10")
+    assertEquals(String.format("%05d", new Integer(-10)), "-0010")
+    assertEquals(String.format("%x", new Integer(-3)), "fffffffd")
     if (!executingInJVM)
-      assertEquals("fffffffc", String.format("%x", new java.lang.Byte(-4.toByte)))
+      assertEquals(String.format("%x", new java.lang.Byte(-4.toByte)), "fffffffc")
   }
 
   @Test def getBytes(): Unit = {

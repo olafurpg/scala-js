@@ -110,22 +110,22 @@ class TimerTest {
         }
       }
       timer.schedule(task, 1000, 100)
-      assertEquals(Seq(), seen)
+      assertEquals(seen, Seq())
       tick(500)
-      assertEquals(Seq(), seen)
+      assertEquals(seen, Seq())
       tick(500)
-      assertEquals(Seq(0), seen)
+      assertEquals(seen, Seq(0))
       tick(100)
-      assertEquals(Seq(0, 1), seen)
+      assertEquals(seen, Seq(0, 1))
       tick(100)
-      assertEquals(Seq(0, 1, 2), seen)
+      assertEquals(seen, Seq(0, 1, 2))
       tick(100)
-      assertEquals(Seq(0, 1, 2, 3), seen)
+      assertEquals(seen, Seq(0, 1, 2, 3))
       tick(250)
-      assertEquals(Seq(0, 1, 2, 3, 4, 5), seen)
+      assertEquals(seen, Seq(0, 1, 2, 3, 4, 5))
       assertTrue(task.cancel())
       tick(100)
-      assertEquals(Seq(0, 1, 2, 3, 4, 5), seen)
+      assertEquals(seen, Seq(0, 1, 2, 3, 4, 5))
       assertFalse(task.cancel())
 
       val zeroPeriodTask = new TimerTask {
@@ -143,10 +143,10 @@ class TimerTest {
       }
       timer.schedule(secondTask, 0, 100)
       tick(100)
-      assertEquals(Seq(0, 1, 2, 3, 4, 5, 6, 7), seen)
+      assertEquals(seen, Seq(0, 1, 2, 3, 4, 5, 6, 7))
       timer.cancel()
       tick(200)
-      assertEquals(Seq(0, 1, 2, 3, 4, 5, 6, 7), seen)
+      assertEquals(seen, Seq(0, 1, 2, 3, 4, 5, 6, 7))
 
       val afterCancelTask = new TimerTask {
         def run(): Unit = {}

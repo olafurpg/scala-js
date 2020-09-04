@@ -67,12 +67,12 @@ class ObjectsTestOnJDK7 {
 
   @Test def test_toString(): Unit = {
     val obj = new Object
-    assertEquals("null", ju.Objects.toString(null))
-    assertEquals("abc", ju.Objects.toString(null, "abc"))
-    assertEquals(obj.toString, ju.Objects.toString(obj))
-    assertEquals(obj.toString, ju.Objects.toString(obj, "abc"))
-    assertEquals(1.toString, ju.Objects.toString(1))
-    assertEquals(1.toString, ju.Objects.toString(1, "abc"))
+    assertEquals(ju.Objects.toString(null), "null")
+    assertEquals(ju.Objects.toString(null, "abc"), "abc")
+    assertEquals(ju.Objects.toString(obj), obj.toString)
+    assertEquals(ju.Objects.toString(obj, "abc"), obj.toString)
+    assertEquals(ju.Objects.toString(1), 1.toString)
+    assertEquals(ju.Objects.toString(1, "abc"), 1.toString)
   }
 
   @Test def compare(): Unit = {
@@ -90,7 +90,7 @@ class ObjectsTestOnJDK7 {
   @Test def requireNonNull(): Unit = {
     assertThrows(classOf[NullPointerException], ju.Objects.requireNonNull(null))
     assertThrows(classOf[NullPointerException], ju.Objects.requireNonNull(null, "message"))
-    assertEquals("abc", ju.Objects.requireNonNull("abc"))
-    assertEquals("abc", ju.Objects.requireNonNull("abc", ""))
+    assertEquals(ju.Objects.requireNonNull("abc"), "abc")
+    assertEquals(ju.Objects.requireNonNull("abc", ""), "abc")
   }
 }

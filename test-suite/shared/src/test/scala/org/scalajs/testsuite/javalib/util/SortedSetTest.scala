@@ -34,7 +34,7 @@ trait SortedSetTest extends SetTest {
 
     assertTrue(ssString.add("pluto"))
     assertTrue(ssString.add("pippo"))
-    assertEquals("pippo", ssString.first)
+    assertEquals(ssString.first, "pippo")
 
     val ssDouble = factory.empty[Double]
 
@@ -54,7 +54,7 @@ trait SortedSetTest extends SetTest {
 
     assertTrue(ssString.add("pluto"))
     assertTrue(ssString.add("pippo"))
-    assertEquals("pluto", ssString.last)
+    assertEquals(ssString.last, "pluto")
 
     val ssDouble = factory.empty[Double]
 

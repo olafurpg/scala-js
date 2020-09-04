@@ -91,7 +91,7 @@ class BigDecimalTest  {
 
   @Test def `should accept 9.9 as a string`(): Unit = {
     val bd = new BigDecimal("9.9")
-    assertEquals("9.9", bd.toString)
+    assertEquals(bd.toString, "9.9")
     assertEquals(9.9, bd.doubleValue(), 0.0)
   }
 

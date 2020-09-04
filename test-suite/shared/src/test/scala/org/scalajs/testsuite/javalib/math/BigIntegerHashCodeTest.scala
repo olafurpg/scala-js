@@ -43,7 +43,7 @@ class BigIntegerHashCodeTest {
     val b = 1136802186495971562L
     val c = BigInteger.valueOf(a).add(BigInteger.valueOf(b))
     val d = BigInteger.valueOf(c.longValue())
-    assertEquals(c, d) // sanity
+    assertEquals(d, c) // sanity
     assertEquals(c.hashCode, d.hashCode)
   }
 

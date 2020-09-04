@@ -37,7 +37,7 @@ class ArrayTest {
     }
 
     assertEquals(4, propCount)
-    assertEquals("Scala.js", propString)
+    assertEquals(propString, "Scala.js")
   }
 
   @Test def should_provide_implicit_conversion_from_js_Array_to_ArrayOps_Int(): Unit = {
@@ -51,7 +51,7 @@ class ArrayTest {
     }
 
     assertEquals(4, propCount)
-    assertEquals("7357", propString)
+    assertEquals(propString, "7357")
   }
 
   @Test def should_provide_implicit_conversion_from_js_Array_to_ArrayOps_Char(): Unit = {
@@ -65,7 +65,7 @@ class ArrayTest {
     }
 
     assertEquals(5, propCount)
-    assertEquals("Scala", propString)
+    assertEquals(propString, "Scala")
   }
 
   @Test def should_provide_implicit_conversion_from_js_Array_to_ArrayOps_value_class(): Unit = {
@@ -79,7 +79,7 @@ class ArrayTest {
     }
 
     assertEquals(2, propCount)
-    assertEquals("VC(5)VC(-4)", propString)
+    assertEquals(propString, "VC(5)VC(-4)")
   }
 
   // scala.scalajs.js.JSConverters.JSRichGenTraversableOnce

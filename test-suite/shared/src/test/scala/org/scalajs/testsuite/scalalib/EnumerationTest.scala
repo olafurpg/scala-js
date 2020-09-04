@@ -31,7 +31,7 @@ class EnumerationTest {
 
     val h = HelpLevel.None
 
-    assertEquals("None", h.toString)
+    assertEquals(h.toString, "None")
   }
 
   @Test def should_allow_implicit_naming_for_values(): Unit = {
@@ -43,9 +43,9 @@ class EnumerationTest {
     }
 
     val h = HelpLevel.Medium
-    assertEquals("Medium", h.toString)
-    assertEquals("Special", HelpLevel.Special.toString)
-    assertEquals("$div", HelpLevel./.toString)
+    assertEquals(h.toString, "Medium")
+    assertEquals(HelpLevel.Special.toString, "Special")
+    assertEquals(HelpLevel./.toString, "$div")
   }
 
   @Test def should_give_a_pseudo_toString_to_unnamed_values(): Unit = {
@@ -76,12 +76,12 @@ class EnumerationTest {
   }
 
   @Test def should_respond_to_toString(): Unit = {
-    assertEquals("FooBarEnum", FooBarEnum.toString)
+    assertEquals(FooBarEnum.toString, "FooBarEnum")
   }
 
   @Test def should_respond_to_values(): Unit = {
-    assertEquals("FooBarEnum.ValueSet(A, B, C, D, E, F)",
-        FooBarEnum.values.toString)
+    assertEquals(FooBarEnum.values.toString,
+        "FooBarEnum.ValueSet(A, B, C, D, E, F)")
   }
 
   @Test def should_allow_setting_nextName(): Unit = {
@@ -90,7 +90,7 @@ class EnumerationTest {
       val a, b, c = Value
     }
 
-    assertEquals("x|y|z", Test.values.mkString("|"))
+    assertEquals(Test.values.mkString("|"), "x|y|z")
   }
 
   /** Object is here due to issues with Enumeration.toString inside closures */

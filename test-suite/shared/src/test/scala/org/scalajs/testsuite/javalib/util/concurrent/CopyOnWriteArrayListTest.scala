@@ -95,7 +95,7 @@ class CopyOnWriteArrayListTest extends ListTest {
       val cowal1 = factory.newFrom(arr)
       assertEquals(arr.length, cowal1.size)
       for (i <- arr.indices)
-        assertEquals(arr(i), cowal1.get(i))
+        assertEquals(cowal1.get(i), arr(i))
     }
 
     test(Array("a", "", "da", "23"))

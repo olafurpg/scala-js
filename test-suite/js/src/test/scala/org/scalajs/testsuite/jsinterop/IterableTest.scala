@@ -58,7 +58,7 @@ class IterableTest {
 
   def assertValue[T](expected: T, entry: js.Iterator.Entry[T]): Unit = {
     assertFalse(entry.done)
-    assertEquals(expected, entry.value)
+    assertEquals(entry.value, expected)
   }
 
   @Test def jsArrayIsIterable(): Unit = {
@@ -75,18 +75,18 @@ class IterableTest {
   @Test def iterableToScala(): Unit = {
     val jsIterable: js.Iterable[Int] = new CounterIterable(5)
     val iterable: Iterable[Int] = jsIterable
-    assertEquals(List(0, 1, 2, 3, 4), iterable.toList)
+    assertEquals(iterable.toList, List(0, 1, 2, 3, 4))
   }
 
   @Test def iteratorToScala(): Unit = {
     val jsIterator: js.Iterator[Int] = new CounterIterator(5)
     val iterator: Iterator[Int] = jsIterator.toIterator
-    assertEquals(List(0, 1, 2, 3, 4), iterator.toList)
+    assertEquals(iterator.toList, List(0, 1, 2, 3, 4))
   }
 
   @Test def jsArrayToScalaViaIterable(): Unit = {
     val jsIterable: js.Iterable[Int] = js.Array(1, 2, 3)
-    assertEquals(List(1, 2, 3), jsIterable.toList)
+    assertEquals(jsIterable.toList, List(1, 2, 3))
   }
 
   @Test def scalaToIterable(): Unit = {

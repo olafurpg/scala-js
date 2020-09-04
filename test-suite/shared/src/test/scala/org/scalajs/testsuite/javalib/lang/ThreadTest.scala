@@ -22,14 +22,14 @@ class ThreadTest {
   @Test def getName_and_setName(): Unit = {
     if (!executingInJVM) {
       val t = Thread.currentThread()
-      assertEquals("main", t.getName) // default name of the main thread
+      assertEquals(t.getName, "main") // default name of the main thread
       t.setName("foo")
       try {
-        assertEquals("foo", t.getName)
+        assertEquals(t.getName, "foo")
       } finally {
         t.setName("main") // don't pollute the rest of the world with this test
       }
-      assertEquals("main", t.getName)
+      assertEquals(t.getName, "main")
     }
   }
 

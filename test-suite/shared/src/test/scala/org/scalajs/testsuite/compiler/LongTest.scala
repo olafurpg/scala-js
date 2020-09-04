@@ -70,11 +70,11 @@ class LongTest {
 
   @Test def equals_Any(): Unit = {
     @inline def test(expected: Boolean, lhs: Long, rhs: Any): Unit = {
-      assertEquals(expected, lhs.equals(rhs))
-      assertEquals(expected, hideFromOptimizer(lhs).equals(rhs))
-      assertEquals(expected, lhs.equals(hideAnyFromOptimizer(rhs)))
-      assertEquals(expected,
-          hideFromOptimizer(lhs).equals(hideAnyFromOptimizer(rhs)))
+      assertEquals(lhs.equals(rhs), expected)
+      assertEquals(hideFromOptimizer(lhs).equals(rhs), expected)
+      assertEquals(lhs.equals(hideAnyFromOptimizer(rhs)), expected)
+      assertEquals(hideFromOptimizer(lhs).equals(hideAnyFromOptimizer(rhs)),
+          expected)
     }
 
     test(false, lg(0, 0), 0)
@@ -209,8 +209,8 @@ class LongTest {
 
   @Test def `should_correctly_concat_to_string`(): Unit = {
     val x = 20L
-    assertEquals("asdf520hello", "asdf" + 5L + x + "hello")
-    assertEquals("20hello", x + "hello")
+    assertEquals("asdf" + 5L + x + "hello", "asdf520hello")
+    assertEquals(x + "hello", "20hello")
   }
 
   @Test def `string_should_convert_to_Long`(): Unit = {
@@ -358,8 +358,8 @@ class LongTest {
 
   @Test def toStringTest(): Unit = {
     @inline def test(expected: String, x: Long): Unit = {
-      assertEquals(expected, x.toString())
-      assertEquals(expected, hideFromOptimizer(x).toString())
+      assertEquals(x.toString(), expected)
+      assertEquals(hideFromOptimizer(x).toString(), expected)
     }
 
     test("0", lg(0))
@@ -768,12 +768,12 @@ class LongTest {
     @inline def testInner(x: Long, y: Long, expected: Int): Unit = {
       assertEquals(expected, x.compareTo(y).signum)
       assertEquals(expected, x.compareTo(y: java.lang.Long).signum)
-      assertEquals(expected == 0, x.equals(y))
-      assertEquals(expected != 0, !x.equals(y))
-      assertEquals(expected < 0, x < y)
-      assertEquals(expected <= 0, x <= y)
-      assertEquals(expected > 0, x > y)
-      assertEquals(expected >= 0, x >= y)
+      assertEquals(x.equals(y), expected == 0)
+      assertEquals(!x.equals(y), expected != 0)
+      assertEquals(x < y, expected < 0)
+      assertEquals(x <= y, expected <= 0)
+      assertEquals(x > y, expected > 0)
+      assertEquals(x >= y, expected >= 0)
     }
 
     @inline def test(x: Long, y: Long, expected: Int): Unit = {

@@ -29,13 +29,13 @@ class ThisFunctionTest {
       import js.DynamicImplicits.truthValue
       assertTrue(thiz)
       val thiz_foobar = thiz.foobar
-      assertEquals("foobar", thiz_foobar)
+      assertEquals(thiz_foobar, "foobar")
       u + v
     }
     val obj = js.Object().asInstanceOf[js.Dynamic]
     obj.foo = "foo"
     obj.foobar = "foobar"
-    assertEquals("foo42", g(f, obj))
+    assertEquals(g(f, obj), "foo42")
   }
 
   @Test def should_accept_a_lambda_where_a_js_ThisFunction_is_expected(): Unit = {
@@ -51,10 +51,10 @@ class ThisFunctionTest {
       import js.DynamicImplicits.truthValue
       assertTrue(thiz)
       val thiz_foobar = thiz.foobar
-      assertEquals("foobar", thiz_foobar)
+      assertEquals(thiz_foobar, "foobar")
       u + v
     }, obj)
-    assertEquals("foo42", res)
+    assertEquals(res, "foo42")
   }
 
   @Test def should_bind_the_first_argument_to_this_when_applying_js_ThisFunctionN(): Unit = {
@@ -63,7 +63,7 @@ class ThisFunctionTest {
     """).asInstanceOf[js.ThisFunction1[js.Dynamic, Int, String]]
     val obj = js.Object().asInstanceOf[js.Dynamic]
     obj.foo = "foo"
-    assertEquals("foo:42", g(obj, 42))
+    assertEquals(g(obj, 42), "foo:42")
   }
 
   @Test def should_provide_an_implicit_conversion_from_js_ThisFunction_to_Scala_function(): Unit = {
@@ -73,7 +73,7 @@ class ThisFunctionTest {
     val f: scala.Function2[js.Dynamic, Int, String] = g
     val obj = js.Object().asInstanceOf[js.Dynamic]
     obj.foo = "foo"
-    assertEquals("foo:42", f(obj, 42))
+    assertEquals(f(obj, 42), "foo:42")
   }
 
   @Test def thisFunction_in_trait_issue2643(): Unit = {
@@ -111,11 +111,11 @@ class ThisFunctionTest {
     }
     val ctorDyn = ctor.asInstanceOf[js.Dynamic]
 
-    assertEquals("object", js.typeOf(ctorDyn.prototype))
+    assertEquals(js.typeOf(ctorDyn.prototype), "object")
 
     val obj = js.Dynamic.newInstance(ctorDyn)("foo")
-    assertEquals("foo", obj.x)
-    assertEquals(42, obj.y)
+    assertEquals(obj.x, "foo")
+    assertEquals(obj.y, 42)
     assertSame(ctor, obj.constructor)
   }
 
@@ -127,11 +127,11 @@ class ThisFunctionTest {
     }
     val ctorDyn = ctor.asInstanceOf[js.Dynamic]
 
-    assertEquals("object", js.typeOf(ctorDyn.prototype))
+    assertEquals(js.typeOf(ctorDyn.prototype), "object")
 
     val obj = js.Dynamic.newInstance(ctorDyn)("foo")
-    assertEquals("foo", obj.x)
-    assertEquals(42, obj.y)
+    assertEquals(obj.x, "foo")
+    assertEquals(obj.y, 42)
     assertSame(ctor, obj.constructor)
   }
 

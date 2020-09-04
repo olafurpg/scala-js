@@ -25,11 +25,11 @@ class ReflectArrayJSTest {
       sampleElem: Any): Unit = {
     val array =
       java.lang.reflect.Array.newInstance(clazz, length).asInstanceOf[Array[_]]
-    assertEquals(expectedClazz, array.getClass)
+    assertEquals(array.getClass, expectedClazz)
     assertTrue(array.getClass.isArray)
     assertEquals(length, array.length)
     for (i <- 0 until array.length)
-      assertEquals(sampleElem, array(i))
+      assertEquals(array(i), sampleElem)
   }
 
   @noinline

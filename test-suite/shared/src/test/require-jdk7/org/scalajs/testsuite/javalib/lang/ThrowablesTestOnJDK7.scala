@@ -26,17 +26,17 @@ class ThrowablesTestOnJDK7 {
     }
 
     def test1(newThrowable: String => Throwable): Unit = {
-      assertEquals("foo", newThrowable("foo").getMessage)
+      assertEquals(newThrowable("foo").getMessage, "foo")
     }
 
     def test2(newThrowable: Throwable => Throwable): Unit = {
-      assertEquals(t0.getClass.getName, newThrowable(t0).getMessage)
-      assertEquals(t0.getClass.getName + ": foo", newThrowable(t1).getMessage)
+      assertEquals(newThrowable(t0).getMessage, t0.getClass.getName)
+      assertEquals(newThrowable(t1).getMessage, t0.getClass.getName + ": foo")
     }
 
     def test3(newThrowable: (String, Throwable) => Throwable): Unit = {
-      assertEquals("bar", newThrowable("bar", t0).getMessage)
-      assertEquals("bar", newThrowable("bar", t1).getMessage)
+      assertEquals(newThrowable("bar", t0).getMessage, "bar")
+      assertEquals(newThrowable("bar", t1).getMessage, "bar")
       assertNull(newThrowable(null, t0).getMessage)
       assertNull(newThrowable(null, t1).getMessage)
     }
@@ -57,7 +57,7 @@ class ThrowablesTestOnJDK7 {
   @Test def assertionErrorCtorWithStringThrowable(): Unit = {
     val th = new RuntimeException("kaboom")
     val e = new AssertionError("boom", th)
-    assertEquals("boom", e.getMessage)
+    assertEquals(e.getMessage, "boom")
     assertSame(th, e.getCause)
   }
 
@@ -88,10 +88,10 @@ class ThrowablesTestOnJDK7 {
     // There is no ordering guarantee in suppressed exceptions, so we compare sets
 
     e.addSuppressed(suppressed1)
-    assertEquals(Set(suppressed1), e.getSuppressed().toSet)
+    assertEquals(e.getSuppressed().toSet, Set(suppressed1))
 
     e.addSuppressed(suppressed2)
-    assertEquals(Set(suppressed1, suppressed2), e.getSuppressed().toSet)
+    assertEquals(e.getSuppressed().toSet, Set(suppressed1, suppressed2))
   }
 
   @Test def noSuppression(): Unit = {

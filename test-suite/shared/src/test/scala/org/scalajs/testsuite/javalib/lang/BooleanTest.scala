@@ -24,8 +24,8 @@ import org.scalajs.testsuite.utils.AssertThrows._
 class BooleanTest {
 
   @Test def booleanValue(): Unit = {
-    assertEquals(true, JBoolean.TRUE.booleanValue())
-    assertEquals(false, JBoolean.FALSE.booleanValue())
+    assertEquals(JBoolean.TRUE.booleanValue(), true)
+    assertEquals(JBoolean.FALSE.booleanValue(), false)
     expectThrows(classOf[Exception], (null: JBoolean).booleanValue())
   }
 
@@ -51,9 +51,9 @@ class BooleanTest {
 
   @Test def should_parse_strings(): Unit = {
     def test(s: String, v: Boolean): Unit = {
-      assertEquals(v, JBoolean.parseBoolean(s))
-      assertEquals(v, JBoolean.valueOf(s).booleanValue())
-      assertEquals(v, new JBoolean(s).booleanValue())
+      assertEquals(JBoolean.parseBoolean(s), v)
+      assertEquals(JBoolean.valueOf(s).booleanValue(), v)
+      assertEquals(new JBoolean(s).booleanValue(), v)
     }
 
     test("false", false)

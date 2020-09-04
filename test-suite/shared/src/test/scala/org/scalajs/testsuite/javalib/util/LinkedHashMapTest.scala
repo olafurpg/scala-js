@@ -172,14 +172,14 @@ abstract class LinkedHashMapTest extends HashMapTest {
 
       assertTrue(entryIter.hasNext())
       val entry = entryIter.next()
-      assertEquals(key, entry.getKey())
-      assertEquals(value, entry.getValue())
+      assertEquals(entry.getKey(), key)
+      assertEquals(entry.getValue(), value)
 
       assertTrue(keyIter.hasNext())
-      assertEquals(key, keyIter.next())
+      assertEquals(keyIter.next(), key)
 
       assertTrue(valueIter.hasNext())
-      assertEquals(value, valueIter.next())
+      assertEquals(valueIter.next(), value)
     }
 
     assertFalse(entryIter.hasNext())

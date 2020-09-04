@@ -73,14 +73,15 @@ class SystemJSTest {
 
     // Defined in System.scala
 
-    assertEquals("1.8", get("java.version"))
-    assertEquals("1.8", get("java.vm.specification.version"))
-    assertEquals("Oracle Corporation", get("java.vm.specification.vendor"))
-    assertEquals("Scala.js", get("java.vm.name"))
-    assertEquals("1.8", get("java.specification.version"))
-    assertEquals("/", get("file.separator"))
-    assertEquals(":", get("path.separator"))
-    assertEquals("\n", get("line.separator"))
-    assertEquals(linkingInfo.linkerVersion, get("java.vm.version"))
+    assertEquals(get("java.version"), "1.8")
+    assertEquals(get("java.vm.specification.version"), "1.8")
+    assertEquals(get("java.vm.specification.vendor"), "Oracle Corporation")
+    assertEquals(get("java.vm.name"), "Scala.js")
+    assertEquals(get("java.specification.version"), "1.8")
+    assertEquals(get("file.separator"), "/")
+    assertEquals(get("path.separator"), ":")
+    assertEquals(get("line.separator"), """
+""")
+    assertEquals(get("java.vm.version"), linkingInfo.linkerVersion)
   }
 }

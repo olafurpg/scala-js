@@ -55,31 +55,31 @@ class UndefOrTest {
 
   @Test def `convert_to_js_Any_when_A_<%_js_Any`(): Unit = {
     val x: js.UndefOr[Int] = 42
-    assertEquals(42, x)
+    assertEquals(x, 42)
 
     val y: js.UndefOr[String] = js.undefined
     assertJSUndefined(y)
   }
 
   @Test def getOrElse(): Unit = {
-    assertEquals("hello", some("hello").getOrElse("ko"))
-    assertEquals("ok", none[String].getOrElse("ok"))
+    assertEquals(some("hello").getOrElse("ko"), "hello")
+    assertEquals(none[String].getOrElse("ok"), "ok")
 
     var defaultComputed = false
-    assertEquals("test", some("test") getOrElse {
-      defaultComputed = true
-      "ko"
-    })
+    assertEquals(some("test") getOrElse ({
+  defaultComputed = true
+  "ko"
+}), "test")
     assertFalse(defaultComputed)
   }
 
   @Test def orNull(): Unit = {
-    assertEquals("hello", some("hello").orNull)
+    assertEquals(some("hello").orNull, "hello")
     assertNull(none[String].orNull)
   }
 
   @Test def map(): Unit = {
-    assertEquals(62 / 3, some(62).map(_ / 3))
+    assertEquals(some(62).map(_ / 3), 62 / 3)
     assertJSUndefined(none[Int].map(_ / 3))
   }
 
@@ -90,7 +90,7 @@ class UndefOrTest {
 
   @Test def flatMap(): Unit = {
     def f(x: Int): js.UndefOr[Int] = if (x > 0) x+3 else js.undefined
-    assertEquals(9, some(6).flatMap(f))
+    assertEquals(some(6).flatMap(f), 9)
     assertJSUndefined(some(-6).flatMap(f))
     assertJSUndefined(none[Int].flatMap(f))
   }
@@ -147,9 +147,9 @@ class UndefOrTest {
   }
 
   @Test def collect(): Unit = {
-    assertEquals("ok", some("hello") collect {
-      case "hello" => "ok"
-    })
+    assertEquals(some("hello") collect ({
+  case "hello" => "ok"
+}), "ok")
     assertTrue(js.isUndefined(some("hello") collect {
       case "notthis" => "ko"
     }))
@@ -164,26 +164,26 @@ class UndefOrTest {
       witness += 1
       true
     }
-    assertEquals("ok", some("hello") collect {
-      case x @ "hello" if guard(x) => "ok"
-    })
+    assertEquals(some("hello") collect ({
+  case x @ "hello" if guard(x) => "ok"
+}), "ok")
     assertEquals(1, witness)
   }
 
   @Test def orElse(): Unit = {
     assertTrue((some(true) orElse some(false)).get)
-    assertEquals("ok", some("ok") orElse none)
-    assertEquals("yes", none orElse some("yes"))
+    assertEquals(some("ok") orElse none, "ok")
+    assertEquals(none orElse some("yes"), "yes")
     assertJSUndefined(none orElse none)
 
     // #2095
-    assertEquals("ok", some("ok") orElse "yes")
-    assertEquals("yes", none orElse "yes")
+    assertEquals(some("ok") orElse "yes", "ok")
+    assertEquals(none orElse "yes", "yes")
   }
 
   @Test def toList(): Unit = {
-    assertEquals(List("hello"), some("hello").toList)
-    assertEquals(List.empty[String], none[String].toList)
+    assertEquals(some("hello").toList, List("hello"))
+    assertEquals(none[String].toList, List.empty[String])
   }
 
   @Test def toLeft_and_toRight(): Unit = {
@@ -203,7 +203,7 @@ class UndefOrTest {
   import js.JSConverters._
 
   @Test def should_provide_orUndefined(): Unit = {
-    assertEquals("asdf", Some("asdf").orUndefined)
+    assertEquals(Some("asdf").orUndefined, "asdf")
     assertJSUndefined((None: Option[String]).orUndefined)
     assertJSUndefined(None.orUndefined)
   }

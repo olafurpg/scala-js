@@ -82,8 +82,8 @@ class DictionaryTest {
     assertEquals(2, dict1("b"))
 
     val dict2 = Map("a" -> "foo", "b" -> "bar").toJSDictionary
-    assertEquals("foo", dict2("a"))
-    assertEquals("bar", dict2("b"))
+    assertEquals(dict2("a"), "foo")
+    assertEquals(dict2("b"), "bar")
   }
 
   @Test def should_provide_underlying_JSDictionary(): Unit = {
@@ -91,7 +91,7 @@ class DictionaryTest {
     val dict: js.Dictionary[Int] = original.filter(_._1 != "b")
 
     assertEquals(1, dict("a"))
-    assertEquals(None, dict.get("b"))
+    assertEquals(dict.get("b"), None)
     assertEquals(3, dict("c"))
   }
 }

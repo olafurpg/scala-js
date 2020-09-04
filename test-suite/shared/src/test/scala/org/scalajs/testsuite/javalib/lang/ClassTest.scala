@@ -48,12 +48,12 @@ class ClassTest {
   @Test def getPrimitiveTypeName(): Unit = {
     @noinline
     def testNoInline(expected: String, cls: Class[_]): Unit =
-      assertEquals(expected, cls.getName())
+      assertEquals(cls.getName(), expected)
 
     @inline
     def test(expected: String, cls: Class[_]): Unit = {
       testNoInline(expected, cls)
-      assertEquals(expected, cls.getName())
+      assertEquals(cls.getName(), expected)
     }
 
     test("void", classOf[Unit])
@@ -76,14 +76,14 @@ class ClassTest {
 
     @noinline
     def testNoInline(expected: String, x: Any): Unit = {
-      assertEquals(expected, getClassOfNoInline(x).getName())
-      assertEquals(expected, x.getClass().getName())
+      assertEquals(getClassOfNoInline(x).getName(), expected)
+      assertEquals(x.getClass().getName(), expected)
     }
 
     @inline
     def test(expected: String, x: Any): Unit = {
       testNoInline(expected, x)
-      assertEquals(expected, x.getClass().getName())
+      assertEquals(x.getClass().getName(), expected)
     }
 
     test(if (executingInJVM) "scala.runtime.BoxedUnit" else "java.lang.Void", ())
@@ -134,11 +134,11 @@ class ClassTest {
   object TestObject
 
   @Test def getSimpleName(): Unit = {
-    assertEquals("Integer", classOf[java.lang.Integer].getSimpleName())
-    assertEquals("Class", classOf[java.lang.Class[_]].getSimpleName())
-    assertEquals("Map", classOf[scala.collection.Map[_, _]].getSimpleName())
-    assertEquals("InnerClass", classOf[ClassTestClass#InnerClass].getSimpleName())
-    assertEquals("TestObject$", TestObject.getClass.getSimpleName())
+    assertEquals(classOf[java.lang.Integer].getSimpleName(), "Integer")
+    assertEquals(classOf[java.lang.Class[_]].getSimpleName(), "Class")
+    assertEquals(classOf[scala.collection.Map[_, _]].getSimpleName(), "Map")
+    assertEquals(classOf[ClassTestClass#InnerClass].getSimpleName(), "InnerClass")
+    assertEquals(TestObject.getClass.getSimpleName(), "TestObject$")
   }
 
   @Test def isAssignableFrom(): Unit = {
@@ -200,12 +200,12 @@ class ClassTest {
   @Test def getComponentType(): Unit = {
     @noinline
     def testNoInline(clazz: Class[_], componentType: Class[_]): Unit =
-      assertEquals(componentType, clazz.getComponentType)
+      assertEquals(clazz.getComponentType, componentType)
 
     @inline
     def test(clazz: Class[_], componentType: Class[_]): Unit = {
       testNoInline(clazz, componentType)
-      assertEquals(componentType, clazz.getComponentType)
+      assertEquals(clazz.getComponentType, componentType)
     }
 
     test(classOf[Array[Object]], classOf[Object])

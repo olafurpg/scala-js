@@ -95,11 +95,11 @@ abstract class TreeSetTest(val factory: TreeSetFactory)
     assertEquals(1, ts.size())
     assertTrue(ts.add("111"))
     assertEquals(2, ts.size())
-    assertEquals("111", ts.first)
+    assertEquals(ts.first, "111")
     assertTrue(ts.remove("111"))
 
     assertEquals(1, ts.size())
-    assertEquals("222", ts.first)
+    assertEquals(ts.first, "222")
 
     assertTrue(ts.remove("222"))
     assertEquals(0, ts.size())

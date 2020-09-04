@@ -24,12 +24,12 @@ class CharacterTest {
     val isoControlChars = (('\u0000' to '\u001F') ++
         ('\u007F' to '\u009F')).map(_.toInt).toSet
     isoControlChars foreach { c =>
-      assertEquals(true, Character.isISOControl(c))
+      assertEquals(Character.isISOControl(c), true)
     }
 
     val randomInts = List.fill(100)(scala.util.Random.nextInt)
     ((-1000 to 1000) ++ randomInts).filterNot(isoControlChars) foreach { c =>
-      assertEquals(false, Character.isISOControl(c))
+      assertEquals(Character.isISOControl(c), false)
     }
   }
 

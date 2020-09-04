@@ -27,7 +27,7 @@ class TupleTest {
     val obj = js.Tuple2(42, "foobar")
 
     assertEquals(42, obj._1)
-    assertEquals("foobar", obj._2)
+    assertEquals(obj._2, "foobar")
   }
 
   @Test def should_unapply_JS_tuple_in_destructuring_use_case(): Unit = {
@@ -37,7 +37,7 @@ class TupleTest {
     val t1IsInt: Int = t1
     val t2IsString: String = t2
     assertEquals(42, t1IsInt)
-    assertEquals("foobar", t2IsString)
+    assertEquals(t2IsString, "foobar")
   }
 
   @Test def should_unapply_JS_tuple_in_pattern_matching_position(): Unit = {
@@ -49,7 +49,7 @@ class TupleTest {
         val t1IsInt: Int = t1
         val t2IsString: String = t2
         assertEquals(42, t1IsInt)
-        assertEquals("foobar", t2IsString)
+        assertEquals(t2IsString, "foobar")
     }
   }
 
@@ -64,21 +64,21 @@ class TupleTest {
     val obj = js.Array[Any](42, "foobar").asInstanceOf[js.Tuple2[Int, String]]
 
     assertEquals(42, obj._1)
-    assertEquals("foobar", obj._2)
+    assertEquals(obj._2, "foobar")
   }
 
   @Test def should_convert_from_Scala_tuple(): Unit = {
     val obj: js.Tuple2[Int, String] = (42, "foobar")
 
     assertEquals(42, obj._1)
-    assertEquals("foobar", obj._2)
+    assertEquals(obj._2, "foobar")
   }
 
   @Test def should_convert_to_Scala_tuple(): Unit = {
     val obj: (Int, String) = js.Tuple2(42, "foobar")
 
     assertEquals(42, obj._1)
-    assertEquals("foobar", obj._2)
+    assertEquals(obj._2, "foobar")
   }
 
   // scalastyle:off line.size.limit

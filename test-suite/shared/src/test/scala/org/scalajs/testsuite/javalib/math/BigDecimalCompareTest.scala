@@ -35,7 +35,7 @@ class BigDecimalCompareTest {
     val result = "1.23809648392385E+53"
     val resScale = -39
     val res = aNumber.abs(mc)
-    assertEquals(res.toString, result)
+    assertEquals(result, res.toString)
     assertEquals(res.scale(), resScale)
   }
 
@@ -48,7 +48,7 @@ class BigDecimalCompareTest {
     val result = "1.2380964839238475457356735674573563567890E+53"
     val resScale = -13
     val res = aNumber.abs(mc)
-    assertEquals(res.toString, result)
+    assertEquals(result, res.toString)
     assertEquals(res.scale(), resScale)
   }
 
@@ -56,14 +56,14 @@ class BigDecimalCompareTest {
     val a = "-123809648392384754573567356745735.63567890295784902768787678287E+21"
     val aNumber = new BigDecimal(a)
     val result = "123809648392384754573567356745735635678902957849027687.87678287"
-    assertEquals(result, aNumber.abs().toString)
+    assertEquals(aNumber.abs().toString, result)
   }
 
   @Test def testAbsPos(): Unit = {
     val a = "123809648392384754573567356745735.63567890295784902768787678287E+21"
     val aNumber = new BigDecimal(a)
     val result = "123809648392384754573567356745735635678902957849027687.87678287"
-    assertEquals(result, aNumber.abs().toString)
+    assertEquals(aNumber.abs().toString, result)
   }
 
   @Test def testCompareEqualScale1(): Unit = {
@@ -297,7 +297,7 @@ class BigDecimalCompareTest {
     val cScale = 27
     val aNumber = new BigDecimal(new BigInteger(a), aScale)
     val res = aNumber.negate(mc)
-    assertEquals(res.toString, c)
+    assertEquals(c, res.toString)
     assertEquals(res.scale(), cScale)
   }
 
@@ -311,7 +311,7 @@ class BigDecimalCompareTest {
     val cScale = 10
     val aNumber = new BigDecimal(new BigInteger(a), aScale)
     val res = aNumber.negate(mc)
-    assertEquals(res.toString, c)
+    assertEquals(c, res.toString)
     assertEquals(res.scale(), cScale)
   }
 
@@ -345,7 +345,7 @@ class BigDecimalCompareTest {
     val cScale = 27
     val aNumber = new BigDecimal(new BigInteger(a), aScale)
     val res = aNumber.plus(mc)
-    assertEquals(res.toString, c)
+    assertEquals(c, res.toString)
     assertEquals(res.scale(), cScale)
   }
 
@@ -359,7 +359,7 @@ class BigDecimalCompareTest {
     val cScale = 10
     val aNumber = new BigDecimal(new BigInteger(a), aScale)
     val res = aNumber.plus(mc)
-    assertEquals(res.toString, c)
+    assertEquals(c, res.toString)
     assertEquals(res.scale(), cScale)
   }
 

@@ -75,20 +75,20 @@ class SpecialTest {
   @Test def should_provide_an_equivalent_of_the_JS_delete_keyword_issue_255(): Unit = {
     val obj = js.Dynamic.literal(foo = 42, bar = "foobar")
 
-    assertEquals(42, obj.foo)
-    assertEquals("foobar", obj.bar)
+    assertEquals(obj.foo, 42)
+    assertEquals(obj.bar, "foobar")
     js.special.delete(obj, "foo")
     assertFalse(obj.hasOwnProperty("foo"))
-    assertEquals("foobar", obj.bar)
+    assertEquals(obj.bar, "foobar")
   }
 
   @Test def should_behave_as_specified_when_deleting_a_non_configurable_property_issue_461_issue_679(): Unit = {
     val obj = js.Dynamic.literal()
     js.Object.defineProperty(obj, "nonconfig",
         js.Dynamic.literal(value = 4, writable = false).asInstanceOf[js.PropertyDescriptor])
-    assertEquals(4, obj.nonconfig)
+    assertEquals(obj.nonconfig, 4)
     assertThrows(classOf[Exception], js.special.delete(obj, "nonconfig"))
-    assertEquals(4, obj.nonconfig)
+    assertEquals(obj.nonconfig, 4)
   }
 
   @Test def should_treat_delete_as_a_statement_issue_907(): Unit = {

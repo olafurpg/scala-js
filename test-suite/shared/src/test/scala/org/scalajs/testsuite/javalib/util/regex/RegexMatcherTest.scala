@@ -101,8 +101,8 @@ class RegexMatcherTest  {
     )
 
     // Test case from the bug report
-    assertEquals(List("a", "A"),
-        "(?i)(a)".r.findAllMatchIn("aA").map(_.matched).toList)
+    assertEquals("(?i)(a)".r.findAllMatchIn("aA").map(_.matched).toList,
+        List("a", "A"))
   }
 
   def parseExpect(regex: String, str: String, pos: (Int, Int)*): Unit = {
@@ -113,7 +113,7 @@ class RegexMatcherTest  {
     var i = 0
     val tmp = pos.iterator
     while (tmp.hasNext) {
-      assertEquals(tmp.next, (matcher.start(i), matcher.end(i)))
+      assertEquals((matcher.start(i), matcher.end(i)), tmp.next)
       i += 1
     }
   }
@@ -173,7 +173,7 @@ class RegexMatcherTest  {
 
     assertEquals(startEndMatch(0)._1, matcher.start)
     assertEquals(startEndMatch(0)._2, matcher.end)
-    assertEquals(startEndMatch(0)._3, matcher.group)
+    assertEquals(matcher.group, startEndMatch(0)._3)
     assertEquals(startEndMatch.size - 1, matcher.groupCount)
     for (((start, end, mtch), i) <- startEndMatch.zipWithIndex) {
       assertEquals("" + i, start, matcher.start(i))
@@ -185,11 +185,11 @@ class RegexMatcherTest  {
     assertEquals(startEndMatch.size - 1, matchResult.groupCount)
     assertEquals(startEndMatch(0)._1, matchResult.start)
     assertEquals(startEndMatch(0)._2, matchResult.end)
-    assertEquals(startEndMatch(0)._3, matchResult.group)
+    assertEquals(matchResult.group, startEndMatch(0)._3)
     for (((start, end, mtch), i) <- startEndMatch.zipWithIndex) {
       assertEquals(start, matchResult.start(i))
       assertEquals(end, matchResult.end(i))
-      assertEquals(mtch, matchResult.group(i))
+      assertEquals(matchResult.group(i), mtch)
     }
   }
 
@@ -278,20 +278,20 @@ class RegexMatcherTest  {
     assertEquals(0, region0to15.regionStart)
     assertEquals(15, region0to15.regionEnd)
     assertTrue(region0to15.find())
-    assertEquals("Scalable", region0to15.group)
+    assertEquals(region0to15.group, "Scalable")
 
     val region2to7 = region0to15.region(2, 7)
     assertEquals(2, region2to7.regionStart)
     assertEquals(7, region2to7.regionEnd)
     assertTrue(region2to7.find())
-    assertEquals("Scala", region2to7.group)
+    assertEquals(region2to7.group, "Scala")
 
     val region5toEnd = matcher0.region(5, matcher0.regionEnd)
     assertEquals(5, region5toEnd.regionStart)
     if (!executingInJVM) {
       assertEquals(19, region5toEnd.regionEnd)
       assertTrue(region5toEnd.find())
-      assertEquals("Solution", region5toEnd.group)
+      assertEquals(region5toEnd.group, "Solution")
     }
 
     val matcher1 = Pattern.compile("0[xX][A-Fa-f0-9]{3}$").matcher("In CSS, 0xc4fe is not a color")
@@ -300,7 +300,7 @@ class RegexMatcherTest  {
     assertEquals(5, region5to13.regionStart)
     assertEquals(13, region5to13.regionEnd)
     assertTrue(region5to13.find())
-    assertEquals("0xc4f", region5to13.group)
+    assertEquals(region5to13.group, "0xc4f")
 
     val region5to20 = matcher1.region(5, 20)
     assertEquals(5, region5to20.regionStart)
@@ -318,19 +318,19 @@ class RegexMatcherTest  {
     }
     matcher.appendTail(sb)
 
-    assertEquals("one dog two dogs in the yard", sb.toString)
+    assertEquals(sb.toString, "one dog two dogs in the yard")
   }
 
   @Test def replaceAll(): Unit = {
     // From the JavaDoc
     val matcher = Pattern.compile("a*b").matcher("aabfooaabfooabfoob")
-    assertEquals("-foo-foo-foo-", matcher.replaceAll("-"))
+    assertEquals(matcher.replaceAll("-"), "-foo-foo-foo-")
   }
 
   @Test def replaceFirst(): Unit = {
     // From the JavaDoc
     val matcher = Pattern.compile("dog").matcher("zzzdogzzzdogzzz")
-    assertEquals("zzzcatzzzdogzzz", matcher.replaceFirst("cat"))
+    assertEquals(matcher.replaceFirst("cat"), "zzzcatzzzdogzzz")
   }
 
   @Test def should_throw_exception_if_match_accessors_are_called_before_find(): Unit = {
@@ -342,9 +342,9 @@ class RegexMatcherTest  {
         case e: Throwable => e
       }
 
-      assertEquals("java.lang.IllegalStateException", exception.getClass.getName)
+      assertEquals(exception.getClass.getName, "java.lang.IllegalStateException")
       if (!executingInJVM) // On JVM the message is "No match found"
-        assertEquals("No match available", exception.getMessage)
+        assertEquals(exception.getMessage, "No match available")
     }
 
     val matcher = Pattern.compile("(Sc([a-z]*))").matcher("Scala.js")
@@ -385,9 +385,9 @@ class RegexMatcherTest  {
     val m0 = p0.matcher("abcABC")
 
     assertTrue(m0.find())
-    assertEquals("abc", m0.group())
+    assertEquals(m0.group(), "abc")
     assertTrue(m0.find())
-    assertEquals("ABC", m0.group())
+    assertEquals(m0.group(), "ABC")
     assertFalse(m0.find())
 
     val p1 = Pattern.compile("(?-i)abc", Pattern.CASE_INSENSITIVE)
@@ -397,7 +397,7 @@ class RegexMatcherTest  {
     val m1 = p1.matcher("abcABC")
 
     assertTrue(m1.find())
-    assertEquals("abc", m1.group())
+    assertEquals(m1.group(), "abc")
     assertFalse(m1.find())
   }
 
@@ -407,13 +407,13 @@ class RegexMatcherTest  {
     if (!executingInJVM)
       assertThrows(classOf[Exception], ms group "Ape")
     assertTrue(ms.hasNext)
-    assertEquals("abbbc", ms.next())
-    assertEquals("bbb", ms group "Bee")
+    assertEquals(ms.next(), "abbbc")
+    assertEquals(ms group "Bee", "bbb")
     if (!executingInJVM)
       assertThrows(classOf[Exception], ms group "Ape")
     assertTrue(ms.hasNext)
-    assertEquals("abc", ms.next())
-    assertEquals("b", ms group "Bee")
+    assertEquals(ms.next(), "abc")
+    assertEquals(ms group "Bee", "b")
     if (!executingInJVM)
       assertThrows(classOf[Exception], ms group "Ape")
     assertFalse(ms.hasNext)

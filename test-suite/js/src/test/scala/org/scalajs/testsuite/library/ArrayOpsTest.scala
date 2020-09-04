@@ -103,13 +103,13 @@ class ArrayOpsTest {
   }
 
   @Test def headOption(): Unit = {
-    assertEquals(Some(5), js.Array(5, 7, 10).headOption)
-    assertEquals(None, js.Array[Int]().headOption)
+    assertEquals(js.Array(5, 7, 10).headOption, Some(5))
+    assertEquals(js.Array[Int]().headOption, None)
   }
 
   @Test def lastOption(): Unit = {
-    assertEquals(Some(10), js.Array(5, 7, 10).lastOption)
-    assertEquals(None, js.Array[Int]().lastOption)
+    assertEquals(js.Array(5, 7, 10).lastOption, Some(10))
+    assertEquals(js.Array[Int]().lastOption, None)
   }
 
   @Test def sizeCompare(): Unit = {
@@ -408,9 +408,9 @@ class ArrayOpsTest {
 
   @Test def find(): Unit = {
     val array = js.Array(1, 5, 7, 2, 54, 2, 78, 0, 3)
-    assertEquals(Some(7), array.find(_ > 5))
-    assertEquals(Some(54), array.find(_ > 10))
-    assertEquals(None, array.find(_ > 100))
+    assertEquals(array.find(_ > 5), Some(7))
+    assertEquals(array.find(_ > 10), Some(54))
+    assertEquals(array.find(_ > 100), None)
   }
 
   @Test def exists(): Unit = {
@@ -478,12 +478,14 @@ class ArrayOpsTest {
 
   @Test def collectFirst(): Unit = {
     val array = js.Array(1, 5, 7, 2, 54, 2, 78, 0, 3)
-    assertEquals(Some(108), array.collectFirst {
-      case x if x > 10 => x * 2
-    })
-    assertEquals(None, array.collectFirst {
-      case x if x < 0 => x * 2
-    })
+    assertEquals(array.collectFirst({
+  case x if x > 10 =>
+    x * 2
+}), Some(108))
+    assertEquals(array.collectFirst({
+  case x if x < 0 =>
+    x * 2
+}), None)
   }
 
   @Test def zip(): Unit = {
@@ -590,14 +592,14 @@ class ArrayOpsTest {
 
   @Test def indices(): Unit = {
     assertTrue(js.Array[Int]().indices.isEmpty)
-    assertEquals(0 until 3, js.Array(4, 6, 8).indices)
+    assertEquals(js.Array(4, 6, 8).indices, 0 until 3)
   }
 
   @Test def groupBy(): Unit = {
     val array = js.Array("foo" -> 1, "bar" -> 5, "baz" -> 1, "foobar" -> 3,
         "hello" -> 7, "bonjour" -> 3)
     val groups = array.groupBy(_._2)
-    assertEquals(Set(1, 3, 5, 7), groups.keySet)
+    assertEquals(groups.keySet, Set(1, 3, 5, 7))
     assertJSArrayEquals(js.Array("foo" -> 1, "baz" -> 1), groups(1))
     assertJSArrayEquals(js.Array("foobar" -> 3, "bonjour" -> 3), groups(3))
     assertJSArrayEquals(js.Array("bar" -> 5), groups(5))
@@ -606,12 +608,12 @@ class ArrayOpsTest {
 
   @Test def toIndexedSeq(): Unit = {
     val array = js.Array(5, 7, 1, 34)
-    assertEquals(IndexedSeq(5, 7, 1, 34), array.toIndexedSeq)
+    assertEquals(array.toIndexedSeq, IndexedSeq(5, 7, 1, 34))
   }
 
   @Test def toSeq(): Unit = {
     val array = js.Array(5, 7, 1, 34)
-    assertEquals(Seq(5, 7, 1, 34), array.toSeq)
+    assertEquals(array.toSeq, Seq(5, 7, 1, 34))
   }
 
   @Test def copyToArray(): Unit = {
@@ -645,12 +647,12 @@ class ArrayOpsTest {
 
     val jsArray1: js.Array[Int] = js.Array(5, 7, 1, 34)
     val array1 = jsArray1.toArray
-    assertEquals(classOf[Array[Int]], array1.getClass)
+    assertEquals(array1.getClass, classOf[Array[Int]])
     assertArrayEquals(Array(5, 7, 1, 34), array1)
 
     val jsArray2: js.Array[String] = js.Array("foo", "bar", "baz")
     val array2 = jsArray2.toArray[CharSequence]
-    assertEquals(classOf[Array[CharSequence]], array2.getClass)
+    assertEquals(array2.getClass, classOf[Array[CharSequence]])
     assertArrayEquals(Array[AnyRef]("foo", "bar", "baz"), array2.asInstanceOf[Array[AnyRef]])
   }
 
@@ -947,7 +949,7 @@ class ArrayOpsTest {
 
   @Test def reduceRight(): Unit = {
     val array = js.Array("hello", "world")
-    assertEquals("hello, world", array.reduceRight(_ + ", " + _))
+    assertEquals(array.reduceRight(_ + ", " + _), "hello, world")
     assertThrows(classOf[UnsupportedOperationException],
         js.Array[Int]().reduceRight(_ + _))
   }

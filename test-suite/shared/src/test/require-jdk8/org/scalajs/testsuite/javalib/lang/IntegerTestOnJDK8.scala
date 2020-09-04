@@ -125,24 +125,24 @@ class IntegerTestOnJDK8 {
   }
 
   @Test def should_provide_toUnsignedString_without_radix(): Unit = {
-    assertEquals("0", Integer.toUnsignedString(0))
-    assertEquals("12345", Integer.toUnsignedString(12345))
-    assertEquals("242134", Integer.toUnsignedString(242134))
-    assertEquals("2147483647", Integer.toUnsignedString(Integer.MAX_VALUE))
-    assertEquals("4294967295", Integer.toUnsignedString(0xFFFFFFFF))
-    assertEquals("4000000000", Integer.toUnsignedString(0xEE6B2800))
+    assertEquals(Integer.toUnsignedString(0), "0")
+    assertEquals(Integer.toUnsignedString(12345), "12345")
+    assertEquals(Integer.toUnsignedString(242134), "242134")
+    assertEquals(Integer.toUnsignedString(Integer.MAX_VALUE), "2147483647")
+    assertEquals(Integer.toUnsignedString(-1), "4294967295")
+    assertEquals(Integer.toUnsignedString(-294967296), "4000000000")
   }
 
   @Test def should_provide_toUnsignedString_with_radix(): Unit = {
-    assertEquals("17777777777", Integer.toUnsignedString(2147483647, 8))
-    assertEquals("7fffffff", Integer.toUnsignedString(2147483647, 16))
-    assertEquals("1111111111111111111111111111111",
-        Integer.toUnsignedString(2147483647, 2))
-    assertEquals("2147483647", Integer.toUnsignedString(2147483647, 10))
-    assertEquals("ffffffff", Integer.toUnsignedString(0xFFFFFFFF, 16))
-    assertEquals("4294967295", Integer.toUnsignedString(0xFFFFFFFF, 10))
-    assertEquals("ee6b2800", Integer.toUnsignedString(0xEE6B2800, 16))
-    assertEquals("4000000000", Integer.toUnsignedString(0xEE6B2800, 10))
+    assertEquals(Integer.toUnsignedString(2147483647, 8), "17777777777")
+    assertEquals(Integer.toUnsignedString(2147483647, 16), "7fffffff")
+    assertEquals(Integer.toUnsignedString(2147483647, 2),
+        "1111111111111111111111111111111")
+    assertEquals(Integer.toUnsignedString(2147483647, 10), "2147483647")
+    assertEquals(Integer.toUnsignedString(-1, 16), "ffffffff")
+    assertEquals(Integer.toUnsignedString(-1, 10), "4294967295")
+    assertEquals(Integer.toUnsignedString(-294967296, 16), "ee6b2800")
+    assertEquals(Integer.toUnsignedString(-294967296, 10), "4000000000")
   }
 
   @Test def should_provide_hashCode_as_a_static_function(): Unit = {

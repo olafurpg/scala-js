@@ -60,7 +60,7 @@ class ByteArrayOutputStreamTest {
     val out = new ByteArrayOutputStream()
     out.write(buf)
 
-    assertEquals("Hello World.こんにちは日本語を読めますか。", out.toString)
+    assertEquals(out.toString, "Hello World.こんにちは日本語を読めますか。")
   }
 
   @Test def should_support_reset(): Unit = {

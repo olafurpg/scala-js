@@ -33,7 +33,7 @@ class MapTest {
   @Test def testApply(): Unit = {
     val obj = js.Map("foo" -> "bar")
     assertThrows(classOf[NoSuchElementException], obj("bar"))
-    assertEquals("bar", obj("foo"))
+    assertEquals(obj("foo"), "bar")
     assertEquals(1, obj.size)
 
     val empty = js.Map()
@@ -60,19 +60,19 @@ class MapTest {
   @Test def testIterator(): Unit = {
     val obj = js.Map("foo" -> 5, "bar" -> 42, "babar" -> 0)
     val elems = obj.iterator.toList
-    assertEquals(List("foo" -> 5, "bar" -> 42, "babar" -> 0), elems)
+    assertEquals(elems, List("foo" -> 5, "bar" -> 42, "babar" -> 0))
   }
 
   @Test def testToJSMap(): Unit = {
     // scala.scalajs.js.JSConverters.JSRichGenMapKV
     import js.JSConverters._
     val map1 = Map(1 -> "one", 2 -> "two").toJSMap
-    assertEquals("one", map1(1))
-    assertEquals("two", map1(2))
+    assertEquals(map1(1), "one")
+    assertEquals(map1(2), "two")
 
     val map2 = Map("a" -> "foo", "b" -> "bar").toJSMap
-    assertEquals("foo", map2("a"))
-    assertEquals("bar", map2("b"))
+    assertEquals(map2("a"), "foo")
+    assertEquals(map2("b"), "bar")
   }
 
   @Test def testContains(): Unit = {
@@ -91,8 +91,8 @@ class MapTest {
     val obj = js.Map(1 -> "foo")
     obj.update(1, "bar")
     obj.update(2, "babar")
-    assertEquals("bar", obj.get(1).get)
-    assertEquals("babar", obj.get(2).get)
+    assertEquals(obj.get(1).get, "bar")
+    assertEquals(obj.get(2).get, "babar")
   }
 }
 

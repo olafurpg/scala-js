@@ -48,7 +48,7 @@ class ReflectiveCallTest {
       override def toString(): String = s"StringValue($x)"
     }
 
-    assertEquals("StringValue(foo)", f(new StringValue("foo")).toString)
+    assertEquals(f(new StringValue("foo")).toString, "StringValue(foo)")
   }
 
   @Test def should_allow_generic_return_types(): Unit = {
@@ -61,7 +61,7 @@ class ReflectiveCallTest {
     def m[T](r: Object { def e(x: Tata): T}): T =
       r.e(new Tata("foo"))
 
-    assertEquals("Tata(iei)", m[Tata](Rec).toString)
+    assertEquals(m[Tata](Rec).toString, "Tata(iei)")
   }
 
   @Test def should_work_with_unary_methods_on_primitive_types(): Unit = {
@@ -204,14 +204,14 @@ class ReflectiveCallTest {
 
     def concat(x: Any { def +(y: String): String }, y: String): String = x + y
 
-    assertEquals("truefoo", concat(true, "foo"))
-    assertEquals("Afoo", concat('A', "foo"))
-    assertEquals("5foo", concat(5.toByte, "foo"))
-    assertEquals("5foo", concat(5.toShort, "foo"))
-    assertEquals("5foo", concat(5, "foo"))
-    assertEquals("5foo", concat(5L, "foo"))
-    assertEquals("5.5foo", concat(5.5f, "foo"))
-    assertEquals("5.5foo", concat(5.5, "foo"))
+    assertEquals(concat(true, "foo"), "truefoo")
+    assertEquals(concat('A', "foo"), "Afoo")
+    assertEquals(concat(5.toByte, "foo"), "5foo")
+    assertEquals(concat(5.toShort, "foo"), "5foo")
+    assertEquals(concat(5, "foo"), "5foo")
+    assertEquals(concat(5L, "foo"), "5foo")
+    assertEquals(concat(5.5f, "foo"), "5.5foo")
+    assertEquals(concat(5.5d, "foo"), "5.5foo")
   }
 
   @Test def should_work_with_Arrays(): Unit = {
@@ -229,10 +229,10 @@ class ReflectiveCallTest {
     val y = clone(x).asInstanceOf[Array[String]]
 
     assertEquals(3, len(x))
-    assertEquals("asdf", apl(x,0))
+    assertEquals(apl(x, 0), "asdf")
     upd(x,1,"2foo")
-    assertEquals("2foo", x(1))
-    assertEquals("foo", y(1))
+    assertEquals(x(1), "2foo")
+    assertEquals(y(1), "foo")
   }
 
   @Test def should_work_with_Arrays_of_primitive_values(): Unit = {
@@ -262,11 +262,11 @@ class ReflectiveCallTest {
     assertEquals('i'.toInt, get("Hi"))
 
     def sub(x: { def substring(x: Int): AnyRef }): AnyRef = x.substring(5)
-    assertEquals("sdfasdf", sub("asdfasdfasdf"))
+    assertEquals(sub("asdfasdfasdf"), "sdfasdf")
 
     type LEN_A = { def length: Any }
     def lenA(x: LEN_A): Any = x.length
-    assertEquals(4, lenA("asdf"))
+    assertEquals(lenA("asdf"), 4)
 
     def compareToString(x: { def compareTo(y: String): Int }, y: String): Int =
       x.compareTo(y)
@@ -301,10 +301,10 @@ class ReflectiveCallTest {
     val sub = new Sub
 
     val x: { def foo(x: Option[Int]): Any } = sub
-    assertEquals(1, x.foo(Some(1))) // here is the "bug"
+    assertEquals(x.foo(Some(1)), 1) // here is the "bug"
 
     val y: { def foo(x: Option[String]): Any } = sub
-    assertEquals(1, y.foo(Some("hello")))
+    assertEquals(y.foo(Some("hello")), 1)
   }
 
   @Test def should_work_on_java_lang_Object_notify_notifyAll_issue_303(): Unit = {
@@ -370,7 +370,7 @@ class ReflectiveCallTest {
 
     def testWith(body: => Unit): Unit = {
       val exception = expectThrows(classOf[Throwable], body)
-      assertEquals(expectedClassName, exception.getClass.getName)
+      assertEquals(exception.getClass.getName, expectedClassName)
     }
 
     class A
@@ -405,7 +405,7 @@ class ReflectiveCallTest {
     assertTrue(objNeTest(a, 5: Integer))
     assertFalse(objNeTest(a, 6: Integer))
 
-    assertEquals("hellothere", objSynchronizedTest(a, "hello"))
+    assertEquals(objSynchronizedTest(a, "hello"), "hellothere")
   }
 
   @Test def should_work_on_java_lang_Float_Double_isNaN_isInfinite(): Unit = {
@@ -415,8 +415,8 @@ class ReflectiveCallTest {
     }
     def test(x: FloatingNumberLike, isNaN: Boolean,
         isInfinite: Boolean): Unit = {
-      assertEquals(isNaN, x.isNaN())
-      assertEquals(isInfinite, x.isInfinite())
+      assertEquals(x.isNaN(), isNaN)
+      assertEquals(x.isInfinite(), isInfinite)
     }
 
     test(new JFloat(Float.NaN), true, false)
@@ -445,7 +445,7 @@ class ReflectiveCallTest {
       def testInt(x: Int): Unit = assertEquals(5, x)
 
       def makeRef: Option[String] = Some("hi")
-      def testRef(x: Option[String]): Unit = assertEquals(Some("hi"), x)
+      def testRef(x: Option[String]): Unit = assertEquals(x, Some("hi"))
     }
 
     /* Note: we should also test with value classes, except that Scala itself

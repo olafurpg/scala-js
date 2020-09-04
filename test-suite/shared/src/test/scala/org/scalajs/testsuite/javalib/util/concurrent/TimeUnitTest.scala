@@ -113,22 +113,22 @@ class TimeUnitTest {
   @Test def values(): Unit = {
     val values = TimeUnit.values()
     assertEquals(7, values.length)
-    assertEquals(TimeUnit.NANOSECONDS, values(0))
-    assertEquals(TimeUnit.MICROSECONDS, values(1))
-    assertEquals(TimeUnit.MILLISECONDS, values(2))
-    assertEquals(TimeUnit.SECONDS, values(3))
-    assertEquals(TimeUnit.MINUTES, values(4))
-    assertEquals(TimeUnit.HOURS, values(5))
-    assertEquals(TimeUnit.DAYS, values(6))
+    assertEquals(values(0), TimeUnit.NANOSECONDS)
+    assertEquals(values(1), TimeUnit.MICROSECONDS)
+    assertEquals(values(2), TimeUnit.MILLISECONDS)
+    assertEquals(values(3), TimeUnit.SECONDS)
+    assertEquals(values(4), TimeUnit.MINUTES)
+    assertEquals(values(5), TimeUnit.HOURS)
+    assertEquals(values(6), TimeUnit.DAYS)
   }
 
   @Test def valueOf(): Unit = {
-    assertEquals(TimeUnit.NANOSECONDS, TimeUnit.valueOf("NANOSECONDS"))
-    assertEquals(TimeUnit.MICROSECONDS, TimeUnit.valueOf("MICROSECONDS"))
-    assertEquals(TimeUnit.MILLISECONDS, TimeUnit.valueOf("MILLISECONDS"))
-    assertEquals(TimeUnit.SECONDS, TimeUnit.valueOf("SECONDS"))
-    assertEquals(TimeUnit.MINUTES, TimeUnit.valueOf("MINUTES"))
-    assertEquals(TimeUnit.HOURS, TimeUnit.valueOf("HOURS"))
-    assertEquals(TimeUnit.DAYS, TimeUnit.valueOf("DAYS"))
+    assertEquals(TimeUnit.valueOf("NANOSECONDS"), TimeUnit.NANOSECONDS)
+    assertEquals(TimeUnit.valueOf("MICROSECONDS"), TimeUnit.MICROSECONDS)
+    assertEquals(TimeUnit.valueOf("MILLISECONDS"), TimeUnit.MILLISECONDS)
+    assertEquals(TimeUnit.valueOf("SECONDS"), TimeUnit.SECONDS)
+    assertEquals(TimeUnit.valueOf("MINUTES"), TimeUnit.MINUTES)
+    assertEquals(TimeUnit.valueOf("HOURS"), TimeUnit.HOURS)
+    assertEquals(TimeUnit.valueOf("DAYS"), TimeUnit.DAYS)
   }
 }

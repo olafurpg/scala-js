@@ -41,6 +41,6 @@ class RoundingModeTest {
     assertEquals(values(7).ordinal, RoundingMode.UNNECESSARY.ordinal)
 
     val rmUP = RoundingMode.UP
-    assertEquals("UP", rmUP.toString)
+    assertEquals(rmUP.toString, "UP")
   }
 }

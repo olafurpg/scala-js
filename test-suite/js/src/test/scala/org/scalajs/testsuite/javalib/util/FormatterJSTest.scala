@@ -25,10 +25,10 @@ class FormatterJSTest {
     val fmt = new Formatter()
     val res = fmt.format("%s", js.undefined).toString()
     fmt.close()
-    assertEquals("undefined", res)
+    assertEquals(res, "undefined")
   }
 
   @Test def `should_allow_f_string_interpolation_to_survive_undefined`(): Unit = {
-    assertEquals("undefined", f"${js.undefined}%s")
+    assertEquals(f"${js.undefined}%s", "undefined")
   }
 }

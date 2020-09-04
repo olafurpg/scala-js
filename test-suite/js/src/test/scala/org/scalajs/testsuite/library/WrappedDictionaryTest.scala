@@ -41,9 +41,9 @@ class WrappedDictionaryTest {
     assertArrayEquals(Array[AnyRef](), js.Object.properties(dict).toArray[AnyRef])
 
     map += "hello" -> "world"
-    assertEquals("world", dict("hello"))
+    assertEquals(dict("hello"), "world")
     map += "foo" -> "bar"
-    assertEquals("bar", dict("foo"))
+    assertEquals(dict("foo"), "bar")
     map -= "hello"
     assertFalse(dict.get("hello").isDefined)
     assertArrayEquals(Array[AnyRef]("foo"), js.Object.properties(dict).toArray[AnyRef])

@@ -29,15 +29,15 @@ class PropertiesTest {
   @Test def setProperty(): Unit = {
     val prop = new Properties()
     prop.setProperty("a", "A")
-    assertEquals("A", prop.get("a"))
+    assertEquals(prop.get("a"), "A")
     prop.setProperty("a", "AA")
     prop.setProperty("b", "B")
-    assertEquals("AA", prop.get("a"))
-    assertEquals("B", prop.get("b"))
+    assertEquals(prop.get("a"), "AA")
+    assertEquals(prop.get("b"), "B")
 
     val prop2 = new Properties(prop)
     prop2.setProperty("a", "AAA")
-    assertEquals("AAA", prop2.get("a"))
+    assertEquals(prop2.get("a"), "AAA")
   }
 
   @Test def getProperty(): Unit = {
@@ -45,11 +45,11 @@ class PropertiesTest {
 
     assertNull(prop.getProperty("a"))
     prop.setProperty("a", "A")
-    assertEquals("A", prop.getProperty("a"))
+    assertEquals(prop.getProperty("a"), "A")
     assertNull(prop.getProperty("aa"))
 
-    assertEquals("A", prop.getProperty("a", "B"))
-    assertEquals("B", prop.getProperty("b", "B"))
+    assertEquals(prop.getProperty("a", "B"), "A")
+    assertEquals(prop.getProperty("b", "B"), "B")
 
     // Tests with default properties
     prop.setProperty("b", "B")
@@ -57,9 +57,9 @@ class PropertiesTest {
     val prop2 = new Properties(prop)
     prop2.setProperty("b", "BB")
     prop2.setProperty("c", "C")
-    assertEquals("A", prop2.getProperty("a"))
-    assertEquals("BB", prop2.getProperty("b"))
-    assertEquals("C", prop2.getProperty("c"))
+    assertEquals(prop2.getProperty("a"), "A")
+    assertEquals(prop2.getProperty("b"), "BB")
+    assertEquals(prop2.getProperty("c"), "C")
   }
 
   @Test def propertyNames(): Unit = {

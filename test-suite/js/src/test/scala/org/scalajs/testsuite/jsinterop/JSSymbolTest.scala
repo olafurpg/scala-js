@@ -28,7 +28,7 @@ class JSSymbolTest {
 
     assertEquals(1, obj.asInstanceOf[PropDefClass].internalDef)
     assertEquals(1, obj.asInstanceOf[PropDefTrait].internalDef)
-    assertEquals(1, selectSymbol(obj, sym1))
+    assertEquals(selectSymbol(obj, sym1), 1)
   }
 
   @Test def sjsdefined_with_defs_that_are_properties(): Unit = {
@@ -38,25 +38,25 @@ class JSSymbolTest {
     val asTrait: PropDefTrait = obj
     assertEquals(456, asTrait.internalDef)
 
-    assertEquals(456, selectSymbol(obj, sym1))
+    assertEquals(selectSymbol(obj, sym1), 456)
   }
 
   @Test def native_with_vals(): Unit = {
     val obj = mkObject(sym1 -> "hi")
 
-    assertEquals("hi", obj.asInstanceOf[PropValClass].internalVal)
-    assertEquals("hi", obj.asInstanceOf[PropValTrait].internalVal)
-    assertEquals("hi", selectSymbol(obj, sym1))
+    assertEquals(obj.asInstanceOf[PropValClass].internalVal, "hi")
+    assertEquals(obj.asInstanceOf[PropValTrait].internalVal, "hi")
+    assertEquals(selectSymbol(obj, sym1), "hi")
   }
 
   @Test def sjsdefined_with_vals(): Unit = {
     val obj = new SJSDefinedPropVal
-    assertEquals("hello", obj.internalVal)
+    assertEquals(obj.internalVal, "hello")
 
     val asTrait: PropValTrait = obj
-    assertEquals("hello", asTrait.internalVal)
+    assertEquals(asTrait.internalVal, "hello")
 
-    assertEquals("hello", selectSymbol(obj, sym1))
+    assertEquals(selectSymbol(obj, sym1), "hello")
   }
 
   @Test def native_with_vars(): Unit = {
@@ -71,9 +71,9 @@ class JSSymbolTest {
     assertEquals(8.2, obj1.internalVar, 0.0)
 
     val obj2 = mkObject(sym1 -> 8.0)
-    assertEquals(8.0, selectSymbol(obj2, sym1))
+    assertEquals(selectSymbol(obj2, sym1), 8.0d)
     updateSymbol(obj2, sym1, 8.2)
-    assertEquals(8.2, selectSymbol(obj2, sym1))
+    assertEquals(selectSymbol(obj2, sym1), 8.2d)
   }
 
   @Test def sjsdefined_with_vars(): Unit = {
@@ -88,24 +88,24 @@ class JSSymbolTest {
     assertEquals(8.2, obj1.internalVar, 0.0)
 
     val obj2 = new SJSDefinedPropVar
-    assertEquals(1511.1989, selectSymbol(obj2, sym1))
+    assertEquals(selectSymbol(obj2, sym1), 1511.1989d)
     updateSymbol(obj2, sym1, 8.2)
-    assertEquals(8.2, selectSymbol(obj2, sym1))
+    assertEquals(selectSymbol(obj2, sym1), 8.2d)
   }
 
   @Test def sjsdefined_with_inner_object(): Unit = {
     val obj0 = new SJSDefinedInnerObject
-    assertEquals("object", js.typeOf(obj0.innerObject.asInstanceOf[js.Any]))
-    assertEquals("SJSDefinedInnerObject.innerObject", obj0.innerObject.toString())
+    assertEquals(js.typeOf(obj0.innerObject.asInstanceOf[js.Any]), "object")
+    assertEquals(obj0.innerObject.toString(), "SJSDefinedInnerObject.innerObject")
 
     val obj1: InnerObjectTrait = new SJSDefinedInnerObject
-    assertEquals("object", js.typeOf(obj1.innerObject.asInstanceOf[js.Any]))
-    assertEquals("SJSDefinedInnerObject.innerObject", obj1.innerObject.toString())
+    assertEquals(js.typeOf(obj1.innerObject.asInstanceOf[js.Any]), "object")
+    assertEquals(obj1.innerObject.toString(), "SJSDefinedInnerObject.innerObject")
 
-    assertEquals("object",
-        js.typeOf(selectSymbol(obj1, sym1).asInstanceOf[js.Any]))
-    assertEquals("SJSDefinedInnerObject.innerObject",
-        selectSymbol(obj1, sym1).toString())
+    assertEquals(js.typeOf(selectSymbol(obj1, sym1).asInstanceOf[js.Any]),
+        "object")
+    assertEquals(selectSymbol(obj1, sym1).toString(),
+        "SJSDefinedInnerObject.innerObject")
   }
 
   @Test def native_with_methods(): Unit = {
@@ -115,26 +115,26 @@ class JSSymbolTest {
     )
 
     assertEquals(4, obj.asInstanceOf[MethodClass].foo(2))
-    assertEquals("Hello World", obj.asInstanceOf[MethodClass].bar("World"))
+    assertEquals(obj.asInstanceOf[MethodClass].bar("World"), "Hello World")
 
     assertEquals(6, obj.asInstanceOf[MethodTrait].foo(4))
-    assertEquals("Hello Moon", obj.asInstanceOf[MethodTrait].bar("Moon"))
+    assertEquals(obj.asInstanceOf[MethodTrait].bar("Moon"), "Hello Moon")
 
-    assertEquals(6, callSymbol(obj, sym1)(4))
-    assertEquals("Hello Moon", callSymbol(obj, sym2)("Moon"))
+    assertEquals(callSymbol(obj, sym1)(4), 6)
+    assertEquals(callSymbol(obj, sym2)("Moon"), "Hello Moon")
   }
 
   @Test def sjsdefined_with_methods(): Unit = {
     val obj = new SJSDefinedMethod
     assertEquals(4, obj.foo(2))
-    assertEquals("Hello World", obj.bar("World"))
+    assertEquals(obj.bar("World"), "Hello World")
 
     val asTrait: MethodTrait = obj
     assertEquals(6, asTrait.foo(4))
-    assertEquals("Hello Moon", asTrait.bar("Moon"))
+    assertEquals(asTrait.bar("Moon"), "Hello Moon")
 
-    assertEquals(6, callSymbol(obj, sym1)(4))
-    assertEquals("Hello Moon", callSymbol(obj, sym2)("Moon"))
+    assertEquals(callSymbol(obj, sym1)(4), 6)
+    assertEquals(callSymbol(obj, sym2)("Moon"), "Hello Moon")
   }
 
   @Test def native_with_overloaded_methods(): Unit = {
@@ -144,26 +144,26 @@ class JSSymbolTest {
     )
 
     assertEquals(5, obj.asInstanceOf[OverloadedMethodClass].foo(2))
-    assertEquals("Hello World", obj.asInstanceOf[OverloadedMethodClass].foo("World"))
+    assertEquals(obj.asInstanceOf[OverloadedMethodClass].foo("World"), "Hello World")
 
     assertEquals(6, obj.asInstanceOf[OverloadedMethodTrait].foo(3))
-    assertEquals("Hello Moon", obj.asInstanceOf[OverloadedMethodTrait].foo("Moon"))
+    assertEquals(obj.asInstanceOf[OverloadedMethodTrait].foo("Moon"), "Hello Moon")
 
-    assertEquals(6, callSymbol(obj, sym1)(3))
-    assertEquals("Hello Moon", callSymbol(obj, sym2)("Moon"))
+    assertEquals(callSymbol(obj, sym1)(3), 6)
+    assertEquals(callSymbol(obj, sym2)("Moon"), "Hello Moon")
   }
 
   @Test def sjsdefined_with_overloaded_methods(): Unit = {
     val obj = new SJSDefinedOverloadedMethod
     assertEquals(5, obj.foo(2))
-    assertEquals("Hello World", obj.foo("World"))
+    assertEquals(obj.foo("World"), "Hello World")
 
     val asTrait: OverloadedMethodTrait = obj
     assertEquals(6, asTrait.foo(3))
-    assertEquals("Hello Moon", asTrait.foo("Moon"))
+    assertEquals(asTrait.foo("Moon"), "Hello Moon")
 
-    assertEquals(6, callSymbol(obj, sym1)(3))
-    assertEquals("Hello Moon", callSymbol(obj, sym2)("Moon"))
+    assertEquals(callSymbol(obj, sym1)(3), 6)
+    assertEquals(callSymbol(obj, sym2)("Moon"), "Hello Moon")
   }
 
   @Test def native_with_overloaded_runtime_dispatch_methods(): Unit = {
@@ -178,29 +178,29 @@ class JSSymbolTest {
 
     assertEquals(5,
         obj.asInstanceOf[OverloadedRuntimeDispatchMethodClass].foo(2))
-    assertEquals("Hello World",
-        obj.asInstanceOf[OverloadedRuntimeDispatchMethodClass].foo("World"))
+    assertEquals(obj.asInstanceOf[OverloadedRuntimeDispatchMethodClass].foo("World"),
+        "Hello World")
 
     assertEquals(6,
         obj.asInstanceOf[OverloadedRuntimeDispatchMethodTrait].foo(3))
-    assertEquals("Hello Moon",
-        obj.asInstanceOf[OverloadedRuntimeDispatchMethodTrait].foo("Moon"))
+    assertEquals(obj.asInstanceOf[OverloadedRuntimeDispatchMethodTrait].foo("Moon"),
+        "Hello Moon")
 
-    assertEquals(6, callSymbol(obj, sym1)(3))
-    assertEquals("Hello Moon", callSymbol(obj, sym1)("Moon"))
+    assertEquals(callSymbol(obj, sym1)(3), 6)
+    assertEquals(callSymbol(obj, sym1)("Moon"), "Hello Moon")
   }
 
   @Test def sjsdefined_with_overloaded_runtime_dispatch_methods(): Unit = {
     val obj = new SJSDefinedOverloadedRuntimeDispatchMethod
     assertEquals(5, obj.foo(2))
-    assertEquals("Hello World", obj.foo("World"))
+    assertEquals(obj.foo("World"), "Hello World")
 
     val asTrait: OverloadedRuntimeDispatchMethodTrait = obj
     assertEquals(6, asTrait.foo(3))
-    assertEquals("Hello Moon", asTrait.foo("Moon"))
+    assertEquals(asTrait.foo("Moon"), "Hello Moon")
 
-    assertEquals(6, callSymbol(obj, sym1)(3))
-    assertEquals("Hello Moon", callSymbol(obj, sym1)("Moon"))
+    assertEquals(callSymbol(obj, sym1)(3), 6)
+    assertEquals(callSymbol(obj, sym1)("Moon"), "Hello Moon")
   }
 
   @Test def native_with_symbols_in_sjsdefined_object(): Unit = {
@@ -213,7 +213,7 @@ class JSSymbolTest {
     assertEquals(65,
         obj.asInstanceOf[TraitWithSymsInSJSDefinedObject].symInSJSDefinedObject(63))
 
-    assertEquals(65, callSymbol(obj, sym3)(63))
+    assertEquals(callSymbol(obj, sym3)(63), 65)
   }
 
   @Test def sjsdefined_with_symbols_in_sjsdefined_object(): Unit = {
@@ -223,7 +223,7 @@ class JSSymbolTest {
     val asTrait: TraitWithSymsInSJSDefinedObject = obj
     assertEquals(65, asTrait.symInSJSDefinedObject(63))
 
-    assertEquals(65, callSymbol(obj, sym3)(63))
+    assertEquals(callSymbol(obj, sym3)(63), 65)
   }
 
   @Test def native_iterable(): Unit = {

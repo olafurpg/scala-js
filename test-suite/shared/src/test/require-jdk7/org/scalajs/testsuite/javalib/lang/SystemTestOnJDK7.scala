@@ -22,7 +22,8 @@ class SystemTestOnJDK7 {
     val lineSep = System.lineSeparator()
 
     if (!executingInJVM)
-      assertEquals("\n", lineSep)
+      assertEquals(lineSep, """
+""")
     else
       assertTrue(Set("\n", "\r", "\r\n").contains(lineSep))
   }

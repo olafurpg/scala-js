@@ -33,46 +33,46 @@ class ModulesWithGlobalFallbackTest {
 
   @Test def testImportModuleItself(): Unit = {
     val qs = QueryString
-    assertEquals("object", js.typeOf(qs))
+    assertEquals(js.typeOf(qs), "object")
 
     val dict = js.Dictionary("foo" -> "bar", "baz" -> "qux")
 
-    assertEquals("foo=bar&baz=qux", qs.stringify(dict))
-    assertEquals("foo:bar;baz:qux", qs.stringify(dict, ";", ":"))
+    assertEquals(qs.stringify(dict), "foo=bar&baz=qux")
+    assertEquals(qs.stringify(dict, ";", ":"), "foo:bar;baz:qux")
 
     /* Potentially, this could be "optimized" by importing `stringify` as a
      * global symbol if we are emitting ES2015 modules.
      */
-    assertEquals("foo=bar&baz=qux", QueryString.stringify(dict))
-    assertEquals("foo:bar;baz:qux", QueryString.stringify(dict, ";", ":"))
+    assertEquals(QueryString.stringify(dict), "foo=bar&baz=qux")
+    assertEquals(QueryString.stringify(dict, ";", ":"), "foo:bar;baz:qux")
   }
 
   @Test def testImportLegacyModuleItselfAsDefault(): Unit = {
     val qs = QueryStringAsDefault
-    assertEquals("object", js.typeOf(qs))
+    assertEquals(js.typeOf(qs), "object")
 
     val dict = js.Dictionary("foo" -> "bar", "baz" -> "qux")
 
-    assertEquals("foo=bar&baz=qux", qs.stringify(dict))
-    assertEquals("foo:bar;baz:qux", qs.stringify(dict, ";", ":"))
+    assertEquals(qs.stringify(dict), "foo=bar&baz=qux")
+    assertEquals(qs.stringify(dict, ";", ":"), "foo:bar;baz:qux")
 
     /* Potentially, this could be "optimized" by importing `stringify` as a
      * global symbol if we are emitting ES2015 modules.
      */
-    assertEquals("foo=bar&baz=qux", QueryStringAsDefault.stringify(dict))
-    assertEquals("foo:bar;baz:qux", QueryStringAsDefault.stringify(dict, ";", ":"))
+    assertEquals(QueryStringAsDefault.stringify(dict), "foo=bar&baz=qux")
+    assertEquals(QueryStringAsDefault.stringify(dict, ";", ":"), "foo:bar;baz:qux")
   }
 
   @Test def testImportFunctionInModule(): Unit = {
     val dict = js.Dictionary("foo" -> "bar", "baz" -> "qux")
 
-    assertEquals("foo=bar&baz=qux", QueryStringWithNativeDef.stringify(dict))
-    assertEquals("foo:bar;baz:qux", QueryStringWithNativeDef.stringify(dict, ";", ":"))
+    assertEquals(QueryStringWithNativeDef.stringify(dict), "foo=bar&baz=qux")
+    assertEquals(QueryStringWithNativeDef.stringify(dict, ";", ":"), "foo:bar;baz:qux")
   }
 
   @Test def testImportFieldInModule(): Unit = {
-    assertEquals("string", js.typeOf(OSWithNativeVal.EOL))
-    assertEquals("string", js.typeOf(OSWithNativeVal.EOLAsDef))
+    assertEquals(js.typeOf(OSWithNativeVal.EOL), "string")
+    assertEquals(js.typeOf(OSWithNativeVal.EOLAsDef), "string")
   }
 
   @Test def testImportObjectInModule(): Unit = {
@@ -95,8 +95,8 @@ class ModulesWithGlobalFallbackTest {
     val decoder = new StringDecoder()
     assertTrue(Buffer.isBuffer(b))
     assertFalse(Buffer.isBuffer(decoder))
-    assertEquals("こんにちは", decoder.write(b))
-    assertEquals("", decoder.end())
+    assertEquals(decoder.write(b), "こんにちは")
+    assertEquals(decoder.end(), "")
   }
 
 }

@@ -44,19 +44,19 @@ trait MapTest {
     assertEquals(0, mp.size())
     mp.put("ONE", "one")
     assertEquals(1, mp.size())
-    assertEquals("one", mp.get("ONE"))
+    assertEquals(mp.get("ONE"), "one")
     mp.put("TWO", "two")
     assertEquals(2, mp.size())
-    assertEquals("two", mp.get("TWO"))
+    assertEquals(mp.get("TWO"), "two")
     mp.put("ONE", "three")
     assertEquals(2, mp.size())
-    assertEquals("three", mp.get("ONE"))
+    assertEquals(mp.get("ONE"), "three")
 
-    assertEquals(null, mp.get("THREE"))
-    assertEquals(null, mp.get(42))
-    assertEquals(null, mp.get(testObj(42)))
+    assertEquals(mp.get("THREE"), null)
+    assertEquals(mp.get(42), null)
+    assertEquals(mp.get(testObj(42)), null)
     if (factory.allowsNullKeysQueries)
-      assertEquals(null, mp.get(null))
+      assertEquals(mp.get(null), null)
   }
 
   @Test def testSizeGetPutWithStringsLargeMap(): Unit = {
@@ -71,11 +71,11 @@ trait MapTest {
       assertEquals(i, largeMap.get(i.toString()))
     assertNull(largeMap.get("1000"))
 
-    assertEquals(null, largeMap.get("THREE"))
-    assertEquals(null, largeMap.get(42))
-    assertEquals(null, largeMap.get(testObj(42)))
+    assertEquals(largeMap.get("THREE"), null)
+    assertEquals(largeMap.get(42), null)
+    assertEquals(largeMap.get(testObj(42)), null)
     if (factory.allowsNullKeysQueries)
-      assertEquals(null, largeMap.get(null))
+      assertEquals(largeMap.get(null), null)
   }
 
   @Test def testSizeGetPutWithInts(): Unit = {
@@ -93,11 +93,11 @@ trait MapTest {
     assertEquals(2, mp.size())
     assertEquals(3, mp.get(100))
 
-    assertEquals(null, mp.get(42))
-    assertEquals(null, mp.get("THREE"))
-    assertEquals(null, mp.get(testObj(42)))
+    assertEquals(mp.get(42), null)
+    assertEquals(mp.get("THREE"), null)
+    assertEquals(mp.get(testObj(42)), null)
     if (factory.allowsNullKeysQueries)
-      assertEquals(null, mp.get(null))
+      assertEquals(mp.get(null), null)
   }
 
   @Test def testSizeGetPutWithIntsLargeMap(): Unit = {
@@ -112,11 +112,11 @@ trait MapTest {
       assertEquals(i * 2, largeMap.get(i))
     assertNull(largeMap.get(1000))
 
-    assertEquals(null, largeMap.get(-42))
-    assertEquals(null, largeMap.get("THREE"))
-    assertEquals(null, largeMap.get(testObj(42)))
+    assertEquals(largeMap.get(-42), null)
+    assertEquals(largeMap.get("THREE"), null)
+    assertEquals(largeMap.get(testObj(42)), null)
     if (factory.allowsNullKeysQueries)
-      assertEquals(null, largeMap.get(null))
+      assertEquals(largeMap.get(null), null)
   }
 
   @Test def testSizeGetPutWithCustomObjects(): Unit = {
@@ -132,11 +132,11 @@ trait MapTest {
     assertEquals(2, mp.size())
     assertEquals(3, mp.get(testObj(100)).num)
 
-    assertEquals(null, mp.get("THREE"))
-    assertEquals(null, mp.get(42))
-    assertEquals(null, mp.get(testObj(42)))
+    assertEquals(mp.get("THREE"), null)
+    assertEquals(mp.get(42), null)
+    assertEquals(mp.get(testObj(42)), null)
     if (factory.allowsNullKeysQueries)
-      assertEquals(null, mp.get(null))
+      assertEquals(mp.get(null), null)
   }
 
   @Test def testSizeGetPutWithCustomObjectsLargeMap(): Unit = {
@@ -149,11 +149,11 @@ trait MapTest {
       assertEquals(i * 2, largeMap.get(testObj(i)))
     assertNull(largeMap.get(1000))
 
-    assertEquals(null, largeMap.get(testObj(-42)))
-    assertEquals(null, largeMap.get("THREE"))
-    assertEquals(null, largeMap.get(42))
+    assertEquals(largeMap.get(testObj(-42)), null)
+    assertEquals(largeMap.get("THREE"), null)
+    assertEquals(largeMap.get(42), null)
     if (factory.allowsNullKeysQueries)
-      assertEquals(null, largeMap.get(null))
+      assertEquals(largeMap.get(null), null)
   }
 
   @Test def testSizeGetPutWithDoublesCornerCasesOfEquals(): Unit = {
@@ -189,7 +189,7 @@ trait MapTest {
     for (i <- 0 until 30)
       mp.put(s"key $i", s"value $i")
     assertEquals(31, mp.size())
-    assertEquals("one", mp.remove("ONE"))
+    assertEquals(mp.remove("ONE"), "one")
     assertNull(mp.get("ONE"))
     assertNull(mp.remove("ONE"))
 
@@ -209,7 +209,7 @@ trait MapTest {
     for (i <- 0 until 30)
       mp.put(i, s"value $i")
     assertEquals(31, mp.size())
-    assertEquals("one", mp.remove(543))
+    assertEquals(mp.remove(543), "one")
     assertNull(mp.get(543))
     assertNull(mp.remove(543))
 
@@ -227,7 +227,7 @@ trait MapTest {
     for (i <- 0 until 30)
       mp.put(testObj(i), s"value $i")
     assertEquals(31, mp.size())
-    assertEquals("one", mp.remove(testObj(543)))
+    assertEquals(mp.remove(testObj(543)), "one")
     assertNull(mp.get(testObj(543)))
     assertNull(mp.remove(testObj(543)))
 
@@ -248,22 +248,22 @@ trait MapTest {
     mp.put(+0.0, "33333.0")
     mp.put(-0.0, "44444.0")
 
-    assertEquals("11111.0", mp.get(1.2345))
-    assertEquals("22222.0", mp.get(Double.NaN))
-    assertEquals("33333.0", mp.get(+0.0))
-    assertEquals("44444.0", mp.get(-0.0))
+    assertEquals(mp.get(1.2345d), "11111.0")
+    assertEquals(mp.get(Double.NaN), "22222.0")
+    assertEquals(mp.get(+0.0d), "33333.0")
+    assertEquals(mp.get(0.0d), "44444.0")
 
-    assertEquals("44444.0", mp.remove(-0.0))
+    assertEquals(mp.remove(0.0d), "44444.0")
     assertNull(mp.get(-0.0))
 
     mp.put(-0.0, "55555.0")
 
-    assertEquals("33333.0", mp.remove(+0.0))
+    assertEquals(mp.remove(+0.0d), "33333.0")
     assertNull(mp.get(+0.0))
 
     mp.put(+0.0, "66666.0")
 
-    assertEquals("22222.0", mp.remove(Double.NaN))
+    assertEquals(mp.remove(Double.NaN), "22222.0")
     assertNull(mp.get(Double.NaN))
 
     mp.put(Double.NaN, "77777.0")
@@ -281,8 +281,8 @@ trait MapTest {
     if (factory.allowsNullKeys) {
       mp.put(null, "one")
       assertEquals(31, mp.size())
-      assertEquals("one", mp.get(null))
-      assertEquals("one", mp.remove(null))
+      assertEquals(mp.get(null), "one")
+      assertEquals(mp.remove(null), "one")
       assertNull(mp.get(null))
       assertNull(mp.remove(null))
     } else {
@@ -321,8 +321,8 @@ trait MapTest {
     // can be reused after clear()
     mp.put("TWO", "value 2")
     mp.put("THREE", "value 3")
-    assertEquals("value 2", mp.get("TWO"))
-    assertEquals("value 3", mp.get("THREE"))
+    assertEquals(mp.get("TWO"), "value 2")
+    assertEquals(mp.get("THREE"), "value 3")
   }
 
   @Test def testContainsKey(): Unit = {
@@ -356,17 +356,17 @@ trait MapTest {
 
     mp.putAll(TrivialImmutableMap("X" -> "y", "A" -> "b"))
     assertEquals(3, mp.size())
-    assertEquals("one", mp.get("ONE"))
-    assertEquals("y", mp.get("X"))
-    assertEquals("b", mp.get("A"))
+    assertEquals(mp.get("ONE"), "one")
+    assertEquals(mp.get("X"), "y")
+    assertEquals(mp.get("A"), "b")
 
     val nullMap = TrivialImmutableMap((null: String) -> "y", "X" -> "z")
     if (factory.allowsNullKeys) {
       mp.putAll(nullMap)
-      assertEquals("y", mp.get(null))
-      assertEquals("z", mp.get("X"))
-      assertEquals("one", mp.get("ONE"))
-      assertEquals("b", mp.get("A"))
+      assertEquals(mp.get(null), "y")
+      assertEquals(mp.get("X"), "z")
+      assertEquals(mp.get("ONE"), "one")
+      assertEquals(mp.get("A"), "b")
     } else {
       expectThrows(classOf[NullPointerException], mp.putAll(nullMap))
     }
@@ -380,7 +380,7 @@ trait MapTest {
     assertEquals(1, values.size)
     val iter = values.iterator
     assertTrue(iter.hasNext)
-    assertEquals("one", iter.next)
+    assertEquals(iter.next, "one")
     assertFalse(iter.hasNext)
   }
 
@@ -394,8 +394,8 @@ trait MapTest {
     assertTrue(iter.hasNext)
     val next = iter.next
     assertFalse(iter.hasNext)
-    assertEquals("ONE", next.getKey)
-    assertEquals("one", next.getValue)
+    assertEquals(next.getKey, "ONE")
+    assertEquals(next.getValue, "one")
   }
 
   @Test def testKeySetSizeIteratorBasic(): Unit = {
@@ -406,7 +406,7 @@ trait MapTest {
     assertEquals(1, keySet.size)
     val iter = keySet.iterator
     assertTrue(iter.hasNext)
-    assertEquals("ONE", iter.next)
+    assertEquals(iter.next, "ONE")
     assertFalse(iter.hasNext)
   }
 
@@ -1088,10 +1088,10 @@ trait MapTest {
     assertTrue(key == "ONE" || key == "TWO")
     val expectedValue = if (key == "ONE") "one" else "two"
 
-    assertEquals(expectedValue, entry.getValue())
-    assertEquals(expectedValue, entry.setValue("new value"))
-    assertEquals("new value", entry.getValue())
-    assertEquals("new value", mp.get(key))
+    assertEquals(entry.getValue(), expectedValue)
+    assertEquals(entry.setValue("new value"), expectedValue)
+    assertEquals(entry.getValue(), "new value")
+    assertEquals(mp.get(key), "new value")
   }
 
   @Test def testEntrySetIsViewForSetValueWithCustomObjects(): Unit = {
@@ -1105,10 +1105,10 @@ trait MapTest {
     assertTrue(key.num == 1 || key.num == 2)
     val expectedValue = TestObj(if (key.num == 1) 11 else 22)
 
-    assertEquals(expectedValue, entry.getValue())
-    assertEquals(expectedValue, entry.setValue(TestObj(56)))
-    assertEquals(TestObj(56), entry.getValue())
-    assertEquals(TestObj(56), mp.get(key))
+    assertEquals(entry.getValue(), expectedValue)
+    assertEquals(entry.setValue(TestObj(56)), expectedValue)
+    assertEquals(entry.getValue(), TestObj(56))
+    assertEquals(mp.get(key), TestObj(56))
   }
 }
 

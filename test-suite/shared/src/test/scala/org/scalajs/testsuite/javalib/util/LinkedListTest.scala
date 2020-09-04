@@ -87,7 +87,7 @@ class LinkedListTest extends AbstractListTest {
 
     assertTrue(llString.add("pluto"))
     assertTrue(llString.add("pippo"))
-    assertEquals("pippo", llString.pollLast())
+    assertEquals(llString.pollLast(), "pippo")
 
     val llDouble = new LinkedList[Double]()
 
@@ -109,8 +109,8 @@ class LinkedListTest extends AbstractListTest {
 
     llString.push("pluto")
     llString.push("pippo")
-    assertEquals("pippo", llString.pop())
-    assertEquals("pluto", llString.pop())
+    assertEquals(llString.pop(), "pippo")
+    assertEquals(llString.pop(), "pluto")
     assertTrue(llString.isEmpty())
 
     val llDouble = new LinkedList[Double]()
@@ -167,14 +167,14 @@ class LinkedListTest extends AbstractListTest {
     val iter = ll.iterator()
     for (i <- 0 until l.size()) {
       assertTrue(iter.hasNext())
-      assertEquals(l(i), iter.next())
+      assertEquals(iter.next(), l(i))
     }
     assertFalse(iter.hasNext())
 
     val diter = ll.descendingIterator()
     for (i <- (0 until l.size()).reverse) {
       assertTrue(diter.hasNext())
-      assertEquals(l(i), diter.next())
+      assertEquals(diter.next(), l(i))
     }
     assertFalse(diter.hasNext())
   }

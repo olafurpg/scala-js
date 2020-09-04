@@ -25,10 +25,10 @@ class NameTransformerTest {
      * well, behaving the same as Scala is the correct thing do for us
      * anyway.
      */
-    assertEquals("+", NameTransformer.decode("$plus"))
-    assertEquals("ab+", NameTransformer.decode("ab$plus"))
-    assertEquals("-", NameTransformer.decode("$minus"))
-    assertEquals("+x-y", NameTransformer.decode("$plusx$minusy"))
-    assertEquals("+-", NameTransformer.decode("$plus$minus"))
+    assertEquals(NameTransformer.decode("$plus"), "+")
+    assertEquals(NameTransformer.decode("ab$plus"), "ab+")
+    assertEquals(NameTransformer.decode("$minus"), "-")
+    assertEquals(NameTransformer.decode("$plusx$minusy"), "+x-y")
+    assertEquals(NameTransformer.decode("$plus$minus"), "+-")
   }
 }

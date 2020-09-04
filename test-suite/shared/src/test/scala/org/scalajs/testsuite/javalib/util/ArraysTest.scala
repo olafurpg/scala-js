@@ -138,12 +138,12 @@ class ArraysTest {
 
     val e1 = expectThrows(classOf[IllegalArgumentException],
         Arrays.sort(array, 3, 2))
-    assertEquals("fromIndex(3) > toIndex(2)", e1.getMessage)
+    assertEquals(e1.getMessage, "fromIndex(3) > toIndex(2)")
 
     // start/end comparison is made before index ranges checks
     val e2 = expectThrows(classOf[IllegalArgumentException],
         Arrays.sort(array, 7, 5))
-    assertEquals("fromIndex(7) > toIndex(5)", e2.getMessage)
+    assertEquals(e2.getMessage, "fromIndex(7) > toIndex(5)")
   }
 
   @Test def sortArrayIndexOutOfBoundsException(): Unit = {
@@ -515,12 +515,12 @@ class ArraysTest {
 
     val e1 = expectThrows(classOf[IllegalArgumentException],
         Arrays.binarySearch(array, 3, 2, 2))
-    assertEquals("fromIndex(3) > toIndex(2)", e1.getMessage)
+    assertEquals(e1.getMessage, "fromIndex(3) > toIndex(2)")
 
     // start/end comparison is made before index ranges checks
     val e2 = expectThrows(classOf[IllegalArgumentException],
         Arrays.binarySearch(array, 7, 5, 2))
-    assertEquals("fromIndex(7) > toIndex(5)", e2.getMessage)
+    assertEquals(e2.getMessage, "fromIndex(7) > toIndex(5)")
   }
 
   @Test def binarySearchArrayIndexOutOfBoundsException(): Unit = {
@@ -587,12 +587,12 @@ class ArraysTest {
   @Test def copyOf_AnyRef(): Unit = {
     val anyrefs: Array[AnyRef] = Array("a", "b", "c")
     val anyrefscopy = Arrays.copyOf(anyrefs, 5)
-    assertEquals(classOf[Array[AnyRef]], anyrefscopy.getClass())
+    assertEquals(anyrefscopy.getClass(), classOf[Array[AnyRef]])
     assertArrayEquals(Array[AnyRef]("a", "b", "c", null, null), anyrefscopy)
 
     val sequences: Array[CharSequence] = Array("a", "b", "c")
     val sequencescopy = Arrays.copyOf(sequences, 2)
-    assertEquals(classOf[Array[CharSequence]], sequencescopy.getClass())
+    assertEquals(sequencescopy.getClass(), classOf[Array[CharSequence]])
     assertArrayEquals(Array[CharSequence]("a", "b"), sequencescopy)
   }
 
@@ -602,19 +602,19 @@ class ArraysTest {
 
     val bs: Array[AnyRef] = Array(B(1), B(2), B(3))
     val bscopyAsA = Arrays.copyOf(bs, 5, classOf[Array[A]])
-    assertEquals(classOf[Array[A]], bscopyAsA.getClass())
+    assertEquals(bscopyAsA.getClass(), classOf[Array[A]])
     assertArrayEquals(Array[A](B(1), B(2), B(3), null, null), bscopyAsA)
   }
 
   @Test def copyOfRange_AnyRef(): Unit = {
     val anyrefs: Array[AnyRef] = Array("a", "b", "c", "d", "e")
     val anyrefscopy = Arrays.copyOfRange(anyrefs, 2, 4)
-    assertEquals(classOf[Array[AnyRef]], anyrefscopy.getClass())
+    assertEquals(anyrefscopy.getClass(), classOf[Array[AnyRef]])
     assertArrayEquals(Array[AnyRef]("c", "d"), anyrefscopy)
 
     val sequences: Array[CharSequence] = Array("a", "b", "c", "d", "e")
     val sequencescopy = Arrays.copyOfRange(sequences, 1, 5)
-    assertEquals(classOf[Array[CharSequence]], sequencescopy.getClass())
+    assertEquals(sequencescopy.getClass(), classOf[Array[CharSequence]])
     assertArrayEquals(Array[CharSequence]("b", "c", "d", "e"), sequencescopy)
   }
 
@@ -623,7 +623,7 @@ class ArraysTest {
     case class B(x: Int) extends A
     val bs: Array[B] = Array(B(1), B(2), B(3), B(4), B(5))
     val bscopyAsA = Arrays.copyOfRange(bs, 2, 4, classOf[Array[A]])
-    assertEquals(classOf[Array[A]], bscopyAsA.getClass())
+    assertEquals(bscopyAsA.getClass(), classOf[Array[A]])
     assertArrayEquals(Array[A](B(3), B(4)), bscopyAsA)
   }
 
@@ -969,107 +969,106 @@ class ArraysTest {
   }
 
   @Test def toString_Long(): Unit = {
-    assertEquals("null", Arrays.toString(null: Array[Long]))
-    assertEquals("[]", Arrays.toString(Array[Long]()))
-    assertEquals("[0]", Arrays.toString(Array[Long](0L)))
-    assertEquals("[1]", Arrays.toString(Array[Long](1L)))
-    assertEquals("[2, 3]", Arrays.toString(Array[Long](2L, 3)))
-    assertEquals("[1, 2, 3, 4, 5]", Arrays.toString(Array[Long](1L, 2L, 3L, 4L, 5L)))
-    assertEquals("[1, -2, 3, 9223372036854775807]", Arrays.toString(Array[Long](1L, -2L, 3L, Long.MaxValue)))
+    assertEquals(Arrays.toString(null: Array[Long]), "null")
+    assertEquals(Arrays.toString(Array[Long]()), "[]")
+    assertEquals(Arrays.toString(Array[Long](0L)), "[0]")
+    assertEquals(Arrays.toString(Array[Long](1L)), "[1]")
+    assertEquals(Arrays.toString(Array[Long](2L, 3)), "[2, 3]")
+    assertEquals(Arrays.toString(Array[Long](1L, 2L, 3L, 4L, 5L)), "[1, 2, 3, 4, 5]")
+    assertEquals(Arrays.toString(Array[Long](1L, -2L, 3L, Long.MaxValue)), "[1, -2, 3, 9223372036854775807]")
   }
 
   @Test def toString_Int(): Unit = {
-    assertEquals("null", Arrays.toString(null: Array[Int]))
-    assertEquals("[]", Arrays.toString(Array[Int]()))
-    assertEquals("[0]", Arrays.toString(Array[Int](0)))
-    assertEquals("[1]", Arrays.toString(Array[Int](1)))
-    assertEquals("[2, 3]", Arrays.toString(Array[Int](2, 3)))
-    assertEquals("[1, 2, 3, 4, 5]", Arrays.toString(Array[Int](1, 2, 3, 4, 5)))
-    assertEquals("[1, -2, 3, 2147483647]", Arrays.toString(Array[Int](1, -2, 3, Int.MaxValue)))
+    assertEquals(Arrays.toString(null: Array[Int]), "null")
+    assertEquals(Arrays.toString(Array[Int]()), "[]")
+    assertEquals(Arrays.toString(Array[Int](0)), "[0]")
+    assertEquals(Arrays.toString(Array[Int](1)), "[1]")
+    assertEquals(Arrays.toString(Array[Int](2, 3)), "[2, 3]")
+    assertEquals(Arrays.toString(Array[Int](1, 2, 3, 4, 5)), "[1, 2, 3, 4, 5]")
+    assertEquals(Arrays.toString(Array[Int](1, -2, 3, Int.MaxValue)), "[1, -2, 3, 2147483647]")
   }
 
   @Test def toString_Short(): Unit = {
-    assertEquals("null", Arrays.toString(null: Array[Short]))
-    assertEquals("[]", Arrays.toString(Array[Short]()))
-    assertEquals("[0]", Arrays.toString(Array[Short](0)))
-    assertEquals("[1]", Arrays.toString(Array[Short](1)))
-    assertEquals("[2, 3]", Arrays.toString(Array[Short](2, 3)))
-    assertEquals("[1, 2, 3, 4, 5]", Arrays.toString(Array[Short](1, 2, 3, 4, 5)))
-    assertEquals("[1, -2, 3, 32767]", Arrays.toString(Array[Short](1, -2, 3, Short.MaxValue)))
+    assertEquals(Arrays.toString(null: Array[Short]), "null")
+    assertEquals(Arrays.toString(Array[Short]()), "[]")
+    assertEquals(Arrays.toString(Array[Short](0)), "[0]")
+    assertEquals(Arrays.toString(Array[Short](1)), "[1]")
+    assertEquals(Arrays.toString(Array[Short](2, 3)), "[2, 3]")
+    assertEquals(Arrays.toString(Array[Short](1, 2, 3, 4, 5)), "[1, 2, 3, 4, 5]")
+    assertEquals(Arrays.toString(Array[Short](1, -2, 3, Short.MaxValue)), "[1, -2, 3, 32767]")
   }
 
   @Test def toString_Byte(): Unit = {
-    assertEquals("null", Arrays.toString(null: Array[Byte]))
-    assertEquals("[]", Arrays.toString(Array[Byte]()))
-    assertEquals("[0]", Arrays.toString(Array[Byte](0)))
-    assertEquals("[1]", Arrays.toString(Array[Byte](1)))
-    assertEquals("[2, 3]", Arrays.toString(Array[Byte](2, 3)))
-    assertEquals("[1, 2, 3, 4, 5]", Arrays.toString(Array[Byte](1, 2, 3, 4, 5)))
-    assertEquals("[1, -2, 3, 127]", Arrays.toString(Array[Byte](1, -2, 3, Byte.MaxValue)))
+    assertEquals(Arrays.toString(null: Array[Byte]), "null")
+    assertEquals(Arrays.toString(Array[Byte]()), "[]")
+    assertEquals(Arrays.toString(Array[Byte](0)), "[0]")
+    assertEquals(Arrays.toString(Array[Byte](1)), "[1]")
+    assertEquals(Arrays.toString(Array[Byte](2, 3)), "[2, 3]")
+    assertEquals(Arrays.toString(Array[Byte](1, 2, 3, 4, 5)), "[1, 2, 3, 4, 5]")
+    assertEquals(Arrays.toString(Array[Byte](1, -2, 3, Byte.MaxValue)), "[1, -2, 3, 127]")
   }
 
   @Test def toString_Boolean(): Unit = {
-    assertEquals("null", Arrays.toString(null: Array[Boolean]))
-    assertEquals("[]", Arrays.toString(Array[Boolean]()))
-    assertEquals("[true]", Arrays.toString(Array[Boolean](true)))
-    assertEquals("[false]", Arrays.toString(Array[Boolean](false)))
-    assertEquals("[true, false]", Arrays.toString(Array[Boolean](true, false)))
-    assertEquals("[true, true, false, false]", Arrays.toString(Array[Boolean](true, true, false, false)))
+    assertEquals(Arrays.toString(null: Array[Boolean]), "null")
+    assertEquals(Arrays.toString(Array[Boolean]()), "[]")
+    assertEquals(Arrays.toString(Array[Boolean](true)), "[true]")
+    assertEquals(Arrays.toString(Array[Boolean](false)), "[false]")
+    assertEquals(Arrays.toString(Array[Boolean](true, false)), "[true, false]")
+    assertEquals(Arrays.toString(Array[Boolean](true, true, false, false)), "[true, true, false, false]")
   }
 
   @Test def toString_Float(): Unit = {
     assumeFalse("Assumes Float.toString JS semantics.", executingInJVM)
-    assertEquals("null", Arrays.toString(null: Array[Float]))
-    assertEquals("[]", Arrays.toString(Array[Float]()))
-    assertEquals("[0]", Arrays.toString(Array[Float](0.0f)))
-    assertEquals("[1.100000023841858]", Arrays.toString(Array[Float](1.1f)))
-    assertEquals("[2.200000047683716, 3]", Arrays.toString(Array[Float](2.2f, 3f)))
-    assertEquals("[1, 2, 3, 4, 5]", Arrays.toString(Array[Float](1f, 2f, 3f, 4f, 5f)))
-    assertEquals("[1, -2, 3, 3.4028234663852886e+38]", Arrays.toString(Array[Float](1f, -2f, 3f, Float.MaxValue)))
+    assertEquals(Arrays.toString(null: Array[Float]), "null")
+    assertEquals(Arrays.toString(Array[Float]()), "[]")
+    assertEquals(Arrays.toString(Array[Float](0.0f)), "[0]")
+    assertEquals(Arrays.toString(Array[Float](1.1f)), "[1.100000023841858]")
+    assertEquals(Arrays.toString(Array[Float](2.2f, 3f)), "[2.200000047683716, 3]")
+    assertEquals(Arrays.toString(Array[Float](1f, 2f, 3f, 4f, 5f)), "[1, 2, 3, 4, 5]")
+    assertEquals(Arrays.toString(Array[Float](1f, -2f, 3f, Float.MaxValue)), "[1, -2, 3, 3.4028234663852886e+38]")
   }
 
   @Test def toString_Double(): Unit = {
     assumeFalse("Assumes Double.toString JS semantics.", executingInJVM)
-    assertEquals("null", Arrays.toString(null: Array[Double]))
-    assertEquals("[]", Arrays.toString(Array[Double]()))
-    assertEquals("[0]", Arrays.toString(Array[Double](0.0d)))
-    assertEquals("[1.1]", Arrays.toString(Array[Double](1.1d)))
-    assertEquals("[2.2, 3]", Arrays.toString(Array[Double](2.2d, 3d)))
-    assertEquals("[1, 2, 3, 4, 5]", Arrays.toString(Array[Double](1d, 2d, 3d, 4d, 5d)))
-    assertEquals("[1, -2, 3, 1.7976931348623157e+308]",
-        Arrays.toString(Array[Double](1d, -2d, 3d, Double.MaxValue)))
+    assertEquals(Arrays.toString(null: Array[Double]), "null")
+    assertEquals(Arrays.toString(Array[Double]()), "[]")
+    assertEquals(Arrays.toString(Array[Double](0.0d)), "[0]")
+    assertEquals(Arrays.toString(Array[Double](1.1d)), "[1.1]")
+    assertEquals(Arrays.toString(Array[Double](2.2d, 3d)), "[2.2, 3]")
+    assertEquals(Arrays.toString(Array[Double](1d, 2d, 3d, 4d, 5d)), "[1, 2, 3, 4, 5]")
+    assertEquals(Arrays.toString(Array[Double](1d, -2d, 3d, Double.MaxValue)),
+        "[1, -2, 3, 1.7976931348623157e+308]")
   }
 
   @Test def toString_AnyRef(): Unit = {
     class C(num: Int) {
       override def toString: String = s"C($num)"
     }
-    assertEquals("null", Arrays.toString(null: Array[AnyRef]))
-    assertEquals("[]", Arrays.toString(Array[AnyRef]()))
-    assertEquals("[abc]", Arrays.toString(Array[AnyRef]("abc")))
-    assertEquals("[a, b, c]", Arrays.toString(Array[AnyRef]("a", "b", "c")))
-    assertEquals("[C(1)]", Arrays.toString(Array[AnyRef](new C(1))))
-    assertEquals("[C(1), abc, 1, null]", Arrays.toString(Array[AnyRef](new C(1), "abc", Int.box(1), null)))
+    assertEquals(Arrays.toString(null: Array[AnyRef]), "null")
+    assertEquals(Arrays.toString(Array[AnyRef]()), "[]")
+    assertEquals(Arrays.toString(Array[AnyRef]("abc")), "[abc]")
+    assertEquals(Arrays.toString(Array[AnyRef]("a", "b", "c")), "[a, b, c]")
+    assertEquals(Arrays.toString(Array[AnyRef](new C(1))), "[C(1)]")
+    assertEquals(Arrays.toString(Array[AnyRef](new C(1), "abc", Int.box(1), null)), "[C(1), abc, 1, null]")
   }
 
   @Test def deepToString(): Unit = {
-    assertEquals("null", Arrays.deepToString(null: Array[AnyRef]))
-    assertEquals("[abc]", Arrays.deepToString(Array[AnyRef]("abc")))
-    assertEquals("[a, b, c]", Arrays.deepToString(Array[AnyRef]("a", "b", "c")))
-    assertEquals("[[1, 2, 3]]", Arrays.deepToString(Array[AnyRef](Array[Int](1, 2, 3))))
-    assertEquals("[[1, 2, 3], [4, 5, 6]]",
-        Arrays.deepToString(Array[AnyRef](Array[Int](1, 2, 3), Array[Int](4, 5, 6))))
-    assertEquals("[[]]", Arrays.deepToString(Array[AnyRef](Array[AnyRef]())))
-    assertEquals("[[[]]]", Arrays.deepToString(Array[AnyRef](Array[AnyRef](Array[AnyRef]()))))
-    assertEquals("[[[[1, 2, 3]]], [4, 5, 6]]", Arrays.deepToString(
-        Array[AnyRef](Array[AnyRef](Array[AnyRef](Array[Int](1, 2, 3))), Array[Int](4, 5, 6))))
+    assertEquals(Arrays.deepToString(null: Array[AnyRef]), "null")
+    assertEquals(Arrays.deepToString(Array[AnyRef]("abc")), "[abc]")
+    assertEquals(Arrays.deepToString(Array[AnyRef]("a", "b", "c")), "[a, b, c]")
+    assertEquals(Arrays.deepToString(Array[AnyRef](Array[Int](1, 2, 3))), "[[1, 2, 3]]")
+    assertEquals(Arrays.deepToString(Array[AnyRef](Array[Int](1, 2, 3), Array[Int](4, 5, 6))),
+        "[[1, 2, 3], [4, 5, 6]]")
+    assertEquals(Arrays.deepToString(Array[AnyRef](Array[AnyRef]())), "[[]]")
+    assertEquals(Arrays.deepToString(Array[AnyRef](Array[AnyRef](Array[AnyRef]()))), "[[[]]]")
+    assertEquals(Arrays.deepToString(Array[AnyRef](Array[AnyRef](Array[AnyRef](Array[Int](1, 2, 3))), Array[Int](4, 5, 6))), "[[[[1, 2, 3]]], [4, 5, 6]]")
 
     val recArr = Array[AnyRef](null, null)
     recArr(0) = recArr
-    assertEquals("[[...], null]", Arrays.deepToString(recArr))
-    assertEquals("[[[...], null]]", Arrays.deepToString(Array[AnyRef](recArr)))
-    assertEquals("[[[...], null]]", Arrays.deepToString(Array[AnyRef](recArr)))
+    assertEquals(Arrays.deepToString(recArr), "[[...], null]")
+    assertEquals(Arrays.deepToString(Array[AnyRef](recArr)), "[[[...], null]]")
+    assertEquals(Arrays.deepToString(Array[AnyRef](recArr)), "[[[...], null]]")
     recArr(1) = Array[AnyRef](null, Array[AnyRef](null, recArr, Array[AnyRef](recArr)))
-    assertEquals("[[...], [null, [null, [...], [[...]]]]]", Arrays.deepToString(recArr))
+    assertEquals(Arrays.deepToString(recArr), "[[...], [null, [null, [...], [[...]]]]]")
   }
 }

@@ -130,7 +130,7 @@ class LongTest {
       assertEquals(v, JLong.parseLong(s))
       assertEquals(v, JLong.valueOf(s).longValue())
       assertEquals(v, new JLong(s).longValue())
-      assertEquals(v, JLong.decode(s))
+      assertEquals(JLong.decode(s), v)
     }
 
     test("0", 0L)
@@ -163,9 +163,9 @@ class LongTest {
     def test(s: String, v: Long): Unit = {
       assertEquals(v, JLong.parseLong(s, 16))
       assertEquals(v, JLong.valueOf(s, 16).longValue())
-      assertEquals(v, JLong.decode(IntegerTest.insertAfterSign("0x", s)))
-      assertEquals(v, JLong.decode(IntegerTest.insertAfterSign("0X", s)))
-      assertEquals(v, JLong.decode(IntegerTest.insertAfterSign("#", s)))
+      assertEquals(JLong.decode(IntegerTest.insertAfterSign("0x", s)), v)
+      assertEquals(JLong.decode(IntegerTest.insertAfterSign("0X", s)), v)
+      assertEquals(JLong.decode(IntegerTest.insertAfterSign("#", s)), v)
     }
 
     test("0", 0x0L)
@@ -213,7 +213,7 @@ class LongTest {
 
   @Test def testDecodeBase8(): Unit = {
     def test(s: String, v: Long): Unit = {
-      assertEquals(v, JLong.decode(s))
+      assertEquals(JLong.decode(s), v)
     }
 
     test("00", 0L)
@@ -249,40 +249,40 @@ class LongTest {
   }
 
   @Test def toString_without_radix(): Unit = {
-    assertEquals("2147483647", Int.MaxValue.toLong.toString)
-    assertEquals("-50", (-50L).toString)
-    assertEquals("-1000000000", (-1000000000L).toString)
-    assertEquals("2147483648", (Int.MaxValue.toLong+1L).toString)
-    assertEquals("-2147483648", Int.MinValue.toLong.toString)
+    assertEquals(Int.MaxValue.toLong.toString, "2147483647")
+    assertEquals(-50L.toString, "-50")
+    assertEquals(-1000000000L.toString, "-1000000000")
+    assertEquals((Int.MaxValue.toLong + 1L).toString, "2147483648")
+    assertEquals(Int.MinValue.toLong.toString, "-2147483648")
 
     /* Ported from
      * https://github.com/gwtproject/gwt/blob/master/user/test/com/google/gwt/emultest/java/lang/JLongTest.java
      */
-    assertEquals("89000000005", new JLong(89000000005L).toString)
-    assertEquals("-9223372036854775808", new JLong(JLong.MIN_VALUE).toString)
-    assertEquals("9223372036854775807", new JLong(JLong.MAX_VALUE).toString)
-    assertEquals("-80765", JLong.toString(-80765L))
-    assertEquals("80765", JLong.toString(80765L))
-    assertEquals("-2147483648", JLong.toString(Integer.MIN_VALUE.toLong))
-    assertEquals("2147483647", JLong.toString(Integer.MAX_VALUE.toLong))
-    assertEquals("-89000000005", JLong.toString(-89000000005L))
-    assertEquals("89000000005", JLong.toString(89000000005L))
-    assertEquals("-9223372036854775808", JLong.toString(JLong.MIN_VALUE))
-    assertEquals("9223372036854775807", JLong.toString(JLong.MAX_VALUE))
+    assertEquals(new JLong(89000000005L).toString, "89000000005")
+    assertEquals(new JLong(JLong.MIN_VALUE).toString, "-9223372036854775808")
+    assertEquals(new JLong(JLong.MAX_VALUE).toString, "9223372036854775807")
+    assertEquals(JLong.toString(-80765L), "-80765")
+    assertEquals(JLong.toString(80765L), "80765")
+    assertEquals(JLong.toString(Integer.MIN_VALUE.toLong), "-2147483648")
+    assertEquals(JLong.toString(Integer.MAX_VALUE.toLong), "2147483647")
+    assertEquals(JLong.toString(-89000000005L), "-89000000005")
+    assertEquals(JLong.toString(89000000005L), "89000000005")
+    assertEquals(JLong.toString(JLong.MIN_VALUE), "-9223372036854775808")
+    assertEquals(JLong.toString(JLong.MAX_VALUE), "9223372036854775807")
   }
 
   @Test def toString_with_radix(): Unit = {
     /* Ported from
      * https://github.com/gwtproject/gwt/blob/master/user/test/com/google/gwt/emultest/java/lang/JLongTest.java
      */
-    assertEquals("100000000", JLong.toString(100000000L, 10))
-    assertEquals("77777777777", JLong.toString(8589934591L, 8))
-    assertEquals("fffffffff", JLong.toString(68719476735L, 16))
-    assertEquals("1111111111111111111111111111111111111111111", JLong.toString(8796093022207L, 2))
-    assertEquals("-9223372036854775808", JLong.toString(0x8000000000000000L, 10))
-    assertEquals("9223372036854775807", JLong.toString(0x7fffffffffffffffL, 10))
-    assertEquals("-8000000000000000", JLong.toString(0x8000000000000000L, 16))
-    assertEquals("7fffffffffffffff", JLong.toString(0x7fffffffffffffffL, 16))
+    assertEquals(JLong.toString(100000000L, 10), "100000000")
+    assertEquals(JLong.toString(8589934591L, 8), "77777777777")
+    assertEquals(JLong.toString(68719476735L, 16), "fffffffff")
+    assertEquals(JLong.toString(8796093022207L, 2), "1111111111111111111111111111111111111111111")
+    assertEquals(JLong.toString(-9223372036854775808L, 10), "-9223372036854775808")
+    assertEquals(JLong.toString(9223372036854775807L, 10), "9223372036854775807")
+    assertEquals(JLong.toString(-9223372036854775808L, 16), "-8000000000000000")
+    assertEquals(JLong.toString(9223372036854775807L, 16), "7fffffffffffffff")
   }
 
   @Test def highestOneBit(): Unit = {
@@ -308,42 +308,42 @@ class LongTest {
   }
 
   @Test def toBinaryString(): Unit = {
-    assertEquals("0", JLong.toBinaryString(0L))
-    assertEquals("1111111111111111111111111111111111111111111111111111111111111111",
-        JLong.toBinaryString(-1L))
-    assertEquals("11011001100101111010101100110", JLong.toBinaryString(456324454L))
-    assertEquals("1111111111111111111111111111111111100100110011010000101010011010",
-        JLong.toBinaryString(-456324454L))
-    assertEquals("10110011101001110011110011111111111101001111101",
-        JLong.toBinaryString(98765432158845L))
-    assertEquals("1111111111111111110100101110100101011001100101101001000111001100",
-        JLong.toBinaryString(-49575304457780L))
-    assertEquals("1000000000000000000000000000000000000000000000000000000000000000",
-        JLong.toBinaryString(Long.MinValue))
-    assertEquals("111111111111111111111111111111111111111111111111111111111111111",
-        JLong.toBinaryString(Long.MaxValue))
+    assertEquals(JLong.toBinaryString(0L), "0")
+    assertEquals(JLong.toBinaryString(-1L),
+        "1111111111111111111111111111111111111111111111111111111111111111")
+    assertEquals(JLong.toBinaryString(456324454L), "11011001100101111010101100110")
+    assertEquals(JLong.toBinaryString(-456324454L),
+        "1111111111111111111111111111111111100100110011010000101010011010")
+    assertEquals(JLong.toBinaryString(98765432158845L),
+        "10110011101001110011110011111111111101001111101")
+    assertEquals(JLong.toBinaryString(-49575304457780L),
+        "1111111111111111110100101110100101011001100101101001000111001100")
+    assertEquals(JLong.toBinaryString(Long.MinValue),
+        "1000000000000000000000000000000000000000000000000000000000000000")
+    assertEquals(JLong.toBinaryString(Long.MaxValue),
+        "111111111111111111111111111111111111111111111111111111111111111")
   }
 
   @Test def toHexString(): Unit = {
-    assertEquals("0", JLong.toHexString(0L))
-    assertEquals("ffffffffffffffff", JLong.toHexString(-1L))
-    assertEquals("1b32f566", JLong.toHexString(456324454L))
-    assertEquals("ffffffffe4cd0a9a", JLong.toHexString(-456324454L))
-    assertEquals("59d39e7ffa7d", JLong.toHexString(98765432158845L))
-    assertEquals("ffffd2e9599691cc", JLong.toHexString(-49575304457780L))
-    assertEquals("8000000000000000", JLong.toHexString(Long.MinValue))
-    assertEquals("7fffffffffffffff", JLong.toHexString(Long.MaxValue))
+    assertEquals(JLong.toHexString(0L), "0")
+    assertEquals(JLong.toHexString(-1L), "ffffffffffffffff")
+    assertEquals(JLong.toHexString(456324454L), "1b32f566")
+    assertEquals(JLong.toHexString(-456324454L), "ffffffffe4cd0a9a")
+    assertEquals(JLong.toHexString(98765432158845L), "59d39e7ffa7d")
+    assertEquals(JLong.toHexString(-49575304457780L), "ffffd2e9599691cc")
+    assertEquals(JLong.toHexString(Long.MinValue), "8000000000000000")
+    assertEquals(JLong.toHexString(Long.MaxValue), "7fffffffffffffff")
   }
 
   @Test def toOctalString(): Unit = {
-    assertEquals("0", JLong.toOctalString(0L))
-    assertEquals("1777777777777777777777", JLong.toOctalString(-1L))
-    assertEquals("3314572546", JLong.toOctalString(456324454L))
-    assertEquals("1777777777774463205232", JLong.toOctalString(-456324454L))
-    assertEquals("2635163637775175", JLong.toOctalString(98765432158845L))
-    assertEquals("1777776456453145510714", JLong.toOctalString(-49575304457780L))
-    assertEquals("1000000000000000000000", JLong.toOctalString(Long.MinValue))
-    assertEquals("777777777777777777777", JLong.toOctalString(Long.MaxValue))
+    assertEquals(JLong.toOctalString(0L), "0")
+    assertEquals(JLong.toOctalString(-1L), "1777777777777777777777")
+    assertEquals(JLong.toOctalString(456324454L), "3314572546")
+    assertEquals(JLong.toOctalString(-456324454L), "1777777777774463205232")
+    assertEquals(JLong.toOctalString(98765432158845L), "2635163637775175")
+    assertEquals(JLong.toOctalString(-49575304457780L), "1777776456453145510714")
+    assertEquals(JLong.toOctalString(Long.MinValue), "1000000000000000000000")
+    assertEquals(JLong.toOctalString(Long.MaxValue), "777777777777777777777")
   }
 
   @Test def numberOfLeadingZeros(): Unit = {

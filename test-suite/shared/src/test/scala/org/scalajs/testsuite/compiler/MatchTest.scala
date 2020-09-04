@@ -35,14 +35,14 @@ class MatchTest {
       result
     }
 
-    assertEquals("one", test(1, 0))
-    assertEquals("two special", test(2, 0))
-    assertEquals("two", test(2, 50))
-    assertEquals("three special", test(3, 5))
-    assertEquals("three big special", test(3, 200))
-    assertEquals("None of those", test(3, 50))
-    assertEquals("big 5", test(5, 300))
-    assertEquals("None of those", test(5, 20))
+    assertEquals(test(1, 0), "one")
+    assertEquals(test(2, 0), "two special")
+    assertEquals(test(2, 50), "two")
+    assertEquals(test(3, 5), "three special")
+    assertEquals(test(3, 200), "three big special")
+    assertEquals(test(3, 50), "None of those")
+    assertEquals(test(5, 300), "big 5")
+    assertEquals(test(5, 20), "None of those")
   }
 
   @Test def switchWithGuardsExpr(): Unit = {
@@ -58,14 +58,14 @@ class MatchTest {
       }
     }
 
-    assertEquals("one", test(1, 0))
-    assertEquals("two special", test(2, 0))
-    assertEquals("two", test(2, 50))
-    assertEquals("three special", test(3, 5))
-    assertEquals("three big special", test(3, 200))
-    assertEquals("None of those", test(3, 50))
-    assertEquals("big 5", test(5, 300))
-    assertEquals("None of those", test(5, 20))
+    assertEquals(test(1, 0), "one")
+    assertEquals(test(2, 0), "two special")
+    assertEquals(test(2, 50), "two")
+    assertEquals(test(3, 5), "three special")
+    assertEquals(test(3, 200), "three big special")
+    assertEquals(test(3, 50), "None of those")
+    assertEquals(test(5, 300), "big 5")
+    assertEquals(test(5, 20), "None of those")
   }
 
   // #2554
@@ -78,7 +78,7 @@ class MatchTest {
     val result =
       "foo = " ++ (foo match { case Some(0) => "zero" case _ => "unknown" })
 
-    assertEquals("foo = unknown", result)
+    assertEquals(result, "foo = unknown")
   }
 
 
@@ -90,7 +90,10 @@ class MatchTest {
     def show[T](x: ValueClassBase[T]): String = x.f().toString
 
     val foo: Option[Int] = Some(42)
-    assertEquals("4", show(foo match { case Some(0) => 1 case _ => 2 }))
+    assertEquals(show(foo match {
+  case Some(0) => 1
+  case _ => 2
+}), "4")
   }
 
 }

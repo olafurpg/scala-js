@@ -63,7 +63,7 @@ class DynamicTest {
 
     val b = (new B).asInstanceOf[js.Dynamic]
 
-    assertEquals(11, b.x(10))
+    assertEquals(b.x(10), 11)
   }
 
   @Test def should_allow_instanciating_JS_classes_dynamically_issue_10(): Unit = {
@@ -74,7 +74,7 @@ class DynamicTest {
         DynamicTestClass;
         """).asInstanceOf[js.Dynamic]
     val obj = js.Dynamic.newInstance(DynamicTestClass)("Scala.js")
-    assertEquals("Scala.js", obj.x)
+    assertEquals(obj.x, "Scala.js")
   }
 
   @Test def should_allow_instantiating_JS_classes_dynamically_with_varargs_issue_708(): Unit = {
@@ -89,29 +89,29 @@ class DynamicTest {
 
     val obj1 = js.Dynamic.newInstance(DynamicTestClassVarArgs)("Scala.js")
     val obj1_count = obj1.count
-    assertEquals(1, obj1_count)
+    assertEquals(obj1_count, 1)
     val obj1_elem0 = obj1.elem0
-    assertEquals("Scala.js", obj1_elem0)
+    assertEquals(obj1_elem0, "Scala.js")
 
     val obj2 = js.Dynamic.newInstance(DynamicTestClassVarArgs)(
         "Scala.js", 42, true)
     val obj2_count = obj2.count
-    assertEquals(3, obj2_count)
+    assertEquals(obj2_count, 3)
     val obj2_elem0 = obj2.elem0
-    assertEquals("Scala.js", obj2_elem0)
+    assertEquals(obj2_elem0, "Scala.js")
     val obj2_elem1 = obj2.elem1
-    assertEquals(42, obj2_elem1)
+    assertEquals(obj2_elem1, 42)
     val obj2_elem2 = obj2.elem2
     assertTrue(obj2_elem2)
 
     def obj3Args: Seq[js.Any] = Seq("Scala.js", 42, true)
     val obj3 = js.Dynamic.newInstance(DynamicTestClassVarArgs)(obj3Args: _*)
     val obj3_count = obj3.count
-    assertEquals(3, obj3_count)
+    assertEquals(obj3_count, 3)
     val obj3_elem0 = obj3.elem0
-    assertEquals("Scala.js", obj3_elem0)
+    assertEquals(obj3_elem0, "Scala.js")
     val obj3_elem1 = obj3.elem1
-    assertEquals(42, obj3_elem1)
+    assertEquals(obj3_elem1, 42)
     val obj3_elem2 = obj3.elem2
     assertTrue(obj3_elem2)
   }
@@ -122,7 +122,7 @@ class DynamicTest {
     val x_foo = x.foo
     assertEquals(3, x_foo.asInstanceOf[Int])
     val x_bar = x.bar
-    assertEquals("foobar", x_bar)
+    assertEquals(x_bar, "foobar")
     val x_unknown = x.unknown
     assertJSUndefined(x_unknown)
 
@@ -131,8 +131,8 @@ class DynamicTest {
         fun = { () => 42 }
     )
     val y_inner_name = y.inner.name
-    assertEquals("inner obj", y_inner_name)
-    assertEquals(42, y.fun())
+    assertEquals(y_inner_name, "inner obj")
+    assertEquals(y.fun(), 42)
     val obj_anything = obj().anything
     assertJSUndefined(obj_anything)
   }
@@ -148,9 +148,9 @@ class DynamicTest {
     import js.Dynamic.{ literal => obj }
     val x = obj("foo" -> 3, "bar" -> "foobar")
     val x_foo = x.foo
-    assertEquals(3, x_foo)
+    assertEquals(x_foo, 3)
     val x_bar = x.bar
-    assertEquals("foobar", x_bar)
+    assertEquals(x_bar, "foobar")
     val x_unknown = x.unknown
     assertJSUndefined(x_unknown)
 
@@ -159,14 +159,14 @@ class DynamicTest {
 
     val y = obj(tup1, tup2)
     val y_hello1 = y.hello1
-    assertEquals(3, y_hello1)
+    assertEquals(y_hello1, 3)
     val y_hello2 = y.hello2
-    assertEquals(10, y_hello2)
+    assertEquals(y_hello2, 10)
 
     var count = 0
     val z = obj({ count += 1; ("foo", "bar")})
     val z_foo = z.foo
-    assertEquals("bar", z_foo)
+    assertEquals(z_foo, "bar")
     assertEquals(1, count)
   }
 
@@ -178,9 +178,9 @@ class DynamicTest {
         { orderCheck += 1; "foo" } -> { orderCheck += 2; 3 },
         { orderCheck += 3; "bar" } -> { orderCheck += 4; "foobar" })
     val x_foo = x.foo
-    assertEquals(3, x_foo)
+    assertEquals(x_foo, 3)
     val x_bar = x.bar
-    assertEquals("foobar", x_bar)
+    assertEquals(x_bar, "foobar")
     val x_unknown = x.unknown
     assertJSUndefined(x_unknown)
     assertArrayEquals(Array(1, 2, 3, 4), orderCheck.result())
@@ -192,9 +192,9 @@ class DynamicTest {
 
     val y = obj(tup1, tup2)
     val y_hello1 = y.hello1
-    assertEquals(3, y_hello1)
+    assertEquals(y_hello1, 3)
     val y_hello2 = y.hello2
-    assertEquals(10, y_hello2)
+    assertEquals(y_hello2, 10)
     assertArrayEquals(Array(1, 2, 3, 4), orderCheck2.result())
 
     @noinline def block[A](a: A): A = a
@@ -206,9 +206,9 @@ class DynamicTest {
         { val a = block("bar"); orderCheck3 += 3; a } ->
           { val a = block("foobar"); orderCheck3 += 4; a })
     val z_foo = z.foo
-    assertEquals(3, z_foo)
+    assertEquals(z_foo, 3)
     val z_bar = z.bar
-    assertEquals("foobar", z_bar)
+    assertEquals(z_bar, "foobar")
     val z_unknown = z.unknown
     assertJSUndefined(z_unknown)
     assertArrayEquals(Array(1, 2, 3, 4), orderCheck3.result())
@@ -225,10 +225,10 @@ class DynamicTest {
 
     val obj0 = obj("3-" -> 42)
     val `obj0_3-` = obj0.`3-`
-    assertEquals(42, `obj0_3-`)
+    assertEquals(`obj0_3-`, 42)
 
     val obj0Dict = obj0.asInstanceOf[js.Dictionary[js.Any]]
-    assertEquals(42, obj0Dict("3-"))
+    assertEquals(obj0Dict("3-"), 42)
 
     val checkEvilProperties = js.eval("""
       function dynamicLiteralNameEncoding_checkEvilProperties(x) {
@@ -238,7 +238,7 @@ class DynamicTest {
     """).asInstanceOf[js.Function1[js.Any, Boolean]]
     val obj1 = obj(
         ".o[3√!|-pr()per7:3$];" -> " such eval ").asInstanceOf[js.Dictionary[js.Any]]
-    assertEquals(" such eval ", obj1(".o[3√!|-pr()per7:3$];"))
+    assertEquals(obj1(".o[3√!|-pr()per7:3$];"), " such eval ")
     assertTrue(checkEvilProperties(obj1))
 
     val checkQuotesProperty = js.eval("""
@@ -257,9 +257,9 @@ class DynamicTest {
       obj("'" + quote -> 7357)
     ).foreach { o =>
       val dict = o.asInstanceOf[js.Dictionary[js.Any]]
-      assertEquals(7357, dict("'\""))
-      assertEquals(7357, dict("'" + quote))
-      assertEquals(7357, dict(s"'$quote"))
+      assertEquals(dict("'\""), 7357)
+      assertEquals(dict("'" + quote), 7357)
+      assertEquals(dict(s"'$quote"), 7357)
       assertTrue(checkQuotesProperty(o))
     }
   }
@@ -277,15 +277,15 @@ class DynamicTest {
 
     val x = literal.applyDynamic("apply")(fields: _*)
     val x_foo = x.foo
-    assertEquals(42, x_foo)
+    assertEquals(x_foo, 42)
     val x_bar = x.bar
-    assertEquals("foobar", x_bar)
+    assertEquals(x_bar, "foobar")
 
     val y = literal.applyDynamicNamed("apply")(fields: _*)
     val y_foo = y.foo
-    assertEquals(42, y_foo)
+    assertEquals(y_foo, 42)
     val y_bar = y.bar
-    assertEquals("foobar", y_bar)
+    assertEquals(y_bar, "foobar")
   }
 
   @Test def should_allow_object_literals_to_have_duplicate_keys_issue_1595(): Unit = {
@@ -294,24 +294,24 @@ class DynamicTest {
     // Basic functionality
     val a = obj(foo = 4, bar = 5, foo = 6)
     val a_foo = a.foo
-    assertEquals(6, a_foo) // last wins
+    assertEquals(a_foo, 6) // last wins
     val a_bar = a.bar
-    assertEquals(5, a_bar)
+    assertEquals(a_bar, 5)
 
     // Side-effects of overwritten properties are kept
     var counter = 0
     val b = obj(foo = { counter += 1; "foo" }, bar = "bar", foo = "foobar")
     assertEquals(1, counter)
     val b_foo = b.foo
-    assertEquals("foobar", b_foo)
+    assertEquals(b_foo, "foobar")
     val b_bar = b.bar
-    assertEquals("bar", b_bar)
+    assertEquals(b_bar, "bar")
 
     // In a position where unnesting is required - #1628
     @noinline
     def test(x: js.Dynamic): Unit = {
-      assertEquals(6, x.foo) // last wins
-      assertEquals(5, x.bar)
+      assertEquals(x.foo, 6) // last wins
+      assertEquals(x.bar, 5)
     }
     test(obj(foo = 4, bar = 5, foo = 6))
   }

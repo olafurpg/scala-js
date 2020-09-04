@@ -28,11 +28,11 @@ class RegressionTest {
   @Test def `Wrong_division_conversion_(7_/_2.0)_issue_18`(): Unit = {
     val div = 7 / 2.0
     assertEquals(3.5, div, 0.0)
-    assertEquals("double", div.getClass.getName)
+    assertEquals(div.getClass.getName, "double")
 
     val mod = 7 % 2.0
     assertEquals(1.0, mod, 0.0)
-    assertEquals("double", mod.getClass.getName)
+    assertEquals(mod.getClass.getName, "double")
   }
 
   @Test def Abort_with_some_pattern_match_guards_issue_22(): Unit = {
@@ -54,7 +54,7 @@ class RegressionTest {
       val code: Int = c
       s = s + code + " "
     }
-    assertEquals("65 8704 55349 56491 ", s)
+    assertEquals(s, "65 8704 55349 56491 ")
   }
 
   @Test def characterEscapes_issue_3125(): Unit = {
@@ -85,8 +85,8 @@ class RegressionTest {
   }
 
   @Test def should_correctly_concat_primitive_values_to_strings_issue_113(): Unit = {
-    assertEquals("4foo", 4 + "foo")
-    assertEquals("afoo", 'a' + "foo")
+    assertEquals(4 + "foo", "4foo")
+    assertEquals('a' + "foo", "afoo")
   }
 
   @Test def should_correctly_dispatch_calls_on_private_functions_issue_165(): Unit = {
@@ -111,8 +111,8 @@ class RegressionTest {
           scalaVersion == "2.12.4"
         })
 
-    assertEquals("org.scalajs.testsuite.compiler.RegressionTest$Bug218Foo",
-        scala.reflect.classTag[Bug218Foo[_]].toString)
+    assertEquals(scala.reflect.classTag[Bug218Foo[_]].toString,
+        "org.scalajs.testsuite.compiler.RegressionTest$Bug218Foo")
   }
 
   @Test def should_support_Buffer_issue_268(): Unit = {
@@ -122,7 +122,7 @@ class RegressionTest {
     for (i <- 0 to 10) {
       a.insert(a.length / 2, i)
     }
-    assertEquals("1, 3, 5, 7, 9, 10, 8, 6, 4, 2, 0", a.mkString(", "))
+    assertEquals(a.mkString(", "), "1, 3, 5, 7, 9, 10, 8, 6, 4, 2, 0")
   }
 
   @Test def should_not_call_equals_when_comparing_with_a_literal_null_issue_362(): Unit = {
@@ -137,8 +137,8 @@ class RegressionTest {
 
     // If the null comparisons actually call equals, the following two will
     // cause infinite recursion
-    assertEquals(y, x)
     assertEquals(x, y)
+    assertEquals(y, x)
   }
 
   @Test def should_unbox_null_to_the_zero_of_types_issue_674(): Unit = {
@@ -153,7 +153,7 @@ class RegressionTest {
 
     val bool = zero[Boolean]
     assertTrue((bool: Any).isInstanceOf[Boolean])
-    assertEquals(false, bool) // scalastyle:ignore
+    assertEquals(bool, false) // scalastyle:ignore
 
     val char = zero[Char]
     assertTrue((char: Any).isInstanceOf[Char])
@@ -184,7 +184,7 @@ class RegressionTest {
     assertEquals(0.0, double, 0.0)
 
     val ref = zero[AnyRef]
-    assertEquals(null, ref)
+    assertEquals(ref, null)
   }
 
   @Test def Param_defs_in_tailrec_methods_should_be_considered_mutable_issue_825(): Unit = {
@@ -351,7 +351,7 @@ class RegressionTest {
       }
     }
 
-    assertEquals("15", new Test().fct(1))
+    assertEquals(new Test().fct(1), "15")
   }
 
   @Test def should_not_cause_Closure_to_crash_with_Unexpected_variable_NaN_issue_1469(): Unit = {
@@ -373,7 +373,7 @@ class RegressionTest {
      */
     class F extends Function1[Any, Unit] {
       def apply(x: Any): Unit =
-        assertEquals(5, x)
+        assertEquals(x, 5)
     }
 
     // Make sure the specialized Function1.apply(Double)Double is reachable.
@@ -440,12 +440,14 @@ class RegressionTest {
       buffer.toString()
     }
 
-    assertEquals("abc", encodeString("abc", false))
-    assertEquals("abc", encodeString("abc", true))
-    assertEquals("abc def", encodeString("abc def", false))
-    assertEquals("abc\\ def", encodeString("abc def", true))
-    assertEquals("1\\t2\\n3\\f4\\r5\\\\6\\!7 8a9", encodeString("1\t2\n3\f4\r5\\6!7 8a9", false))
-    assertEquals("1\\t2\\n3\\f4\\r5\\\\6\\!7\\ 8a9", encodeString("1\t2\n3\f4\r5\\6!7 8a9", true))
+    assertEquals(encodeString("abc", false), "abc")
+    assertEquals(encodeString("abc", true), "abc")
+    assertEquals(encodeString("abc def", false), "abc def")
+    assertEquals(encodeString("abc def", true), "abc\\ def")
+    assertEquals(encodeString("""1	2
+345\6!7 8a9""", false), "1\\t2\\n3\\f4\\r5\\\\6\\!7 8a9")
+    assertEquals(encodeString("""1	2
+345\6!7 8a9""", true), "1\\t2\\n3\\f4\\r5\\\\6\\!7\\ 8a9")
   }
 
   @Test def return_x_match_issue_2928_ints(): Unit = {
@@ -467,14 +469,14 @@ class RegressionTest {
       }
     }
 
-    assertEquals(true, testNonUnit(1))
-    assertEquals(false, testNonUnit(2))
+    assertEquals(testNonUnit(1), true)
+    assertEquals(testNonUnit(2), false)
 
     testUnit(1)
-    assertEquals(Some(true), r)
+    assertEquals(r, Some(true))
     r = None
     testUnit(2)
-    assertEquals(Some(false), r)
+    assertEquals(r, Some(false))
 
     // scalastyle:on return
   }
@@ -498,14 +500,14 @@ class RegressionTest {
       }
     }
 
-    assertEquals(true, testNonUnit("True"))
-    assertEquals(false, testNonUnit("not true"))
+    assertEquals(testNonUnit("True"), true)
+    assertEquals(testNonUnit("not true"), false)
 
     testUnit("True")
-    assertEquals(Some(true), r)
+    assertEquals(r, Some(true))
     r = None
     testUnit("not true")
-    assertEquals(Some(false), r)
+    assertEquals(r, Some(false))
 
     // scalastyle:on return
   }
@@ -529,18 +531,18 @@ class RegressionTest {
       }
     }
 
-    assertEquals(true, testNonUnit("True" :: Nil))
-    assertEquals(false, testNonUnit("not true" :: Nil))
-    assertEquals(false, testNonUnit("True" :: "second" :: Nil))
+    assertEquals(testNonUnit("True" :: Nil), true)
+    assertEquals(testNonUnit("not true" :: Nil), false)
+    assertEquals(testNonUnit("True" :: "second" :: Nil), false)
 
     testUnit("True" :: Nil)
-    assertEquals(Some(true), r)
+    assertEquals(r, Some(true))
     r = None
     testUnit("not true" :: Nil)
-    assertEquals(Some(false), r)
+    assertEquals(r, Some(false))
     r = None
     testUnit("True" :: "second" :: Nil)
-    assertEquals(Some(false), r)
+    assertEquals(r, Some(false))
 
     // scalastyle:on return
   }
@@ -558,7 +560,7 @@ class RegressionTest {
       assertNull(x.asInstanceOf[AnyRef])
     } else {
       // As of Scala 2.12.0-M5, null.asInstanceOf[Unit] (correctly) returns ()
-      assertEquals((), x)
+      assertEquals(x, ())
     }
   }
 
@@ -592,7 +594,7 @@ class RegressionTest {
 
     val r = 10 :: "foo" :: 'x' :: 42 :: Nil
     val result = new UnsafeCrud(0).apply(r, _ => "newStr")
-    assertEquals((Nil, 10), result)
+    assertEquals(result, (Nil, 10))
   }
 
   private val hasEqEqJLFloatDoubleBug: Boolean = {
@@ -721,9 +723,9 @@ class RegressionTest {
 
     val b = new B
     val c = new b.C
-    assertEquals("A1", c.t1)
-    assertEquals("A2", c.t2)
-    assertEquals("B", c.t3)
+    assertEquals(c.t1, "A1")
+    assertEquals(c.t2, "A2")
+    assertEquals(c.t3, "B")
   }
 
   @Test def tailrec_in_trait_with_self_type_scala_2_12_issue_3058(): Unit = {
@@ -817,7 +819,7 @@ class RegressionTest {
     val r = overloaded(l match {
       case x :: xs => 5
     })
-    assertEquals(5L, r)
+    assertEquals(r, 5L)
   }
 
   @Test def polymorphicArrayApplyWithArrayOfArrayOfChar_issue_3338(): Unit = {
@@ -830,7 +832,7 @@ class RegressionTest {
     val c = b.asInstanceOf[Array[Char]]
     val d = arrayGet(c, 0)
     assertTrue(d.isInstanceOf[Char])
-    assertEquals('a', d)
+    assertEquals(d, 'a')
   }
 
   @Test def nested_object_named_class_issue_3888(): Unit = {

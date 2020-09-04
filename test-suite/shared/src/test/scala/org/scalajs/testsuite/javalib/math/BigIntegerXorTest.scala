@@ -33,7 +33,7 @@ class BigIntegerXorTest {
     val aNumber = new BigInteger(numA)
     val bNumber = new BigInteger(numB)
     val result = aNumber.xor(bNumber)
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
   }
 
   @Test def testNegNegFirstShorter(): Unit = {
@@ -43,7 +43,7 @@ class BigIntegerXorTest {
     val aNumber = new BigInteger(numA)
     val bNumber = new BigInteger(numB)
     val result = aNumber.xor(bNumber)
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
   }
 
   @Test def testNegNegSameLength(): Unit = {
@@ -53,7 +53,7 @@ class BigIntegerXorTest {
     val aNumber = new BigInteger(numA)
     val bNumber = new BigInteger(numB)
     val result = aNumber.xor(bNumber)
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
   }
 
   @Test def testNegPos(): Unit = {
@@ -63,7 +63,7 @@ class BigIntegerXorTest {
     val aNumber = new BigInteger(numA)
     val bNumber = new BigInteger(numB)
     val result = aNumber.xor(bNumber)
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
   }
 
   @Test def testNegPosFirstLonger(): Unit = {
@@ -73,7 +73,7 @@ class BigIntegerXorTest {
     val aNumber = new BigInteger(numA)
     val bNumber = new BigInteger(numB)
     val result = aNumber.xor(bNumber)
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
   }
 
   @Test def testNegPosFirstShorter(): Unit = {
@@ -83,7 +83,7 @@ class BigIntegerXorTest {
     val aNumber = new BigInteger(numA)
     val bNumber = new BigInteger(numB)
     val result = aNumber.xor(bNumber)
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
   }
 
   @Test def testNegPosSameLength(): Unit = {
@@ -93,7 +93,7 @@ class BigIntegerXorTest {
     val aNumber = new BigInteger(numA)
     val bNumber = new BigInteger(numB)
     val result = aNumber.xor(bNumber)
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
   }
 
   @Test def testOneOne(): Unit = {
@@ -103,7 +103,7 @@ class BigIntegerXorTest {
     val aNumber = new BigInteger(numA)
     val bNumber = new BigInteger(numB)
     val result = aNumber.xor(bNumber)
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
   }
 
   @Test def testPosNegFirstLonger(): Unit = {
@@ -113,7 +113,7 @@ class BigIntegerXorTest {
     val aNumber = new BigInteger(numA)
     val bNumber = new BigInteger(numB)
     val result = aNumber.xor(bNumber)
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
   }
 
   @Test def testPosNegFirstShorter(): Unit = {
@@ -123,7 +123,7 @@ class BigIntegerXorTest {
     val aNumber = new BigInteger(numA)
     val bNumber = new BigInteger(numB)
     val result = aNumber.xor(bNumber)
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
   }
 
   @Test def testPosNegSameLength(): Unit = {
@@ -133,7 +133,7 @@ class BigIntegerXorTest {
     val aNumber = new BigInteger(numA)
     val bNumber = new BigInteger(numB)
     val result = aNumber.xor(bNumber)
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
   }
 
   @Test def testPosPosFirstLonger(): Unit = {
@@ -143,7 +143,7 @@ class BigIntegerXorTest {
     val aNumber = new BigInteger(numA)
     val bNumber = new BigInteger(numB)
     val result = aNumber.xor(bNumber)
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
   }
 
   @Test def testPosPosFirstShorter(): Unit = {
@@ -153,7 +153,7 @@ class BigIntegerXorTest {
     val aNumber = new BigInteger(numA)
     val bNumber = new BigInteger(numB)
     val result = aNumber.xor(bNumber)
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
   }
 
   @Test def testPosPosSameLength(): Unit = {
@@ -163,7 +163,7 @@ class BigIntegerXorTest {
     val aNumber = new BigInteger(numA)
     val bNumber = new BigInteger(numB)
     val result = aNumber.xor(bNumber)
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
   }
 
   @Test def testPosZero(): Unit = {
@@ -173,7 +173,7 @@ class BigIntegerXorTest {
     val aNumber = new BigInteger(numA)
     val bNumber = new BigInteger(numB)
     val result = aNumber.xor(bNumber)
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
   }
 
   @Test def testZeroNeg(): Unit = {
@@ -183,7 +183,7 @@ class BigIntegerXorTest {
     val aNumber = new BigInteger(numA)
     val bNumber = new BigInteger(numB)
     val result = aNumber.xor(bNumber)
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
   }
 
   @Test def testZeroOne(): Unit = {
@@ -193,7 +193,7 @@ class BigIntegerXorTest {
     val aNumber = new BigInteger(numA)
     val bNumber = new BigInteger(numB)
     val result = aNumber.xor(bNumber)
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
   }
 
   @Test def testZeroPos(): Unit = {
@@ -203,7 +203,7 @@ class BigIntegerXorTest {
     val aNumber = new BigInteger(numA)
     val bNumber = new BigInteger(numB)
     val result = aNumber.xor(bNumber)
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
   }
 
   @Test def testZeroZero(): Unit = {
@@ -213,6 +213,6 @@ class BigIntegerXorTest {
     val aNumber = new BigInteger(numA)
     val bNumber = new BigInteger(numB)
     val result = aNumber.xor(bNumber)
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
   }
 }

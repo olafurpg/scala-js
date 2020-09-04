@@ -446,25 +446,25 @@ class IntegerTest {
   }
 
   @Test def toBinaryString(): Unit = {
-    assertEquals("11111111111111111111111111111111", Integer.toBinaryString(-1))
-    assertEquals("11111111111111111101100011101111", Integer.toBinaryString(-10001))
-    assertEquals("10000000000000000000000000000000", Integer.toBinaryString(Int.MinValue))
-    assertEquals("1111111111111111111111111111111", Integer.toBinaryString(Int.MaxValue))
+    assertEquals(Integer.toBinaryString(-1), "11111111111111111111111111111111")
+    assertEquals(Integer.toBinaryString(-10001), "11111111111111111101100011101111")
+    assertEquals(Integer.toBinaryString(Int.MinValue), "10000000000000000000000000000000")
+    assertEquals(Integer.toBinaryString(Int.MaxValue), "1111111111111111111111111111111")
   }
 
   @Test def toHexString(): Unit = {
-    assertEquals("ffffffff", Integer.toHexString(-1))
-    assertEquals("ffffd8ef", Integer.toHexString(-10001))
-    assertEquals("80000000", Integer.toHexString(Int.MinValue))
-    assertEquals("8007613e", Integer.toHexString(-2147000002))
-    assertEquals("7fffffff", Integer.toHexString(Int.MaxValue))
+    assertEquals(Integer.toHexString(-1), "ffffffff")
+    assertEquals(Integer.toHexString(-10001), "ffffd8ef")
+    assertEquals(Integer.toHexString(Int.MinValue), "80000000")
+    assertEquals(Integer.toHexString(-2147000002), "8007613e")
+    assertEquals(Integer.toHexString(Int.MaxValue), "7fffffff")
   }
 
   @Test def toOctalString(): Unit = {
-    assertEquals("37777777777", Integer.toOctalString(-1))
-    assertEquals("37777754357", Integer.toOctalString(-10001))
-    assertEquals("20000000000", Integer.toOctalString(Int.MinValue))
-    assertEquals("17777777777", Integer.toOctalString(Int.MaxValue))
+    assertEquals(Integer.toOctalString(-1), "37777777777")
+    assertEquals(Integer.toOctalString(-10001), "37777754357")
+    assertEquals(Integer.toOctalString(Int.MinValue), "20000000000")
+    assertEquals(Integer.toOctalString(Int.MaxValue), "17777777777")
   }
 
   @Test def compareTo(): Unit = {
@@ -493,7 +493,7 @@ class IntegerTest {
       assertEquals(v, Integer.valueOf(s, radix).intValue())
       if (radix == 10) {
         assertEquals(v, new Integer(s).intValue())
-        assertEquals(v, Integer.decode(s))
+        assertEquals(Integer.decode(s), v)
       }
     }
 
@@ -600,9 +600,9 @@ class IntegerTest {
     def test(s: String, v: Int): Unit = {
       assertEquals(v, Integer.parseInt(s, 16))
       assertEquals(v, Integer.valueOf(s, 16).intValue())
-      assertEquals(v, Integer.decode(insertAfterSign("0x", s)))
-      assertEquals(v, Integer.decode(insertAfterSign("0X", s)))
-      assertEquals(v, Integer.decode(insertAfterSign("#", s)))
+      assertEquals(Integer.decode(insertAfterSign("0x", s)), v)
+      assertEquals(Integer.decode(insertAfterSign("0X", s)), v)
+      assertEquals(Integer.decode(insertAfterSign("#", s)), v)
     }
 
     test("0", 0x0)
@@ -615,7 +615,7 @@ class IntegerTest {
 
   @Test def testDecodeBase8(): Unit = {
     def test(s: String, v: Int): Unit = {
-      assertEquals(v, Integer.decode(s))
+      assertEquals(Integer.decode(s), v)
     }
 
     test("00", 0)
@@ -677,31 +677,31 @@ class IntegerTest {
     /* Spec ported from
      * https://github.com/gwtproject/gwt/blob/master/user/test/com/google/gwt/emultest/java/lang/IntegerTest.java
      */
-    assertEquals("12345", new Integer(12345).toString)
-    assertEquals("-12345", new Integer("-12345").toString)
-    assertEquals("-80765", Integer.toString(-80765))
-    assertEquals("2147483647", Integer.toString(Int.MaxValue))
-    assertEquals("-2147483647", Integer.toString(-Int.MaxValue))
-    assertEquals("-2147483648", Integer.toString(Int.MinValue))
-    assertEquals("0", Integer.toString(0))
+    assertEquals(new Integer(12345).toString, "12345")
+    assertEquals(new Integer("-12345").toString, "-12345")
+    assertEquals(Integer.toString(-80765), "-80765")
+    assertEquals(Integer.toString(Int.MaxValue), "2147483647")
+    assertEquals(Integer.toString(-Int.MaxValue), "-2147483647")
+    assertEquals(Integer.toString(Int.MinValue), "-2147483648")
+    assertEquals(Integer.toString(0), "0")
   }
 
   @Test def toString_with_radix(): Unit = {
     /* Spec ported from
      * https://github.com/gwtproject/gwt/blob/master/user/test/com/google/gwt/emultest/java/lang/IntegerTest.java
      */
-    assertEquals("17777777777", Integer.toString(2147483647, 8))
-    assertEquals("7fffffff", Integer.toString(2147483647, 16))
-    assertEquals("1111111111111111111111111111111", Integer.toString(2147483647, 2))
-    assertEquals("2147483647", Integer.toString(2147483647, 10))
-    assertEquals("-17777777777", Integer.toString(-2147483647, 8))
-    assertEquals("-7fffffff", Integer.toString(-2147483647, 16))
-    assertEquals("-1111111111111111111111111111111", Integer.toString(-2147483647, 2))
-    assertEquals("-2147483647", Integer.toString(-2147483647, 10))
-    assertEquals("-20000000000", Integer.toString(-2147483648, 8))
-    assertEquals("-80000000", Integer.toString(-2147483648, 16))
-    assertEquals("-10000000000000000000000000000000", Integer.toString(-2147483648, 2))
-    assertEquals("-2147483648", Integer.toString(-2147483648, 10))
+    assertEquals(Integer.toString(2147483647, 8), "17777777777")
+    assertEquals(Integer.toString(2147483647, 16), "7fffffff")
+    assertEquals(Integer.toString(2147483647, 2), "1111111111111111111111111111111")
+    assertEquals(Integer.toString(2147483647, 10), "2147483647")
+    assertEquals(Integer.toString(-2147483647, 8), "-17777777777")
+    assertEquals(Integer.toString(-2147483647, 16), "-7fffffff")
+    assertEquals(Integer.toString(-2147483647, 2), "-1111111111111111111111111111111")
+    assertEquals(Integer.toString(-2147483647, 10), "-2147483647")
+    assertEquals(Integer.toString(-2147483648, 8), "-20000000000")
+    assertEquals(Integer.toString(-2147483648, 16), "-80000000")
+    assertEquals(Integer.toString(-2147483648, 2), "-10000000000000000000000000000000")
+    assertEquals(Integer.toString(-2147483648, 10), "-2147483648")
   }
 }
 

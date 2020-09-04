@@ -74,7 +74,7 @@ class ArrayDequeTest extends AbstractCollectionTest with DequeTest {
 
     assertTrue(adString.add("pluto"))
     assertTrue(adString.add("pippo"))
-    assertEquals(adString.pollLast(), "pippo")
+    assertEquals("pippo", adString.pollLast())
 
     val adDouble = factory.empty[Double]
 
@@ -96,8 +96,8 @@ class ArrayDequeTest extends AbstractCollectionTest with DequeTest {
 
     adString.push("pluto")
     adString.push("pippo")
-    assertEquals(adString.pop(), "pippo")
-    assertEquals(adString.pop(), "pluto")
+    assertEquals("pippo", adString.pop())
+    assertEquals("pluto", adString.pop())
     assertTrue(adString.isEmpty())
 
     val adDouble = factory.empty[Double]
@@ -152,14 +152,14 @@ class ArrayDequeTest extends AbstractCollectionTest with DequeTest {
     val iter = ad.iterator()
     for (i <- 0 until l.size()) {
       assertTrue(iter.hasNext())
-      assertEquals(iter.next(), l(i))
+      assertEquals(l(i), iter.next())
     }
     assertFalse(iter.hasNext())
 
     val diter = ad.descendingIterator()
     for (i <- (0 until l.size()).reverse) {
       assertTrue(diter.hasNext())
-      assertEquals(diter.next(), l(i))
+      assertEquals(l(i), diter.next())
     }
     assertFalse(diter.hasNext())
   }

@@ -29,7 +29,7 @@ class RangesTest {
 
   @Test def Iterable_range_and_simple_range_should_be_equal(): Unit = {
     // Mostly to exercise more methods of ranges for dce warnings
-    assertEquals((0 until 10).toList, Iterable.range(0, 10).toList)
+    assertEquals(Iterable.range(0, 10).toList, (0 until 10).toList)
   }
 
   @Test def NumericRange_overflow_issue_2407(): Unit = {
@@ -48,30 +48,30 @@ class RangesTest {
 
   @Test def Range_toString_issue_2412(): Unit = {
     if (scalaVersion.startsWith("2.11.")) {
-      assertEquals("Range(1, 3, 5, 7, 9)", (1 to 10 by 2).toString)
-      assertEquals("Range()", (1 until 1 by 2).toString)
+      assertEquals((1 to 10 by 2).toString, "Range(1, 3, 5, 7, 9)")
+      assertEquals((1 until 1 by 2).toString, "Range()")
       assertTrue(
           (BigDecimal(0.0) to BigDecimal(1.0)).toString.startsWith("scala.collection.immutable.Range$Partial"))
-      assertEquals("Range(0, 1)", (0 to 1).toString)
+      assertEquals((0 to 1).toString, "Range(0, 1)")
     } else {
-      assertEquals("inexact Range 1 to 10 by 2", (1 to 10 by 2).toString)
-      assertEquals("empty Range 1 until 1 by 2", (1 until 1 by 2).toString)
-      assertEquals("Range requires step", (BigDecimal(0.0) to BigDecimal(1.0)).toString)
-      assertEquals("Range 0 to 1", (0 to 1).toString)
+      assertEquals((1 to 10 by 2).toString, "inexact Range 1 to 10 by 2")
+      assertEquals((1 until 1 by 2).toString, "empty Range 1 until 1 by 2")
+      assertEquals((BigDecimal(0.0d) to BigDecimal(1.0d)).toString, "Range requires step")
+      assertEquals((0 to 1).toString, "Range 0 to 1")
     }
   }
 
   @Test def NumericRange_toString_issue_2412(): Unit = {
     if (scalaVersion.startsWith("2.11.")) {
-      assertEquals("NumericRange(0, 2, 4, 6, 8, 10)",
-          NumericRange.inclusive(0, 10, 2).toString())
-      assertEquals("NumericRange(0, 2, 4, 6, 8)",
-          NumericRange(0, 10, 2).toString)
+      assertEquals(NumericRange.inclusive(0, 10, 2).toString(),
+          "NumericRange(0, 2, 4, 6, 8, 10)")
+      assertEquals(NumericRange(0, 10, 2).toString,
+          "NumericRange(0, 2, 4, 6, 8)")
     } else {
-      assertEquals("NumericRange 0 to 10 by 2",
-          NumericRange.inclusive(0, 10, 2).toString())
-      assertEquals("NumericRange 0 until 10 by 2",
-          NumericRange(0, 10, 2).toString)
+      assertEquals(NumericRange.inclusive(0, 10, 2).toString(),
+          "NumericRange 0 to 10 by 2")
+      assertEquals(NumericRange(0, 10, 2).toString,
+          "NumericRange 0 until 10 by 2")
     }
   }
 
@@ -100,11 +100,11 @@ class RangesTest {
     }
 
     val r = NumericRange(A(1), A(10), A(1))
-    assertEquals(A(1), r.min)
-    assertEquals(A(9), r.max)
+    assertEquals(r.min, A(1))
+    assertEquals(r.max, A(9))
 
     // Also test with custom ordering.
-    assertEquals(A(9), r.min(aIsIntegral.reverse))
-    assertEquals(A(1), r.max(aIsIntegral.reverse))
+    assertEquals(r.min(aIsIntegral.reverse), A(9))
+    assertEquals(r.max(aIsIntegral.reverse), A(1))
   }
 }

@@ -23,10 +23,10 @@ class StringBufferJSTest {
     new java.lang.StringBuffer
 
   @Test def append(): Unit =
-    assertEquals("undefined", newBuf.append(js.undefined).toString)
+    assertEquals(newBuf.append(js.undefined).toString, "undefined")
 
   @Test def insert(): Unit =
-    assertEquals("undefined", newBuf.insert(0, js.undefined).toString)
+    assertEquals(newBuf.insert(0, js.undefined).toString, "undefined")
 }
 
 class StringBuilderJSTest {
@@ -35,12 +35,12 @@ class StringBuilderJSTest {
     new java.lang.StringBuilder
 
   @Test def append(): Unit = {
-    assertEquals("undefined", newBuilder.append(js.undefined).toString)
+    assertEquals(newBuilder.append(js.undefined).toString, "undefined")
   }
 
   @Test def insert(): Unit =
-    assertEquals("undefined", newBuilder.insert(0, js.undefined).toString)
+    assertEquals(newBuilder.insert(0, js.undefined).toString, "undefined")
 
   @Test def should_allow_string_interpolation_to_survive_null_and_undefined(): Unit =
-    assertEquals("undefined", s"${js.undefined}")
+    assertEquals(s"${js.undefined}", "undefined")
 }

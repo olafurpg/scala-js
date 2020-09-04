@@ -18,19 +18,19 @@ import org.junit.Test
 class PrimitivesTest {
 
   @Test def should_convert_Java_boxed_types_to_js_Any(): Unit = {
-    assertEquals(false, new java.lang.Boolean(false))
+    assertEquals(new java.lang.Boolean(false), false)
     assertNull(null: java.lang.Boolean)
 
-    assertEquals(42, new java.lang.Byte(42.toByte))
+    assertEquals(new java.lang.Byte(42.toByte), 42)
     assertNull(null: java.lang.Byte)
 
-    assertEquals(42, new java.lang.Short(42.toShort))
+    assertEquals(new java.lang.Short(42.toShort), 42)
     assertNull(null: java.lang.Short)
 
-    assertEquals(42, new java.lang.Integer(42))
+    assertEquals(new java.lang.Integer(42), 42)
     assertNull(null: java.lang.Integer)
 
-    assertEquals(42L, new java.lang.Long(42L))
+    assertEquals(new java.lang.Long(42L), 42L)
     assertNull(null: java.lang.Long)
 
     assertEquals(42.0f, new java.lang.Float(42.0f), 0.0f)

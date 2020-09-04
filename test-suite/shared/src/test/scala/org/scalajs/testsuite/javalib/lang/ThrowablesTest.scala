@@ -78,17 +78,17 @@ class ThrowablesTest {
     }
 
     def test1(newThrowable: String => Throwable): Unit = {
-      assertEquals("foo", newThrowable("foo").getMessage)
+      assertEquals(newThrowable("foo").getMessage, "foo")
     }
 
     def test2(newThrowable: Throwable => Throwable): Unit = {
-      assertEquals(t0.getClass.getName, newThrowable(t0).getMessage)
-      assertEquals(t0.getClass.getName + ": foo", newThrowable(t1).getMessage)
+      assertEquals(newThrowable(t0).getMessage, t0.getClass.getName)
+      assertEquals(newThrowable(t1).getMessage, t0.getClass.getName + ": foo")
     }
 
     def test3(newThrowable: (String, Throwable) => Throwable): Unit = {
-      assertEquals("bar", newThrowable("bar", t0).getMessage)
-      assertEquals("bar", newThrowable("bar", t1).getMessage)
+      assertEquals(newThrowable("bar", t0).getMessage, "bar")
+      assertEquals(newThrowable("bar", t1).getMessage, "bar")
       assertNull(newThrowable(null, t0).getMessage)
       assertNull(newThrowable(null, t1).getMessage)
     }
@@ -171,15 +171,15 @@ class ThrowablesTest {
     def concat(a: String, b: Any): String = a + b
 
     val t = new ThrowableWithCustomToString
-    assertEquals("custom toString", t.toString())
-    assertEquals("custom toString", callToString(t))
-    assertEquals("my custom toString", "my " + t)
-    assertEquals("my custom toString", concat("my ", t))
+    assertEquals(t.toString(), "custom toString")
+    assertEquals(callToString(t), "custom toString")
+    assertEquals("my " + t, "my custom toString")
+    assertEquals(concat("my ", t), "my custom toString")
   }
 
   @Test def assertionErrorsPeculiarConstructors(): Unit = {
     def assertMessageNoCause(expectedMessage: String, e: AssertionError): Unit = {
-      assertEquals(expectedMessage, e.getMessage)
+      assertEquals(e.getMessage, expectedMessage)
       assertNull(e.getCause)
     }
 
@@ -199,7 +199,7 @@ class ThrowablesTest {
 
     val th = new RuntimeException("kaboom")
     val e = new AssertionError(th)
-    assertEquals(th.toString, e.getMessage)
+    assertEquals(e.getMessage, th.toString)
     assertSame(th, e.getCause)
   }
 }

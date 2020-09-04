@@ -403,11 +403,11 @@ class LongTestOnJDK8 {
 
   @Test def toUnsignedString(): Unit = {
     def test(x: Long, s: String, radix: Int = 10): Unit = {
-      assertEquals(s, JLong.toUnsignedString(x, radix))
+      assertEquals(JLong.toUnsignedString(x, radix), s)
       if (radix == 10) {
-        assertEquals(s, JLong.toUnsignedString(x))
-        assertEquals(s, JLong.toUnsignedString(x, MinRadix - 1))
-        assertEquals(s, JLong.toUnsignedString(x, MaxRadix + 1))
+        assertEquals(JLong.toUnsignedString(x), s)
+        assertEquals(JLong.toUnsignedString(x, MinRadix - 1), s)
+        assertEquals(JLong.toUnsignedString(x, MaxRadix + 1), s)
       }
     }
 

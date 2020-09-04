@@ -28,7 +28,7 @@ class JSNameTest {
 
   @Test def should_work_with_vals(): Unit = {
     val obj = js.Dynamic.literal(jsVal = "hi").asInstanceOf[PropValFacade]
-    assertEquals("hi", obj.internalVal)
+    assertEquals(obj.internalVal, "hi")
   }
 
   @Test def should_work_with_vars(): Unit = {
@@ -45,7 +45,7 @@ class JSNameTest {
 
   @Test def should_work_with_vals_in_Scala_js_defined_trait_issue_2197(): Unit = {
     val obj = js.Dynamic.literal(jsVal = "hi").asInstanceOf[PropValSJSDefined]
-    assertEquals("hi", obj.internalVal)
+    assertEquals(obj.internalVal, "hi")
   }
 
   @Test def should_work_with_vars_in_Scala_js_defined_trait_issue_2197(): Unit = {
@@ -61,7 +61,7 @@ class JSNameTest {
 
     assertEquals(1, f.a)
     f.a = 2
-    assertEquals(2, d.selectDynamic("a_="))
+    assertEquals(d.selectDynamic("a_="), 2)
     assertEquals(2, f.a)
   }
 }

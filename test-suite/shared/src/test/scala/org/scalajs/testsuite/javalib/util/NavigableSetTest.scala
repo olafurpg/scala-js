@@ -41,10 +41,10 @@ trait NavigableSetTest extends SetTest {
 
     nsString.addAll(lString)
 
-    assertEquals("a", nsString.ceiling("00000"))
-    assertEquals("a", nsString.ceiling("0"))
-    assertEquals("a", nsString.ceiling("a"))
-    assertEquals("d", nsString.ceiling("d"))
+    assertEquals(nsString.ceiling("00000"), "a")
+    assertEquals(nsString.ceiling("0"), "a")
+    assertEquals(nsString.ceiling("a"), "a")
+    assertEquals(nsString.ceiling("d"), "d")
     assertNull(nsString.ceiling("z"))
   }
 
@@ -64,10 +64,10 @@ trait NavigableSetTest extends SetTest {
 
     nsString.addAll(lString)
 
-    assertEquals("e", nsString.floor("zzzzz"))
-    assertEquals("d", nsString.floor("d"))
-    assertEquals("b", nsString.floor("b"))
-    assertEquals("a", nsString.floor("a"))
+    assertEquals(nsString.floor("zzzzz"), "e")
+    assertEquals(nsString.floor("d"), "d")
+    assertEquals(nsString.floor("b"), "b")
+    assertEquals(nsString.floor("a"), "a")
     assertNull(nsString.floor("0"))
   }
 
@@ -88,10 +88,10 @@ trait NavigableSetTest extends SetTest {
     nsString.addAll(lString)
 
     assertNull(nsString.higher("zzzzz"))
-    assertEquals("e", nsString.higher("d"))
-    assertEquals("c", nsString.higher("b"))
-    assertEquals("b", nsString.higher("a"))
-    assertEquals("a", nsString.higher("0"))
+    assertEquals(nsString.higher("d"), "e")
+    assertEquals(nsString.higher("b"), "c")
+    assertEquals(nsString.higher("a"), "b")
+    assertEquals(nsString.higher("0"), "a")
   }
 
   @Test def `should_retrieve_lower(ordered)_elements`(): Unit = {
@@ -110,9 +110,9 @@ trait NavigableSetTest extends SetTest {
 
     nsString.addAll(lString)
 
-    assertEquals("e", nsString.lower("zzzzz"))
-    assertEquals("c", nsString.lower("d"))
-    assertEquals("a", nsString.lower("b"))
+    assertEquals(nsString.lower("zzzzz"), "e")
+    assertEquals(nsString.lower("d"), "c")
+    assertEquals(nsString.lower("b"), "a")
     assertNull(nsString.lower("a"))
     assertNull(nsString.lower("0"))
   }

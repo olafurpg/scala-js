@@ -231,13 +231,13 @@ trait CollectionTest extends IterableTest {
 
   @Test def toStringShouldConvertEmptyCollection(): Unit = {
     val coll = factory.empty[Double]
-    assertEquals("[]", coll.toString())
+    assertEquals(coll.toString(), "[]")
   }
 
   @Test def toStringShouldConvertOneElementCollection(): Unit = {
     val coll = factory.fromElements[Double](1.01)
     // JavaScript displays n.0 as n, so one trailing digit must be non-zero.
-    assertEquals("[1.01]", coll.toString())
+    assertEquals(coll.toString(), "[1.01]")
   }
 
   @Test def toStringShouldUseCommaSpace(): Unit = {

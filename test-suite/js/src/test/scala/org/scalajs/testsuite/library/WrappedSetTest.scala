@@ -70,7 +70,7 @@ class WrappedSetTest {
 
     jsSet ++= elems
 
-    assertEquals(elems, set.iterator.toList)
+    assertEquals(set.iterator.toList, elems)
   }
 
   // Some arbitrary methods to test the builders

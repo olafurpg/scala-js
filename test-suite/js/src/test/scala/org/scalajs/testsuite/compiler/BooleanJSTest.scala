@@ -23,8 +23,8 @@ class BooleanJSTest {
     // FIXME: these tests are completely useless:
     // they're constant-folded by scalac. We're not at all testing those
     // operations are the IR level, nor, a fortiori, at the JS level
-    assertEquals(js.typeOf(true & false), "boolean")
-    assertEquals(js.typeOf(true | false), "boolean")
-    assertEquals(js.typeOf(true ^ false), "boolean")
+    assertEquals("boolean", js.typeOf(true & false))
+    assertEquals("boolean", js.typeOf(true | false))
+    assertEquals("boolean", js.typeOf(true ^ false))
   }
 }

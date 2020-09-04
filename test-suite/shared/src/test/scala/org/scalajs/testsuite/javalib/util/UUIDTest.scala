@@ -136,10 +136,10 @@ class UUIDTest {
   }
 
   @Test def toStringTest(): Unit = {
-    assertEquals("f81d4fae-7dec-11d0-a765-00a0c91e6bf6",
-      new UUID(0xf81d4fae7dec11d0L, 0xa76500a0c91e6bf6L).toString)
-    assertEquals("00000000-0000-1000-8000-000000000000",
-      new UUID(0x0000000000001000L, 0x8000000000000000L).toString)
+    assertEquals(new UUID(-568210367123287600L, -6384696206158828554L).toString,
+      "f81d4fae-7dec-11d0-a765-00a0c91e6bf6")
+    assertEquals(new UUID(4096L, -9223372036854775808L).toString,
+      "00000000-0000-1000-8000-000000000000")
   }
 
   @Test def randomUUID(): Unit = {
@@ -160,7 +160,7 @@ class UUIDTest {
     assertEquals(690568981494L, uuid1.node())
 
     val uuid2 = UUID.fromString("00000000-0000-1000-8000-000000000000")
-    assertEquals(uuid2, new UUID(0x0000000000001000L, 0x8000000000000000L))
+    assertEquals(new UUID(4096L, -9223372036854775808L), uuid2)
     assertEquals(0x0000000000001000L, uuid2.getMostSignificantBits())
     assertEquals(0x8000000000000000L, uuid2.getLeastSignificantBits())
     assertEquals(2, uuid2.variant())

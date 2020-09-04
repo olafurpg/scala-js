@@ -24,7 +24,7 @@ class RegressionTestTestScala2 {
    */
   @Test def String_concatenation_with_null_issue_26(): Unit = {
     val x: Object = null
-    assertEquals("nullcheck", x + "check")
+    assertEquals(x + "check", "nullcheck")
   }
 
 }

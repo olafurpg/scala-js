@@ -23,28 +23,28 @@ class BigIntTest {
 
   @Test def apply(): Unit = {
     val fromString = js.BigInt("9007199254740992")
-    assertEquals(fromString.toString(), "9007199254740992")
+    assertEquals("9007199254740992", fromString.toString())
 
     val fromInt = js.BigInt(2147483647)
-    assertEquals(fromInt.toString(), "2147483647")
+    assertEquals("2147483647", fromInt.toString())
 
     val fromDouble = js.BigInt(4294967295d)
-    assertEquals(fromDouble.toString(), "4294967295")
+    assertEquals("4294967295", fromDouble.toString())
   }
 
   @Test def asIntN(): Unit = {
     val x = js.BigInt.asIntN(8, js.BigInt("256"))
-    assertEquals(x, js.BigInt("0"))
+    assertEquals(js.BigInt("0"), x)
   }
 
   @Test def asUintN(): Unit = {
     val x = js.BigInt(-123)
-    assertEquals(js.BigInt.asUintN(50, x), js.BigInt("1125899906842501"))
+    assertEquals(js.BigInt("1125899906842501"), js.BigInt.asUintN(50, x))
   }
 
   @Test def toLocaleString(): Unit = {
     val bi = js.BigInt("42123456789123456789")
-    assertEquals(bi.toString(), "42123456789123456789")
+    assertEquals("42123456789123456789", bi.toString())
 
     val result = bi
       .toLocaleString("de-DE", new js.BigInt.ToLocaleStringOptions {
@@ -58,52 +58,52 @@ class BigIntTest {
 
   @Test def valueOf(): Unit = {
     val bi = js.BigInt("42123456789123456789")
-    assertEquals(bi, bi.valueOf())
+    assertEquals(bi.valueOf(), bi)
   }
 
   @Test def operators(): Unit = {
     val previousMaxSafe = js.BigInt("9007199254740991")
-    assertEquals(previousMaxSafe, js.BigInt("9007199254740991"))
+    assertEquals(js.BigInt("9007199254740991"), previousMaxSafe)
 
     val maxPlusOne = previousMaxSafe + js.BigInt(1)
-    assertEquals(maxPlusOne, js.BigInt("9007199254740992"))
+    assertEquals(js.BigInt("9007199254740992"), maxPlusOne)
 
     val theFuture = previousMaxSafe + js.BigInt(2)
-    assertEquals(theFuture, js.BigInt("9007199254740993"))
+    assertEquals(js.BigInt("9007199254740993"), theFuture)
 
     val multi = previousMaxSafe * js.BigInt(2)
-    assertEquals(multi, js.BigInt("18014398509481982"))
+    assertEquals(js.BigInt("18014398509481982"), multi)
 
     val subtr = multi - js.BigInt(10)
-    assertEquals(subtr, js.BigInt("18014398509481972"))
+    assertEquals(js.BigInt("18014398509481972"), subtr)
 
     val mod = multi % js.BigInt(10)
-    assertEquals(mod, js.BigInt("2"))
+    assertEquals(js.BigInt("2"), mod)
 
     // TODO: Scala.js does not recongnize ** as operator
     //    val bigN = js.BigInt(2) ** js.BigInt(54)
     //    assertEquals(bigN, js.BigInt("18014398509481984"))
 
     val negative = -js.BigInt("18014398509481984")
-    assertEquals(negative, js.BigInt("-18014398509481984"))
+    assertEquals(js.BigInt("-18014398509481984"), negative)
 
     val bitAnd = js.BigInt(123) & js.BigInt(31)
-    assertEquals(bitAnd, js.BigInt("27"))
+    assertEquals(js.BigInt("27"), bitAnd)
 
     val bitOr = js.BigInt(123) | js.BigInt(31)
-    assertEquals(bitOr, js.BigInt("127"))
+    assertEquals(js.BigInt("127"), bitOr)
 
     val bitXor = js.BigInt(123) ^ js.BigInt(31)
-    assertEquals(bitXor, js.BigInt("100"))
+    assertEquals(js.BigInt("100"), bitXor)
 
     val bitLeftShift = js.BigInt(123) << js.BigInt(31)
-    assertEquals(bitLeftShift, js.BigInt("264140488704"))
+    assertEquals(js.BigInt("264140488704"), bitLeftShift)
 
     val bitRightShift = js.BigInt(12345678) >> js.BigInt(9)
-    assertEquals(bitRightShift, js.BigInt("24112"))
+    assertEquals(js.BigInt("24112"), bitRightShift)
 
     val bitNot = ~js.BigInt("42")
-    assertEquals(bitNot, js.BigInt("-43"))
+    assertEquals(js.BigInt("-43"), bitNot)
   }
 
   @Test def compare_with_bigint(): Unit = {

@@ -62,16 +62,16 @@ class SystemTest {
 
     System.arraycopy(object1, 1, object0, 1, 5)
     if (executingInJVM) {
-      assertEquals("[1234.0true]", object0.mkString)
+      assertEquals(object0.mkString, "[1234.0true]")
     } else {
-      assertEquals("[1234true]", object0.mkString)
+      assertEquals(object0.mkString, "[1234true]")
     }
 
     val string0 = Array("a", "b", "c", "d", "e", "f")
     val string1 = Array("1", "2", "3", "4")
 
     System.arraycopy(string1, 0, string0, 3, 3)
-    assertEquals("abc123", string0.mkString)
+    assertEquals(string0.mkString, "abc123")
 
     val ab01Chars = Array("ab".toCharArray, "01".toCharArray)
     val chars = new Array[Array[Char]](32)
@@ -81,8 +81,8 @@ class SystemTest {
     }
 
     assertEquals(12, chars.filter(_ == null).length)
-    assertEquals("ab01ab0101ab01ab0101ab0101ab01ab0101ab01",
-        chars.filter(_ != null).map(_.mkString).mkString)
+    assertEquals(chars.filter(_ != null).map(_.mkString).mkString,
+        "ab01ab0101ab01ab0101ab0101ab01ab0101ab01")
   }
 
   @Test def arraycopy_with_range_overlaps_for_the_same_array(): Unit = {
@@ -168,7 +168,7 @@ class SystemTest {
   @Test def identityHashCode_should_by_pass_hashCode(): Unit = {
     val list1 = List(1, 3, 5)
     val list2 = List(1, 3, 5)
-    assertEquals(list2, list1)
+    assertEquals(list1, list2)
     assertEquals(list2.hashCode(), list1.hashCode())
     assertNotEquals(System.identityHashCode(list1), System.identityHashCode(list2))
   }
@@ -199,6 +199,6 @@ class SystemTest {
   }
 
   @Test def getenv_should_link_and_does_not_throw(): Unit = {
-    assertEquals(null, System.getenv(":${PATH}"))
+    assertEquals(System.getenv(":${PATH}"), null)
   }
 }

@@ -63,9 +63,9 @@ class RegressionJSTest {
 
     val b = new B
     val c = new b.C
-    assertEquals("A1", c.t1())
-    assertEquals("A2", c.t2())
-    assertEquals("B", c.t3())
+    assertEquals(c.t1(), "A1")
+    assertEquals(c.t2(), "A2")
+    assertEquals(c.t3(), "B")
   }
 
   @Test def emit_anon_JS_function_class_data_with_2_11_Xexperimental_issue_3222(): Unit = {
@@ -84,16 +84,16 @@ class RegressionJSTest {
       () => js.Dynamic.literal(foo = 5)
 
     val obj1 = f()()
-    assertEquals("object", js.typeOf(obj1))
-    assertEquals(5, obj1.foo)
+    assertEquals(js.typeOf(obj1), "object")
+    assertEquals(obj1.foo, 5)
 
     @noinline
     def g(): js.Function0[js.Dynamic] =
       () => js.Dynamic.literal(bar = 6)
 
     val obj2 = g()()
-    assertEquals("object", js.typeOf(obj2))
-    assertEquals(6, obj2.bar)
+    assertEquals(js.typeOf(obj2), "object")
+    assertEquals(obj2.bar, 6)
   }
 
 }

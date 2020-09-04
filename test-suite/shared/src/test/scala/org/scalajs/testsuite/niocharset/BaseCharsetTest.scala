@@ -95,7 +95,7 @@ class BaseCharsetTest(val charset: Charset) {
 
       (directResult, incrementalResult) match {
         case (Success(directString), Success(incrementalString)) =>
-          assertEquals(incrementalString, directString)
+          assertEquals(directString, incrementalString)
 
         case (Failure(directEx: UnmappableCharacterException),
             Failure(incrementalEx: UnmappableCharacterException)) =>

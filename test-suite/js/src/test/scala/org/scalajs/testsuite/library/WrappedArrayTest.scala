@@ -95,7 +95,7 @@ class WrappedArrayTest {
       case x if x > 4 => 2*x
     }
 
-    assertEquals(classOf[js.WrappedArray[Int]], res.getClass)
+    assertEquals(res.getClass, classOf[js.WrappedArray[Int]])
     assertArrayEquals(Array(10,12), res.toArray)
   }
 
@@ -108,7 +108,7 @@ class WrappedArrayTest {
   @Test def toList(): Unit = {
     val seq: collection.Seq[Int] = js.Array(1,2,1,3,1,10,9)
     val list = seq.toList
-    assertEquals(List(1,2,1,3,1,10,9), list)
+    assertEquals(list, List(1, 2, 1, 3, 1, 10, 9))
   }
 
 }

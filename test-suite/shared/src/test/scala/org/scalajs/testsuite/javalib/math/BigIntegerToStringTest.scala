@@ -31,7 +31,7 @@ class BigIntegerToStringTest {
     val aNumber = new BigInteger(value)
     val result = aNumber.toString()
     assertEquals(2, aNumber.intValue())
-    assertEquals(value, result)
+    assertEquals(result, value)
   }
 
   @Test def tes10NegVerySmall(): Unit = {
@@ -39,7 +39,7 @@ class BigIntegerToStringTest {
     val aNumber = new BigInteger(value)
     val result = aNumber.toString()
     assertEquals(-2, aNumber.intValue())
-    assertEquals(value, result)
+    assertEquals(result, value)
   }
 
   @Test def tes10PosSmall(): Unit = {
@@ -47,7 +47,7 @@ class BigIntegerToStringTest {
     val aNumber = new BigInteger(value)
     val result = aNumber.toString()
     assertEquals(24, aNumber.intValue())
-    assertEquals(value, result)
+    assertEquals(result, value)
   }
 
   @Test def tes10NegSmall(): Unit = {
@@ -55,7 +55,7 @@ class BigIntegerToStringTest {
     val aNumber = new BigInteger(value)
     val result = aNumber.toString()
     assertEquals(-24, aNumber.intValue())
-    assertEquals(value, result)
+    assertEquals(result, value)
   }
 
   @Test def tes10PosLong(): Unit = {
@@ -63,7 +63,7 @@ class BigIntegerToStringTest {
     val aNumber = new BigInteger(value)
     val result = aNumber.toString()
     assertEquals(2489756308572L, aNumber.longValue())
-    assertEquals(value, result)
+    assertEquals(result, value)
   }
 
   @Test def tes10NegLong(): Unit = {
@@ -71,14 +71,14 @@ class BigIntegerToStringTest {
     val aNumber = new BigInteger(value)
     val result = aNumber.toString()
     assertEquals(-2489756308572L, aNumber.longValue())
-    assertEquals(value, result)
+    assertEquals(result, value)
   }
 
   @Test def tes10Neg(): Unit = {
     val value = "-2489756308572364789878394872984"
     val aNumber = new BigInteger(value)
     val result = aNumber.toString()
-    assertEquals(value, result)
+    assertEquals(result, value)
   }
 
   @Test def testRadix10Neg(): Unit = {
@@ -86,7 +86,7 @@ class BigIntegerToStringTest {
     val radix = 10
     val aNumber = new BigInteger(value, radix)
     val result = aNumber.toString(radix)
-    assertEquals(value, result)
+    assertEquals(result, value)
   }
 
   @Test def testRadix10Pos(): Unit = {
@@ -94,7 +94,7 @@ class BigIntegerToStringTest {
     val radix = 10
     val aNumber = new BigInteger(value, radix)
     val result = aNumber.toString(radix)
-    assertEquals(value, result)
+    assertEquals(result, value)
   }
 
   @Test def testRadix1610Neg(): Unit = {
@@ -102,7 +102,7 @@ class BigIntegerToStringTest {
     val radix = 16
     val aNumber = new BigInteger(value, radix)
     val result = aNumber.toString(radix)
-    assertEquals(value, result)
+    assertEquals(result, value)
   }
 
   @Test def testRadix1610Pos(): Unit = {
@@ -110,7 +110,7 @@ class BigIntegerToStringTest {
     val radix = 16
     val aNumber = new BigInteger(value, radix)
     val result = aNumber.toString(radix)
-    assertEquals(value, result)
+    assertEquals(result, value)
   }
 
   @Test def testRadix16Neg(): Unit = {
@@ -118,7 +118,7 @@ class BigIntegerToStringTest {
     val radix = 16
     val aNumber = new BigInteger(value, radix)
     val result = aNumber.toString(radix)
-    assertEquals(value, result)
+    assertEquals(result, value)
   }
 
   @Test def testRadix16Pos(): Unit = {
@@ -126,7 +126,7 @@ class BigIntegerToStringTest {
     val radix = 16
     val aNumber = new BigInteger(value, radix)
     val result = aNumber.toString(radix)
-    assertEquals(value, result)
+    assertEquals(result, value)
   }
 
   @Test def testRadix24Neg(): Unit = {
@@ -134,7 +134,7 @@ class BigIntegerToStringTest {
     val radix = 24
     val aNumber = new BigInteger(value, radix)
     val result = aNumber.toString(radix)
-    assertEquals(value, result)
+    assertEquals(result, value)
   }
 
   @Test def testRadix24Pos(): Unit = {
@@ -142,7 +142,7 @@ class BigIntegerToStringTest {
     val radix = 24
     val aNumber = new BigInteger(value, radix)
     val result = aNumber.toString(radix)
-    assertEquals(value, result)
+    assertEquals(result, value)
   }
 
   @Test def testRadix2Neg(): Unit = {
@@ -150,7 +150,7 @@ class BigIntegerToStringTest {
     val radix = 2
     val aNumber = new BigInteger(value, radix)
     val result = aNumber.toString(radix)
-    assertEquals(value, result)
+    assertEquals(result, value)
   }
 
   @Test def testRadix2Pos(): Unit = {
@@ -158,7 +158,7 @@ class BigIntegerToStringTest {
     val radix = 2
     val aNumber = new BigInteger(value, radix)
     val result = aNumber.toString(radix)
-    assertEquals(value, result)
+    assertEquals(result, value)
   }
 
   @Test def testRadix36Neg(): Unit = {
@@ -166,7 +166,7 @@ class BigIntegerToStringTest {
     val radix = 36
     val aNumber = new BigInteger(value, radix)
     val result = aNumber.toString(radix)
-    assertEquals(value, result)
+    assertEquals(result, value)
   }
 
   @Test def testRadix36Pos(): Unit = {
@@ -174,7 +174,7 @@ class BigIntegerToStringTest {
     val radix = 36
     val aNumber = new BigInteger(value, radix)
     val result = aNumber.toString(radix)
-    assertEquals(value, result)
+    assertEquals(result, value)
   }
 
   @Test def testRadixOutOfRange(): Unit = {
@@ -182,6 +182,6 @@ class BigIntegerToStringTest {
     val radix = 10
     val aNumber = new BigInteger(value, radix)
     val result = aNumber.toString(45)
-    assertEquals(value, result)
+    assertEquals(result, value)
   }
 }

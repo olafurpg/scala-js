@@ -29,13 +29,13 @@ class MiscInteropTest {
 
   @Test def should_provide_an_equivalent_to_typeof_x(): Unit = {
     import js.typeOf
-    assertEquals("number", typeOf(5))
-    assertEquals("boolean", typeOf(false))
-    assertEquals("string", typeOf("hello"))
-    assertEquals("object", typeOf(null))
-    assertEquals("object", typeOf(new js.Object))
-    assertEquals("undefined", typeOf(()))
-    assertEquals("function", typeOf((() => 42): js.Function))
+    assertEquals(typeOf(5), "number")
+    assertEquals(typeOf(false), "boolean")
+    assertEquals(typeOf("hello"), "string")
+    assertEquals(typeOf(null), "object")
+    assertEquals(typeOf(new js.Object), "object")
+    assertEquals(typeOf(()), "undefined")
+    assertEquals(typeOf((() => 42): js.Function), "function")
   }
 
   @Test def testTypeofWithGlobalRefs_issue3822(): Unit = {
@@ -50,8 +50,8 @@ class MiscInteropTest {
     @inline def nonExistentGlobalVarInline(): Any =
       js.Dynamic.global.thisGlobalVarDoesNotExist
 
-    assertEquals("undefined",
-        js.typeOf(js.Dynamic.global.thisGlobalVarDoesNotExist))
+    assertEquals(js.typeOf(js.Dynamic.global.thisGlobalVarDoesNotExist),
+        "undefined")
     expectThrows(classOf[js.JavaScriptException],
         js.typeOf(nonExistentGlobalVarNoInline()))
     expectThrows(classOf[js.JavaScriptException],
@@ -78,7 +78,7 @@ class MiscInteropTest {
 
     val instance = js.Dynamic.newInstance(
       js.constructorOf[OtherwiseUnreferencedJSClass])(35)
-    assertEquals(35, instance.x)
+    assertEquals(instance.x, 35)
   }
 
   @Test def js_constructorTag_T_for_native_classes(): Unit = {
@@ -166,7 +166,7 @@ class MiscInteropTest {
     }
 
     assertEquals(2, propCount)
-    assertEquals("Scala.js7357", propString)
+    assertEquals(propString, "Scala.js7357")
   }
 
   @Test def should_provide_equivalent_of_JS_for_in_loop2_of_issue_13(): Unit = {
@@ -181,7 +181,7 @@ class MiscInteropTest {
     }
 
     assertEquals(4, propCount)
-    assertEquals("7357", propString)
+    assertEquals(propString, "7357")
   }
 
   @Test def should_compile_js_undefined(): Unit = {
@@ -207,7 +207,7 @@ class MiscInteropTest {
   // Global scope
 
   @Test def canRead_undefined_inGlobalScope_issue3821(): Unit = {
-    assertEquals((), js.Dynamic.global.undefined)
+    assertEquals(js.Dynamic.global.undefined, ())
   }
 
   // Emitted classes

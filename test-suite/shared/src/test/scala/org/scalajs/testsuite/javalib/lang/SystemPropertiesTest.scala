@@ -39,21 +39,23 @@ class SystemPropertiesTest {
    */
   @Test def testScenariosWithoutJavaUtilProperties(): Unit = {
     // Known property, always \n even on the JVM because our build ensures it
-    assertEquals("\n", System.getProperty(LineSeparatorPropName))
-    assertEquals("\n", System.getProperty(LineSeparatorPropName, "some default"))
-    assertEquals(null, System.getProperty("this.property.does.not.exist"))
-    assertEquals("some default",
-        System.getProperty("this.property.does.not.exist", "some default"))
+    assertEquals(System.getProperty(LineSeparatorPropName), """
+""")
+    assertEquals(System.getProperty(LineSeparatorPropName, "some default"), """
+""")
+    assertEquals(System.getProperty("this.property.does.not.exist"), null)
+    assertEquals(System.getProperty("this.property.does.not.exist", "some default"),
+        "some default")
 
-    assertEquals(null, System.getProperty(TestPropName))
-    assertEquals(null, System.setProperty(TestPropName, "test value"))
-    assertEquals("test value", System.getProperty(TestPropName))
-    assertEquals("test value", System.getProperty(TestPropName, "some default"))
-    assertEquals("test value", System.setProperty(TestPropName, "another value"))
-    assertEquals("another value", System.getProperty(TestPropName))
-    assertEquals("another value", System.clearProperty(TestPropName))
-    assertEquals(null, System.getProperty(TestPropName))
-    assertEquals(null, System.clearProperty(TestPropName))
+    assertEquals(System.getProperty(TestPropName), null)
+    assertEquals(System.setProperty(TestPropName, "test value"), null)
+    assertEquals(System.getProperty(TestPropName), "test value")
+    assertEquals(System.getProperty(TestPropName, "some default"), "test value")
+    assertEquals(System.setProperty(TestPropName, "another value"), "test value")
+    assertEquals(System.getProperty(TestPropName), "another value")
+    assertEquals(System.clearProperty(TestPropName), "another value")
+    assertEquals(System.getProperty(TestPropName), null)
+    assertEquals(System.clearProperty(TestPropName), null)
   }
 
   /** Tests scenarios where we call `getProperties()`, forcing the inner
@@ -69,33 +71,35 @@ class SystemPropertiesTest {
     val props = System.getProperties()
     assertNotNull(props)
 
-    assertEquals("\n", props.getProperty(LineSeparatorPropName))
-    assertEquals("\n", props.getProperty(LineSeparatorPropName, "some default"))
-    assertEquals(null, props.getProperty("this.property.does.not.exist"))
-    assertEquals("some default",
-        props.getProperty("this.property.does.not.exist", "some default"))
+    assertEquals(props.getProperty(LineSeparatorPropName), """
+""")
+    assertEquals(props.getProperty(LineSeparatorPropName, "some default"), """
+""")
+    assertEquals(props.getProperty("this.property.does.not.exist"), null)
+    assertEquals(props.getProperty("this.property.does.not.exist", "some default"),
+        "some default")
 
     // Existing props prior to calling getProperties() are visible
-    assertEquals("existing value", props.getProperty(ExistingPropName))
+    assertEquals(props.getProperty(ExistingPropName), "existing value")
 
     // Manipulate props
-    assertEquals(null, props.getProperty(TestPropName))
-    assertEquals(null, props.setProperty(TestPropName, "test value"))
-    assertEquals("test value", props.getProperty(TestPropName))
-    assertEquals("test value", System.getProperty(TestPropName)) // reflects on System
-    assertEquals("test value", props.getProperty(TestPropName, "some default"))
-    assertEquals("test value", props.setProperty(TestPropName, "another value"))
-    assertEquals("another value", props.getProperty(TestPropName))
-    assertEquals("another value", System.setProperty(TestPropName, "third value"))
-    assertEquals("third value", props.getProperty(TestPropName)) // System reflects on props
-    assertEquals("third value", System.clearProperty(TestPropName))
-    assertEquals(null, props.getProperty(TestPropName)) // System.clear also reflects on props
-    assertEquals(null, System.clearProperty(TestPropName))
+    assertEquals(props.getProperty(TestPropName), null)
+    assertEquals(props.setProperty(TestPropName, "test value"), null)
+    assertEquals(props.getProperty(TestPropName), "test value")
+    assertEquals(System.getProperty(TestPropName), "test value") // reflects on System
+    assertEquals(props.getProperty(TestPropName, "some default"), "test value")
+    assertEquals(props.setProperty(TestPropName, "another value"), "test value")
+    assertEquals(props.getProperty(TestPropName), "another value")
+    assertEquals(System.setProperty(TestPropName, "third value"), "another value")
+    assertEquals(props.getProperty(TestPropName), "third value") // System reflects on props
+    assertEquals(System.clearProperty(TestPropName), "third value")
+    assertEquals(props.getProperty(TestPropName), null) // System.clear also reflects on props
+    assertEquals(System.clearProperty(TestPropName), null)
 
     // Kill everything
     props.clear()
-    assertEquals(null, props.getProperty(LineSeparatorPropName))
-    assertEquals(null, System.getProperty(LineSeparatorPropName)) // also kills it for System
+    assertEquals(props.getProperty(LineSeparatorPropName), null)
+    assertEquals(System.getProperty(LineSeparatorPropName), null) // also kills it for System
   }
 
   /** Tests the effects of `setProperties()`, and its interactions with the
@@ -103,12 +107,12 @@ class SystemPropertiesTest {
    */
   @Test def testScenariosWithSetProperties(): Unit = {
     val props = new java.util.Properties()
-    assertEquals(null, props.getProperty(LineSeparatorPropName))
-    assertEquals(null, props.setProperty(TestPropName, "test value"))
+    assertEquals(props.getProperty(LineSeparatorPropName), null)
+    assertEquals(props.setProperty(TestPropName, "test value"), null)
 
     System.setProperties(props)
     assertSame(props, System.getProperties())
-    assertEquals(null, System.getProperty(LineSeparatorPropName))
-    assertEquals("test value", System.getProperty(TestPropName))
+    assertEquals(System.getProperty(LineSeparatorPropName), null)
+    assertEquals(System.getProperty(TestPropName), "test value")
   }
 }

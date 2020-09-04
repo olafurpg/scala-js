@@ -26,91 +26,91 @@ class JSOptionalTest {
   @Test def classImplementsTraitWithOptional(): Unit = {
     val obj = new ClassImplementsTraitWithOptional
 
-    assertEquals(js.undefined, obj.x)
+    assertEquals(obj.x, js.undefined)
     assertFalse(obj.hasOwnProperty("x"))
 
-    assertEquals(js.undefined, obj.y)
+    assertEquals(obj.y, js.undefined)
     assertFalse(js.Object.hasProperty(obj, "y"))
 
-    assertEquals(js.undefined, obj.y2)
+    assertEquals(obj.y2, js.undefined)
     assertFalse(js.Object.hasProperty(obj, "y2"))
 
-    assertEquals(js.undefined, obj.z)
+    assertEquals(obj.z, js.undefined)
     assertFalse(obj.hasOwnProperty("z"))
     obj.z = Some(3)
-    assertEquals(Some(3), obj.z)
+    assertEquals(obj.z, Some(3))
   }
 
   @Test def anonClassImplementsTraitWithOptional(): Unit = {
     val obj = new TraitWithOptional {}
 
-    assertEquals(js.undefined, obj.x)
+    assertEquals(obj.x, js.undefined)
     assertFalse(obj.hasOwnProperty("x"))
 
-    assertEquals(js.undefined, obj.y)
+    assertEquals(obj.y, js.undefined)
     assertFalse(js.Object.hasProperty(obj, "y"))
 
-    assertEquals(js.undefined, obj.y2)
+    assertEquals(obj.y2, js.undefined)
     assertFalse(js.Object.hasProperty(obj, "y2"))
 
-    assertEquals(js.undefined, obj.z)
+    assertEquals(obj.z, js.undefined)
     assertFalse(obj.hasOwnProperty("z"))
     obj.z = Some(3)
-    assertEquals(Some(3), obj.z)
+    assertEquals(obj.z, Some(3))
   }
 
   @Test def undefinedInClassIsNotOptional(): Unit = {
     val obj = new UndefinedInClassIsNotOptional
 
-    assertEquals(js.undefined, obj.x)
+    assertEquals(obj.x, js.undefined)
     assertTrue(obj.hasOwnProperty("x"))
 
-    assertEquals(js.undefined, obj.y)
+    assertEquals(obj.y, js.undefined)
     assertTrue(js.Object.hasProperty(obj, "y"))
 
-    assertEquals(js.undefined, obj.y2)
+    assertEquals(obj.y2, js.undefined)
     assertTrue(js.Object.hasProperty(obj, "y2"))
 
-    assertEquals(js.undefined, obj.z)
+    assertEquals(obj.z, js.undefined)
     assertTrue(obj.hasOwnProperty("z"))
     obj.z = Some(3)
-    assertEquals(Some(3), obj.z)
+    assertEquals(obj.z, Some(3))
   }
 
   @Test def overrideWithUndefinedInClassIsNotOptional(): Unit = {
     val obj = new OverrideWithUndefinedInClassIsNotOptional
 
-    assertEquals(js.undefined, obj.x)
+    assertEquals(obj.x, js.undefined)
     assertTrue(obj.hasOwnProperty("x"))
 
-    assertEquals(js.undefined, obj.y)
+    assertEquals(obj.y, js.undefined)
     assertTrue(js.Object.hasProperty(obj, "y"))
 
-    assertEquals(js.undefined, obj.y2)
+    assertEquals(obj.y2, js.undefined)
     assertTrue(js.Object.hasProperty(obj, "y2"))
 
-    assertEquals(js.undefined, obj.z)
+    assertEquals(obj.z, js.undefined)
     assertTrue(obj.hasOwnProperty("z"))
     obj.z = Some(3)
-    assertEquals(Some(3), obj.z)
+    assertEquals(obj.z, Some(3))
   }
 
   @Test def classOverrideOptionalWithConcrete(): Unit = {
     val obj = new ClassImplementsTraitWithOptionalOverrideWithConcrete
 
-    assertEquals(42, obj.x)
+    assertEquals(obj.x, 42)
     assertTrue(obj.hasOwnProperty("x"))
 
-    assertEquals("hello", obj.y)
+    assertEquals(obj.y, "hello")
     assertTrue(obj.hasOwnProperty("y"))
 
-    assertEquals("world", obj.y2)
+    assertEquals(obj.y2, "world")
     assertTrue(js.Object.hasProperty(obj, "y2"))
 
-    assertEquals(Some(5), obj.z)
+    assertEquals(obj.z, Some(5))
     assertTrue(obj.hasOwnProperty("z"))
     obj.z = Some(3)
-    assertEquals(Some(3), obj.z)
+    assertEquals(obj.z, Some(3))
   }
 
   @Test def anonClassOverrideOptionalWithConcrete(): Unit = {
@@ -121,44 +121,44 @@ class JSOptionalTest {
       z = Some(5)
     }
 
-    assertEquals(42, obj.x)
+    assertEquals(obj.x, 42)
     assertTrue(obj.hasOwnProperty("x"))
 
-    assertEquals("hello", obj.y)
+    assertEquals(obj.y, "hello")
     assertTrue(obj.hasOwnProperty("y"))
 
-    assertEquals("world", obj.y2)
+    assertEquals(obj.y2, "world")
     assertTrue(js.Object.hasProperty(obj, "y2"))
 
-    assertEquals(Some(5), obj.z)
+    assertEquals(obj.z, Some(5))
     assertTrue(obj.hasOwnProperty("z"))
     obj.z = Some(3)
-    assertEquals(Some(3), obj.z)
+    assertEquals(obj.z, Some(3))
   }
 
   @Test def overrideOptionalWithOptional(): Unit = {
     val obj = new OverrideOptionalWithOptional {}
 
-    assertEquals(js.undefined, obj.x)
+    assertEquals(obj.x, js.undefined)
     assertFalse(obj.hasOwnProperty("x"))
 
-    assertEquals(js.undefined, obj.y)
+    assertEquals(obj.y, js.undefined)
     assertFalse(js.Object.hasProperty(obj, "y"))
 
-    assertEquals(js.undefined, obj.y2)
+    assertEquals(obj.y2, js.undefined)
     assertFalse(js.Object.hasProperty(obj, "y2"))
   }
 
   @Test def overrideOptionalWithOptionalImplicitType(): Unit = {
     val obj = new OverrideOptionalWithOptionalImplicitType {}
 
-    assertEquals(js.undefined, obj.x)
+    assertEquals(obj.x, js.undefined)
     assertFalse(obj.hasOwnProperty("x"))
 
-    assertEquals(js.undefined, obj.y)
+    assertEquals(obj.y, js.undefined)
     assertFalse(js.Object.hasProperty(obj, "y"))
 
-    assertEquals(js.undefined, obj.y2)
+    assertEquals(obj.y2, js.undefined)
     assertFalse(js.Object.hasProperty(obj, "y2"))
   }
 
@@ -172,19 +172,19 @@ class JSOptionalTest {
 
     val obj = new OverrideClassAbstractWithOptional {}
 
-    assertEquals(js.undefined, obj.x)
+    assertEquals(obj.x, js.undefined)
     assertFalse(obj.hasOwnProperty("x"))
 
-    assertEquals(js.undefined, obj.y)
+    assertEquals(obj.y, js.undefined)
     assertFalse(js.Object.hasProperty(obj, "y"))
 
-    assertEquals(js.undefined, obj.y2)
+    assertEquals(obj.y2, js.undefined)
     assertFalse(js.Object.hasProperty(obj, "y2"))
 
-    assertEquals(js.undefined, obj.z)
+    assertEquals(obj.z, js.undefined)
     assertFalse(obj.hasOwnProperty("z"))
     obj.z = Some(3)
-    assertEquals(Some(3), obj.z)
+    assertEquals(obj.z, Some(3))
   }
 
   @Test def overrideTraitAbstractWithOptional(): Unit = {
@@ -204,19 +204,19 @@ class JSOptionalTest {
 
     val obj = new OverrideTraitAbstractWithOptional {}
 
-    assertEquals(js.undefined, obj.x)
+    assertEquals(obj.x, js.undefined)
     assertFalse(obj.hasOwnProperty("x"))
 
-    assertEquals(js.undefined, obj.y)
+    assertEquals(obj.y, js.undefined)
     assertFalse(js.Object.hasProperty(obj, "y"))
 
-    assertEquals(js.undefined, obj.y2)
+    assertEquals(obj.y2, js.undefined)
     assertFalse(js.Object.hasProperty(obj, "y2"))
 
-    assertEquals(js.undefined, obj.z)
+    assertEquals(obj.z, js.undefined)
     assertFalse(obj.hasOwnProperty("z"))
     obj.z = Some(3)
-    assertEquals(Some(3), obj.z)
+    assertEquals(obj.z, Some(3))
   }
 
   @Test def polyOptionalMethod(): Unit = {
@@ -226,7 +226,7 @@ class JSOptionalTest {
 
     val obj = new TraitWithPolyOptionalMethod {}
 
-    assertEquals(js.undefined, obj.foo[Int])
+    assertEquals(obj.foo[Int], js.undefined)
     assertFalse(js.Object.hasProperty(obj, "foo"))
   }
 
@@ -236,7 +236,7 @@ class JSOptionalTest {
         js.defined((x: Int) => x + 1)
     }
 
-    assertEquals("function", js.typeOf(obj.f))
+    assertEquals(js.typeOf(obj.f), "function")
     assertEquals(6, obj.f.get(5))
   }
 }

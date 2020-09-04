@@ -20,9 +20,9 @@ class ReferenceTest {
   @Test def should_have_all_the_normal_operations(): Unit = {
     val s = "string"
     val ref = new java.lang.ref.WeakReference(s)
-    assertEquals(s, ref.get)
-    assertEquals(false, ref.enqueue)
-    assertEquals(false, ref.isEnqueued)
+    assertEquals(ref.get, s)
+    assertEquals(ref.enqueue, false)
+    assertEquals(ref.isEnqueued, false)
     ref.clear()
     assert(ref.get == null)
   }

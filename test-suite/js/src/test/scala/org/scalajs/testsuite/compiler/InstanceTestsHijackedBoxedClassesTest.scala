@@ -75,19 +75,19 @@ class InstanceTestsHijackedBoxedClassesTest {
     def test(x: Any): String = x match {
       case f: Float => "ok"
     }
-    assertEquals("ok", test(0.2))
+    assertEquals(test(0.2d), "ok")
   }
 
   @Test def isInstanceOfJavaLangNumber(): Unit = {
     @noinline def testNoinline(expected: Boolean, value: Any): Unit = {
-      assertEquals(expected, value.isInstanceOf[java.lang.Number])
-      assertEquals(expected, classOf[java.lang.Number].isInstance(value))
+      assertEquals(value.isInstanceOf[java.lang.Number], expected)
+      assertEquals(classOf[java.lang.Number].isInstance(value), expected)
     }
 
     @inline def test(expected: Boolean, value: Any): Unit = {
       testNoinline(expected, value)
-      assertEquals(expected, value.isInstanceOf[java.lang.Number])
-      assertEquals(expected, classOf[java.lang.Number].isInstance(value))
+      assertEquals(value.isInstanceOf[java.lang.Number], expected)
+      assertEquals(classOf[java.lang.Number].isInstance(value), expected)
     }
 
     test(false, true)

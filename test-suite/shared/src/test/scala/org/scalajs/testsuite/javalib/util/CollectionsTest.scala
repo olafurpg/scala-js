@@ -161,7 +161,7 @@ class CollectionsTest extends CollectionsTestBase {
   @Test def singletonMap(): Unit = {
     def test[K, V](toKey: Int => K, toValue: Int => V): Unit = {
       val singletonMap = ju.Collections.singletonMap[K, V](toKey(0), toValue(1))
-      assertEquals(toValue(1), singletonMap.get(toKey(0)))
+      assertEquals(singletonMap.get(toKey(0)), toValue(1))
       assertEquals(1, singletonMap.size)
       assertEquals(1, iteratorSize(singletonMap.entrySet().iterator()))
       assertEquals(1, iteratorSize(singletonMap.keySet().iterator()))

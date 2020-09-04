@@ -94,7 +94,7 @@ class PrintStreamTest {
       if (testFlushed)
         assertTrue(bos.flushed)
       assertFalse(ps.checkError())
-      assertEquals(expected, bos.toString())
+      assertEquals(bos.toString(), expected)
     }
 
     test(_.print(true), "true")
@@ -189,7 +189,7 @@ class PrintStreamTest {
     if (autoFlush) assertTrue(bos.flushed)
     else           assertFalse(bos.flushed)
     assertFalse(ps.checkError())
-    assertEquals(expected, bos.toString())
+    assertEquals(bos.toString(), expected)
   }
 
   @Test def printf_format_which_flushes_when_autoFlush_is_true(): Unit = {
@@ -208,7 +208,7 @@ class PrintStreamTest {
     if (autoFlush) assertTrue(bos.flushed)
     else           assertFalse(bos.flushed)
     assertFalse(ps.checkError())
-    assertEquals(expected, bos.toString())
+    assertEquals(bos.toString(), expected)
   }
 
   @Test def append(): Unit = {
@@ -219,7 +219,7 @@ class PrintStreamTest {
       if (testFlushed)
         assertTrue(bos.flushed)
       assertFalse(ps.checkError())
-      assertEquals(expected, bos.toString())
+      assertEquals(bos.toString(), expected)
     }
 
     test(_.append("hello\n"), "hello\n", testFlushed = true)

@@ -80,7 +80,7 @@ class ReflectTest {
       val classData = optClassData.get
 
       val runtimeClass = optClassData.get.runtimeClass
-      assertEquals(name, runtimeClass.getName)
+      assertEquals(runtimeClass.getName, name)
     }
   }
 
@@ -93,7 +93,7 @@ class ReflectTest {
       val classData = optClassData.get
 
       val runtimeClass = optClassData.get.runtimeClass
-      assertEquals(name, runtimeClass.getName)
+      assertEquals(runtimeClass.getName, name)
     }
   }
 
@@ -133,7 +133,7 @@ class ReflectTest {
 
       val instance = classData.newInstance().asInstanceOf[Accessors]
       assertEquals(-1, instance.x)
-      assertEquals(name.stripPrefix(Prefix), instance.y)
+      assertEquals(instance.y, name.stripPrefix(Prefix))
     }
   }
 
@@ -163,14 +163,14 @@ class ReflectTest {
       val instanceIntString =
         optCtorIntString.get.newInstance(543, "foobar").asInstanceOf[Accessors]
       assertEquals(543, instanceIntString.x)
-      assertEquals("foobar", instanceIntString.y)
+      assertEquals(instanceIntString.y, "foobar")
 
       val optCtorInt = classData.getConstructor(classOf[Int])
       assertTrue(optCtorInt.isDefined)
       val instanceInt =
         optCtorInt.get.newInstance(123).asInstanceOf[Accessors]
       assertEquals(123, instanceInt.x)
-      assertEquals(name.stripPrefix(Prefix), instanceInt.y)
+      assertEquals(instanceInt.y, name.stripPrefix(Prefix))
 
       // Value class is seen as its underlying
       val optCtorShort = classData.getConstructor(classOf[Short])
@@ -178,7 +178,7 @@ class ReflectTest {
       val instanceShort =
         optCtorShort.get.newInstance(21).asInstanceOf[Accessors]
       assertEquals(42, instanceShort.x)
-      assertEquals(name.stripPrefix(Prefix), instanceShort.y)
+      assertEquals(instanceShort.y, name.stripPrefix(Prefix))
 
       // Non-existent
       assertFalse(classData.getConstructor(classOf[Boolean]).isDefined)
@@ -205,7 +205,7 @@ class ReflectTest {
     val instanceOuterString =
       optCtorOuterString.get.newInstance(outer, "babar").asInstanceOf[Accessors]
     assertEquals(15, instanceOuterString.x)
-    assertEquals("babar", instanceOuterString.y)
+    assertEquals(instanceOuterString.y, "babar")
   }
 
   @Test def testLocalClass(): Unit = {
@@ -225,7 +225,7 @@ class ReflectTest {
 
       val instance = classData.loadModule().asInstanceOf[Accessors]
       assertEquals(101, instance.x)
-      assertEquals(name.stripPrefix(Prefix), instance.y)
+      assertEquals(instance.y, name.stripPrefix(Prefix))
     }
   }
 

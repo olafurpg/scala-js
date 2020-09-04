@@ -48,7 +48,7 @@ class ByteTest {
       assertEquals(v, JByte.parseByte(s))
       assertEquals(v, JByte.valueOf(s).byteValue())
       assertEquals(v, new JByte(s).byteValue())
-      assertEquals(v, JByte.decode(s))
+      assertEquals(JByte.decode(s), v)
     }
 
     test("0", 0)
@@ -72,9 +72,9 @@ class ByteTest {
     def test(s: String, v: Byte): Unit = {
       assertEquals(v, JByte.parseByte(s, 16))
       assertEquals(v, JByte.valueOf(s, 16).intValue())
-      assertEquals(v, JByte.decode(IntegerTest.insertAfterSign("0x", s)))
-      assertEquals(v, JByte.decode(IntegerTest.insertAfterSign("0X", s)))
-      assertEquals(v, JByte.decode(IntegerTest.insertAfterSign("#", s)))
+      assertEquals(JByte.decode(IntegerTest.insertAfterSign("0x", s)), v)
+      assertEquals(JByte.decode(IntegerTest.insertAfterSign("0X", s)), v)
+      assertEquals(JByte.decode(IntegerTest.insertAfterSign("#", s)), v)
     }
 
     test("0", 0x0)
@@ -87,7 +87,7 @@ class ByteTest {
 
   @Test def testDecodeBase8(): Unit = {
     def test(s: String, v: Byte): Unit = {
-      assertEquals(v, JByte.decode(s))
+      assertEquals(JByte.decode(s), v)
     }
 
     test("00", 0)

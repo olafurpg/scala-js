@@ -30,13 +30,13 @@ class OptionalTest {
   }
 
   @Test def testEquals(): Unit = {
-    assertEquals(Optional.empty[String](), Optional.ofNullable[String](null))
-    assertEquals(Optional.of[String](""), Optional.ofNullable[String](""))
+    assertEquals(Optional.ofNullable[String](null), Optional.empty[String]())
+    assertEquals(Optional.ofNullable[String](""), Optional.of[String](""))
     assertNotEquals(Optional.of[String]("1"), Optional.ofNullable[String]("2"))
-    assertEquals(Optional.of[Int](1), Optional.ofNullable[Int](1))
+    assertEquals(Optional.ofNullable[Int](1), Optional.of[Int](1))
     assertNotEquals(Optional.of[Int](1), Optional.ofNullable[Int](2))
     case class Test(value: Long)
-    assertEquals(Optional.of(Test(1L)), Optional.ofNullable(Test(1L)))
+    assertEquals(Optional.ofNullable(Test(1L)), Optional.of(Test(1L)))
     assertNotEquals(Optional.of(Test(1L)), Optional.ofNullable(Test(2L)))
   }
 
@@ -55,15 +55,15 @@ class OptionalTest {
     val fullInt = Optional.of[Int](1)
     assertEquals(1, fullInt.get())
     val fullString = Optional.of[String]("")
-    assertEquals("", fullString.get())
+    assertEquals(fullString.get(), "")
     class Test()
     val t = new Test()
-    assertEquals(t, Optional.of(t).get())
+    assertEquals(Optional.of(t).get(), t)
   }
 
   @Test def testOrElse(): Unit = {
     val emp = Optional.empty[String]()
-    assertEquals("123", emp.orElse("123"))
+    assertEquals(emp.orElse("123"), "123")
     val emptyInt = Optional.empty[Int]()
     assertEquals(2, emptyInt.orElse(2))
   }

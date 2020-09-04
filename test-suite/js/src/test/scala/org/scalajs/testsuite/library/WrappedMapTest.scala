@@ -44,9 +44,9 @@ class WrappedMapTest {
     val map: mutable.Map[Int, String] = jsMap
 
     map += 1 -> "hello world"
-    assertEquals("hello world", jsMap(1))
+    assertEquals(jsMap(1), "hello world")
     map += 3 -> "foo bar"
-    assertEquals("foo bar", jsMap(3))
+    assertEquals(jsMap(3), "foo bar")
     map -= 1
     assertFalse(jsMap.get(1).isDefined)
   }
@@ -58,7 +58,7 @@ class WrappedMapTest {
 
     jsMap ++= elems
 
-    assertEquals(elems, map.iterator.toList)
+    assertEquals(map.iterator.toList, elems)
   }
 
   // Some arbitrary methods to test the builders

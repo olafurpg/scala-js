@@ -31,11 +31,11 @@ trait ListTest extends CollectionTest {
     assertEquals(0, lst.size())
     lst.add("one")
     assertEquals(1, lst.size())
-    assertEquals("one", lst.get(0))
+    assertEquals(lst.get(0), "one")
     lst.add("two")
     assertEquals(2, lst.size())
-    assertEquals("one", lst.get(0))
-    assertEquals("two", lst.get(1))
+    assertEquals(lst.get(0), "one")
+    assertEquals(lst.get(1), "two")
 
     expectThrows(classOf[IndexOutOfBoundsException], lst.get(-1))
     expectThrows(classOf[IndexOutOfBoundsException], lst.get(lst.size))
@@ -87,7 +87,7 @@ trait ListTest extends CollectionTest {
 
     lst.add(TestObj(100))
     assertEquals(1, lst.size())
-    assertEquals(TestObj(100), lst.get(0))
+    assertEquals(lst.get(0), TestObj(100))
 
     expectThrows(classOf[IndexOutOfBoundsException], lst.get(-1))
     expectThrows(classOf[IndexOutOfBoundsException], lst.get(lst.size))
@@ -104,9 +104,9 @@ trait ListTest extends CollectionTest {
     assertEquals(3, lst.size())
     assertTrue(lst.remove("two"))
     assertEquals(2, lst.size())
-    assertEquals("one", lst.remove(0))
+    assertEquals(lst.remove(0), "one")
     assertEquals(1, lst.size())
-    assertEquals("three", lst.get(0))
+    assertEquals(lst.get(0), "three")
 
     expectThrows(classOf[IndexOutOfBoundsException], lst.remove(-1))
     expectThrows(classOf[IndexOutOfBoundsException], lst.remove(lst.size))
@@ -180,9 +180,9 @@ trait ListTest extends CollectionTest {
     al.add("three")
 
     al.set(1, "four")
-    assertEquals("one", al.get(0))
-    assertEquals("four", al.get(1))
-    assertEquals("three", al.get(2))
+    assertEquals(al.get(0), "one")
+    assertEquals(al.get(1), "four")
+    assertEquals(al.get(2), "three")
 
     expectThrows(classOf[IndexOutOfBoundsException], al.set(-1, ""))
     expectThrows(classOf[IndexOutOfBoundsException], al.set(al.size, ""))
@@ -196,11 +196,11 @@ trait ListTest extends CollectionTest {
 
     val elements = al.iterator
     assertTrue(elements.hasNext)
-    assertEquals("one", elements.next())
+    assertEquals(elements.next(), "one")
     assertTrue(elements.hasNext)
-    assertEquals("two", elements.next())
+    assertEquals(elements.next(), "two")
     assertTrue(elements.hasNext)
-    assertEquals("three", elements.next())
+    assertEquals(elements.next(), "three")
     assertFalse(elements.hasNext)
   }
 
@@ -213,18 +213,18 @@ trait ListTest extends CollectionTest {
     val elements = lst.listIterator
     assertFalse(elements.hasPrevious)
     assertTrue(elements.hasNext)
-    assertEquals("one", elements.next())
+    assertEquals(elements.next(), "one")
     assertTrue(elements.hasPrevious)
     assertTrue(elements.hasNext)
-    assertEquals("two", elements.next())
+    assertEquals(elements.next(), "two")
     assertTrue(elements.hasPrevious)
     assertTrue(elements.hasNext)
-    assertEquals("three", elements.next())
+    assertEquals(elements.next(), "three")
     assertTrue(elements.hasPrevious)
     assertFalse(elements.hasNext)
-    assertEquals("three", elements.previous())
-    assertEquals("two", elements.previous())
-    assertEquals("one", elements.previous())
+    assertEquals(elements.previous(), "three")
+    assertEquals(elements.previous(), "two")
+    assertEquals(elements.previous(), "one")
   }
 
   @Test def shouldAddElementsAtAGivenIndex(): Unit = {
@@ -233,9 +233,9 @@ trait ListTest extends CollectionTest {
     al.add(0, "two") // ["two", "one"]
     al.add(1, "three") // ["two", "three", "one"]
 
-    assertEquals("two", al.get(0))
-    assertEquals("three", al.get(1))
-    assertEquals("one", al.get(2))
+    assertEquals(al.get(0), "two")
+    assertEquals(al.get(1), "three")
+    assertEquals(al.get(2), "one")
 
     expectThrows(classOf[IndexOutOfBoundsException], al.add(-1, ""))
     expectThrows(classOf[IndexOutOfBoundsException], al.add(al.size + 1, ""))
@@ -295,13 +295,13 @@ trait ListTest extends CollectionTest {
       val iter = list.listIterator
       for (elem <- expected) {
         assertTrue(iter.hasNext)
-        assertEquals(elem, iter.next())
+        assertEquals(iter.next(), elem)
       }
       assertFalse(iter.hasNext)
 
       for (elem <- expected.reverse) {
         assertTrue(iter.hasPrevious)
-        assertEquals(elem, iter.previous())
+        assertEquals(iter.previous(), elem)
       }
       assertFalse(iter.hasPrevious)
     }
@@ -321,42 +321,42 @@ trait ListTest extends CollectionTest {
     assertEquals(6, al0.size)
     assertEquals(al.size, al0.size)
     for (i <- 0 until al.size)
-      assertEquals(al.get(i), al0.get(i))
+      assertEquals(al0.get(i), al.get(i))
     al0.set(3, "zero")
-    assertEquals("zero", al0.get(3))
+    assertEquals(al0.get(3), "zero")
     for (i <- 0 until al.size)
-      assertEquals(al.get(i), al0.get(i))
+      assertEquals(al0.get(i), al.get(i))
     testListIterator(al, Seq("one", "two", "three", "zero", "five", "six"))
     testListIterator(al0, Seq("one", "two", "three", "zero", "five", "six"))
 
     val al1 = al.subList(2, 5)
     assertEquals(3, al1.size)
     for (i <- 0 until 3)
-      assertEquals(al.get(2 + i), al1.get(i))
+      assertEquals(al1.get(i), al.get(2 + i))
     al1.set(0, "nine")
-    assertEquals("nine", al1.get(0))
+    assertEquals(al1.get(0), "nine")
     for (i <- 0 until 3) {
-      assertEquals(al.get(2 + i), al1.get(i))
+      assertEquals(al1.get(i), al.get(2 + i))
       if (!al.isInstanceOf[ju.concurrent.CopyOnWriteArrayList[_]]) {
         /* For CopyOnWriteArrayList, accessing al0 after al has been modified
          * through al1 (i.e., through anything bug al0 itself) is undefined
          * behavior.
          */
-        assertEquals(al0.get(2 + i), al1.get(i))
+        assertEquals(al1.get(i), al0.get(2 + i))
       }
     }
-    assertEquals("nine", al1.get(0))
-    assertEquals("zero", al1.get(1))
-    assertEquals("five", al1.get(2))
+    assertEquals(al1.get(0), "nine")
+    assertEquals(al1.get(1), "zero")
+    assertEquals(al1.get(2), "five")
 
     testListIterator(al, Seq("one", "two", "nine", "zero", "five", "six"))
     testListIterator(al1, Seq("nine", "zero", "five"))
 
     al1.clear()
 
-    assertEquals("one", al.get(0))
-    assertEquals("two", al.get(1))
-    assertEquals("six", al.get(2))
+    assertEquals(al.get(0), "one")
+    assertEquals(al.get(1), "two")
+    assertEquals(al.get(2), "six")
     assertEquals(3, al.size)
     assertEquals(0, al1.size)
     testListIterator(al, Seq("one", "two", "six"))
@@ -390,15 +390,15 @@ trait ListTest extends CollectionTest {
       assertTrue(iter.hasNext())
       assertTrue(iter.hasPrevious())
 
-      assertEquals("one", iter.previous())
+      assertEquals(iter.previous(), "one")
 
       assertTrue(iter.hasNext())
       assertFalse(iter.hasPrevious())
 
-      assertEquals("one", iter.next())
+      assertEquals(iter.next(), "one")
 
-      assertEquals("two", iter.next())
-      assertEquals("three", iter.next())
+      assertEquals(iter.next(), "two")
+      assertEquals(iter.next(), "three")
 
       assertFalse(iter.hasNext())
       assertTrue(iter.hasPrevious())
@@ -408,26 +408,26 @@ trait ListTest extends CollectionTest {
       assertFalse(iter.hasNext())
       assertTrue(iter.hasPrevious())
 
-      assertEquals("four", iter.previous())
+      assertEquals(iter.previous(), "four")
 
       iter.remove()
 
       assertFalse(iter.hasNext())
       assertTrue(iter.hasPrevious())
-      assertEquals("three", iter.previous())
+      assertEquals(iter.previous(), "three")
       iter.set("THREE")
-      assertEquals("two", iter.previous())
+      assertEquals(iter.previous(), "two")
       iter.set("TWO")
-      assertEquals("one", iter.previous())
+      assertEquals(iter.previous(), "one")
       iter.set("ONE")
       assertTrue(iter.hasNext())
       assertFalse(iter.hasPrevious())
 
-      assertEquals("ONE", iter.next())
+      assertEquals(iter.next(), "ONE")
       iter.remove()
-      assertEquals("TWO", iter.next())
+      assertEquals(iter.next(), "TWO")
       iter.remove()
-      assertEquals("THREE", iter.next())
+      assertEquals(iter.next(), "THREE")
       iter.remove()
 
       assertFalse(iter.hasNext())

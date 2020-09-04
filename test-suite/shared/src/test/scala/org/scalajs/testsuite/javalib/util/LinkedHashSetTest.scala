@@ -33,7 +33,7 @@ class LinkedHashSetTest extends HashSetTest {
     val iter1 = hs.iterator()
     for (i <- 0 until 3) {
       assertTrue(iter1.hasNext())
-      assertEquals(l1(i), iter1.next())
+      assertEquals(iter1.next(), l1(i))
     }
     assertFalse(iter1.hasNext())
 
@@ -43,7 +43,7 @@ class LinkedHashSetTest extends HashSetTest {
     val iter2 = hs.iterator()
     for (i <- 0 until 4) {
       assertTrue(iter2.hasNext())
-      assertEquals(l2(i), iter2.next())
+      assertEquals(iter2.next(), l2(i))
     }
     assertFalse(iter2.hasNext())
   }

@@ -19,6 +19,6 @@ class StackTraceElementTest {
 
   @Test def should_leave_toString_unmodified_if_columnNumber_is_not_specified(): Unit = {
     val st = new StackTraceElement("MyClass", "myMethod", "myFile.scala", 1)
-    assertEquals("MyClass.myMethod(myFile.scala:1)", st.toString)
+    assertEquals(st.toString, "MyClass.myMethod(myFile.scala:1)")
   }
 }

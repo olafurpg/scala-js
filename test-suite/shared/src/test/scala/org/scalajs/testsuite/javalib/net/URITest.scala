@@ -30,23 +30,23 @@ class URITest {
       rawQuery: String = query, rawUserInfo: String = userInfo,
       rawSchemeSpecificPart: String = schemeSpecificPart): Unit = {
 
-    assertEquals(authority, uri.getAuthority())
-    assertEquals(fragment, uri.getFragment())
-    assertEquals(host, uri.getHost())
-    assertEquals(path, uri.getPath())
+    assertEquals(uri.getAuthority(), authority)
+    assertEquals(uri.getFragment(), fragment)
+    assertEquals(uri.getHost(), host)
+    assertEquals(uri.getPath(), path)
     assertEquals(port, uri.getPort())
-    assertEquals(query, uri.getQuery())
-    assertEquals(rawAuthority, uri.getRawAuthority())
-    assertEquals(rawFragment, uri.getRawFragment())
-    assertEquals(rawPath, uri.getRawPath())
-    assertEquals(rawQuery, uri.getRawQuery())
-    assertEquals(rawSchemeSpecificPart, uri.getRawSchemeSpecificPart())
-    assertEquals(rawUserInfo, uri.getRawUserInfo())
-    assertEquals(scheme, uri.getScheme())
-    assertEquals(schemeSpecificPart, uri.getSchemeSpecificPart())
-    assertEquals(userInfo, uri.getUserInfo())
-    assertEquals(isAbsolute, uri.isAbsolute())
-    assertEquals(isOpaque, uri.isOpaque())
+    assertEquals(uri.getQuery(), query)
+    assertEquals(uri.getRawAuthority(), rawAuthority)
+    assertEquals(uri.getRawFragment(), rawFragment)
+    assertEquals(uri.getRawPath(), rawPath)
+    assertEquals(uri.getRawQuery(), rawQuery)
+    assertEquals(uri.getRawSchemeSpecificPart(), rawSchemeSpecificPart)
+    assertEquals(uri.getRawUserInfo(), rawUserInfo)
+    assertEquals(uri.getScheme(), scheme)
+    assertEquals(uri.getSchemeSpecificPart(), schemeSpecificPart)
+    assertEquals(uri.getUserInfo(), userInfo)
+    assertEquals(uri.isAbsolute(), isAbsolute)
+    assertEquals(uri.isOpaque(), isOpaque)
   }
 
   @Test def should_parse_vanilla_absolute_URIs(): Unit = {
@@ -204,8 +204,8 @@ class URITest {
       (new URI("MAILTO:john"), new URI("mailto:john"))
     )
     equalsPairs.foreach { case (a, b) =>
-      assertEquals(a, b)
       assertEquals(b, a)
+      assertEquals(a, b)
       assertEquals(a.hashCode(), b.hashCode())
     }
 
@@ -258,16 +258,16 @@ class URITest {
     val resolved2 =
       "http://java.sun.com/j2se/1.3/demo/jfc/SwingSet2/src/SwingSet2.java"
 
-    assertEquals(resolved1, new URI(base).resolve(relative1).toString)
-    assertEquals(resolved2, new URI(resolved1).resolve(relative2).toString)
-    assertEquals("/a/", new URI("").resolve("/a/").toString)
-    assertEquals("/a/", new URI("/a/").resolve("").toString)
+    assertEquals(new URI(base).resolve(relative1).toString, resolved1)
+    assertEquals(new URI(resolved1).resolve(relative2).toString, resolved2)
+    assertEquals(new URI("").resolve("/a/").toString, "/a/")
+    assertEquals(new URI("/a/").resolve("").toString, "/a/")
   }
 
   @Test def should_provide_resolve_RFC2396_examples(): Unit = {
     val base = new URI("http://a/b/c/d;p?q")
     def resTest(ref: String, trg: String): Unit =
-      assertEquals(trg, base.resolve(ref).toString)
+      assertEquals(base.resolve(ref).toString, trg)
 
     // Normal examples
     resTest("g:h", "g:h")
@@ -318,7 +318,7 @@ class URITest {
   @Test def should_provide_resolve_when_authority_is_empty__issue_2048(): Unit = {
     val base = new URI("http://foo/a")
     def resTest(ref: String, trg: String): Unit =
-      assertEquals(trg, base.resolve(ref).toString)
+      assertEquals(base.resolve(ref).toString, trg)
 
     resTest("///a", "http://foo/a")
     resTest("/b", "http://foo/b")
@@ -346,10 +346,10 @@ class URITest {
     val y = new URI("http://fJoo@asdf/a/b/")
     val z = new URI("http://f%4aoo@asdf/a/b/")
     assertTrue(x.relativize(y) eq y)
-    assertEquals("b/", x.relativize(z).toString())
+    assertEquals(x.relativize(z).toString(), "b/")
 
     def relTest(base: String, trg: String, exp: String): Unit =
-      assertEquals(exp, new URI(base).relativize(new URI(trg)).toString())
+      assertEquals(new URI(base).relativize(new URI(trg)).toString(), exp)
 
     relTest("http://a.ch/a", "http://a.ch/a/b", "b")
     relTest("http://a.ch/a/", "http://a.ch/a/b", "b")
@@ -401,7 +401,7 @@ class URITest {
 
   @Test def should_support_toASCIIString(): Unit = {
     def cmp(base: String, encoded: String): Unit =
-      assertEquals(encoded, new URI(base).toASCIIString())
+      assertEquals(new URI(base).toASCIIString(), encoded)
 
     cmp("http://cs.dbpedia.org/resource/Víno",
         "http://cs.dbpedia.org/resource/V%C3%ADno")
@@ -458,7 +458,7 @@ class URITest {
   }
 
   @Test def should_accept_valid_ipv4(): Unit = {
-    assertEquals(new URI("http","000.001.01.0", "", "").getHost, "000.001.01.0")
+    assertEquals("000.001.01.0", new URI("http", "000.001.01.0", "", "").getHost)
   }
 
   @Test def should_throw_on_ipv4_out_of_range(): Unit = {

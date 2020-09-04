@@ -29,8 +29,8 @@ class FunctionTest {
     """).asInstanceOf[js.Function]
 
     val res = f.call(null, 42, true).asInstanceOf[js.Dictionary[Any]]
-    assertEquals(42, res("0"))
-    assertEquals(true, res("1"))
+    assertEquals(res("0"), 42)
+    assertEquals(res("1"), true)
     assertFalse(res.contains("2"))
   }
 
@@ -41,8 +41,8 @@ class FunctionTest {
 
     val args = Seq[js.Any](42, true)
     val res = f.call(null, args: _*).asInstanceOf[js.Dictionary[Any]]
-    assertEquals(42, res("0"))
-    assertEquals(true, res("1"))
+    assertEquals(res("0"), 42)
+    assertEquals(res("1"), true)
     assertFalse(res.contains("2"))
   }
 
@@ -52,7 +52,7 @@ class FunctionTest {
     val ctor: js.Function = (x: js.Any) => x
     val ctorDyn = ctor.asInstanceOf[js.Dynamic]
 
-    assertEquals(js.undefined, ctorDyn.prototype)
+    assertEquals(ctorDyn.prototype, js.undefined)
 
     assertThrows(classOf[js.JavaScriptException],
         js.Dynamic.newInstance(ctorDyn)("foo"))
@@ -64,7 +64,7 @@ class FunctionTest {
     val ctor: js.Function1[js.Any, Any] = (x: js.Any) => x
     val ctorDyn = ctor.asInstanceOf[js.Dynamic]
 
-    assertEquals(js.undefined, ctorDyn.prototype)
+    assertEquals(ctorDyn.prototype, js.undefined)
 
     assertThrows(classOf[js.JavaScriptException],
         js.Dynamic.newInstance(ctorDyn)("foo"))

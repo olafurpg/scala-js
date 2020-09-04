@@ -41,31 +41,31 @@ class ReflectionTest {
   @Test def java_lang_Class_getName_under_normal_circumstances(): Unit = {
     @noinline
     def testNoInline(expected: String, cls: Class[_]): Unit =
-      assertEquals(expected, cls.getName())
+      assertEquals(cls.getName(), expected)
 
     @inline
     def test(expected: String, cls: Class[_]): Unit = {
       testNoInline(expected, cls)
-      assertEquals(expected, cls.getName())
+      assertEquals(cls.getName(), expected)
     }
 
     test("scala.Some", classOf[scala.Some[_]])
   }
 
   @Test def should_append_$_to_class_name_of_objects(): Unit = {
-    assertEquals("org.scalajs.testsuite.compiler.ReflectionTest$TestObject$",
-      TestObject.getClass.getName)
+    assertEquals(TestObject.getClass.getName,
+      "org.scalajs.testsuite.compiler.ReflectionTest$TestObject$")
   }
 
   @Test def java_lang_Class_getName_renamed_through_semantics(): Unit = {
     @noinline
     def testNoInline(expected: String, cls: Class[_]): Unit =
-      assertEquals(expected, cls.getName())
+      assertEquals(cls.getName(), expected)
 
     @inline
     def test(expected: String, cls: Class[_]): Unit = {
       testNoInline(expected, cls)
-      assertEquals(expected, cls.getName())
+      assertEquals(cls.getName(), expected)
     }
 
     test("renamed.test.Class", classOf[RenamedTestClass])
@@ -86,14 +86,14 @@ class ReflectionTest {
 
     @noinline
     def testNoInline(expected: String, x: Any): Unit = {
-      assertEquals(expected, getClassOfNoInline(x).getName())
-      assertEquals(expected, x.getClass().getName())
+      assertEquals(getClassOfNoInline(x).getName(), expected)
+      assertEquals(x.getClass().getName(), expected)
     }
 
     @inline
     def test(expected: String, x: Any): Unit = {
       testNoInline(expected, x)
-      assertEquals(expected, x.getClass().getName())
+      assertEquals(x.getClass().getName(), expected)
     }
 
     test("renamed.test.Class", new RenamedTestClass)
@@ -166,31 +166,31 @@ class ReflectionTest {
   @Test def getClass_for_anti_boxed_primitive_types(): Unit = {
     implicit def classAsAny(c: java.lang.Class[_]): js.Any =
       c.asInstanceOf[js.Any]
-    assertEquals(classOf[java.lang.Boolean], (false: Any).getClass)
-    assertEquals(classOf[java.lang.Character], ('a': Any).getClass)
-    assertEquals(classOf[java.lang.Byte], (1.toByte: Any).getClass)
-    assertEquals(classOf[java.lang.Byte], (1.toShort: Any).getClass)
-    assertEquals(classOf[java.lang.Byte], (1: Any).getClass)
-    assertEquals(classOf[java.lang.Long], (1L: Any).getClass)
-    assertEquals(classOf[java.lang.Float], (1.5f: Any).getClass)
-    assertEquals(classOf[java.lang.Float], (1.5: Any).getClass)
-    assertEquals(classOf[scala.runtime.BoxedUnit], ((): Any).getClass)
+    assertEquals((false: Any).getClass, classOf[java.lang.Boolean])
+    assertEquals(('a': Any).getClass, classOf[java.lang.Character])
+    assertEquals((1.toByte: Any).getClass, classOf[java.lang.Byte])
+    assertEquals((1.toShort: Any).getClass, classOf[java.lang.Byte])
+    assertEquals((1: Any).getClass, classOf[java.lang.Byte])
+    assertEquals((1L: Any).getClass, classOf[java.lang.Long])
+    assertEquals((1.5f: Any).getClass, classOf[java.lang.Float])
+    assertEquals((1.5d: Any).getClass, classOf[java.lang.Float])
+    assertEquals(((): Any).getClass, classOf[scala.runtime.BoxedUnit])
   }
 
   @Test def getSuperclass_issue_1489(): Unit = {
-    assertEquals(classOf[SomeParentClass], classOf[SomeChildClass].getSuperclass)
+    assertEquals(classOf[SomeChildClass].getSuperclass, classOf[SomeParentClass])
     assertNull(classOf[AnyRef].getSuperclass)
-    assertEquals(classOf[AnyRef], classOf[String].getSuperclass)
-    assertEquals(classOf[Number], classOf[Integer].getSuperclass)
+    assertEquals(classOf[String].getSuperclass, classOf[AnyRef])
+    assertEquals(classOf[Integer].getSuperclass, classOf[Number])
 
-    assertEquals("org.scalajs.testsuite.compiler.ReflectionTest$ParentClassWhoseDataIsNotAccessedDirectly",
-      classOf[ChildClassWhoseDataIsAccessedDirectly].getSuperclass.getName)
+    assertEquals(classOf[ChildClassWhoseDataIsAccessedDirectly].getSuperclass.getName,
+      "org.scalajs.testsuite.compiler.ReflectionTest$ParentClassWhoseDataIsNotAccessedDirectly")
   }
 
   @Test def cast_positive(): Unit = {
     assertNull(classOf[String].cast(null))
-    assertEquals("hello", classOf[String].cast("hello"))
-    assertEquals(List(1, 2), classOf[Seq[_]].cast(List(1, 2)))
+    assertEquals(classOf[String].cast("hello"), "hello")
+    assertEquals(classOf[Seq[_]].cast(List(1, 2)), List(1, 2))
     classOf[Serializable].cast(Array(3)) // should not throw
     classOf[Cloneable].cast(Array(3)) // should not throw
     classOf[Object].cast(js.Array(3, 4)) // should not throw

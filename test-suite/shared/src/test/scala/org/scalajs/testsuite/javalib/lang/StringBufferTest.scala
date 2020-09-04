@@ -32,15 +32,15 @@ class StringBufferTest {
     new StringBuffer(str)
 
   @Test def init(): Unit = {
-    assertEquals("", new StringBuffer().toString())
+    assertEquals(new StringBuffer().toString(), "")
   }
 
   @Test def initInt(): Unit = {
-    assertEquals("", new StringBuffer(5).toString())
+    assertEquals(new StringBuffer(5).toString(), "")
   }
 
   @Test def initString(): Unit = {
-    assertEquals("hello", new StringBuffer("hello").toString())
+    assertEquals(new StringBuffer("hello").toString(), "hello")
 
     if (executingInJVM) {
       expectThrows(classOf[NullPointerException],
@@ -49,7 +49,7 @@ class StringBufferTest {
   }
 
   @Test def initCharSequence(): Unit = {
-    assertEquals("hello", new StringBuffer(charSequence("hello")).toString())
+    assertEquals(new StringBuffer(charSequence("hello")).toString(), "hello")
 
     if (executingInJVM) {
       expectThrows(classOf[NullPointerException],
@@ -60,44 +60,44 @@ class StringBufferTest {
   @Test def appendAnyRef(): Unit = {
     def resultFor(x: AnyRef): String = newBuffer.append(x).toString()
 
-    assertEquals("null", resultFor(null))
-    assertEquals("None", resultFor(None))
-    assertEquals("hello", resultFor("hello"))
-    assertEquals("foobar", resultFor(charSequence("foobar")))
+    assertEquals(resultFor(null), "null")
+    assertEquals(resultFor(None), "None")
+    assertEquals(resultFor("hello"), "hello")
+    assertEquals(resultFor(charSequence("foobar")), "foobar")
   }
 
   @Test def appendString(): Unit = {
     def resultFor(x: String): String = newBuffer.append(x).toString()
 
-    assertEquals("null", resultFor(null))
-    assertEquals("hello", resultFor("hello"))
+    assertEquals(resultFor(null), "null")
+    assertEquals(resultFor("hello"), "hello")
   }
 
   @Test def appendStringBuffer(): Unit = {
     def resultFor(x: StringBuffer): String = newBuffer.append(x).toString()
 
-    assertEquals("null", resultFor(null))
-    assertEquals("", resultFor(new StringBuffer()))
-    assertEquals("hello", resultFor(new StringBuffer("hello")))
+    assertEquals(resultFor(null), "null")
+    assertEquals(resultFor(new StringBuffer()), "")
+    assertEquals(resultFor(new StringBuffer("hello")), "hello")
   }
 
   @Test def appendCharSequence(): Unit = {
     def resultFor(x: CharSequence): String = newBuffer.append(x).toString()
 
-    assertEquals("null", resultFor(null))
-    assertEquals("hello", resultFor("hello"))
-    assertEquals("", resultFor(charSequence("")))
-    assertEquals("foobar", resultFor(charSequence("foobar")))
+    assertEquals(resultFor(null), "null")
+    assertEquals(resultFor("hello"), "hello")
+    assertEquals(resultFor(charSequence("")), "")
+    assertEquals(resultFor(charSequence("foobar")), "foobar")
   }
 
   @Test def appendCharSequenceStartEnd(): Unit = {
     def resultFor(x: CharSequence, start: Int, end: Int): String =
       newBuffer.append(x, start, end).toString()
 
-    assertEquals("ul", resultFor(null, 1, 3))
-    assertEquals("null", resultFor(null, 0, 4))
-    assertEquals("ello", resultFor("hello", 1, 5))
-    assertEquals("ob", resultFor(charSequence("foobar"), 2, 4))
+    assertEquals(resultFor(null, 1, 3), "ul")
+    assertEquals(resultFor(null, 0, 4), "null")
+    assertEquals(resultFor("hello", 1, 5), "ello")
+    assertEquals(resultFor(charSequence("foobar"), 2, 4), "ob")
 
     expectThrows(classOf[IndexOutOfBoundsException],
         resultFor(charSequence("he"), 1, 3))
@@ -110,7 +110,7 @@ class StringBufferTest {
   @Test def appendCharArray(): Unit = {
     def resultFor(x: Array[Char]): String = newBuffer.append(x).toString()
 
-    assertEquals("hello", resultFor(Array('h', 'e', 'l', 'l', 'o')))
+    assertEquals(resultFor(Array('h', 'e', 'l', 'l', 'o')), "hello")
 
     if (executingInJVM)
       expectThrows(classOf[NullPointerException], resultFor(null))
@@ -121,8 +121,8 @@ class StringBufferTest {
       newBuffer.append(x, offset, len).toString()
 
     val arr = Array('h', 'e', 'l', 'l', 'o')
-    assertEquals("hello", resultFor(arr, 0, 5))
-    assertEquals("ell", resultFor(arr, 1, 3))
+    assertEquals(resultFor(arr, 0, 5), "hello")
+    assertEquals(resultFor(arr, 1, 3), "ell")
 
     if (executingInJVM)
       expectThrows(classOf[NullPointerException], resultFor(null, 0, 0))
@@ -133,27 +133,27 @@ class StringBufferTest {
   }
 
   @Test def appendPrimitive(): Unit = {
-    assertEquals("true", newBuffer.append(true).toString)
-    assertEquals("a", newBuffer.append('a').toString)
-    assertEquals("100000", newBuffer.append(100000).toString)
-    assertEquals("12345678910", newBuffer.append(12345678910L).toString)
-    assertEquals("2.5", newBuffer.append(2.5f).toString)
-    assertEquals("3.5", newBuffer.append(3.5).toString)
+    assertEquals(newBuffer.append(true).toString, "true")
+    assertEquals(newBuffer.append('a').toString, "a")
+    assertEquals(newBuffer.append(100000).toString, "100000")
+    assertEquals(newBuffer.append(12345678910L).toString, "12345678910")
+    assertEquals(newBuffer.append(2.5f).toString, "2.5")
+    assertEquals(newBuffer.append(3.5d).toString, "3.5")
 
     // There is no overload for Byte nor Short; these call the Int version
-    assertEquals("4", newBuffer.append(4.toByte).toString)
-    assertEquals("304", newBuffer.append(304.toShort).toString)
+    assertEquals(newBuffer.append(4.toByte).toString, "4")
+    assertEquals(newBuffer.append(304.toShort).toString, "304")
   }
 
   @Test def appendCodePoint(): Unit = {
     def resultFor(codePoint: Int): String =
       newBuffer.appendCodePoint(codePoint).toString()
 
-    assertEquals("a", resultFor(0x61))
-    assertEquals("\ud800\udc00", resultFor(0x10000))
-    assertEquals("\ud800\udc01", resultFor(0x10001))
-    assertEquals("\ud801\udc01", resultFor(0x10401))
-    assertEquals("\udbff\udfff", resultFor(0x10ffff))
+    assertEquals(resultFor(97), "a")
+    assertEquals(resultFor(65536), "𐀀")
+    assertEquals(resultFor(65537), "𐀁")
+    assertEquals(resultFor(66561), "𐐁")
+    assertEquals(resultFor(1114111), "􏿿")
 
     expectThrows(classOf[IllegalArgumentException], resultFor(0x111111))
     expectThrows(classOf[IllegalArgumentException], resultFor(-1))
@@ -163,11 +163,11 @@ class StringBufferTest {
     def resultFor(input: String, start: Int, end: Int): String =
       initBuffer(input).delete(start, end).toString()
 
-    assertEquals("heo", resultFor("hello", 2, 4))
-    assertEquals("foo\ud800r", resultFor("foo\ud800\udc00bar", 4, 7))
-    assertEquals("hello", resultFor("hello", 0, 0))
-    assertEquals("hello", resultFor("hello", 5, 5))
-    assertEquals("hel", resultFor("hello", 3, 8))
+    assertEquals(resultFor("hello", 2, 4), "heo")
+    assertEquals(resultFor("foo𐀀bar", 4, 7), "foo?r")
+    assertEquals(resultFor("hello", 0, 0), "hello")
+    assertEquals(resultFor("hello", 5, 5), "hello")
+    assertEquals(resultFor("hello", 3, 8), "hel")
 
     expectThrows(classOf[StringIndexOutOfBoundsException],
         resultFor("hello", -1, 2))
@@ -179,9 +179,9 @@ class StringBufferTest {
     def resultFor(input: String, index: Int): String =
       initBuffer(input).deleteCharAt(index).toString()
 
-    assertEquals("023", resultFor("0123", 1))
-    assertEquals("123", resultFor("0123", 0))
-    assertEquals("012", resultFor("0123", 3))
+    assertEquals(resultFor("0123", 1), "023")
+    assertEquals(resultFor("0123", 0), "123")
+    assertEquals(resultFor("0123", 3), "012")
 
     expectThrows(classOf[StringIndexOutOfBoundsException],
         resultFor("0123", -1))
@@ -193,13 +193,13 @@ class StringBufferTest {
     def resultFor(input: String, start: Int, end: Int, str: String): String =
       initBuffer(input).replace(start, end, str).toString()
 
-    assertEquals("0bc3", resultFor("0123", 1, 3, "bc"))
-    assertEquals("abcd", resultFor("0123", 0, 4, "abcd"))
-    assertEquals("abcd", resultFor("0123", 0, 10, "abcd"))
-    assertEquals("012defg", resultFor("0123", 3, 10, "defg"))
-    assertEquals("xxxx123", resultFor("0123", 0, 1, "xxxx"))
-    assertEquals("0xxxx123", resultFor("0123", 1, 1, "xxxx"))
-    assertEquals("0123x", resultFor("0123", 4, 5, "x"))
+    assertEquals(resultFor("0123", 1, 3, "bc"), "0bc3")
+    assertEquals(resultFor("0123", 0, 4, "abcd"), "abcd")
+    assertEquals(resultFor("0123", 0, 10, "abcd"), "abcd")
+    assertEquals(resultFor("0123", 3, 10, "defg"), "012defg")
+    assertEquals(resultFor("0123", 0, 1, "xxxx"), "xxxx123")
+    assertEquals(resultFor("0123", 1, 1, "xxxx"), "0xxxx123")
+    assertEquals(resultFor("0123", 4, 5, "x"), "0123x")
 
     expectThrows(classOf[StringIndexOutOfBoundsException],
         resultFor("0123", -1, 3, "x"))
@@ -220,8 +220,8 @@ class StringBufferTest {
 
     val arr = Array('a', 'b', 'c', 'd', 'e')
 
-    assertEquals("0bc12", resultFor("012", 1, arr, 1, 2))
-    assertEquals("abcdef", resultFor("abef", 2, arr, 2, 2))
+    assertEquals(resultFor("012", 1, arr, 1, 2), "0bc12")
+    assertEquals(resultFor("abef", 2, arr, 2, 2), "abcdef")
 
     expectThrows(classOf[StringIndexOutOfBoundsException],
         resultFor("1234", -1, arr, 1, 2))
@@ -244,10 +244,10 @@ class StringBufferTest {
     def resultFor(input: String, index: Int, x: AnyRef): String =
       initBuffer(input).insert(index, x).toString()
 
-    assertEquals("01null234", resultFor("01234", 2, null))
-    assertEquals("01None234", resultFor("01234", 2, None))
-    assertEquals("01hello234", resultFor("01234", 2, "hello"))
-    assertEquals("01foobar234", resultFor("01234", 2, charSequence("foobar")))
+    assertEquals(resultFor("01234", 2, null), "01null234")
+    assertEquals(resultFor("01234", 2, None), "01None234")
+    assertEquals(resultFor("01234", 2, "hello"), "01hello234")
+    assertEquals(resultFor("01234", 2, charSequence("foobar")), "01foobar234")
 
     expectThrows(classOf[StringIndexOutOfBoundsException],
         resultFor("1234", -1, "foo"))
@@ -259,8 +259,8 @@ class StringBufferTest {
     def resultFor(input: String, index: Int, x: String): String =
       initBuffer(input).insert(index, x).toString()
 
-    assertEquals("01null234", resultFor("01234", 2, null))
-    assertEquals("01hello234", resultFor("01234", 2, "hello"))
+    assertEquals(resultFor("01234", 2, null), "01null234")
+    assertEquals(resultFor("01234", 2, "hello"), "01hello234")
 
     expectThrows(classOf[StringIndexOutOfBoundsException],
         resultFor("1234", -1, "foo"))
@@ -274,8 +274,8 @@ class StringBufferTest {
 
     val arr = Array('a', 'b', 'c', 'd', 'e')
 
-    assertEquals("0abcde12", resultFor("012", 1, arr))
-    assertEquals("ababcdeef", resultFor("abef", 2, arr))
+    assertEquals(resultFor("012", 1, arr), "0abcde12")
+    assertEquals(resultFor("abef", 2, arr), "ababcdeef")
 
     expectThrows(classOf[StringIndexOutOfBoundsException],
         resultFor("1234", -1, arr))
@@ -290,9 +290,9 @@ class StringBufferTest {
     def resultFor(input: String, index: Int, x: CharSequence): String =
       initBuffer(input).insert(index, x).toString()
 
-    assertEquals("01null234", resultFor("01234", 2, null))
-    assertEquals("01hello234", resultFor("01234", 2, "hello"))
-    assertEquals("01foobar234", resultFor("01234", 2, charSequence("foobar")))
+    assertEquals(resultFor("01234", 2, null), "01null234")
+    assertEquals(resultFor("01234", 2, "hello"), "01hello234")
+    assertEquals(resultFor("01234", 2, charSequence("foobar")), "01foobar234")
 
     expectThrows(classOf[IndexOutOfBoundsException],
         resultFor("1234", -1, "foo"))
@@ -306,9 +306,9 @@ class StringBufferTest {
       initBuffer(input).insert(index, x, start, end).toString()
     }
 
-    assertEquals("01ul234", resultFor("01234", 2, null, 1, 3))
-    assertEquals("01ello234", resultFor("01234", 2, "hello", 1, 5))
-    assertEquals("01ba234", resultFor("01234", 2, charSequence("foobar"), 3, 5))
+    assertEquals(resultFor("01234", 2, null, 1, 3), "01ul234")
+    assertEquals(resultFor("01234", 2, "hello", 1, 5), "01ello234")
+    assertEquals(resultFor("01234", 2, charSequence("foobar"), 3, 5), "01ba234")
 
     expectThrows(classOf[IndexOutOfBoundsException],
         resultFor("1234", -1, charSequence("foobar"), 1, 3))
@@ -327,17 +327,17 @@ class StringBufferTest {
   }
 
   @Test def insertPrimitive(): Unit = {
-    assertEquals("atruebcd", initBuffer("abcd").insert(1, true).toString)
-    assertEquals("axbcd", initBuffer("abcd").insert(1, 'x').toString)
-    assertEquals("a100000bcd", initBuffer("abcd").insert(1, 100000).toString)
-    assertEquals("a12345678910bcd",
-        initBuffer("abcd").insert(1, 12345678910L).toString)
-    assertEquals("a2.5bcd", initBuffer("abcd").insert(1, 2.5f).toString)
-    assertEquals("a3.5bcd", initBuffer("abcd").insert(1, 3.5).toString)
+    assertEquals(initBuffer("abcd").insert(1, true).toString, "atruebcd")
+    assertEquals(initBuffer("abcd").insert(1, 'x').toString, "axbcd")
+    assertEquals(initBuffer("abcd").insert(1, 100000).toString, "a100000bcd")
+    assertEquals(initBuffer("abcd").insert(1, 12345678910L).toString,
+        "a12345678910bcd")
+    assertEquals(initBuffer("abcd").insert(1, 2.5f).toString, "a2.5bcd")
+    assertEquals(initBuffer("abcd").insert(1, 3.5d).toString, "a3.5bcd")
 
     // There is no overload for Byte nor Short; these call the Int version
-    assertEquals("a4bcd", initBuffer("abcd").insert(1, 4.toByte).toString)
-    assertEquals("a304bcd", initBuffer("abcd").insert(1, 304.toShort).toString)
+    assertEquals(initBuffer("abcd").insert(1, 4.toByte).toString, "a4bcd")
+    assertEquals(initBuffer("abcd").insert(1, 304.toShort).toString, "a304bcd")
 
     expectThrows(classOf[StringIndexOutOfBoundsException],
         initBuffer("abcd").insert(5, 56))
@@ -390,12 +390,12 @@ class StringBufferTest {
     def resultFor(input: String): String =
       initBuffer(input).reverse().toString()
 
-    assertEquals("987654321", resultFor("123456789"))
-    assertEquals("dc\ud801\udc02ba", resultFor("ab\ud801\udc02cd"))
-    assertEquals("dc\ud802\ud801ba", resultFor("ab\ud801\ud802cd"))
-    assertEquals("dc\udc02\udc01ba", resultFor("ab\udc01\udc02cd"))
-    assertEquals("\ud801ba", resultFor("ab\ud801"))
-    assertEquals("dc\udc02", resultFor("\udc02cd"))
+    assertEquals(resultFor("123456789"), "987654321")
+    assertEquals(resultFor("ab𐐂cd"), "dc𐐂ba")
+    assertEquals(resultFor("ab??cd"), "dc??ba")
+    assertEquals(resultFor("ab??cd"), "dc??ba")
+    assertEquals(resultFor("ab?"), "?ba")
+    assertEquals(resultFor("?cd"), "dc?")
   }
 
   @Test def length(): Unit = {
@@ -424,9 +424,9 @@ class StringBufferTest {
     expectThrows(classOf[StringIndexOutOfBoundsException], b.setLength(-3))
 
     b.setLength(3)
-    assertEquals("foo", b.toString)
+    assertEquals(b.toString, "foo")
     b.setLength(6)
-    assertEquals("foo\u0000\u0000\u0000", b.toString)
+    assertEquals(b.toString, "foo   ")
   }
 
   @Test def charAt(): Unit = {
@@ -567,8 +567,8 @@ class StringBufferTest {
       sb.toString()
     }
 
-    assertEquals("foxbar", resultFor("foobar", 2, 'x'))
-    assertEquals("foobah", resultFor("foobar", 5, 'h'))
+    assertEquals(resultFor("foobar", 2, 'x'), "foxbar")
+    assertEquals(resultFor("foobar", 5, 'h'), "foobah")
 
     expectThrows(classOf[StringIndexOutOfBoundsException],
         resultFor("foobar", -1, 'h'))
@@ -580,8 +580,8 @@ class StringBufferTest {
     def resultFor(input: String, start: Int): String =
       initBuffer(input).substring(start)
 
-    assertEquals("llo", resultFor("hello", 2))
-    assertEquals("", resultFor("hello", 5))
+    assertEquals(resultFor("hello", 2), "llo")
+    assertEquals(resultFor("hello", 5), "")
 
     if (executingInJVM) {
       expectThrows(classOf[StringIndexOutOfBoundsException],
@@ -599,9 +599,9 @@ class StringBufferTest {
      * substring. Therefore, the returned CharSequence must necessarily be a
      * String.
      */
-    assertEquals("ll", resultFor("hello", 2, 4))
-    assertEquals("", resultFor("hello", 5, 5))
-    assertEquals("hel", resultFor("hello", 0, 3))
+    assertEquals(resultFor("hello", 2, 4), "ll")
+    assertEquals(resultFor("hello", 5, 5), "")
+    assertEquals(resultFor("hello", 0, 3), "hel")
 
     if (executingInJVM) {
       expectThrows(classOf[StringIndexOutOfBoundsException],
@@ -619,9 +619,9 @@ class StringBufferTest {
     def resultFor(input: String, start: Int, end: Int): String =
       initBuffer(input).substring(start, end)
 
-    assertEquals("ll", resultFor("hello", 2, 4))
-    assertEquals("", resultFor("hello", 5, 5))
-    assertEquals("hel", resultFor("hello", 0, 3))
+    assertEquals(resultFor("hello", 2, 4), "ll")
+    assertEquals(resultFor("hello", 5, 5), "")
+    assertEquals(resultFor("hello", 0, 3), "hel")
 
     if (executingInJVM) {
       expectThrows(classOf[StringIndexOutOfBoundsException],

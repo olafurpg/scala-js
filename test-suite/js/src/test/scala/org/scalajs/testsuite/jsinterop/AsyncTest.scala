@@ -149,7 +149,7 @@ class AsyncTest {
   @Test def scala_concurrent_future_should_support_sequence(): Unit = {
     implicit val ec = RunNowExecutionContext
     val f = Future.sequence(Seq(Future(3), Future(5)))
-    assertEquals(Seq(3, 5), f.value.get.get)
+    assertEquals(f.value.get.get, Seq(3, 5))
   }
 
   @Test def JSPromiseToFuture_basic_case(): Unit = {

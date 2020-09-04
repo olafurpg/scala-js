@@ -48,7 +48,7 @@ class ShortTest {
       assertEquals(v, JShort.parseShort(s))
       assertEquals(v, JShort.valueOf(s).shortValue())
       assertEquals(v, new JShort(s).shortValue())
-      assertEquals(v, JShort.decode(s))
+      assertEquals(JShort.decode(s), v)
     }
 
     test("0", 0)
@@ -74,9 +74,9 @@ class ShortTest {
     def test(s: String, v: Short): Unit = {
       assertEquals(v, JShort.parseShort(s, 16))
       assertEquals(v, JShort.valueOf(s, 16).intValue())
-      assertEquals(v, JShort.decode(IntegerTest.insertAfterSign("0x", s)))
-      assertEquals(v, JShort.decode(IntegerTest.insertAfterSign("0X", s)))
-      assertEquals(v, JShort.decode(IntegerTest.insertAfterSign("#", s)))
+      assertEquals(JShort.decode(IntegerTest.insertAfterSign("0x", s)), v)
+      assertEquals(JShort.decode(IntegerTest.insertAfterSign("0X", s)), v)
+      assertEquals(JShort.decode(IntegerTest.insertAfterSign("#", s)), v)
     }
 
     test("0", 0x0)
@@ -89,7 +89,7 @@ class ShortTest {
 
   @Test def testDecodeBase8(): Unit = {
     def test(s: String, v: Short): Unit = {
-      assertEquals(v, JShort.decode(s))
+      assertEquals(JShort.decode(s), v)
     }
 
     test("00", 0)

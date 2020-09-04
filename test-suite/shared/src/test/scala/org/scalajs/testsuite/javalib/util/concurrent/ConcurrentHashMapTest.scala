@@ -36,7 +36,7 @@ class ConcurrentHashMapTest extends MapTest {
     chm.put("ONE", "one")
     val elements = chm.elements
     assertTrue(elements.hasMoreElements)
-    assertEquals("one", elements.nextElement)
+    assertEquals(elements.nextElement, "one")
     assertFalse(elements.hasMoreElements)
   }
 
@@ -44,10 +44,10 @@ class ConcurrentHashMapTest extends MapTest {
     val chm = factory.empty[String, String]
 
     chm.put("ONE", "one")
-    assertEquals("one", chm.replace("ONE", "two"))
+    assertEquals(chm.replace("ONE", "two"), "one")
     expectThrows(classOf[NullPointerException], chm.replace("ONE", null))
     expectThrows(classOf[NullPointerException], chm.replace(null, "one"))
-    assertEquals("two", chm.get("ONE"))
+    assertEquals(chm.get("ONE"), "two")
 
     assertFalse(chm.replace("ONE", "one", "two"))
     expectThrows(classOf[NullPointerException], chm.replace(null, "two", "one"))
@@ -55,19 +55,19 @@ class ConcurrentHashMapTest extends MapTest {
     expectThrows(classOf[NullPointerException], chm.replace("ONE", "two", null))
 
     assertTrue(chm.replace("ONE", "two", "one"))
-    assertEquals("one", chm.get("ONE"))
+    assertEquals(chm.get("ONE"), "one")
   }
 
   @Test def testPutIfAbsent_issue_2539(): Unit = {
     val chm = factory.empty[String, String]
     assertNull(chm.putIfAbsent("abc", "def"))
-    assertEquals("def", chm.get("abc"))
+    assertEquals(chm.get("abc"), "def")
     assertNull(chm.putIfAbsent("123", "456"))
-    assertEquals("456", chm.get("123"))
-    assertEquals("def", chm.putIfAbsent("abc", "def"))
-    assertEquals("def", chm.putIfAbsent("abc", "ghi"))
-    assertEquals("456", chm.putIfAbsent("123", "789"))
-    assertEquals("def", chm.putIfAbsent("abc", "jkl"))
+    assertEquals(chm.get("123"), "456")
+    assertEquals(chm.putIfAbsent("abc", "def"), "def")
+    assertEquals(chm.putIfAbsent("abc", "ghi"), "def")
+    assertEquals(chm.putIfAbsent("123", "789"), "456")
+    assertEquals(chm.putIfAbsent("abc", "jkl"), "def")
   }
 
   @Test def testIteratorsAreWeaklyConsistent(): Unit = {

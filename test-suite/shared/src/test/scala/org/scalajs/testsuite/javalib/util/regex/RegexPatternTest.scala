@@ -155,12 +155,12 @@ class RegexPatternTest {
   @Test def pattern_and_toString(): Unit = {
     def checkPatternAndToString(regex: String): Unit = {
       val pattern0 = Pattern.compile(regex)
-      assertEquals(regex, pattern0.pattern)
-      assertEquals(regex, pattern0.toString)
+      assertEquals(pattern0.pattern, regex)
+      assertEquals(pattern0.toString, regex)
 
       val pattern1 = Pattern.compile(regex, Pattern.CASE_INSENSITIVE)
-      assertEquals(regex, pattern1.pattern)
-      assertEquals(regex, pattern1.toString)
+      assertEquals(pattern1.pattern, regex)
+      assertEquals(pattern1.toString, regex)
     }
 
     checkPatternAndToString("a*b+c")
@@ -170,8 +170,8 @@ class RegexPatternTest {
   @Test def quote(): Unit = {
     val splitWithQuote = Pattern.compile(Pattern.quote("$1&$2")).split("Scala$1&$2.js")
     val splitNoQuote = Pattern.compile("$1&$2").split("Scala$1&$2.js")
-    assertEquals("Scala.js", splitWithQuote.mkString)
-    assertEquals("Scala$1&$2.js", splitNoQuote.mkString)
+    assertEquals(splitWithQuote.mkString, "Scala.js")
+    assertEquals(splitNoQuote.mkString, "Scala$1&$2.js")
   }
 
   @Test def compile_should_throw_for_invalid_patterns_issue_1718(): Unit = {

@@ -29,9 +29,9 @@ class NonNativeJSTypeTest {
 
   @Test def minimal_definition(): Unit = {
     val obj = new Minimal
-    assertEquals("object", js.typeOf(obj))
-    assertEquals(List[String](), js.Object.keys(obj).toList)
-    assertEquals("[object Object]", obj.toString())
+    assertEquals(js.typeOf(obj), "object")
+    assertEquals(js.Object.keys(obj).toList, List[String]())
+    assertEquals(obj.toString(), "[object Object]")
     assertNull(obj.getClass().asInstanceOf[js.Any])
 
     assertTrue((obj: Any).isInstanceOf[Minimal])
@@ -46,9 +46,9 @@ class NonNativeJSTypeTest {
     assertSame(obj, StaticNonNativeObject)
     assertEquals(1, staticNonNativeObjectInitCount)
 
-    assertEquals("object", js.typeOf(obj))
-    assertEquals(List[String](), js.Object.keys(obj).toList)
-    assertEquals("[object Object]", obj.toString())
+    assertEquals(js.typeOf(obj), "object")
+    assertEquals(js.Object.keys(obj).toList, List[String]())
+    assertEquals(obj.toString(), "[object Object]")
     assertNull(obj.getClass().asInstanceOf[js.Any])
 
     assertFalse((obj: Any).isInstanceOf[Minimal])
@@ -59,26 +59,26 @@ class NonNativeJSTypeTest {
   @Test def simple_method(): Unit = {
     val obj = new SimpleMethod
     assertEquals(8, obj.foo(5))
-    assertEquals("hello42", obj.bar("hello", 42))
+    assertEquals(obj.bar("hello", 42), "hello42")
 
     val dyn = obj.asInstanceOf[js.Dynamic]
-    assertEquals(8, dyn.foo(5))
-    assertEquals("hello42", dyn.bar("hello", 42))
+    assertEquals(dyn.foo(5), 8)
+    assertEquals(dyn.bar("hello", 42), "hello42")
   }
 
   @Test def static_object_with_simple_method(): Unit = {
     val obj = StaticObjectSimpleMethod
     assertEquals(8, obj.foo(5))
-    assertEquals("hello42", obj.bar("hello", 42))
+    assertEquals(obj.bar("hello", 42), "hello42")
 
     val dyn = obj.asInstanceOf[js.Dynamic]
-    assertEquals(8, dyn.foo(5))
-    assertEquals("hello42", dyn.bar("hello", 42))
+    assertEquals(dyn.foo(5), 8)
+    assertEquals(dyn.bar("hello", 42), "hello42")
   }
 
   @Test def simple_field(): Unit = {
     val obj = new SimpleField
-    assertEquals(List("x", "y"), js.Object.keys(obj).toList)
+    assertEquals(js.Object.keys(obj).toList, List("x", "y"))
     assertEquals(5, obj.x)
     assertEquals(10, obj.y)
     assertEquals(15, obj.sum())
@@ -88,19 +88,19 @@ class NonNativeJSTypeTest {
     assertEquals(8, obj.sum())
 
     val dyn = obj.asInstanceOf[js.Dynamic]
-    assertEquals(5, dyn.x)
-    assertEquals(3, dyn.y)
-    assertEquals(8, dyn.sum())
+    assertEquals(dyn.x, 5)
+    assertEquals(dyn.y, 3)
+    assertEquals(dyn.sum(), 8)
 
     dyn.y = 89
-    assertEquals(89, dyn.y)
+    assertEquals(dyn.y, 89)
     assertEquals(89, obj.y)
-    assertEquals(94, dyn.sum())
+    assertEquals(dyn.sum(), 94)
   }
 
   @Test def static_object_with_simple_field(): Unit = {
     val obj = StaticObjectSimpleField
-    assertEquals(List("x", "y"), js.Object.keys(obj).toList)
+    assertEquals(js.Object.keys(obj).toList, List("x", "y"))
     assertEquals(5, obj.x)
     assertEquals(10, obj.y)
     assertEquals(15, obj.sum())
@@ -110,19 +110,19 @@ class NonNativeJSTypeTest {
     assertEquals(8, obj.sum())
 
     val dyn = obj.asInstanceOf[js.Dynamic]
-    assertEquals(5, dyn.x)
-    assertEquals(3, dyn.y)
-    assertEquals(8, dyn.sum())
+    assertEquals(dyn.x, 5)
+    assertEquals(dyn.y, 3)
+    assertEquals(dyn.sum(), 8)
 
     dyn.y = 89
-    assertEquals(89, dyn.y)
+    assertEquals(dyn.y, 89)
     assertEquals(89, obj.y)
-    assertEquals(94, dyn.sum())
+    assertEquals(dyn.sum(), 94)
   }
 
   @Test def simple_accessors(): Unit = {
     val obj = new SimpleAccessors
-    assertEquals(List("x"), js.Object.keys(obj).toList)
+    assertEquals(js.Object.keys(obj).toList, List("x"))
     assertEquals(1, obj.x)
 
     assertEquals(2, obj.readPlus1)
@@ -133,19 +133,19 @@ class NonNativeJSTypeTest {
     assertEquals(-3, obj.readPlus1)
 
     val dyn = obj.asInstanceOf[js.Dynamic]
-    assertEquals(-4, dyn.x)
+    assertEquals(dyn.x, -4)
 
-    assertEquals(-3, dyn.readPlus1)
-    assertEquals(4, dyn.neg)
+    assertEquals(dyn.readPlus1, -3)
+    assertEquals(dyn.neg, 4)
     dyn.neg = -9
-    assertEquals(9, dyn.x)
-    assertEquals(-9, dyn.neg)
-    assertEquals(10, dyn.readPlus1)
+    assertEquals(dyn.x, 9)
+    assertEquals(dyn.neg, -9)
+    assertEquals(dyn.readPlus1, 10)
   }
 
   @Test def simple_constructor(): Unit = {
     val obj = new SimpleConstructor(5, 10)
-    assertEquals(List("x", "y"), js.Object.keys(obj).toList)
+    assertEquals(js.Object.keys(obj).toList, List("x", "y"))
     assertEquals(5, obj.x)
     assertEquals(10, obj.y)
     assertEquals(15, obj.sum())
@@ -155,19 +155,19 @@ class NonNativeJSTypeTest {
     assertEquals(8, obj.sum())
 
     val dyn = obj.asInstanceOf[js.Dynamic]
-    assertEquals(5, dyn.x)
-    assertEquals(3, dyn.y)
-    assertEquals(8, dyn.sum())
+    assertEquals(dyn.x, 5)
+    assertEquals(dyn.y, 3)
+    assertEquals(dyn.sum(), 8)
 
     dyn.y = 89
-    assertEquals(89, dyn.y)
+    assertEquals(dyn.y, 89)
     assertEquals(89, obj.y)
-    assertEquals(94, dyn.sum())
+    assertEquals(dyn.sum(), 94)
   }
 
   @Test def simple_constructor_with_automatic_fields(): Unit = {
     val obj = new SimpleConstructorAutoFields(5, 10)
-    assertEquals(List("x", "y"), js.Object.keys(obj).toList)
+    assertEquals(js.Object.keys(obj).toList, List("x", "y"))
     assertEquals(5, obj.x)
     assertEquals(10, obj.y)
     assertEquals(15, obj.sum())
@@ -177,14 +177,14 @@ class NonNativeJSTypeTest {
     assertEquals(8, obj.sum())
 
     val dyn = obj.asInstanceOf[js.Dynamic]
-    assertEquals(5, dyn.x)
-    assertEquals(3, dyn.y)
-    assertEquals(8, dyn.sum())
+    assertEquals(dyn.x, 5)
+    assertEquals(dyn.y, 3)
+    assertEquals(dyn.sum(), 8)
 
     dyn.y = 89
-    assertEquals(89, dyn.y)
+    assertEquals(dyn.y, 89)
     assertEquals(89, obj.y)
-    assertEquals(94, dyn.sum())
+    assertEquals(dyn.sum(), 94)
   }
 
   @Test def simple_constructor_with_param_accessors(): Unit = {
@@ -193,18 +193,18 @@ class NonNativeJSTypeTest {
     assertEquals(15, obj.sum())
 
     val dyn = obj.asInstanceOf[js.Dynamic]
-    assertEquals(15, dyn.sum())
+    assertEquals(dyn.sum(), 15)
   }
 
   @Test def constructor_with_param_name_clashes_issue_3933(): Unit = {
     val obj = new ConstructorWithParamNameClashes(1, 2, 3, 4, 5, 6)
-    assertEquals(List(1, 2, 3, 4, 5, 6), obj.allArgs)
+    assertEquals(obj.allArgs, List(1, 2, 3, 4, 5, 6))
   }
 
   @Test def default_values_for_fields(): Unit = {
     val obj = new DefaultFieldValues
     assertEquals(0, obj.int)
-    assertEquals(false, obj.bool)
+    assertEquals(obj.bool, false)
     assertEquals(0, obj.char.toInt)
     assertNull(obj.string)
     assertJSUndefined(obj.unit)
@@ -223,21 +223,21 @@ class NonNativeJSTypeTest {
     assertEquals(1, obj1.initCount)
     assertEquals(42, obj1.field)
     assertEquals(1, obj1.initCount)
-    assertEquals(42, obj1.asInstanceOf[js.Dynamic].field)
+    assertEquals(obj1.asInstanceOf[js.Dynamic].field, 42)
     assertEquals(1, obj1.initCount)
     assertEquals(42, (obj1: LazyValFieldsSuperTrait).field)
     assertEquals(1, obj1.initCount)
 
     val obj2 = new LazyValFields().asInstanceOf[js.Dynamic]
-    assertEquals(0, obj2.initCount)
-    assertEquals(42, obj2.field)
-    assertEquals(1, obj2.initCount)
-    assertEquals(42, obj2.field)
-    assertEquals(1, obj2.initCount)
+    assertEquals(obj2.initCount, 0)
+    assertEquals(obj2.field, 42)
+    assertEquals(obj2.initCount, 1)
+    assertEquals(obj2.field, 42)
+    assertEquals(obj2.initCount, 1)
     assertEquals(42, obj2.asInstanceOf[LazyValFields].field)
-    assertEquals(1, obj2.initCount)
+    assertEquals(obj2.initCount, 1)
     assertEquals(42, obj2.asInstanceOf[LazyValFieldsSuperTrait].field)
-    assertEquals(1, obj2.initCount)
+    assertEquals(obj2.initCount, 1)
 
     val obj3: LazyValFieldsSuperTrait = new LazyValFields()
     assertEquals(0, obj3.initCount)
@@ -247,7 +247,7 @@ class NonNativeJSTypeTest {
     assertEquals(1, obj3.initCount)
     assertEquals(42, obj3.asInstanceOf[LazyValFields].field)
     assertEquals(1, obj3.initCount)
-    assertEquals(42, obj3.asInstanceOf[js.Dynamic].field)
+    assertEquals(obj3.asInstanceOf[js.Dynamic].field, 42)
     assertEquals(1, obj3.initCount)
   }
 
@@ -258,7 +258,7 @@ class NonNativeJSTypeTest {
     assertEquals(1, obj1.initCount)
     assertEquals(53, obj1.field)
     assertEquals(1, obj1.initCount)
-    assertEquals(53, obj1.asInstanceOf[js.Dynamic].field)
+    assertEquals(obj1.asInstanceOf[js.Dynamic].field, 53)
     assertEquals(1, obj1.initCount)
     assertEquals(53, (obj1: LazyValFieldsSuperTrait).field)
     assertEquals(1, obj1.initCount)
@@ -273,14 +273,14 @@ class NonNativeJSTypeTest {
     assertEquals(1, obj2.initCount)
     assertEquals(53, obj2.field)
     assertEquals(1, obj2.initCount)
-    assertEquals(53, obj2.asInstanceOf[js.Dynamic].field)
+    assertEquals(obj2.asInstanceOf[js.Dynamic].field, 53)
     assertEquals(1, obj2.initCount)
     assertEquals(53, (obj2: LazyValFieldsSuperTrait).field)
     assertEquals(1, obj2.initCount)
   }
 
   @Test def nullingOutLazyValField_issue3422(): Unit = {
-    assertEquals("foo", new NullingOutLazyValFieldBug3422("foo").str)
+    assertEquals(new NullingOutLazyValFieldBug3422("foo").str, "foo")
   }
 
   @Test def simple_inherited_from_a_native_class(): Unit = {
@@ -300,9 +300,9 @@ class NonNativeJSTypeTest {
     }
 
     val obj = new DoubleUnderscoreInMemberNames
-    assertEquals("xy", obj.x__y)
+    assertEquals(obj.x__y, "xy")
     assertEquals(6, obj.foo__bar(5))
-    assertEquals("babar", obj.ba__bar)
+    assertEquals(obj.ba__bar, "babar")
   }
 
   @Test def lambda_inside_a_method_issue_2220(): Unit = {
@@ -371,11 +371,11 @@ class NonNativeJSTypeTest {
     assertEquals(1, foo.innerInitCount)
 
     val dyn = (new Foo).asInstanceOf[js.Dynamic]
-    assertEquals(0, dyn.innerInitCount)
+    assertEquals(dyn.innerInitCount, 0)
     val inner2 = dyn.Inner
-    assertEquals(1, dyn.innerInitCount)
+    assertEquals(dyn.innerInitCount, 1)
     assertTrue((dyn.Inner: AnyRef) eq inner2)
-    assertEquals(1, dyn.innerInitCount)
+    assertEquals(dyn.innerInitCount, 1)
 
     assertFalse((inner2: AnyRef) eq inner1)
   }
@@ -399,11 +399,11 @@ class NonNativeJSTypeTest {
     assertEquals(1, foo.innerInitCount)
 
     val dyn = (new Foo).asInstanceOf[js.Dynamic]
-    assertEquals(0, dyn.innerInitCount)
+    assertEquals(dyn.innerInitCount, 0)
     val inner2 = dyn.innerName
-    assertEquals(1, dyn.innerInitCount)
+    assertEquals(dyn.innerInitCount, 1)
     assertTrue((dyn.innerName: AnyRef) eq inner2)
-    assertEquals(1, dyn.innerInitCount)
+    assertEquals(dyn.innerInitCount, 1)
 
     assertFalse((inner2: AnyRef) eq inner1)
   }
@@ -416,8 +416,8 @@ class NonNativeJSTypeTest {
     }
 
     val dyn = obj.asInstanceOf[js.Dynamic]
-    assertEquals(10, dyn.y)
-    assertEquals(26, dyn.sum(11))
+    assertEquals(dyn.y, 10)
+    assertEquals(dyn.sum(11), 26)
   }
 
   @Test def anonymous_class_has_no_own_prototype(): Unit = {
@@ -425,7 +425,7 @@ class NonNativeJSTypeTest {
       val x = 1
     }
 
-    assertEquals(1, obj.asInstanceOf[js.Dynamic].x)
+    assertEquals(obj.asInstanceOf[js.Dynamic].x, 1)
     assertSame(js.Object.getPrototypeOf(obj),
         js.constructorOf[js.Object].prototype)
   }
@@ -437,7 +437,7 @@ class NonNativeJSTypeTest {
 
     val obj = new Local
 
-    assertEquals(1, obj.asInstanceOf[js.Dynamic].x)
+    assertEquals(obj.asInstanceOf[js.Dynamic].x, 1)
 
     val prototype = js.Object.getPrototypeOf(obj)
 
@@ -450,7 +450,7 @@ class NonNativeJSTypeTest {
       val z = sum()
     }
 
-    assertEquals(3, obj.asInstanceOf[js.Dynamic].z)
+    assertEquals(obj.asInstanceOf[js.Dynamic].z, 3)
   }
 
   @Test def anonymous_class_using_own_method_in_ctor(): Unit = {
@@ -459,7 +459,7 @@ class NonNativeJSTypeTest {
       def inc(x: Int) = x + 1
     }
 
-    assertEquals(1, obj.asInstanceOf[js.Dynamic].y)
+    assertEquals(obj.asInstanceOf[js.Dynamic].y, 1)
   }
 
   @Test def anonymous_class_uninitialized_fields(): Unit = {
@@ -469,7 +469,7 @@ class NonNativeJSTypeTest {
     }
 
     assertNull(obj.asInstanceOf[js.Dynamic].x)
-    assertEquals(0, obj.asInstanceOf[js.Dynamic].y)
+    assertEquals(obj.asInstanceOf[js.Dynamic].y, 0)
   }
 
   @Test def anonymous_class_field_init_order(): Unit = {
@@ -481,7 +481,7 @@ class NonNativeJSTypeTest {
     }.asInstanceOf[js.Dynamic]
 
     assertNull(obj.x)
-    assertEquals("Hello World", obj.y)
+    assertEquals(obj.y, "Hello World")
   }
 
   @Test def anonymous_class_dependent_fields(): Unit = {
@@ -490,7 +490,7 @@ class NonNativeJSTypeTest {
       val y = x + 1
     }
 
-    assertEquals(2, obj.asInstanceOf[js.Dynamic].y)
+    assertEquals(obj.asInstanceOf[js.Dynamic].y, 2)
   }
 
   @Test def anonymous_class_use_this_in_ctor(): Unit = {
@@ -513,9 +513,9 @@ class NonNativeJSTypeTest {
     }.asInstanceOf[js.Dynamic]
 
     val inner = outer.inner
-    assertEquals(1, outer.x)
+    assertEquals(outer.x, 1)
     inner.inc()
-    assertEquals(2, outer.x)
+    assertEquals(outer.x, 2)
   }
 
   @Test def nested_anonymous_classes_and_lambdas(): Unit = {
@@ -524,9 +524,9 @@ class NonNativeJSTypeTest {
     // Also check that f's capture is properly transformed.
     val obj = call(x => new js.Object { val f: js.Any = (y: Int) => x + y })
     val res = obj.asInstanceOf[js.Dynamic].f(3)
-    assertEquals(4, res)
+    assertEquals(res, 4)
 
-    assertEquals(1, call(x => x))
+    assertEquals(call(x => x), 1)
   }
 
   @Test def anonymous_classes_private_fields_are_not_visible_issue2748(): Unit = {
@@ -553,8 +553,8 @@ class NonNativeJSTypeTest {
     }
 
     assertEquals(
-        """{"id":"some-some-value","paint":{"options":"{some-value}"}}""",
-        js.JSON.stringify(r0))
+        js.JSON.stringify(r0),
+        "{\"id\":\"some-some-value\",\"paint\":{\"options\":\"{some-value}\"}}")
   }
 
   @Test def local_object_is_lazy(): Unit = {
@@ -585,8 +585,8 @@ class NonNativeJSTypeTest {
     assertEquals(26, Obj.sum(11))
 
     val dyn = Obj.asInstanceOf[js.Dynamic]
-    assertEquals(10, dyn.y)
-    assertEquals(26, dyn.sum(11))
+    assertEquals(dyn.y, 10)
+    assertEquals(dyn.sum(11), 26)
   }
 
   @Test def object_in_Scala_js_defined_JS_class(): Unit = {
@@ -606,11 +606,11 @@ class NonNativeJSTypeTest {
     assertEquals(1, foo.innerInitCount)
 
     val dyn = (new Foo).asInstanceOf[js.Dynamic]
-    assertEquals(0, dyn.innerInitCount)
+    assertEquals(dyn.innerInitCount, 0)
     val inner2 = dyn.Inner
-    assertEquals(1, dyn.innerInitCount)
+    assertEquals(dyn.innerInitCount, 1)
     assertSame(inner2, dyn.Inner)
-    assertEquals(1, dyn.innerInitCount)
+    assertEquals(dyn.innerInitCount, 1)
 
     assertNotSame(inner1, inner2)
   }
@@ -648,7 +648,7 @@ class NonNativeJSTypeTest {
     }
 
     val obj = new LocalDefsWithCaptures
-    assertEquals("hello world", obj.foo("world"))
+    assertEquals(obj.foo("world"), "hello world")
   }
 
   @Test def methods_with_explicit_name(): Unit = {
@@ -665,9 +665,9 @@ class NonNativeJSTypeTest {
 
     val dyn = foo.asInstanceOf[js.Dynamic]
     assertJSUndefined(dyn.bar)
-    assertEquals(js.typeOf(dyn.theAnswer), "function")
-    assertEquals(42, dyn.theAnswer())
-    assertEquals(6, dyn.doubleTheParam(3))
+    assertEquals("function", js.typeOf(dyn.theAnswer))
+    assertEquals(dyn.theAnswer(), 42)
+    assertEquals(dyn.doubleTheParam(3), 6)
   }
 
   @Test def methods_with_constant_folded_name(): Unit = {
@@ -681,7 +681,7 @@ class NonNativeJSTypeTest {
 
     val dyn = foo.asInstanceOf[js.Dynamic]
     assertJSUndefined(dyn.bar)
-    assertEquals(42, dyn.myMethod())
+    assertEquals(dyn.myMethod(), 42)
   }
 
   @Test def protected_methods(): Unit = {
@@ -695,10 +695,10 @@ class NonNativeJSTypeTest {
     assertEquals(100, foo.foo())
 
     val dyn = foo.asInstanceOf[js.Dynamic]
-    assertEquals(js.typeOf(dyn.bar), "function")
-    assertEquals(42, dyn.bar())
-    assertEquals(js.typeOf(dyn.foo), "function")
-    assertEquals(100, dyn.foo())
+    assertEquals("function", js.typeOf(dyn.bar))
+    assertEquals(dyn.bar(), 42)
+    assertEquals("function", js.typeOf(dyn.foo))
+    assertEquals(dyn.foo(), 100)
   }
 
   @Test def readonly_properties(): Unit = {
@@ -786,22 +786,22 @@ class NonNativeJSTypeTest {
     foo.xScala = 23
     assertEquals(23, foo.xScala)
     assertEquals(46, foo.doubleXScala)
-    assertEquals("hello get", foo.yGetter)
+    assertEquals(foo.yGetter, "hello get")
     foo.ySetter_=("world")
-    assertEquals("world set get", foo.yGetter)
+    assertEquals(foo.yGetter, "world set get")
 
     val dyn = (new PropertiesWithExplicitName).asInstanceOf[js.Dynamic]
     assertJSUndefined(dyn.answerScala)
-    assertEquals(js.typeOf(dyn.answer), "number")
-    assertEquals(42, dyn.answer)
-    assertEquals(3, dyn.x)
-    assertEquals(6, dyn.doubleX)
+    assertEquals("number", js.typeOf(dyn.answer))
+    assertEquals(dyn.answer, 42)
+    assertEquals(dyn.x, 3)
+    assertEquals(dyn.doubleX, 6)
     dyn.x = 23
-    assertEquals(23, dyn.x)
-    assertEquals(46, dyn.doubleX)
-    assertEquals("hello get", dyn.y)
+    assertEquals(dyn.x, 23)
+    assertEquals(dyn.doubleX, 46)
+    assertEquals(dyn.y, "hello get")
     dyn.y = "world"
-    assertEquals("world set get", dyn.y)
+    assertEquals(dyn.y, "world set get")
   }
 
   @Test def protected_properties(): Unit = {
@@ -814,8 +814,8 @@ class NonNativeJSTypeTest {
     assertEquals(43, foo.y)
 
     val dyn = foo.asInstanceOf[js.Dynamic]
-    assertEquals(42, dyn.x)
-    assertEquals(43, dyn.y)
+    assertEquals(dyn.x, 42)
+    assertEquals(dyn.y, 43)
   }
 
   @Test def simple_overloaded_methods(): Unit = {
@@ -829,9 +829,9 @@ class NonNativeJSTypeTest {
     assertEquals(6, foo.foo(3))
 
     val dyn = foo.asInstanceOf[js.Dynamic]
-    assertEquals(js.typeOf(dyn.foo), "function")
-    assertEquals(42, dyn.foo())
-    assertEquals(6, dyn.foo(3))
+    assertEquals("function", js.typeOf(dyn.foo))
+    assertEquals(dyn.foo(), 42)
+    assertEquals(dyn.foo(3), 6)
   }
 
   @Test def simple_overloaded_methods_anon_js_class_issue_3054(): Unit = {
@@ -848,9 +848,9 @@ class NonNativeJSTypeTest {
     assertEquals(6, foo.foo(3))
 
     val dyn = foo.asInstanceOf[js.Dynamic]
-    assertEquals(js.typeOf(dyn.foo), "function")
-    assertEquals(42, dyn.foo())
-    assertEquals(6, dyn.foo(3))
+    assertEquals("function", js.typeOf(dyn.foo))
+    assertEquals(dyn.foo(), 42)
+    assertEquals(dyn.foo(3), 6)
   }
 
   @Test def renamed_overloaded_methods(): Unit = {
@@ -866,9 +866,9 @@ class NonNativeJSTypeTest {
     assertEquals(6, foo.bar(3))
 
     val dyn = foo.asInstanceOf[js.Dynamic]
-    assertEquals(js.typeOf(dyn.foobar), "function")
-    assertEquals(42, dyn.foobar())
-    assertEquals(6, dyn.foobar(3))
+    assertEquals("function", js.typeOf(dyn.foobar))
+    assertEquals(dyn.foobar(), 42)
+    assertEquals(dyn.foobar(3), 6)
   }
 
   @Test def overloaded_methods_with_varargs(): Unit = {
@@ -884,11 +884,11 @@ class NonNativeJSTypeTest {
     assertEquals(8, foo.foo("bar", "babar"))
 
     val dyn = foo.asInstanceOf[js.Dynamic]
-    assertEquals(js.typeOf(dyn.foo), "function")
-    assertEquals(42, dyn.foo(21))
-    assertEquals(0, dyn.foo())
-    assertEquals(3, dyn.foo("bar"))
-    assertEquals(8, dyn.foo("bar", "babar"))
+    assertEquals("function", js.typeOf(dyn.foo))
+    assertEquals(dyn.foo(21), 42)
+    assertEquals(dyn.foo(), 0)
+    assertEquals(dyn.foo("bar"), 3)
+    assertEquals(dyn.foo("bar", "babar"), 8)
   }
 
   @Test def overloaded_methods_with_varargs_anon_js_class_issue_3054(): Unit = {
@@ -907,11 +907,11 @@ class NonNativeJSTypeTest {
     assertEquals(8, foo.foo("bar", "babar"))
 
     val dyn = foo.asInstanceOf[js.Dynamic]
-    assertEquals(js.typeOf(dyn.foo), "function")
-    assertEquals(42, dyn.foo(21))
-    assertEquals(0, dyn.foo())
-    assertEquals(3, dyn.foo("bar"))
-    assertEquals(8, dyn.foo("bar", "babar"))
+    assertEquals("function", js.typeOf(dyn.foo))
+    assertEquals(dyn.foo(21), 42)
+    assertEquals(dyn.foo(), 0)
+    assertEquals(dyn.foo("bar"), 3)
+    assertEquals(dyn.foo("bar", "babar"), 8)
   }
 
   @Test def overloaded_constructors_num_parameters_resolution(): Unit = {
@@ -1032,7 +1032,7 @@ class NonNativeJSTypeTest {
     val dyn = obj.asInstanceOf[js.Dynamic]
     val b = dyn.emptyArray
     assertTrue((b: Any).isInstanceOf[js.Array[_]])
-    assertEquals(0, b.length)
+    assertEquals(b.length, 0)
   }
 
   @Test def default_parameters(): Unit = {
@@ -1064,11 +1064,11 @@ class NonNativeJSTypeTest {
     assertEquals(17, DefaultParametersMod.dependent(8)())
 
     def testDyn(dyn: js.Dynamic): Unit = {
-      assertEquals(9, dyn.bar(4, 5))
-      assertEquals(5, dyn.bar(4))
-      assertEquals(4, dyn.foobar(3))
-      assertEquals(9, dyn.dependent(4, 5))
-      assertEquals(17, dyn.dependent(8))
+      assertEquals(dyn.bar(4, 5), 9)
+      assertEquals(dyn.bar(4), 5)
+      assertEquals(dyn.foobar(3), 4)
+      assertEquals(dyn.dependent(4, 5), 9)
+      assertEquals(dyn.dependent(8), 17)
     }
     testDyn(foo.asInstanceOf[js.Dynamic])
     testDyn(DefaultParametersMod.asInstanceOf[js.Dynamic])
@@ -1103,11 +1103,11 @@ class NonNativeJSTypeTest {
     assertEquals(24, parent.dependent(8)())
 
     val dyn = foo.asInstanceOf[js.Dynamic]
-    assertEquals(9, dyn.bar(4, 5))
-    assertEquals(14, dyn.bar(4))
-    assertEquals(13, dyn.foobar(3))
-    assertEquals(9, dyn.dependent(4, 5))
-    assertEquals(24, dyn.dependent(8))
+    assertEquals(dyn.bar(4, 5), 9)
+    assertEquals(dyn.bar(4), 14)
+    assertEquals(dyn.foobar(3), 13)
+    assertEquals(dyn.dependent(4, 5), 9)
+    assertEquals(dyn.dependent(8), 24)
   }
 
   @Test def override_method_with_default_parameters_without_new_default(): Unit = {
@@ -1139,11 +1139,11 @@ class NonNativeJSTypeTest {
     assertEquals(-1, parent.dependent(8)())
 
     val dyn = foo.asInstanceOf[js.Dynamic]
-    assertEquals(-1, dyn.bar(4, 5))
-    assertEquals(3, dyn.bar(4))
-    assertEquals(2, dyn.foobar(3))
-    assertEquals(-4, dyn.dependent(4, 8))
-    assertEquals(-1, dyn.dependent(8))
+    assertEquals(dyn.bar(4, 5), -1)
+    assertEquals(dyn.bar(4), 3)
+    assertEquals(dyn.foobar(3), 2)
+    assertEquals(dyn.dependent(4, 8), -4)
+    assertEquals(dyn.dependent(8), -1)
   }
 
   @Test def `constructors_with_default_parameters_(NonNative/-)`(): Unit = {
@@ -1209,37 +1209,37 @@ class NonNativeJSTypeTest {
   @Test def constructors_with_default_parameters_in_multi_param_lists(): Unit = {
     val foo1 = new ConstructorDefaultParamMultiParamList(5)("foobar")
     assertEquals(5, foo1.default)
-    assertEquals("foobar", foo1.title)
-    assertEquals("5", foo1.description)
+    assertEquals(foo1.title, "foobar")
+    assertEquals(foo1.description, "5")
 
     val foo2 = new ConstructorDefaultParamMultiParamList(56)("babar", "desc")
     assertEquals(56, foo2.default)
-    assertEquals("babar", foo2.title)
-    assertEquals("desc", foo2.description)
+    assertEquals(foo2.title, "babar")
+    assertEquals(foo2.description, "desc")
   }
 
   @Test def constructors_with_default_parameters_in_multi_param_lists_and_overloading(): Unit = {
     val foo1 = new ConstructorDefaultParamMultiParamListWithOverloading(5)(
         "foobar")
     assertEquals(5, foo1.default)
-    assertEquals("foobar", foo1.title)
-    assertEquals("5", foo1.description)
+    assertEquals(foo1.title, "foobar")
+    assertEquals(foo1.description, "5")
 
     val foo2 = new ConstructorDefaultParamMultiParamListWithOverloading(56)(
         "babar", "desc")
     assertEquals(56, foo2.default)
-    assertEquals("babar", foo2.title)
-    assertEquals("desc", foo2.description)
+    assertEquals(foo2.title, "babar")
+    assertEquals(foo2.description, "desc")
 
     val foo3 = new ConstructorDefaultParamMultiParamListWithOverloading('A')
     assertEquals(65, foo3.default)
-    assertEquals("char", foo3.title)
-    assertEquals("a char", foo3.description)
+    assertEquals(foo3.title, "char")
+    assertEquals(foo3.description, "a char")
 
     val foo4 = new ConstructorDefaultParamMultiParamListWithOverloading(123, 456)
     assertEquals(123, foo4.default)
-    assertEquals("456", foo4.title)
-    assertEquals(js.undefined, foo4.description)
+    assertEquals(foo4.title, "456")
+    assertEquals(foo4.description, js.undefined)
   }
 
   @Test def `call_super_constructor_with_:__*`(): Unit = {
@@ -1261,7 +1261,7 @@ class NonNativeJSTypeTest {
      * Extracting it in a separate `val` works around it.
      */
     val dynx = dyn.x
-    assertEquals(4, dynx)
+    assertEquals(dynx, 4)
     val args = dyn.args.asInstanceOf[js.Array[Int]]
     assertJSArrayEquals(js.Array(8, 23), args)
   }
@@ -1273,15 +1273,15 @@ class NonNativeJSTypeTest {
 
     val foo = new OverrideNativeMethod
     assertEquals(3, foo.x)
-    assertEquals("hellohello3", foo.foo("hello"))
+    assertEquals(foo.foo("hello"), "hellohello3")
 
     val parent: NativeParentClass = foo
     assertEquals(3, parent.x)
-    assertEquals("hellohello3", parent.foo("hello"))
+    assertEquals(parent.foo("hello"), "hellohello3")
 
     val dyn = foo.asInstanceOf[js.Dynamic]
-    assertEquals(3, dyn.x)
-    assertEquals("hellohello3", dyn.foo("hello"))
+    assertEquals(dyn.x, 3)
+    assertEquals(dyn.foo("hello"), "hellohello3")
   }
 
   @Test def override_non_native_method(): Unit = {
@@ -1291,15 +1291,15 @@ class NonNativeJSTypeTest {
 
     val foo = new OverrideNonNativeMethod
     assertEquals(3, foo.x)
-    assertEquals("hellohello3", foo.foo("hello"))
+    assertEquals(foo.foo("hello"), "hellohello3")
 
     val parent: NonNativeParentClass = foo
     assertEquals(3, parent.x)
-    assertEquals("hellohello3", parent.foo("hello"))
+    assertEquals(parent.foo("hello"), "hellohello3")
 
     val dyn = foo.asInstanceOf[js.Dynamic]
-    assertEquals(3, dyn.x)
-    assertEquals("hellohello3", dyn.foo("hello"))
+    assertEquals(dyn.x, 3)
+    assertEquals(dyn.foo("hello"), "hellohello3")
   }
 
   @Test def override_non_native_method_with_separate_compilation(): Unit = {
@@ -1320,15 +1320,15 @@ class NonNativeJSTypeTest {
 
     val foo = new OverrideNativeMethodSuperCall
     assertEquals(3, foo.x)
-    assertEquals("bar3hello", foo.foo("hello"))
+    assertEquals(foo.foo("hello"), "bar3hello")
 
     val parent: NativeParentClass = foo
     assertEquals(3, parent.x)
-    assertEquals("bar3hello", parent.foo("hello"))
+    assertEquals(parent.foo("hello"), "bar3hello")
 
     val dyn = foo.asInstanceOf[js.Dynamic]
-    assertEquals(3, dyn.x)
-    assertEquals("bar3hello", dyn.foo("hello"))
+    assertEquals(dyn.x, 3)
+    assertEquals(dyn.foo("hello"), "bar3hello")
   }
 
   @Test def override_non_native_method_and_call_super(): Unit = {
@@ -1338,15 +1338,15 @@ class NonNativeJSTypeTest {
 
     val foo = new OverrideNonNativeMethodSuperCall
     assertEquals(3, foo.x)
-    assertEquals("bar3hello", foo.foo("hello"))
+    assertEquals(foo.foo("hello"), "bar3hello")
 
     val parent: NonNativeParentClass = foo
     assertEquals(3, parent.x)
-    assertEquals("bar3hello", parent.foo("hello"))
+    assertEquals(parent.foo("hello"), "bar3hello")
 
     val dyn = foo.asInstanceOf[js.Dynamic]
-    assertEquals(3, dyn.x)
-    assertEquals("bar3hello", dyn.foo("hello"))
+    assertEquals(dyn.x, 3)
+    assertEquals(dyn.foo("hello"), "bar3hello")
   }
 
   @Test def super_method_call_in_anon_JS_class_issue_3055(): Unit = {
@@ -1358,7 +1358,7 @@ class NonNativeJSTypeTest {
       override def bar(msg: String): String = super.bar("foo: " + msg)
     }
 
-    assertEquals("super: foo: foobar", foo.bar("foobar"))
+    assertEquals(foo.bar("foobar"), "super: foo: foobar")
   }
 
   @Test def override_native_val(): Unit = {
@@ -1369,17 +1369,17 @@ class NonNativeJSTypeTest {
     val foo = new OverrideNativeVal
     assertEquals(42, foo.x)
     assertEquals(84, foo.bar)
-    assertEquals("hello42", foo.foo("hello"))
+    assertEquals(foo.foo("hello"), "hello42")
 
     val parent: NativeParentClass = foo
     assertEquals(42, parent.x)
     assertEquals(84, parent.bar)
-    assertEquals("hello42", parent.foo("hello"))
+    assertEquals(parent.foo("hello"), "hello42")
 
     val dyn = foo.asInstanceOf[js.Dynamic]
-    assertEquals(42, dyn.x)
-    assertEquals(84, dyn.bar)
-    assertEquals("hello42", dyn.foo("hello"))
+    assertEquals(dyn.x, 42)
+    assertEquals(dyn.bar, 84)
+    assertEquals(dyn.foo("hello"), "hello42")
   }
 
   @Test def override_non_native_val(): Unit = {
@@ -1390,17 +1390,17 @@ class NonNativeJSTypeTest {
     val foo = new OverrideNonNativeVal
     assertEquals(42, foo.x)
     assertEquals(84, foo.bar)
-    assertEquals("hello42", foo.foo("hello"))
+    assertEquals(foo.foo("hello"), "hello42")
 
     val parent: NonNativeParentClass = foo
     assertEquals(42, parent.x)
     assertEquals(84, parent.bar)
-    assertEquals("hello42", parent.foo("hello"))
+    assertEquals(parent.foo("hello"), "hello42")
 
     val dyn = foo.asInstanceOf[js.Dynamic]
-    assertEquals(42, dyn.x)
-    assertEquals(84, dyn.bar)
-    assertEquals("hello42", dyn.foo("hello"))
+    assertEquals(dyn.x, 42)
+    assertEquals(dyn.bar, 84)
+    assertEquals(dyn.foo("hello"), "hello42")
   }
 
   @Test def override_native_getter(): Unit = {
@@ -1417,8 +1417,8 @@ class NonNativeJSTypeTest {
     assertEquals(9, parent.bar)
 
     val dyn = foo.asInstanceOf[js.Dynamic]
-    assertEquals(3, dyn.x)
-    assertEquals(9, dyn.bar)
+    assertEquals(dyn.x, 3)
+    assertEquals(dyn.bar, 9)
   }
 
   @Test def override_non_native_getter(): Unit = {
@@ -1435,8 +1435,8 @@ class NonNativeJSTypeTest {
     assertEquals(9, parent.bar)
 
     val dyn = foo.asInstanceOf[js.Dynamic]
-    assertEquals(3, dyn.x)
-    assertEquals(9, dyn.bar)
+    assertEquals(dyn.x, 3)
+    assertEquals(dyn.bar, 9)
   }
 
   @Test def override_native_getter_with_val(): Unit = {
@@ -1453,8 +1453,8 @@ class NonNativeJSTypeTest {
     assertEquals(1, parent.bar)
 
     val dyn = foo.asInstanceOf[js.Dynamic]
-    assertEquals(3, dyn.x)
-    assertEquals(1, dyn.bar)
+    assertEquals(dyn.x, 3)
+    assertEquals(dyn.bar, 1)
   }
 
   @Test def override_non_native_getter_with_val(): Unit = {
@@ -1471,8 +1471,8 @@ class NonNativeJSTypeTest {
     assertEquals(1, parent.bar)
 
     val dyn = foo.asInstanceOf[js.Dynamic]
-    assertEquals(3, dyn.x)
-    assertEquals(1, dyn.bar)
+    assertEquals(dyn.x, 3)
+    assertEquals(dyn.bar, 1)
   }
 
   @Test def override_getter_with_super(): Unit = {
@@ -1490,7 +1490,7 @@ class NonNativeJSTypeTest {
     assertEquals(129, parent.bar)
 
     val dyn = foo.asInstanceOf[js.Dynamic]
-    assertEquals(129, dyn.bar)
+    assertEquals(dyn.bar, 129)
   }
 
   @Test def override_setter_with_super(): Unit = {
@@ -1512,7 +1512,7 @@ class NonNativeJSTypeTest {
 
     val dyn = foo.asInstanceOf[js.Dynamic]
     dyn.bar = 6
-    assertEquals(18, dyn.x)
+    assertEquals(dyn.x, 18)
   }
 
   @Test def super_property_get_set_in_anon_JS_class_issue_3055(): Unit = {
@@ -1552,8 +1552,8 @@ class NonNativeJSTypeTest {
     assertEquals(7, foo.bar(5))
 
     val dyn = foo.asInstanceOf[js.Dynamic]
-    assertEquals(53, dyn.bar())
-    assertEquals(7, dyn.bar(5))
+    assertEquals(dyn.bar(), 53)
+    assertEquals(dyn.bar(5), 7)
   }
 
   @Test def add_setter_in_subclass(): Unit = {
@@ -1572,8 +1572,8 @@ class NonNativeJSTypeTest {
 
     val dyn = foo.asInstanceOf[js.Dynamic]
     dyn.bar = 6
-    assertEquals(6, dyn.x)
-    assertEquals(6, dyn.bar)
+    assertEquals(dyn.x, 6)
+    assertEquals(dyn.bar, 6)
   }
 
   @Test def add_getter_in_subclass(): Unit = {
@@ -1592,8 +1592,8 @@ class NonNativeJSTypeTest {
 
     val dyn = foo.asInstanceOf[js.Dynamic]
     dyn.bar = 6
-    assertEquals(6, dyn.x)
-    assertEquals(6, dyn.bar)
+    assertEquals(dyn.x, 6)
+    assertEquals(dyn.bar, 6)
   }
 
   @Test def overload_native_method(): Unit = {
@@ -1602,15 +1602,15 @@ class NonNativeJSTypeTest {
     }
 
     val foo = new OverloadNativeMethod
-    assertEquals("hello3", foo.foo("hello"))
-    assertEquals("hello3 4", foo.foo("hello", 4))
+    assertEquals(foo.foo("hello"), "hello3")
+    assertEquals(foo.foo("hello", 4), "hello3 4")
 
     val parent: NativeParentClass = foo
-    assertEquals("hello3", parent.foo("hello"))
+    assertEquals(parent.foo("hello"), "hello3")
 
     val dyn = foo.asInstanceOf[js.Dynamic]
-    assertEquals("hello3", dyn.foo("hello"))
-    assertEquals("hello3 4", dyn.foo("hello", 4))
+    assertEquals(dyn.foo("hello"), "hello3")
+    assertEquals(dyn.foo("hello", 4), "hello3 4")
   }
 
   @Test def overload_non_native_method(): Unit = {
@@ -1619,15 +1619,15 @@ class NonNativeJSTypeTest {
     }
 
     val foo = new OverloadNonNativeMethod
-    assertEquals("hello3", foo.foo("hello"))
-    assertEquals("hello3 4", foo.foo("hello", 4))
+    assertEquals(foo.foo("hello"), "hello3")
+    assertEquals(foo.foo("hello", 4), "hello3 4")
 
     val parent: NonNativeParentClass = foo
-    assertEquals("hello3", parent.foo("hello"))
+    assertEquals(parent.foo("hello"), "hello3")
 
     val dyn = foo.asInstanceOf[js.Dynamic]
-    assertEquals("hello3", dyn.foo("hello"))
-    assertEquals("hello3 4", dyn.foo("hello", 4))
+    assertEquals(dyn.foo("hello"), "hello3")
+    assertEquals(dyn.foo("hello", 4), "hello3 4")
   }
 
   @Test def overload_with_default_parameter(): Unit = {
@@ -1638,8 +1638,8 @@ class NonNativeJSTypeTest {
 
     val foo = new OverloadDefaultParameter
     assertEquals(5, foo.foo(5))
-    assertEquals("", foo.foo())
-    assertEquals("hello", foo.foo("hello"))
+    assertEquals(foo.foo(), "")
+    assertEquals(foo.foo("hello"), "hello")
   }
 
   @Test def implement_a_simple_trait(): Unit = {
@@ -1738,9 +1738,9 @@ class NonNativeJSTypeTest {
     assertEquals(FooResult, fooParent.foo(12))
 
     val dyn = foo.asInstanceOf[js.Dynamic]
-    assertEquals(43, dyn.x)
-    assertEquals(64, dyn.bar(32))
-    assertEquals(FooResult, dyn.foo(12))
+    assertEquals(dyn.x, 43)
+    assertEquals(dyn.bar(32), 64)
+    assertEquals(dyn.foo(12), FooResult)
   }
 
   @Test def override_a_method_with_default_values_from_a_native_JS_class(): Unit = {
@@ -1804,7 +1804,7 @@ class NonNativeJSTypeTest {
 
     val x = (new JavaLangObjectMethods).asInstanceOf[js.Dynamic]
 
-    assertEquals("myClone", x.applyDynamic("clone")())
+    assertEquals(x.applyDynamic("clone")(), "myClone")
   }
 }
 

@@ -61,11 +61,11 @@ class ConcurrentSkipListSetTest {
     assertEquals(1, csls.size())
     assertTrue(csls.add("111"))
     assertEquals(2, csls.size())
-    assertEquals("111", csls.first)
+    assertEquals(csls.first, "111")
     assertTrue(csls.remove("111"))
 
     assertEquals(1, csls.size())
-    assertEquals("222", csls.first)
+    assertEquals(csls.first, "222")
 
     assertTrue(csls.remove("222"))
     assertEquals(0, csls.size())
@@ -213,7 +213,7 @@ class ConcurrentSkipListSetTest {
 
     assertTrue(cslsString.add("pluto"))
     assertTrue(cslsString.add("pippo"))
-    assertEquals("pippo", cslsString.first)
+    assertEquals(cslsString.first, "pippo")
 
     val cslsDouble = factory.empty[Double]
 
@@ -233,7 +233,7 @@ class ConcurrentSkipListSetTest {
 
     assertTrue(cslsString.add("pluto"))
     assertTrue(cslsString.add("pippo"))
-    assertEquals("pluto", cslsString.last)
+    assertEquals(cslsString.last, "pluto")
 
     val cslsDouble = factory.empty[Double]
 
@@ -254,10 +254,10 @@ class ConcurrentSkipListSetTest {
     val lString = TrivialImmutableCollection("a", "e", "b", "c", "d")
     val cslsString = new ConcurrentSkipListSet[String](lString)
 
-    assertEquals("a", cslsString.ceiling("00000"))
-    assertEquals("a", cslsString.ceiling("0"))
-    assertEquals("a", cslsString.ceiling("a"))
-    assertEquals("d", cslsString.ceiling("d"))
+    assertEquals(cslsString.ceiling("00000"), "a")
+    assertEquals(cslsString.ceiling("0"), "a")
+    assertEquals(cslsString.ceiling("a"), "a")
+    assertEquals(cslsString.ceiling("d"), "d")
     assertNull(cslsString.ceiling("z"))
   }
 
@@ -273,10 +273,10 @@ class ConcurrentSkipListSetTest {
     val lString = TrivialImmutableCollection("a", "e", "b", "c", "d")
     val cslsString = new ConcurrentSkipListSet[String](lString)
 
-    assertEquals("e", cslsString.floor("zzzzz"))
-    assertEquals("d", cslsString.floor("d"))
-    assertEquals("b", cslsString.floor("b"))
-    assertEquals("a", cslsString.floor("a"))
+    assertEquals(cslsString.floor("zzzzz"), "e")
+    assertEquals(cslsString.floor("d"), "d")
+    assertEquals(cslsString.floor("b"), "b")
+    assertEquals(cslsString.floor("a"), "a")
     assertNull(cslsString.floor("0"))
   }
 
@@ -293,10 +293,10 @@ class ConcurrentSkipListSetTest {
     val cslsString = new ConcurrentSkipListSet[String](lString)
 
     assertNull(cslsString.higher("zzzzz"))
-    assertEquals("e", cslsString.higher("d"))
-    assertEquals("c", cslsString.higher("b"))
-    assertEquals("b", cslsString.higher("a"))
-    assertEquals("a", cslsString.higher("0"))
+    assertEquals(cslsString.higher("d"), "e")
+    assertEquals(cslsString.higher("b"), "c")
+    assertEquals(cslsString.higher("a"), "b")
+    assertEquals(cslsString.higher("0"), "a")
   }
 
   @Test def `should_retrieve_lower(ordered)_elements`(): Unit = {
@@ -311,9 +311,9 @@ class ConcurrentSkipListSetTest {
     val lString = TrivialImmutableCollection("a", "e", "b", "c", "d")
     val cslsString = new ConcurrentSkipListSet[String](lString)
 
-    assertEquals("e", cslsString.lower("zzzzz"))
-    assertEquals("c", cslsString.lower("d"))
-    assertEquals("a", cslsString.lower("b"))
+    assertEquals(cslsString.lower("zzzzz"), "e")
+    assertEquals(cslsString.lower("d"), "c")
+    assertEquals(cslsString.lower("b"), "a")
     assertNull(cslsString.lower("a"))
     assertNull(cslsString.lower("0"))
   }

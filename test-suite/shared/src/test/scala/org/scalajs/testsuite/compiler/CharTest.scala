@@ -44,7 +44,7 @@ class CharTest {
   @Test
   def do_not_box_several_times_in_a_block(): Unit = {
     @noinline def test(x: Any): Unit =
-      assertEquals('A', x)
+      assertEquals(x, 'A')
 
     test({
       test('A')
@@ -55,7 +55,7 @@ class CharTest {
   @Test
   def do_not_box_several_times_in_an_if(): Unit = {
     @noinline def test(x: Any): Unit =
-      assertEquals('A', x)
+      assertEquals(x, 'A')
 
     @noinline def cond: Boolean = true
 

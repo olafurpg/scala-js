@@ -54,9 +54,9 @@ class PriorityQueueTest extends CollectionTest {
     assertEquals(1, pq.size())
     assertTrue(pq.add("bbb"))
     assertEquals(2, pq.size())
-    assertEquals("aaa", pq.poll())
+    assertEquals(pq.poll(), "aaa")
     assertEquals(1, pq.size())
-    assertEquals("bbb", pq.poll())
+    assertEquals(pq.poll(), "bbb")
     assertTrue(pq.add("bbb"))
     assertTrue(pq.add("bbb"))
     assertTrue(pq.remove("bbb"))
@@ -231,7 +231,7 @@ class PriorityQueueTest extends CollectionTest {
 
     assertTrue(pqString.add("pluto"))
     assertTrue(pqString.add("pippo"))
-    assertEquals("pippo", pqString.poll())
+    assertEquals(pqString.poll(), "pippo")
 
     val pqDouble = new PriorityQueue[Double]()
 
@@ -333,7 +333,7 @@ class PriorityQueueTest extends CollectionTest {
     for (x <- List(1, 2, 30, 4, 3, 40, 35, 10))
       pq.add(x)
 
-    assertEquals("[1, 2, 30, 4, 3, 40, 35, 10]", pq.toString())
+    assertEquals(pq.toString(), "[1, 2, 30, 4, 3, 40, 35, 10]")
 
     val iter = pq.iterator()
     assertEquals(1, iter.next())
@@ -344,13 +344,13 @@ class PriorityQueueTest extends CollectionTest {
     assertEquals(40, iter.next())
 
     iter.remove()
-    assertEquals("[1, 2, 10, 4, 3, 30, 35]", pq.toString())
+    assertEquals(pq.toString(), "[1, 2, 10, 4, 3, 30, 35]")
 
     assertEquals(35, iter.next())
     assertEquals(10, iter.next())
 
     iter.remove()
-    assertEquals("[1, 2, 30, 4, 3, 35]", pq.toString())
+    assertEquals(pq.toString(), "[1, 2, 30, 4, 3, 35]")
 
     assertFalse(iter.hasNext())
   }
@@ -369,12 +369,12 @@ class PriorityQueueTest extends CollectionTest {
     for (x <- List(-1.0, -0.0, 0.0, 3.5, Double.NaN))
       pq.add(x)
 
-    assertEquals("[-1, 0, 0, 3.5, NaN]", pq.toString())
+    assertEquals(pq.toString(), "[-1, 0, 0, 3.5, NaN]")
 
     val iter = pq.iterator()
-    assertEquals(-1.0: Any, iter.next())
-    assertEquals(-0.0: Any, iter.next())
-    assertEquals(0.0: Any, iter.next())
+    assertEquals(iter.next(), -1.0d: Any)
+    assertEquals(iter.next(), 0.0d: Any)
+    assertEquals(iter.next(), 0.0d: Any)
 
     iter.remove()
     assertEquals("+0.0 must have been removed, not -0.0",
@@ -382,8 +382,8 @@ class PriorityQueueTest extends CollectionTest {
     assertTrue("+0.0 must have been removed, not -0.0",
         pq.contains(-0.0) && !pq.contains(0.0))
 
-    assertEquals(3.5: Any, iter.next())
-    assertEquals(Double.NaN: Any, iter.next())
+    assertEquals(iter.next(), 3.5d: Any)
+    assertEquals(iter.next(), Double.NaN: Any)
 
     iter.remove()
     assertEquals("NaN must have been removed", "[-1, 0, 3.5]", pq.toString())
@@ -419,8 +419,8 @@ class PriorityQueueTest extends CollectionTest {
       pq.add(x)
 
     assertEquals(
-        "[TestObj@10, TestObj@20, TestObj@21, TestObj@30, TestObj@40]",
-        pq.toString())
+        pq.toString(),
+        "[TestObj@10, TestObj@20, TestObj@21, TestObj@30, TestObj@40]")
 
     val iter = pq.iterator()
     assertSame(first, iter.next())
@@ -435,7 +435,7 @@ class PriorityQueueTest extends CollectionTest {
     assertSame(fifth, iter.next())
 
     iter.remove()
-    assertEquals("[TestObj@10, TestObj@20, TestObj@30]", pq.toString())
+    assertEquals(pq.toString(), "[TestObj@10, TestObj@20, TestObj@30]")
 
     assertFalse(iter.hasNext())
   }

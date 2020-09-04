@@ -35,10 +35,10 @@ class UnionTypeTest {
 
   @Test def left_and_right(): Unit = {
     val x1: Int | String = 4
-    assertEquals(4, x1)
+    assertEquals(x1, 4)
 
     val x2: Int | String = "hello"
-    assertEquals("hello", x2)
+    assertEquals(x2, "hello")
   }
 
   @Test def left_and_right_with_subtyping(): Unit = {
@@ -46,38 +46,38 @@ class UnionTypeTest {
 
     val x1: Seq[Int] | CharSequence = list
     assertTrue((x1: Any).isInstanceOf[List[_]])
-    assertEquals(List(1, 2, 3), x1.asInstanceOf[List[_]])
+    assertEquals(x1.asInstanceOf[List[_]], List(1, 2, 3))
 
     val x2: Seq[Int] | CharSequence = "hello"
-    assertEquals("hello", x2)
+    assertEquals(x2, "hello")
   }
 
   @Test def three_types(): Unit = {
     val x1: Int | String | Boolean = 3
-    assertEquals(3, x1)
+    assertEquals(x1, 3)
 
     val x2: Int | String | Boolean = "hello"
-    assertEquals("hello", x2)
+    assertEquals(x2, "hello")
 
     val x3: Int | String | Boolean = false
-    assertEquals(false, x3)
+    assertEquals(x3, false)
   }
 
   @Test def upcast(): Unit = {
     val x1: List[Int] | String = "hello"
     val x2: Seq[Int] | CharSequence = x1
-    assertEquals("hello", x2)
+    assertEquals(x2, "hello")
   }
 
   @Test def int_as_Double(): Unit = {
     val x1: Double | String = 3
-    assertEquals(3, x1)
+    assertEquals(x1, 3)
   }
 
   @Test def swap_base_types(): Unit = {
     val x1: Int | String = 3
     val x2: String | Int = x1
-    assertEquals(3, x2)
+    assertEquals(x2, 3)
   }
 
   @Test def permutations_for_3_base_types(): Unit = {
@@ -89,11 +89,11 @@ class UnionTypeTest {
     val x4: Boolean | Int | String = x
     val x5: Boolean | String | Int = x
 
-    assertEquals(3, x1)
-    assertEquals(3, x2)
-    assertEquals(3, x3)
-    assertEquals(3, x4)
-    assertEquals(3, x5)
+    assertEquals(x1, 3)
+    assertEquals(x2, 3)
+    assertEquals(x3, 3)
+    assertEquals(x4, 3)
+    assertEquals(x5, 3)
   }
 
   @Test def permutations_of_2_base_types_to_3_base_types(): Unit = {
@@ -105,9 +105,9 @@ class UnionTypeTest {
     val y2: Int | String | Boolean = x2
     val y3: Int | String | Boolean = x3
 
-    assertEquals(3, y1)
-    assertEquals(false, y2)
-    assertEquals("hello", y3)
+    assertEquals(y1, 3)
+    assertEquals(y2, false)
+    assertEquals(y3, "hello")
   }
 
   @Test def partial_upper_bound(): Unit = {
@@ -116,8 +116,8 @@ class UnionTypeTest {
     val x1: AnyVal | String = x
     val x2: String | AnyVal = x
 
-    assertEquals("hello", x1)
-    assertEquals("hello", x2)
+    assertEquals(x1, "hello")
+    assertEquals(x2, "hello")
 
     /* Note: the *total* upper bound does not work without an explicit
      * `merge`, because the expected type is not an | type.
@@ -127,61 +127,61 @@ class UnionTypeTest {
   @Test def merge(): Unit = {
     val x1: Int | Boolean = 4
     val y1: AnyVal = x1.merge
-    assertEquals(4, y1.asInstanceOf[js.Any])
+    assertEquals(y1.asInstanceOf[js.Any], 4)
 
     val x2: String | java.nio.CharBuffer = "hello"
     val y2: CharSequence = x2.merge
-    assertEquals("hello", y2.asInstanceOf[js.Any])
+    assertEquals(y2.asInstanceOf[js.Any], "hello")
 
     val x3: Int | String | Boolean | java.nio.CharBuffer = "hello"
     val y3: CharSequence | AnyVal = x3.merge
-    assertEquals("hello", y3.asInstanceOf[js.Any])
+    assertEquals(y3.asInstanceOf[js.Any], "hello")
 
     val x4: List[Int] | Vector[Int] | mutable.Buffer[Int] = List(3, 5)
     val y4: collection.Seq[Int] = x4.merge
-    assertEquals(Seq(3, 5), y4)
+    assertEquals(y4, Seq(3, 5))
   }
 
   @Test def js_UndefOr_A_or_B_inference(): Unit = {
     val a: String = "hello"
 
-    assertEquals(a, a: Int | String)
-    assertEquals(a, a: js.UndefOr[Int] | String)
-    assertEquals(a, a: Int | js.UndefOr[String])
-    assertEquals(a, a: js.UndefOr[Int] | js.UndefOr[String])
-    assertEquals(a, a: js.UndefOr[js.UndefOr[Int]] | js.UndefOr[String])
-    assertEquals(a, a: js.UndefOr[Int] | js.UndefOr[js.UndefOr[String]])
+    assertEquals(a: Int | String, a)
+    assertEquals(a: js.UndefOr[Int] | String, a)
+    assertEquals(a: Int | js.UndefOr[String], a)
+    assertEquals(a: js.UndefOr[Int] | js.UndefOr[String], a)
+    assertEquals(a: js.UndefOr[js.UndefOr[Int]] | js.UndefOr[String], a)
+    assertEquals(a: js.UndefOr[Int] | js.UndefOr[js.UndefOr[String]], a)
 
-    assertEquals(a, a: js.UndefOr[Int | String])
-    assertEquals(a, a: js.UndefOr[js.UndefOr[Int] | String])
-    assertEquals(a, a: js.UndefOr[Int | js.UndefOr[String]])
-    assertEquals(a, a: js.UndefOr[js.UndefOr[Int] | js.UndefOr[String]])
-    assertEquals(a, a: js.UndefOr[js.UndefOr[js.UndefOr[Int]] | js.UndefOr[String]])
-    assertEquals(a, a: js.UndefOr[js.UndefOr[Int] | js.UndefOr[js.UndefOr[String]]])
+    assertEquals(a: js.UndefOr[Int | String], a)
+    assertEquals(a: js.UndefOr[js.UndefOr[Int] | String], a)
+    assertEquals(a: js.UndefOr[Int | js.UndefOr[String]], a)
+    assertEquals(a: js.UndefOr[js.UndefOr[Int] | js.UndefOr[String]], a)
+    assertEquals(a: js.UndefOr[js.UndefOr[js.UndefOr[Int]] | js.UndefOr[String]], a)
+    assertEquals(a: js.UndefOr[js.UndefOr[Int] | js.UndefOr[js.UndefOr[String]]], a)
 
-    assertEquals(a, a: js.UndefOr[String | Int])
-    assertEquals(a, a: js.UndefOr[String | Int])
-    assertEquals(a, a: js.UndefOr[js.UndefOr[String] | Int])
-    assertEquals(a, a: js.UndefOr[String | js.UndefOr[Int]])
-    assertEquals(a, a: js.UndefOr[js.UndefOr[String] | js.UndefOr[Int]])
-    assertEquals(a, a: js.UndefOr[js.UndefOr[String] | js.UndefOr[js.UndefOr[Int]]])
-    assertEquals(a, a: js.UndefOr[js.UndefOr[js.UndefOr[String]] | js.UndefOr[Int]])
+    assertEquals(a: js.UndefOr[String | Int], a)
+    assertEquals(a: js.UndefOr[String | Int], a)
+    assertEquals(a: js.UndefOr[js.UndefOr[String] | Int], a)
+    assertEquals(a: js.UndefOr[String | js.UndefOr[Int]], a)
+    assertEquals(a: js.UndefOr[js.UndefOr[String] | js.UndefOr[Int]], a)
+    assertEquals(a: js.UndefOr[js.UndefOr[String] | js.UndefOr[js.UndefOr[Int]]], a)
+    assertEquals(a: js.UndefOr[js.UndefOr[js.UndefOr[String]] | js.UndefOr[Int]], a)
 
     // Confirm that we're working with triple unions too
 
-    assertEquals(a, a: js.UndefOr[String | Object | Int])
-    assertEquals(a, a: js.UndefOr[String | Int | Object])
-    assertEquals(a, a: js.UndefOr[Int | String | Object])
-    assertEquals(a, a: js.UndefOr[Int | Object | String])
-    assertEquals(a, a: js.UndefOr[Object | String | Int])
-    assertEquals(a, a: js.UndefOr[Object | Object | String])
+    assertEquals(a: js.UndefOr[String | Object | Int], a)
+    assertEquals(a: js.UndefOr[String | Int | Object], a)
+    assertEquals(a: js.UndefOr[Int | String | Object], a)
+    assertEquals(a: js.UndefOr[Int | Object | String], a)
+    assertEquals(a: js.UndefOr[Object | String | Int], a)
+    assertEquals(a: js.UndefOr[Object | Object | String], a)
 
-    assertEquals(a, a: js.UndefOr[js.UndefOr[String] | Object | Int])
-    assertEquals(a, a: js.UndefOr[js.UndefOr[String] | Int | Object])
-    assertEquals(a, a: js.UndefOr[js.UndefOr[Int] | String | Object])
-    assertEquals(a, a: js.UndefOr[js.UndefOr[Int] | Object | String])
-    assertEquals(a, a: js.UndefOr[js.UndefOr[Object] | String | Int])
-    assertEquals(a, a: js.UndefOr[js.UndefOr[Object] | Object | String])
+    assertEquals(a: js.UndefOr[js.UndefOr[String] | Object | Int], a)
+    assertEquals(a: js.UndefOr[js.UndefOr[String] | Int | Object], a)
+    assertEquals(a: js.UndefOr[js.UndefOr[Int] | String | Object], a)
+    assertEquals(a: js.UndefOr[js.UndefOr[Int] | Object | String], a)
+    assertEquals(a: js.UndefOr[js.UndefOr[Object] | String | Int], a)
+    assertEquals(a: js.UndefOr[js.UndefOr[Object] | Object | String], a)
   }
 
   @Test def covariant_type_constructor(): Unit = {

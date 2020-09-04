@@ -21,11 +21,11 @@ import org.scalajs.testsuite.utils.Platform
 
 class LinkingInfoTest {
   @Test def productionMode(): Unit =
-    assertEquals(Platform.isInProductionMode, LinkingInfo.productionMode)
+    assertEquals(LinkingInfo.productionMode, Platform.isInProductionMode)
 
   @Test def developmentMode(): Unit =
-    assertEquals(!Platform.isInProductionMode, LinkingInfo.developmentMode)
+    assertEquals(LinkingInfo.developmentMode, !Platform.isInProductionMode)
 
   @Test def assumingES6(): Unit =
-    assertEquals(Platform.assumeES2015, LinkingInfo.assumingES6)
+    assertEquals(LinkingInfo.assumingES6, Platform.assumeES2015)
 }

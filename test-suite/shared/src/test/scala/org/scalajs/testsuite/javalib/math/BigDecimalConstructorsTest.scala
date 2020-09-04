@@ -48,7 +48,7 @@ class BigDecimalConstructorsTest {
     val res = "1231212478987482988429808779810457634781384757"
     val resScale = -6
     val result = new BigDecimal(bA, mc)
-    assertEquals(res, result.unscaledValue().toString)
+    assertEquals(result.unscaledValue().toString, res)
     assertEquals(resScale, result.scale())
   }
 
@@ -62,7 +62,7 @@ class BigDecimalConstructorsTest {
     val res = "1231212478987482988429808779810457634781384757"
     val resScale = 4
     val result = new BigDecimal(bA, aScale, mc)
-    assertEquals(res, result.unscaledValue().toString)
+    assertEquals(result.unscaledValue().toString, res)
     assertEquals(resScale, result.scale())
   }
 
@@ -80,7 +80,7 @@ class BigDecimalConstructorsTest {
     val result = new BigDecimal(value)
     val res = "-1.23804738E-419"
     val resScale = 427
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
     assertEquals(result.scale(), resScale)
     expectThrows(classOf[NumberFormatException], new BigDecimal(Array[Char]()))
   }
@@ -92,7 +92,7 @@ class BigDecimalConstructorsTest {
     val result = new BigDecimal(value, offset, len)
     val res = "3.804738E-40"
     val resScale = 46
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
     assertEquals(result.scale(), resScale)
     expectThrows(classOf[NumberFormatException], new BigDecimal(Array[Char](), 0, 0))
   }
@@ -107,7 +107,7 @@ class BigDecimalConstructorsTest {
     val result = new BigDecimal(value, offset, len, mc)
     val res = "3.805E-40"
     val resScale = 43
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
     assertEquals(result.scale(), resScale)
     expectThrows(classOf[NumberFormatException],
         new BigDecimal(Array(), 0, 0, MathContext.DECIMAL32))
@@ -141,7 +141,7 @@ class BigDecimalConstructorsTest {
     val result = new BigDecimal(value, mc)
     val res = "3.805E-40"
     val resScale = 43
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
     assertEquals(result.scale(), resScale)
     expectThrows(classOf[NumberFormatException], new BigDecimal(Array[Char](), MathContext.DECIMAL32))
   }
@@ -217,7 +217,7 @@ class BigDecimalConstructorsTest {
     val res = "732546982"
     val resScale = 0
     val result = new BigDecimal(a)
-    assertEquals(res, result.unscaledValue().toString)
+    assertEquals(result.unscaledValue().toString, res)
     assertEquals(resScale, result.scale())
   }
 
@@ -229,7 +229,7 @@ class BigDecimalConstructorsTest {
     val res = "732546982"
     val resScale = 0
     val result = new BigDecimal(a, mc)
-    assertEquals(res, result.unscaledValue().toString)
+    assertEquals(result.unscaledValue().toString, res)
     assertEquals(resScale, result.scale())
   }
 
@@ -238,7 +238,7 @@ class BigDecimalConstructorsTest {
     val res = "4576578677732546982"
     val resScale = 0
     val result = new BigDecimal(a)
-    assertEquals(res, result.unscaledValue().toString)
+    assertEquals(result.unscaledValue().toString, res)
     assertEquals(resScale, result.scale())
   }
 
@@ -250,7 +250,7 @@ class BigDecimalConstructorsTest {
     val res = "45766"
     val resScale = -14
     val result = new BigDecimal(a, mc)
-    assertEquals(res, result.unscaledValue().toString)
+    assertEquals(result.unscaledValue().toString, res)
     assertEquals(resScale, result.scale())
   }
 
@@ -311,7 +311,7 @@ class BigDecimalConstructorsTest {
     val res = "-23876"
     val resScale = -224
     val result = new BigDecimal(a, mc)
-    assertEquals(result.unscaledValue().toString, res)
+    assertEquals(res, result.unscaledValue().toString)
     assertEquals(resScale, result.scale())
   }
 
@@ -470,21 +470,21 @@ class BigDecimalConstructorsTest {
   @Test def testFieldONE(): Unit = {
     val oneS = "1"
     val oneD = 1.0
-    assertEquals(oneS, BigDecimal.ONE.toString)
+    assertEquals(BigDecimal.ONE.toString, oneS)
     assertEquals(oneD, BigDecimal.ONE.doubleValue(), 0d)
   }
 
   @Test def testFieldTEN(): Unit = {
     val oneS = "10"
     val oneD = 10.0
-    assertEquals(oneS, BigDecimal.TEN.toString)
+    assertEquals(BigDecimal.TEN.toString, oneS)
     assertEquals(oneD, BigDecimal.TEN.doubleValue(), 0d)
   }
 
   @Test def testFieldZERO(): Unit = {
     val oneS = "0"
     val oneD = 0.0
-    assertEquals(oneS, BigDecimal.ZERO.toString)
+    assertEquals(BigDecimal.ZERO.toString, oneS)
     assertEquals(oneD, BigDecimal.ZERO.doubleValue(), 0d)
   }
 }

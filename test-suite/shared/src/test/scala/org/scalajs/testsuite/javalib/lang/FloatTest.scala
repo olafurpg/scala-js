@@ -61,49 +61,49 @@ class FloatTest {
 
   @Test def toString_with_integer_values_when_an_integer(): Unit = {
     if (executingInJVM) {
-      assertEquals("0.0", 0.0f.toString)
-      assertEquals("-0.0", (-0.0f).toString)
+      assertEquals(0.0f.toString, "0.0")
+      assertEquals(0.0f.toString, "-0.0")
     } else {
-      assertEquals("0", 0.0f.toString)
-      assertEquals("0", (-0.0f).toString)
+      assertEquals(0.0f.toString, "0")
+      assertEquals(0.0f.toString, "0")
     }
-    assertEquals("NaN", Float.NaN.toString)
-    assertEquals("Infinity", Float.PositiveInfinity.toString)
-    assertEquals("-Infinity", Float.NegativeInfinity.toString)
+    assertEquals(Float.NaN.toString, "NaN")
+    assertEquals(Float.PositiveInfinity.toString, "Infinity")
+    assertEquals(Float.NegativeInfinity.toString, "-Infinity")
     if (executingInJVM) {
-      assertEquals("5.0", 5.0f.toString)
-      assertEquals("-5.0", (-5.0f).toString)
+      assertEquals(5.0f.toString, "5.0")
+      assertEquals(-5.0f.toString, "-5.0")
     } else {
-      assertEquals("5", 5.0f.toString)
-      assertEquals("-5", (-5.0f).toString)
+      assertEquals(5.0f.toString, "5")
+      assertEquals(-5.0f.toString, "-5")
     }
     // We need to explicitly cut the string here, since floats are
     // represented by doubles (but the literal is emitted as
     // float). Therefore there may be some imprecision. This is
     // documented as semantic difference.
-    assertEquals("1.2", 1.2f.toString.substring(0,3))
+    assertEquals(1.2f.toString.substring(0, 3), "1.2")
   }
 
   @Test def toHexStringTest(): Unit = {
     import java.lang.Float.toHexString
 
-    assertEquals("NaN", toHexString(Float.NaN))
-    assertEquals("Infinity", toHexString(Float.PositiveInfinity))
-    assertEquals("-Infinity", toHexString(Float.NegativeInfinity))
-    assertEquals("0x0.0p0", toHexString(0.0f))
-    assertEquals("-0x0.0p0", toHexString(-0.0f))
-    assertEquals("0x1.0p0", toHexString(1.0f))
-    assertEquals("-0x1.0p0", toHexString(-1.0f))
-    assertEquals("0x1.0p1", toHexString(2.0f))
-    assertEquals("0x1.8p1", toHexString(3.0f))
-    assertEquals("0x1.0p-1", toHexString(0.5f))
-    assertEquals("0x1.0p-2", toHexString(0.25f))
-    assertEquals("0x1.00204p3", toHexString(8.003937f))
-    assertEquals("0x0.00204p-126", toHexString(5.785e-42f))
-    assertEquals("0x1.fffffep127", toHexString(Float.MaxValue))
-    assertEquals("0x1.0p-126", toHexString(java.lang.Float.MIN_NORMAL))
-    assertEquals("0x0.fffffep-126", toHexString(1.1754942E-38f))
-    assertEquals("0x0.000002p-126", toHexString(Float.MinPositiveValue))
+    assertEquals(toHexString(Float.NaN), "NaN")
+    assertEquals(toHexString(Float.PositiveInfinity), "Infinity")
+    assertEquals(toHexString(Float.NegativeInfinity), "-Infinity")
+    assertEquals(toHexString(0.0f), "0x0.0p0")
+    assertEquals(toHexString(0.0f), "-0x0.0p0")
+    assertEquals(toHexString(1.0f), "0x1.0p0")
+    assertEquals(toHexString(-1.0f), "-0x1.0p0")
+    assertEquals(toHexString(2.0f), "0x1.0p1")
+    assertEquals(toHexString(3.0f), "0x1.8p1")
+    assertEquals(toHexString(0.5f), "0x1.0p-1")
+    assertEquals(toHexString(0.25f), "0x1.0p-2")
+    assertEquals(toHexString(8.003937f), "0x1.00204p3")
+    assertEquals(toHexString(5.785E-42f), "0x0.00204p-126")
+    assertEquals(toHexString(Float.MaxValue), "0x1.fffffep127")
+    assertEquals(toHexString(java.lang.Float.MIN_NORMAL), "0x1.0p-126")
+    assertEquals(toHexString(1.1754942E-38f), "0x0.fffffep-126")
+    assertEquals(toHexString(Float.MinPositiveValue), "0x0.000002p-126")
   }
 
   @Test def should_parse_strings(): Unit = {

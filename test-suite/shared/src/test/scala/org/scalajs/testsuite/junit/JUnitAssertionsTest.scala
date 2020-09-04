@@ -104,7 +104,7 @@ class JUnitAssertionsTest {
     // Object equality tests
     def testAssertion(expected: AnyRef, actual: AnyRef, equals: Boolean = true): Unit = {
       testIfAsserts(assertEquals(s"Asserting $expected == $actual", expected, actual), equals)
-      testIfAsserts(assertEquals(expected, actual), equals)
+      testIfAsserts(assertEquals(actual, expected), equals)
       testIfAsserts(assertNotEquals(s"Asserting $expected != $actual", expected, actual), !equals)
       testIfAsserts(assertNotEquals(expected, actual), !equals)
     }
@@ -351,7 +351,7 @@ class JUnitAssertionsTest {
 
     testIfAsserts {
       val ex = expectThrows(classOf[Exception], throw new Exception("abc"))
-      assertEquals(ex.getMessage, "abc")
+      assertEquals("abc", ex.getMessage)
     }
 
     testIfAsserts(expectThrows(classOf[IndexOutOfBoundsException],

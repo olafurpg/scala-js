@@ -26,11 +26,11 @@ class SymbolTestScala2 {
   @Test def should_support_symbol_literal(): Unit = {
     val scalajs = 'ScalaJS
 
-    assertEquals(Symbol("ScalaJS"), scalajs)
-    assertEquals(Symbol("$"), '$)
-    assertEquals(Symbol("$$"), '$$)
-    assertEquals(Symbol("-"), '-)
-    assertEquals(Symbol("*"), '*)
+    assertEquals(scalajs, Symbol("ScalaJS"))
+    assertEquals('$, Symbol("$"))
+    assertEquals('$$, Symbol("$$"))
+    assertEquals('-, Symbol("-"))
+    assertEquals('*, Symbol("*"))
   }
 
   /**
@@ -40,7 +40,7 @@ class SymbolTestScala2 {
   @Test def should_ensure_unique_identity(): Unit = {
     def expectEqual(sym1: Symbol, sym2: Symbol): Unit = {
       assertTrue(sym1 eq sym2)
-      assertEquals(sym2, sym1)
+      assertEquals(sym1, sym2)
       assertEquals(sym2.##, sym1.##)
     }
 
@@ -50,9 +50,9 @@ class SymbolTestScala2 {
 
     val `42` = Symbol("42")
     val map = Map[Symbol, Any](Symbol("ScalaJS") -> "Scala.js", '$ -> 1.2, `42` -> 42)
-    assertEquals("Scala.js", map('ScalaJS))
-    assertEquals(1.2, map(Symbol("$")))
-    assertEquals(42, map(Symbol("42")))
-    assertEquals(42, map(`42`))
+    assertEquals(map('ScalaJS), "Scala.js")
+    assertEquals(map(Symbol("$")), 1.2d)
+    assertEquals(map(Symbol("42")), 42)
+    assertEquals(map(`42`), 42)
   }
 }

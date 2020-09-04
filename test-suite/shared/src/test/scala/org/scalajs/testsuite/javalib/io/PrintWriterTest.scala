@@ -66,7 +66,7 @@ class PrintWriterTest {
     expectCausesError(pw.flush())
 
     // at the end of it all, sw is still what it was when it was closed
-    assertEquals("begin", sw.toString())
+    assertEquals(sw.toString(), "begin")
   }
 
   @Test def write_does_not_flush_even_with_new_line(): Unit = {
@@ -75,7 +75,7 @@ class PrintWriterTest {
       body(pw)
       assertFalse(sw.flushed)
       assertFalse(pw.checkError())
-      assertEquals(expected, sw.toString())
+      assertEquals(sw.toString(), expected)
     }
 
     test(_.write('\n'), "\n")
@@ -91,7 +91,7 @@ class PrintWriterTest {
       body(pw)
       assertFalse(sw.flushed)
       assertFalse(pw.checkError())
-      assertEquals(expected, sw.toString())
+      assertEquals(sw.toString(), expected)
     }
 
     test(_.print(true), "true")
@@ -147,7 +147,7 @@ class PrintWriterTest {
     if (autoFlush) assertTrue(sw.flushed)
     else           assertFalse(sw.flushed)
     assertFalse(pw.checkError())
-    assertEquals(expected, sw.toString())
+    assertEquals(sw.toString(), expected)
   }
 
   @Test def printf_and_format_which_flushes_when_autoFlush_is_true(): Unit = {
@@ -167,7 +167,7 @@ class PrintWriterTest {
     if (autoFlush) assertTrue(sw.flushed)
     else           assertFalse(sw.flushed)
     assertFalse(pw.checkError())
-    assertEquals(expected, sw.toString())
+    assertEquals(sw.toString(), expected)
   }
 
   @Test def append_does_not_flush_even_with_new_line(): Unit = {
@@ -176,7 +176,7 @@ class PrintWriterTest {
       body(pw)
       assertFalse(sw.flushed)
       assertFalse(pw.checkError())
-      assertEquals(expected, sw.toString())
+      assertEquals(sw.toString(), expected)
     }
 
     test(_.append("hello\n"), "hello\n")

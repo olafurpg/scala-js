@@ -33,7 +33,7 @@ trait DataInputStreamTest {
     val stream = newStream(data: _*)
 
     for (d <- data)
-      assertEquals(d != 0, stream.readBoolean())
+      assertEquals(stream.readBoolean(), d != 0)
 
     assertThrows(classOf[EOFException], stream.readBoolean())
   }
@@ -68,7 +68,7 @@ trait DataInputStreamTest {
     for (i <- 1 to 11)
       res += stream.readChar()
 
-    assertEquals("Höllö Wărȴđ", res)
+    assertEquals(res, "Höllö Wărȴđ")
 
     assertThrows(classOf[EOFException], stream.readChar()) // Dangling + EOF
   }
@@ -288,9 +288,9 @@ trait DataInputStreamTest {
         0x2d, 0x3e, 0x20, 0xed, 0xa0, 0xbd, 0xed, 0xb2,
         0xa9, 0x00, 0x03, 0xe6, 0x84, 0x9b)
 
-    assertEquals("Höllö Wărȴđ", stream.readUTF)
-    assertEquals("poo -> 💩", stream.readUTF)
-    assertEquals("愛", stream.readUTF)
+    assertEquals(stream.readUTF, "Höllö Wărȴđ")
+    assertEquals(stream.readUTF, "poo -> 💩")
+    assertEquals(stream.readUTF, "愛")
 
     val badStream = newStream(0x00, 0x01, 0xC0, 0x82)
     assertThrows(classOf[UTFDataFormatException], badStream.readUTF)
@@ -315,12 +315,12 @@ trait DataInputStreamTest {
     val stream = newStream(
         "Hello World\nUNIX\nWindows\r\nMac (old)\rStuff".map(_.toInt): _*)
 
-    assertEquals("Hello World", stream.readLine())
-    assertEquals("UNIX", stream.readLine())
-    assertEquals("Windows", stream.readLine())
-    assertEquals("Mac (old)", stream.readLine())
-    assertEquals("Stuff", stream.readLine())
-    assertEquals(null, stream.readLine())
+    assertEquals(stream.readLine(), "Hello World")
+    assertEquals(stream.readLine(), "UNIX")
+    assertEquals(stream.readLine(), "Windows")
+    assertEquals(stream.readLine(), "Mac (old)")
+    assertEquals(stream.readLine(), "Stuff")
+    assertEquals(stream.readLine(), null)
   }
 
   @Test def should_allow_marking_even_when_readLine_has_to_push_back(): Unit = {
@@ -329,17 +329,17 @@ trait DataInputStreamTest {
     val stream = newStream(
         "Hello World\nUNIX\nWindows\r\nMac (old)\rStuff".map(_.toInt): _*)
 
-    assertEquals("Hello World", stream.readLine())
+    assertEquals(stream.readLine(), "Hello World")
     stream.mark(1000)
-    assertEquals("UNIX", stream.readLine())
+    assertEquals(stream.readLine(), "UNIX")
     stream.reset()
-    assertEquals("UNIX", stream.readLine())
-    assertEquals("Windows", stream.readLine())
-    assertEquals("Mac (old)", stream.readLine())
+    assertEquals(stream.readLine(), "UNIX")
+    assertEquals(stream.readLine(), "Windows")
+    assertEquals(stream.readLine(), "Mac (old)")
     stream.mark(1000)
-    assertEquals("Stuff", stream.readLine())
+    assertEquals(stream.readLine(), "Stuff")
     stream.reset()
-    assertEquals("Stuff", stream.readLine())
+    assertEquals(stream.readLine(), "Stuff")
     assertNull(stream.readLine())
   }
 

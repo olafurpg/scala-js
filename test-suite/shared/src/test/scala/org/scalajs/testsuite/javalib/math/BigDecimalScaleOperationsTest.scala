@@ -130,7 +130,7 @@ class  BigDecimalScaleOperationsTest {
     val aNumber = new BigDecimal(new BigInteger(a), aScale)
     val bNumber = aNumber.setScale(newScale, BigDecimal.ROUND_UP)
     assertEquals(newScale, bNumber.scale())
-    assertEquals(b, bNumber.unscaledValue().toString)
+    assertEquals(bNumber.unscaledValue().toString, b)
   }
 
   @Test def testSetScaleRoundDown(): Unit = {
@@ -207,7 +207,7 @@ class  BigDecimalScaleOperationsTest {
     val result = aNumber.setScale(newScale, RoundingMode.HALF_EVEN)
     val res = "123121247898748298842980.877981045763478138"
     val resScale = 18
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
     assertEquals(result.scale(), resScale)
   }
 
@@ -253,7 +253,7 @@ class  BigDecimalScaleOperationsTest {
     val aNumber = new BigDecimal(new BigInteger(a), aScale)
     val bNumber = aNumber.movePointRight(shift)
     assertEquals(resScale, bNumber.scale())
-    assertEquals(b, bNumber.unscaledValue().toString)
+    assertEquals(bNumber.unscaledValue().toString, b)
   }
 
   @Test def testMovePointRightNeg(): Unit = {
@@ -264,7 +264,7 @@ class  BigDecimalScaleOperationsTest {
     val aNumber = new BigDecimal(new BigInteger(a), aScale)
     val bNumber = aNumber.movePointRight(shift)
     assertEquals(resScale, bNumber.scale())
-    assertEquals(a, bNumber.unscaledValue().toString)
+    assertEquals(bNumber.unscaledValue().toString, a)
   }
 
   @Test def testMovePointRightException(): Unit = {

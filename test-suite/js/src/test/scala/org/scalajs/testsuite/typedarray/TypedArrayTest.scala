@@ -44,27 +44,27 @@ trait TypedArrayTest[V, T <: TypedArray[V, T]] {
   @Test def should_provide_a_factory_method_of(): Unit = {
     val x = ofFn(intToV(0), intToV(1), intToV(2))
     assertEquals(3, x.length)
-    assertEquals(intToV(2), x(2))
+    assertEquals(x(2), intToV(2))
   }
 
   @Test def should_provide_a_factory_method_from(): Unit = {
     val x = fromFn(js.Array(intToV(0), intToV(1), intToV(2)))
     assertEquals(3, x.length)
-    assertEquals(intToV(2), x(2))
+    assertEquals(x(2), intToV(2))
   }
 
   @Test def should_provide_a_factory_method_from_with_mapping_function(): Unit = {
     val src = js.Array("", "a", "bc")
     val x = fromFn(src)((s: String) => intToV(s.length))
     assertEquals(3, x.length)
-    assertEquals(intToV(2), x(2))
+    assertEquals(x(2), intToV(2))
   }
 
   @Test def should_provide_a_factory_method_from_with_mapping_function_and_thisArg(): Unit = {
     val src = js.Array("", "a", "bc")
     val x = fromFn(src, 10)((thisArg: Int, s: String) => intToV(s.length * thisArg))
     assertEquals(3, x.length)
-    assertEquals(intToV(20), x(2))
+    assertEquals(x(2), intToV(20))
   }
 
   @Test def should_allow_constructing_a_new_name_with_length(): Unit = {
@@ -78,8 +78,8 @@ trait TypedArrayTest[V, T <: TypedArray[V, T]] {
     assertTrue(hasType(x))
     assertEquals(2, x.length)
 
-    assertEquals(intToV(3), x(0))
-    assertEquals(intToV(7), x(1))
+    assertEquals(x(0), intToV(3))
+    assertEquals(x(1), intToV(7))
   }
 
   @Test def should_allow_constructing_a_new_name_from_a_js_Array(): Unit = {
@@ -87,9 +87,9 @@ trait TypedArrayTest[V, T <: TypedArray[V, T]] {
     assertTrue(hasType(x))
     assertEquals(3, x.length)
 
-    assertEquals(intToV(5), x(0))
-    assertEquals(intToV(6), x(1))
-    assertEquals(intToV(7), x(2))
+    assertEquals(x(0), intToV(5))
+    assertEquals(x(1), intToV(6))
+    assertEquals(x(2), intToV(7))
   }
 
   @Test def should_allow_constructing_a_new_name_from_an_ArrayBuffer_1_arg(): Unit = {
@@ -98,10 +98,10 @@ trait TypedArrayTest[V, T <: TypedArray[V, T]] {
     assertTrue(hasType(x))
     assertEquals(4, x.length)
 
-    assertEquals(intToV(5), x(0))
-    assertEquals(intToV(6), x(1))
-    assertEquals(intToV(7), x(2))
-    assertEquals(intToV(8), x(3))
+    assertEquals(x(0), intToV(5))
+    assertEquals(x(1), intToV(6))
+    assertEquals(x(2), intToV(7))
+    assertEquals(x(3), intToV(8))
   }
 
   @Test def should_allow_constructing_a_new_name_from_an_ArrayBuffer_2_args(): Unit = {
@@ -110,9 +110,9 @@ trait TypedArrayTest[V, T <: TypedArray[V, T]] {
     assertTrue(hasType(x))
     assertEquals(3, x.length)
 
-    assertEquals(intToV(6), x(0))
-    assertEquals(intToV(7), x(1))
-    assertEquals(intToV(8), x(2))
+    assertEquals(x(0), intToV(6))
+    assertEquals(x(1), intToV(7))
+    assertEquals(x(2), intToV(8))
   }
 
   @Test def should_allow_constructing_a_new_name_from_an_ArrayBuffer_3_args(): Unit = {
@@ -121,8 +121,8 @@ trait TypedArrayTest[V, T <: TypedArray[V, T]] {
     assertTrue(hasType(x))
     assertEquals(2, x.length)
 
-    assertEquals(intToV(6), x(0))
-    assertEquals(intToV(7), x(1))
+    assertEquals(x(0), intToV(6))
+    assertEquals(x(1), intToV(7))
   }
 
   @Test def should_allow_retrieving_the_should_allow_retrieving_the(): Unit = {
@@ -132,7 +132,7 @@ trait TypedArrayTest[V, T <: TypedArray[V, T]] {
 
   @Test def should_allow_retrieving_an_should_allow_retrieving_an(): Unit = {
     val x = itCtor(js.Array(5).map(intToV))
-    assertEquals(intToV(5), x(0))
+    assertEquals(x(0), intToV(5))
   }
 
   @Test def should_allow_setting_an_should_allow_setting_an(): Unit = {
@@ -141,13 +141,13 @@ trait TypedArrayTest[V, T <: TypedArray[V, T]] {
     x(0) = intToV(5)
     x(1) = intToV(10)
 
-    assertEquals(intToV(5), x(0))
-    assertEquals(intToV(10), x(1))
+    assertEquals(x(0), intToV(5))
+    assertEquals(x(1), intToV(10))
   }
 
   @Test def should_provide_should_provide(): Unit = {
     val x = itCtor(js.Array(10).map(intToV))
-    assertEquals(intToV(10), x.get(0))
+    assertEquals(x.get(0), intToV(10))
   }
 
   @Test def set_for_a_single_element(): Unit = {
@@ -155,53 +155,53 @@ trait TypedArrayTest[V, T <: TypedArray[V, T]] {
     x.set(0, intToV(5))
     x.set(1, intToV(6))
 
-    assertEquals(intToV(5), x(0))
-    assertEquals(intToV(6), x(1))
-    assertEquals(intToV(0), x(2))
+    assertEquals(x(0), intToV(5))
+    assertEquals(x(1), intToV(6))
+    assertEquals(x(2), intToV(0))
   }
 
   @Test def set_for_a_js_Array_with_one_arguments(): Unit = {
     val x = lenCtor(10)
     x.set(js.Array(5,6,7).map(intToV))
-    assertEquals(intToV(5), x(0))
-    assertEquals(intToV(6), x(1))
-    assertEquals(intToV(7), x(2))
-    assertEquals(intToV(0), x(3))
-    assertEquals(intToV(0), x(4))
-    assertEquals(intToV(0), x(5))
+    assertEquals(x(0), intToV(5))
+    assertEquals(x(1), intToV(6))
+    assertEquals(x(2), intToV(7))
+    assertEquals(x(3), intToV(0))
+    assertEquals(x(4), intToV(0))
+    assertEquals(x(5), intToV(0))
   }
 
   @Test def should_provide_set_for_a_js_Array_with_two_arguments(): Unit = {
     val x = lenCtor(10)
     x.set(js.Array(5,6,7).map(intToV), 2)
-    assertEquals(intToV(0), x(0))
-    assertEquals(intToV(0), x(1))
-    assertEquals(intToV(5), x(2))
-    assertEquals(intToV(6), x(3))
-    assertEquals(intToV(7), x(4))
-    assertEquals(intToV(0), x(5))
+    assertEquals(x(0), intToV(0))
+    assertEquals(x(1), intToV(0))
+    assertEquals(x(2), intToV(5))
+    assertEquals(x(3), intToV(6))
+    assertEquals(x(4), intToV(7))
+    assertEquals(x(5), intToV(0))
   }
 
   @Test def should_provide_set_for_a_TypedArray_with_one_argument(): Unit = {
     val x = lenCtor(10)
     x.set(tarr(js.Array(5,6,7).map(intToV)))
-    assertEquals(intToV(5), x(0))
-    assertEquals(intToV(6), x(1))
-    assertEquals(intToV(7), x(2))
-    assertEquals(intToV(0), x(3))
-    assertEquals(intToV(0), x(4))
-    assertEquals(intToV(0), x(5))
+    assertEquals(x(0), intToV(5))
+    assertEquals(x(1), intToV(6))
+    assertEquals(x(2), intToV(7))
+    assertEquals(x(3), intToV(0))
+    assertEquals(x(4), intToV(0))
+    assertEquals(x(5), intToV(0))
   }
 
   @Test def should_provide_set_for_a_TypedArray_with_two_arguments(): Unit = {
     val x = lenCtor(10)
     x.set(tarr(js.Array(5,6,7).map(intToV)), 2)
-    assertEquals(intToV(0), x(0))
-    assertEquals(intToV(0), x(1))
-    assertEquals(intToV(5), x(2))
-    assertEquals(intToV(6), x(3))
-    assertEquals(intToV(7), x(4))
-    assertEquals(intToV(0), x(5))
+    assertEquals(x(0), intToV(0))
+    assertEquals(x(1), intToV(0))
+    assertEquals(x(2), intToV(5))
+    assertEquals(x(3), intToV(6))
+    assertEquals(x(4), intToV(7))
+    assertEquals(x(5), intToV(0))
   }
 
   @Test def subarray_with_one_argument(): Unit = {
@@ -209,11 +209,11 @@ trait TypedArrayTest[V, T <: TypedArray[V, T]] {
     val y = x.subarray(2)
 
     assertEquals(7, y.length)
-    assertEquals(intToV(3), y(0))
+    assertEquals(y(0), intToV(3))
 
     x(2) = intToV(100)
 
-    assertEquals(intToV(100), y(0))
+    assertEquals(y(0), intToV(100))
   }
 
   @Test def subarray_with_two_arguments(): Unit = {
@@ -221,11 +221,11 @@ trait TypedArrayTest[V, T <: TypedArray[V, T]] {
     val y = x.subarray(2, 4)
 
     assertEquals(2, y.length)
-    assertEquals(intToV(3), y(0))
+    assertEquals(y(0), intToV(3))
 
     x(2) = intToV(100)
 
-    assertEquals(intToV(100), y(0))
+    assertEquals(y(0), intToV(100))
   }
 
   @Test def buffer(): Unit = {
@@ -260,7 +260,7 @@ trait TypedArrayTest[V, T <: TypedArray[V, T]] {
     val jsIterable: js.Iterable[V] = typedArray
     val iterable: Iterable[V] = jsIterable
 
-    assertEquals(iterable.toList, testData.map(intToV))
+    assertEquals(testData.map(intToV), iterable.toList)
   }
 
   @Test def from_iterable(): Unit = {
@@ -272,10 +272,10 @@ trait TypedArrayTest[V, T <: TypedArray[V, T]] {
     val x = itCtor(Iterable(1, 2, 3, 4).map(intToV).toJSIterable)
 
     assertEquals(4, x.length)
-    assertEquals(intToV(1), x(0))
-    assertEquals(intToV(2), x(1))
-    assertEquals(intToV(3), x(2))
-    assertEquals(intToV(4), x(3))
+    assertEquals(x(0), intToV(1))
+    assertEquals(x(1), intToV(2))
+    assertEquals(x(2), intToV(3))
+    assertEquals(x(3), intToV(4))
   }
 }
 

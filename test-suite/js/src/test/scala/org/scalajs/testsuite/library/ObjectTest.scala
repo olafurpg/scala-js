@@ -64,12 +64,12 @@ class ObjectTest {
     assertEquals(2, entries.length)
 
     val js.Tuple2(key1, value1) = entries(0)
-    assertEquals("a", key1)
-    assertEquals(42, value1)
+    assertEquals(key1, "a")
+    assertEquals(value1, 42)
 
     val js.Tuple2(key2, value2) = entries(1)
-    assertEquals("b", key2)
-    assertEquals("foo", value2.asInstanceOf[String])
+    assertEquals(key2, "b")
+    assertEquals(value2.asInstanceOf[String], "foo")
   }
 
   @Test def entries_from_dictionary(): Unit = {
@@ -78,12 +78,12 @@ class ObjectTest {
     assertEquals(2, entries.length)
 
     val js.Tuple2(key1, value1) = entries(0)
-    assertEquals("a", key1)
+    assertEquals(key1, "a")
     val value1IsInt: Int = value1
     assertEquals(42, value1IsInt)
 
     val js.Tuple2(key2, value2) = entries(1)
-    assertEquals("b", key2)
+    assertEquals(key2, "b")
     val value2IsInt: Int = value2
     assertEquals(0, value2IsInt)
   }
@@ -92,15 +92,15 @@ class ObjectTest {
     // from Array
     val array = js.Array(js.Tuple2("a", 42), js.Tuple2("b", "foo"))
     val obj1 = js.Object.fromEntries(array)
-    assertEquals(obj1("a"), 42)
-    assertEquals(obj1("b"), "foo")
+    assertEquals(42, obj1("a"))
+    assertEquals("foo", obj1("b"))
   }
 
   @Test def fromEntries_js_Map(): Unit = {
     val map = js.Map("a" -> 42, "b" -> "foo")
     val obj = js.Object.fromEntries(map)
-    assertEquals(42, obj("a"))
-    assertEquals("foo", obj("b"))
+    assertEquals(obj("a"), 42)
+    assertEquals(obj("b"), "foo")
   }
 }
 

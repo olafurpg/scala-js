@@ -112,10 +112,10 @@ class DateTest {
   }
 
   @Test def toGMTString(): Unit = {
-    assertEquals("31 Dec 1899 00:00:00 GMT", new Date(Date.UTC(0, 0, 0, 0, 0, 0)).toGMTString)
-    assertEquals("3 Nov 1997 05:23:27 GMT", new Date(Date.UTC(97, 10, 3, 5, 23, 27)).toGMTString)
-    assertEquals("5 Jan 1902 08:01:09 GMT", new Date(Date.UTC(1, 12, 5, 8, 1, 9)).toGMTString)
-    assertEquals("9 Jan 2900 05:03:04 GMT", new Date(Date.UTC(1000, 0, 9, 5, 3, 4)).toGMTString)
+    assertEquals(new Date(Date.UTC(0, 0, 0, 0, 0, 0)).toGMTString, "31 Dec 1899 00:00:00 GMT")
+    assertEquals(new Date(Date.UTC(97, 10, 3, 5, 23, 27)).toGMTString, "3 Nov 1997 05:23:27 GMT")
+    assertEquals(new Date(Date.UTC(1, 12, 5, 8, 1, 9)).toGMTString, "5 Jan 1902 08:01:09 GMT")
+    assertEquals(new Date(Date.UTC(1000, 0, 9, 5, 3, 4)).toGMTString, "9 Jan 2900 05:03:04 GMT")
   }
 
   // #4131
@@ -129,7 +129,7 @@ class DateTest {
 
   @Test def largeToString(): Unit = {
     assumeFalse(executingInJVM)
-    assertEquals("java.util.Date(8640000000000001)", new Date(8640000000000001L).toString())
+    assertEquals(new Date(8640000000000001L).toString(), "java.util.Date(8640000000000001)")
   }
 
   @Test def preventsUnsafeRead(): Unit = {

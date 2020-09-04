@@ -183,9 +183,9 @@ abstract class BaseBufferTest {
 
   @Test def absolute_get(): Unit = {
     val buf = withContent(10, elemRange(0, 10): _*)
-    assertEquals(elemFromInt(0), buf.get(0))
+    assertEquals(buf.get(0), elemFromInt(0))
     assertEquals(0, buf.position())
-    assertEquals(elemFromInt(3), buf.get(3))
+    assertEquals(buf.get(3), elemFromInt(3))
     assertEquals(0, buf.position())
 
     expectThrows(classOf[IndexOutOfBoundsException], buf.get(-1))
@@ -201,9 +201,9 @@ abstract class BaseBufferTest {
       buf.put(5, 42)
       assertEquals(0, buf.position())
       buf.put(3, 2)
-      assertEquals(elemFromInt(2), buf.get(3))
-      assertEquals(elemFromInt(42), buf.get(5))
-      assertEquals(elemFromInt(0), buf.get(7))
+      assertEquals(buf.get(3), elemFromInt(2))
+      assertEquals(buf.get(5), elemFromInt(42))
+      assertEquals(buf.get(7), elemFromInt(0))
 
       expectThrows(classOf[IndexOutOfBoundsException], buf.put(-1, 2))
       expectThrows(classOf[IndexOutOfBoundsException], buf.put(14, 9))
@@ -212,7 +212,7 @@ abstract class BaseBufferTest {
       expectThrows(classOf[IndexOutOfBoundsException], buf.put(4, 1))
     } else {
       expectThrows(classOf[ReadOnlyBufferException], buf.put(2, 1))
-      assertEquals(elemFromInt(0), buf.get(2))
+      assertEquals(buf.get(2), elemFromInt(0))
       assertEquals(0, buf.position())
 
       expectThrows(classOf[ReadOnlyBufferException], buf.put(-2, 1))
@@ -222,10 +222,10 @@ abstract class BaseBufferTest {
 
   @Test def relative_get(): Unit = {
     val buf = withContent(10, elemRange(0, 10): _*)
-    assertEquals(elemFromInt(0), buf.get())
+    assertEquals(buf.get(), elemFromInt(0))
     assertEquals(1, buf.position())
     buf.position(3)
-    assertEquals(elemFromInt(3), buf.get())
+    assertEquals(buf.get(), elemFromInt(3))
     assertEquals(4, buf.position())
 
     buf.limit(4)
@@ -237,19 +237,19 @@ abstract class BaseBufferTest {
     if (!createsReadOnly) {
       buf.put(5)
       assertEquals(1, buf.position())
-      assertEquals(elemFromInt(5), buf.get(0))
+      assertEquals(buf.get(0), elemFromInt(5))
 
       buf.position(3)
       buf.put(36)
       assertEquals(4, buf.position())
-      assertEquals(elemFromInt(36), buf.get(3))
+      assertEquals(buf.get(3), elemFromInt(36))
 
       buf.position(10)
       expectThrows(classOf[BufferOverflowException], buf.put(3))
     } else {
       expectThrows(classOf[ReadOnlyBufferException], buf.put(5))
       assertEquals(0, buf.position())
-      assertEquals(elemFromInt(0), buf.get(0))
+      assertEquals(buf.get(0), elemFromInt(0))
 
       buf.position(10)
       expectThrows(classOf[ReadOnlyBufferException], buf.put(3))
@@ -291,7 +291,7 @@ abstract class BaseBufferTest {
     } else {
       expectThrows(classOf[ReadOnlyBufferException], buf.put(Array[ElementType](6, 7, 12)))
       assertEquals(0, buf.position())
-      assertEquals(elemFromInt(0), buf.get(0))
+      assertEquals(buf.get(0), elemFromInt(0))
 
       /* Trying to put an array too large into a read-only buffer can either
        * throw a ReadOnlyBufferException or a BufferOverflowException. The spec
@@ -305,7 +305,7 @@ abstract class BaseBufferTest {
           exception.isInstanceOf[ReadOnlyBufferException] ||
           exception.isInstanceOf[BufferOverflowException])
       assertEquals(8, buf.position())
-      assertEquals(elemFromInt(0), buf.get(8))
+      assertEquals(buf.get(8), elemFromInt(0))
     }
   }
 
@@ -325,7 +325,7 @@ abstract class BaseBufferTest {
       expectThrows(classOf[InvalidMarkException], buf.reset())
 
       for (i <- 0 until 4)
-        assertEquals(elemFromInt(i + 6), buf.get(i))
+        assertEquals(buf.get(i), elemFromInt(i + 6))
     } else {
       val buf = allocBuffer(10)
       expectThrows(classOf[ReadOnlyBufferException], buf.compact())
@@ -344,14 +344,14 @@ abstract class BaseBufferTest {
     expectThrows(classOf[InvalidMarkException], buf2.reset())
 
     if (!executingInJVMOnJDK6)
-      assertEquals(elemFromInt(4), buf2.get(1))
+      assertEquals(buf2.get(1), elemFromInt(4))
 
     buf2.position(2)
     assertEquals(3, buf1.position())
 
     if (!createsReadOnly) {
       buf2.put(89)
-      assertEquals(elemFromInt(89), buf1.get(5))
+      assertEquals(buf1.get(5), elemFromInt(89))
       assertEquals(3, buf2.position())
       assertEquals(3, buf1.position())
     }
@@ -364,7 +364,7 @@ abstract class BaseBufferTest {
 
     if (!createsReadOnly) {
       buf1.put(3, 23)
-      assertEquals(elemFromInt(23), buf2.get(0))
+      assertEquals(buf2.get(0), elemFromInt(23))
     }
   }
 
@@ -377,7 +377,7 @@ abstract class BaseBufferTest {
     assertEquals(3, buf2.position())
     assertEquals(7, buf2.limit())
     assertEquals(10, buf2.capacity())
-    assertEquals(elemFromInt(4), buf2.get(4))
+    assertEquals(buf2.get(4), elemFromInt(4))
 
     buf2.position(4)
     assertEquals(3, buf1.position())
@@ -389,7 +389,7 @@ abstract class BaseBufferTest {
 
     if (!createsReadOnly) {
       buf2.put(89)
-      assertEquals(elemFromInt(89), buf1.get(4))
+      assertEquals(buf1.get(4), elemFromInt(89))
       assertEquals(5, buf2.position())
       assertEquals(3, buf1.position())
     }
@@ -400,7 +400,7 @@ abstract class BaseBufferTest {
     if (!createsReadOnly) {
       buf1.put(6, 23)
       buf2.limit(10)
-      assertEquals(elemFromInt(23), buf2.get(6))
+      assertEquals(buf2.get(6), elemFromInt(23))
     }
   }
 }

@@ -133,7 +133,7 @@ class BigIntegerOperateBitsTest {
     val number = 2
     val aNumber = new BigInteger(as)
     val result = aNumber.clearBit(number)
-    assertEquals(result.toString, as)
+    assertEquals(as, result.toString)
   }
 
   @Test def testClearBitNegativeInside4(): Unit = {
@@ -142,7 +142,7 @@ class BigIntegerOperateBitsTest {
     val number = 0
     val aNumber = new BigInteger(as)
     val result = aNumber.clearBit(number)
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
   }
 
   @Test def testClearBitNegativeInside5(): Unit = {
@@ -151,7 +151,7 @@ class BigIntegerOperateBitsTest {
     val number = 0
     val aNumber = new BigInteger(as)
     val result = aNumber.clearBit(number)
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
   }
 
   @Test def testClearBitNegativeOutside1(): Unit = {
@@ -409,7 +409,7 @@ class BigIntegerOperateBitsTest {
     val number = 2
     val aNumber = new BigInteger(as)
     val result = aNumber.flipBit(number)
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
   }
 
   @Test def testFlipBitNegativeInside4(): Unit = {
@@ -418,7 +418,7 @@ class BigIntegerOperateBitsTest {
     val number = 0
     val aNumber = new BigInteger(as)
     val result = aNumber.flipBit(number)
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
   }
 
   @Test def testFlipBitNegativeInside5(): Unit = {
@@ -427,7 +427,7 @@ class BigIntegerOperateBitsTest {
     val number = 0
     val aNumber = new BigInteger(as)
     val result = aNumber.flipBit(number)
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
   }
 
   @Test def testFlipBitNegativeOutside1(): Unit = {
@@ -570,7 +570,7 @@ class BigIntegerOperateBitsTest {
 
   @Test def testSetBitBug1331(): Unit = {
     val result = BigInteger.valueOf(0L).setBit(191)
-    assertEquals("3138550867693340381917894711603833208051177722232017256448", result.toString)
+    assertEquals(result.toString, "3138550867693340381917894711603833208051177722232017256448")
     assertEquals(1, result.signum())
   }
 
@@ -633,7 +633,7 @@ class BigIntegerOperateBitsTest {
     val number = 2
     val aNumber = new BigInteger(as)
     val result = aNumber.setBit(number)
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
   }
 
   @Test def testSetBitNegativeInside4(): Unit = {
@@ -641,7 +641,7 @@ class BigIntegerOperateBitsTest {
     val number = 0
     val aNumber = new BigInteger(as)
     val result = aNumber.setBit(number)
-    assertEquals(as, result.toString)
+    assertEquals(result.toString, as)
   }
 
   @Test def testSetBitNegativeInside5(): Unit = {
@@ -649,7 +649,7 @@ class BigIntegerOperateBitsTest {
     val number = 0
     val aNumber = new BigInteger(as)
     val result = aNumber.setBit(number)
-    assertEquals(as, result.toString)
+    assertEquals(result.toString, as)
   }
 
   @Test def testSetBitNegativeOutside1(): Unit = {

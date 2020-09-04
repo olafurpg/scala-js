@@ -165,7 +165,7 @@ class BigDecimalConvertTest {
     // Sanity checks
     assertEquals(-285625050, num.scale)
     assertEquals(7, num.precision)
-    assertEquals("9.223372E+285625056", num.toString)
+    assertEquals(num.toString, "9.223372E+285625056")
 
     // Source of issue
     assertThrows(classOf[ArithmeticException], num.longValueExact)
@@ -183,7 +183,7 @@ class BigDecimalConvertTest {
     val result = aNumber.scaleByPowerOfTen(10)
     val res = "1231212478987482988429808779810457634781384756794.987"
     val resScale = 3
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
     assertEquals(result.scale(), resScale, 0d)
   }
 
@@ -194,7 +194,7 @@ class BigDecimalConvertTest {
     val result = aNumber.scaleByPowerOfTen(10)
     val res = "1.231212478987482988429808779810457634781384756794987E+74"
     val resScale = -23
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
     assertEquals(result.scale(), resScale)
   }
 
@@ -209,7 +209,7 @@ class BigDecimalConvertTest {
     val aNumber = new BigDecimal(a)
     val res = "-123809648392384754573567356745735635678902957849027687876782870000000000000000"
     val result = aNumber.toBigIntegerExact()
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
   }
 
   @Test def testToBigIntegerExactException(): Unit = {
@@ -278,28 +278,28 @@ class BigDecimalConvertTest {
     val a = "-123809648392384754573567356745735.63567890295784902768787678287E-501"
     val aNumber = new BigDecimal(a)
     val result = "-123.80964839238475457356735674573563567890295784902768787678287E-471"
-    assertEquals(aNumber.toEngineeringString(), result)
+    assertEquals(result, aNumber.toEngineeringString())
   }
 
   @Test def testToEngineeringStringPos(): Unit = {
     val a = "123809648392384754573567356745735.63567890295784902768787678287E-501"
     val aNumber = new BigDecimal(a)
     val result = "123.80964839238475457356735674573563567890295784902768787678287E-471"
-    assertEquals(aNumber.toEngineeringString(), result)
+    assertEquals(result, aNumber.toEngineeringString())
   }
 
   @Test def testToEngineeringStringZeroNegExponent(): Unit = {
     val a = "0.0E-16"
     val aNumber = new BigDecimal(a)
     val result = "0.00E-15"
-    assertEquals(aNumber.toEngineeringString(), result)
+    assertEquals(result, aNumber.toEngineeringString())
   }
 
   @Test def testToEngineeringStringZeroPosExponent(): Unit = {
     val a = "0.0E+16"
     val aNumber = new BigDecimal(a)
     val result = "0E+15"
-    assertEquals(aNumber.toEngineeringString(), result)
+    assertEquals(result, aNumber.toEngineeringString())
   }
 
   @Test def testToPlainStringNegNegExp(): Unit = {
@@ -369,7 +369,7 @@ class BigDecimalConvertTest {
     val result = BigDecimal.valueOf(a)
     val res = "-65678765876567576"
     val resScale = 0
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
     assertEquals(result.scale(), resScale)
   }
 
@@ -378,7 +378,7 @@ class BigDecimalConvertTest {
     val result = BigDecimal.valueOf(a)
     val res = "65678765876567576"
     val resScale = 0
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
     assertEquals(result.scale(), resScale)
   }
 
@@ -387,7 +387,7 @@ class BigDecimalConvertTest {
     val result = BigDecimal.valueOf(a)
     val res = "12321237576.987888"
     val resScale = 6
-    assertEquals(result.toString, res)
+    assertEquals(res, result.toString)
     assertEquals(result.scale(), resScale)
   }
 
@@ -449,14 +449,14 @@ class BigDecimalConvertTest {
   @Test def testValueOfZeroScaleNeg(): Unit = {
     val scale = -2
     val number = BigDecimal.valueOf(0L, scale)
-    assertEquals(number.toString, "0E+2")
+    assertEquals("0E+2", number.toString)
     assertEquals(number.scale(), scale)
   }
 
   @Test def testValueOfZeroScalePos(): Unit = {
     val scale = 1
     val number = BigDecimal.valueOf(0L, scale)
-    assertEquals(number.toString, "0.0")
+    assertEquals("0.0", number.toString)
     assertEquals(number.scale(), scale)
   }
 }
